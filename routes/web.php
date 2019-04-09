@@ -44,6 +44,7 @@ Route::get('/request/edit/', 'RequestController@show');
 Route::post('/request/inactive', 'RequestController@inactive');
 Route::post('/request/active', 'RequestController@active');
 Route::get('grid-request', ['as' => 'get.request_grid', 'uses' => 'RequestController@dataGrid']);
+Route::get('requestpdf', ['as' => 'get.requestpdf', 'uses' => 'RequestController@pdfDoc']);
 
 Route::resource('/approval', 'ApprovalController');
 Route::get('/approval/create/{type}', 'ApprovalController@create')->name('type');

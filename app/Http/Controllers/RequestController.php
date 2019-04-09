@@ -9,6 +9,7 @@ use function GuzzleHttp\json_encode;
 use Session;
 use API;
 use AccessRight;
+use Spipu\Html2Pdf\Html2Pdf;
 class RequestController extends Controller
 {
     public function index()
@@ -227,5 +228,20 @@ class RequestController extends Controller
         } catch (\Exception $e) {
             return response()->json(['status' => false, "message" => $e->getMessage()]);
         }
+    }
+
+    public function pdfDoc()
+    {
+
+        $html2pdf = new Html2Pdf('P', 'A4', 'en');
+        $html2pdf->writeHTML(view('request.pdf', [
+            'name' => 'dadang kurniawan',
+        ]));
+
+        $pdf = $html2pdf->output("", "S");
+        return response($pdf)
+            ->header('Content-Type', 'application/pdf')
+            ->header('Content-Length', strlen($pdf))
+            ->header('Content-Disposition', 'inline; filename="request.pdf"');
     }
 }

@@ -6,7 +6,7 @@
         <span style="font-size:24px">Request</span>
     </div>
     <div class="col-xs-8" align="right">
-        <span href="#" class="btn btn-flat btn-sm btn-flat label-danger btn-add"><i class="glyphicon glyphicon-refresh" title="Refresh"></i></span>
+        <span href="#" class="btn btn-flat btn-sm btn-flat label-danger btn-refresh"><i class="glyphicon glyphicon-refresh" title="Refresh"></i></span>
         <div class="btn-group">
             <button type="button" class="btn btn-danger btn-sm btn-flat dropdown-toggle" data-toggle="dropdown">
                 Pengajuan &nbsp;&nbsp;&nbsp;
@@ -345,18 +345,18 @@
                                                 </div>
                                             </div>
                                             <h4>Penanggung jawab Aset:</h4>
-                                                <div class="form-group material-group-input" id="input-specification">
-                                                    <label for="part_no" class="col-md-2 col-md-offset-1 col-form-label">Nama</label>
-                                                    <div class="col-md-8">
-                                                        <input type="text" class="form-control input-sm attr-material-group" name="specification" id="specification">
-                                                    </div>
+                                            <div class="form-group material-group-input" id="input-specification">
+                                                <label for="part_no" class="col-md-2 col-md-offset-1 col-form-label">Nama</label>
+                                                <div class="col-md-8">
+                                                    <input type="text" class="form-control input-sm attr-material-group" name="specification" id="specification">
                                                 </div>
-                                                <div class="form-group material-group-input" id="input-specification">
-                                                    <label for="part_no" class="col-md-2 col-md-offset-1 col-form-label">Jabatan</label>
-                                                    <div class="col-md-8">
-                                                        <input type="text" class="form-control input-sm attr-material-group" name="specification" id="specification">
-                                                    </div>
+                                            </div>
+                                            <div class="form-group material-group-input" id="input-specification">
+                                                <label for="part_no" class="col-md-2 col-md-offset-1 col-form-label">Jabatan</label>
+                                                <div class="col-md-8">
+                                                    <input type="text" class="form-control input-sm attr-material-group" name="specification" id="specification">
                                                 </div>
+                                            </div>
                                         </div>
                                     </div>
                                     <!-- /#fa-icons -->
@@ -379,6 +379,18 @@
                 <button type="button" class="btn btn-flat label-danger" OnClick="saveRequest()" style="margin-right: 5px;">Submit</button>
             </div>
             </form>
+        </div>
+    </div>
+</div>
+<div id="pdf-modal" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title"><i id="modalHeader"></i></h4>
+            </div>
+            <div class="modal-body"></div>
         </div>
     </div>
 </div>
@@ -450,7 +462,7 @@
                         "render": function(data, type, row) {
                             var content = '<button class="btn btn-flat btn-flat btn-xs label-danger btn-action btn-edit " title="edit" onClick="edit(' + row.id + ')"><i class="fa fa-pencil"></i></button>';
                             content += '<button class="btn btn-flat btn-flat btn-xs btn-danger btn-action" title="pengajuan kode aset" style="margin-left:5px" onClick="codeAsset(' + row.request_no + ')"><i class="fa fa-barcode"></i></button>';
-                            content += '<button class="btn btn-flat btn-flat btn-xs btn-danger btn-action btn-activated" title="Convert document pengajuan" style="margin-left:5px" onClick="cancel(' + row.id + ')"><i class="fa fa-file-pdf-o"></i></button>';
+                            content += '<button class="btn btn-flat btn-flat btn-xs btn-danger btn-action btn-activated" title="Convert document pengajuan" style="margin-left:5px" onClick="printPdf(' + row.id + ')"><i class="fa fa-file-pdf-o"></i></button>';
                             content += '<button class="btn btn-flat btn-flat btn-xs btn-danger btn-action btn-activated" title="cancel" style="margin-left:5px" onClick="cancel(' + row.id + ')"><i class="fa fa-trash"></i></button>';
                             return content;
                         }
@@ -798,7 +810,7 @@
         item += '<th>Kode</th>';
         item += ' <th>Name</th>';
         item += '<th>Qty</th>';
-        item += '<th width="100px">Qty diajukan</th></th>';
+        item += '<th width="115px">Qty diajukan</th></th>';
         item += '<th>Qty Outstanding</th>';
         item += '<th style="width: 40px"></th>';
         item += '</tr>';
@@ -812,9 +824,9 @@
                 item += "<td style='text-align:right'>" + val.qty + "</td>";
                 item += '<td class="text-center">';
                 item += '<div class="input-group">';
-                item += ' <div style="cursor:pointer" class="input-group-addon"  OnClick="min(\'qty_' + key + '\');">-</div>';
-                item += '<input type="text" class="form-control input-sm text-center" value=' + val.request_qty + ' id="qty_' + key + '" maxlength="4" disabled>';
-                item += ' <div style="cursor:pointer" class="input-group-addon" OnClick="plus(\'qty_' + key + '\');">+</div>';
+                item += ' <div style="cursor:pointer" class="input-group-addon bg-gray"  OnClick="min(\'qty_' + key + '\');">-</div>';
+                item += '<input type="text" class="form-control input-sm text-center" value=' + val.request_qty + ' id="qty_' + key + '" maxlength="6">';
+                item += ' <div style="cursor:pointer" class="input-group-addon bg-gray" OnClick="plus(\'qty_' + key + '\');">+</div>';
                 item += '</td>';
                 item += "<td style='text-align:right'>" + val.outstanding_qty + "</td>";
                 item += '<td width="30px" style="text-align:center"><button type="button" class="btn btn-flat btn-xs btn-danger" onClick="remove(\'' + key + '\')"><i class="fa fa-trash"></i></button></td>';
@@ -867,5 +879,16 @@
     function plus(param) {
         jQuery("#" + param).val(+jQuery("#" + param).val() + 1)
     }
+
+    function printPdf(id) {
+        jQuery('#pdf-modal .modal-title').text('Request Doc');
+        jQuery('#pdf-modal .modal-body').html('<iframe id="print" style="width:100%;height:500px;" frameborder="0" src="{{ url("requestpdf") }}">');
+        jQuery('#pdf-modal').modal({
+            backdrop: 'static',
+            keyboard: false
+        });
+        jQuery('#print-modal').modal('show');
+    }
+
 </script>
-@stop 
+@stop
