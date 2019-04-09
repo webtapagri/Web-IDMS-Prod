@@ -7,7 +7,7 @@
             <span style="font-size:24px">Users</span>
         </div>
         <div class="col-xs-8" align="right">
-            <span href="#" class="btn btn-flat btn-sm btn-flat btn-success btn-add {{ (isset($access['CREATE']) ? '':'hide') }}">&nbsp;<i class="glyphicon glyphicon-plus" title="Add new data"></i>&nbsp; Add</span>
+            <span href="#" class="btn btn-flat btn-sm btn-flat btn-danger btn-add ">&nbsp;<i class="glyphicon glyphicon-plus" title="Add new data"></i>&nbsp; Add</span>
         </div>
     </div>
       <div class="row">
@@ -76,7 +76,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-flat btn-default" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-flat btn-success" style="margin-right: 5px;">Submit</button>
+                    <button type="submit" class="btn btn-flat btn-danger" style="margin-right: 5px;">Submit</button>
                 </div>
             </form>
 		</div>

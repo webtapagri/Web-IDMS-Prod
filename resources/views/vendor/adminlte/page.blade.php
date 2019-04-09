@@ -120,6 +120,21 @@
                             @endforeach  -->
                         <li class="treeview">
                             <a href="#">
+                                <i class="fa fa-cogs"></i> <span>Setting</span>
+                                <span class="pull-right-container">
+                                    <i class="fa fa-angle-left pull-right"></i>
+                                </span>
+                            </a>
+                            <ul class="treeview-menu">
+                                <li><a href="{{ url('request') }}"><i class="fa fa-fw fa-caret-right"></i> Module</a></li>
+                                <li><a href="{{ url('request') }}"><i class="fa fa-fw fa-caret-right"></i> Menu</a></li>
+                                <li><a href="{{ url('request') }}"><i class="fa fa-fw fa-caret-right"></i> Role</a></li>
+                                <li><a href="{{ url('request') }}"><i class="fa fa-fw fa-caret-right"></i> User</a></li>
+                                <li><a href="{{ url('request') }}"><i class="fa fa-fw fa-caret-right"></i> Role Access</a></li>
+                            </ul>
+                        </li>
+                        <li class="treeview">
+                            <a href="#">
                                 <i class="fa fa-pencil"></i> <span>Pendatfaran</span>
                                 <span class="pull-right-container">
                                     <i class="fa fa-angle-left pull-right"></i>

@@ -11,12 +11,14 @@ class ApiHelper extends ServiceProvider
     {
         $public_key = 'B8C1FB623AA3CE4FCBAABC2CBCD18';
         $secret_key = 'B4B18358EEF2E9AEDE1FACE2E8A8A';
+
         $header = array(
             'Content-Type' => 'application/json',
             'AccessToken' => 'key',
             'Authorization' => 'Bearer e8NDkyjDgqvapG5XnIH6nVgq3QJTkwcTg6MpRlYVRpn3oOojoSmZaV54bYug6XfUfTQzmX37XzLoMEHLSNYqV53NuT2PcHFblFFi'
         );
-        $api = "http://149.129.224.117:8080/api/";
+        
+        $api = "http://149.129.213.146:8080/api/";
         $ldap = "http://tap-ldapdev.tap-agri.com/";
 
         if (!empty($param['host'])) {
@@ -26,7 +28,6 @@ class ApiHelper extends ServiceProvider
                 $url = $api . $param['method'];
             }
         } else {
-
             $url = $api . $param['method'];
         }
 

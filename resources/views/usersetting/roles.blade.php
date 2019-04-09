@@ -7,7 +7,7 @@
             <span style="font-size:24px">Role</span>
         </div>
         <div class="col-xs-8" align="right">
-            <span href="#" class="btn btn-sm btn-flat btn-success btn-add {{ (isset($access['CREATE']) ? '':'hide') }}">&nbsp;<i class="glyphicon glyphicon-plus" title="Add new data"></i>&nbsp; Add</span>
+            <span href="#" class="btn btn-sm btn-flat btn-success btn-add">&nbsp;<i class="glyphicon glyphicon-plus" title="Add new data"></i>&nbsp; Add</span>
         </div>
     </div>
       <div class="row">
