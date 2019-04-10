@@ -1,8 +1,8 @@
 @extends('adminlte::page')
-@section('title', 'FMDB - Users')
+@section('title', 'FAMS - Users')
 @section('content')
 <section class="content">
-       <div class="row">
+    <div class="row">
         <div class="col-xs-4">
             <span style="font-size:24px">Users</span>
         </div>
@@ -10,76 +10,93 @@
             <span href="#" class="btn btn-flat btn-sm btn-flat btn-danger btn-add ">&nbsp;<i class="glyphicon glyphicon-plus" title="Add new data"></i>&nbsp; Add</span>
         </div>
     </div>
-      <div class="row">
+    <div class="row">
         <div class="col-xs-12">
-          <div class="box">
-             <div class="box-body">
-                <table id="data-table" class="table table-bordered table-hover table-condensed" width="100%">
-                    <thead>
-                        <tr>
-                            <th>Username</th>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Job Code</th>
-                            <th>NIK</th>
-                            <th>Area Code</th>
-                            <th>Active</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
+            <div class="box">
+                <div class="box-body">
+                    <table id="data-table" class="table table-bordered table-hover table-condensed" width="100%">
+                        <thead>
+                            <tr>
+                                <th>img</th>
+                                <th>Username</th>
+                                <th>Role</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Job Code</th>
+                                <th>NIK</th>
+                                <th>Area Code</th>
+                                <th>Active</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+                <!-- /.box-body -->
             </div>
-            <!-- /.box-body -->
-            </div>
-          </div>
         </div>
-      </div>
+    </div>
+    </div>
 </section>
 <div id="add-data-modal" class="modal fade" role="dialog">
     <div class="modal-dialog" width="900px">
-		<div class="modal-content">
-			<div class="modal-header">	
-				<h4 class="modal-title"></h4>
-			</div>
-			<form id="data-form">
-                <div class="modal-body">	
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"></h4>
+            </div>
+            <form id="data-form" enctype="multipart/form-data">
+                <div class="modal-body">
                     <div class="box-body">
                         <div class="col-xs-12">
-                            <label class="control-label" for="name">Username</label> 
+                            <label class="control-label" for="name">Role</label>
+                            <input type="text" class="form-control" name="role_id" id="role_id" required>
+                        </div>
+                        <div class="col-xs-12">
+                            <label class="control-label" for="name">Username</label>
                             <input type="text" class="form-control" name="username" id="username" maxlength="50" required>
                             <input type="hidden" name='edit_id' id="edit_id">
                         </div>
                         <div class="col-xs-12">
-                            <label class="control-label" for="name">Nama</label> 
+                            <label class="control-label" for="name">Nama</label>
                             <input class="form-control" name='name' id="name" maxlength="200" requried>
                         </div>
                         <div class="col-xs-12">
-                            <label class="control-label" for="name">Email</label> 
-                            <input type="email" class="form-control"  name='email' id="email" maxlength="250">
+                            <label class="control-label" for="name">Email</label>
+                            <input type="email" class="form-control" name='email' id="email" maxlength="250">
                         </div>
                         <div class="col-xs-12">
-                            <label class="control-label" for="name">Job Code</label> 
-                            <input type="text" class="form-control"  name='job_code' id="job_code" maxlength="150">
+                            <label class="control-label" for="name">Job Code</label>
+                            <input type="text" class="form-control" name='job_code' id="job_code" maxlength="150">
                         </div>
                         <div class="col-xs-12">
-                            <label class="control-label" for="name">NIK</label> 
-                            <input type="text" class="form-control"  name='nik' id="nik" maxlength="80">
+                            <label class="control-label" for="name">NIK</label>
+                            <input type="text" class="form-control" name='nik' id="nik" maxlength="80">
                         </div>
                         <div class="col-xs-12">
-                            <label class="control-label" for="name">Area Code</label> 
-                            <select class="form-control"  name='area_code[]' id="area_code" multiple="multiple" maxlength="200" required="reqreuid">
+                            <label class="control-label" for="name">Area Code</label>
+                            <select class="form-control" name='area_code[]' multiple="multiple" id="area_code">
 
                             </select>
                         </div>
-                    </div>	 
+                        <div class="col-xs-6">
+                            <label for="volume_unit">Image</label>
+                            <div class="form-group hide">
+                                <input type="file" id="files_1" name="files_1" accept='image/*' OnChange="showImage(1)">
+                                <p class="help-block">*jpg, png</p>
+                            </div>
+                            <div class="image-group">
+                                <button type="button" class="btn btn-danger btn-xs btn-flat btn-add-file-image btn-remove-image1 hide" OnClick="removeImage(1)"><i class="fa fa-trash"></i></button>
+                                <img id="material-images-1" data-status="0" style="cursor:pointer" title="click to change image" OnClick="openFile(1)" class="img-responsive select-img" src="{{URL::asset('img/add-img.png')}}">
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-flat btn-default" data-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-flat btn-danger" style="margin-right: 5px;">Submit</button>
                 </div>
             </form>
-		</div>
+        </div>
     </div>
 </div>
 @stop
@@ -87,63 +104,128 @@
 <script>
     var attribute = [];
     jQuery(document).ready(function() {
-         jQuery('#data-table').DataTable({
-            ajax: '{!! route('get.grid_tr_user') !!}',
-            columns: [
-                { data: 'username', name: 'username' },
-                { data: 'nama', name: 'name' },
-                { data: 'email', name: 'email' },
-                { data: 'job_code', name: 'job_code' },
-                { data: 'nik', name: 'nik' },
-                {  
-                    "render": function (data, type, row) {
-                        var area_code = row.area_code;
-                        /* if(area_code.length > 30) {
-                            var content = area_code.substr(0,29) + '...';
-                        } else{
-                            var content = area_code;
-                        }     */
-                        return area_code.replace(/,/g,', ') ;
-                    } 
-                },
-                {  
-                    "render": function (data, type, row) {
-                        if(row.fl_active == 1) {
-                            var content = '<span class="badge bg-green">Y</span>';
-                        } else{
-                            var content = '<span class="badge bg-grey">N</span>';
-                        }    
-                        return content;
-                    } 
-                },
-                {
-                    "render": function (data, type, row) {
-                        var content = '<button class="btn btn-flat btn-flat btn-xs btn-success btn-action btn-edit {{ (isset($access['UPDATE']) ? '':'hide') }}" title="edit data ' + row.mat_group + '" onClick="edit(' + row.id + ')"><i class="fa fa-pencil"></i></button>';
-                            content += '<button class="btn btn-flat btn-flat btn-xs btn-danger btn-action btn-activated {{ (isset($access['DELETE']) ? '':'hide') }} ' + (row.fl_active == 1 ? '' : 'hide') + '" style="margin-left:5px" onClick="inactive(' + row.id + ')"><i class="fa fa-trash"></i></button>';
-                            content += '<button class="btn btn-flat btn-flat btn-xs btn-success btn-action btn-inactivated {{ (isset($access['DELETE']) ? '':'hide') }} ' + (row.fl_active == 0 ? '': 'hide') + '" style="margin-left:5px"  onClick="active(' + row.id + ')"><i class="fa fa-check"></i></button>';
+        jQuery('#data-table').DataTable({
+            ajax: "{!! route('get.grid_tr_user') !!}",
+            columns: [{
+                    "render": function(data, type, row) {
+                        if (row.img) {
+                            var content = '<img src="' + row.img + '" class="img-circle img-responsive">';
+                        } else {
+                            var content = '<img src="{{ asset("img/user-default.png") }}" class="img-circle img-responsive">';
+                        }
+
                         return content;
                     }
-                } 
-            ],
-             columnDefs: [
-                { targets: 0, width: '12%'},
-                { targets: 1, width: '15%'},
-                { targets: [7], className: 'text-center', orderable: false, width: '8%'},
-                { targets: [6], className: 'text-center', width: '6%'},
-            ]
-        }); 
+                },
+                {
+                    data: 'username',
+                    name: 'username'
+                },
+                {
+                    data: 'role_name',
+                    name: 'role_name'
+                },
+                {
+                    data: 'name',
+                    name: 'name'
+                },
+                {
+                    data: 'email',
+                    name: 'email'
+                },
+                {
+                    data: 'job_code',
+                    name: 'job_code'
+                },
+                {
+                    data: 'NIK',
+                    name: 'nik'
+                },
+                {
+                    "render": function(data, type, row) {
+                        var area_code = row.area_code;
+                        return area_code.replace(/,/g, ', ');
+                    }
+                },
+                {
+                    "render": function(data, type, row) {
+                        if (row.deleted == 0) {
+                            var content = '<span class="badge bg-red">Y</span>';
+                        } else {
+                            var content = '<span class="badge bg-grey">N</span>';
+                        }
+                        return content;
+                    }
+                },
+                {
+                    "render": function(data, type, row) {
+                        var content = '<button class="btn btn-flat btn-xs btn-danger btn-action btn-edit {{ (isset($access["CREATE"]) ? "":"") }}" title="edit data ' + row.id + '" onClick="edit(' + row.id + ')"><i class="fa fa-pencil"></i></button>';
+                        content += '<button class="btn btn-flat btn-xs btn-danger btn-action btn-activated  {{ (isset($access["CREATE"]) ? "":"") }}  ' + (row.deleted == 0 ? '' : 'hide') + '" style="margin-left:5px"  onClick="inactive(' + row.id + ')"><i class="fa fa-trash"></i></button>';
+                        content += '<button class="btn btn-flat btn-xs btn-danger btn-action btn-inactivated {{ (isset($access["CREATE"]) ? "":"") }} ' + (row.deleted == 1 ? '' : 'hide') + '" style="margin-left:5px"  onClick="active(' + row.id + ')"><i class="fa fa-check"></i></button>';
 
-        var plant = makeSelectFromgeneralData({
-            url: "{{ url('/select2') }}",
-            code: 'plant'
+                        return content;
+                    }
+                }
+            ],
+            columnDefs: [{
+                    targets: [0],
+                    width: '2%',
+                    className: 'text-center',
+                    orderable: false
+                },
+                {
+                    targets: 1,
+                    width: '15%'
+                },
+                {
+                    targets: [8],
+                    className: 'text-center',
+                    width: '6%'
+                },
+                {
+                    targets: [9],
+                    className: 'text-center',
+                    orderable: false,
+                    width: '8%'
+                },
+            ]
         });
-        
-        jQuery('#area_code').select2({
-            data:plant,
-            width:'100%',
+
+
+        var role = jQuery.parseJSON(JSON.stringify(dataJson('{!! route("get.select_role") !!}')));
+        jQuery('#role_id').select2({
+            data: role,
+            width: '100%',
             placeholder: ' ',
             allowClear: true
-        })
+        });
+
+        jQuery("#area_code").select2({
+            data: [{
+                    id: '2111',
+                    text: '2111'
+                },
+                {
+                    id: '2112',
+                    text: '2112'
+                },
+                {
+                    id: '2113',
+                    text: '2113'
+                },
+                {
+                    id: '2114',
+                    text: '2114'
+                },
+                {
+                    id: '2115',
+                    text: '2115'
+                },
+            ],
+            width: '100%',
+            placeholder: ' ',
+            allowClear: true
+        });
 
         jQuery('.btn-add').on('click', function() {
             document.getElementById("data-form").reset();
@@ -151,47 +233,64 @@
             jQuery("#area_code").trigger('change');
             jQuery('#username').prop("readonly", false);
             jQuery("#edit_id").val("");
-            jQuery("#add-data-modal").modal({backdrop:'static', keyboard:false});		
-            jQuery("#add-data-modal .modal-title").html("<i class='fa fa-plus'></i> Create new data");		
-            jQuery("#add-data-modal").modal("show");		
+
+            jQuery('#material-images-1').prop('src', "{{URL::asset('img/add-img.png')}}");
+
+            jQuery("#add-data-modal").modal({
+                backdrop: 'static',
+                keyboard: false
+            });
+            jQuery("#add-data-modal .modal-title").html("<i class='fa fa-plus'></i> Create new data");
+            jQuery("#add-data-modal").modal("show");
         });
-        
+
         jQuery('.btn-edit').on('click', function() {
-            jQuery("#add-data-modal").modal({backdrop:'static', keyboard:false});		
-            jQuery("#add-data-modal .modal-title").html("<i class='fa fa-pencil'></i> Edit data");		
-            jQuery("#add-data-modal").modal("show");		
+            jQuery("#add-data-modal").modal({
+                backdrop: 'static',
+                keyboard: false
+            });
+            jQuery("#add-data-modal .modal-title").html("<i class='fa fa-pencil'></i> Edit data");
+            jQuery("#add-data-modal").modal("show");
         });
 
         jQuery('#data-form').on('submit', function(e) {
             e.preventDefault();
-            var param = jQuery(this).serialize();
-           jQuery.ajaxSetup({
+            jQuery.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
+
+            var param = new FormData(this);
             jQuery.ajax({
-				url:"{{ url('users/post') }}",
-				method:"POST",
-				data: param,
-				beforeSend:function(){ jQuery('.loading-event').fadeIn();},
-				success:function(result){
-                    if(result.status){
+                url: "{{ url('users/post') }}",
+                type: "POST",
+                data: param,
+                contentType: false,
+                processData: false,
+                cache: false,
+                beforeSend: function() {
+                    jQuery('.loading-event').fadeIn();
+                },
+                success: function(result) {
+                    if (result.status) {
                         jQuery("#add-data-modal").modal("hide");
                         jQuery("#data-table").DataTable().ajax.reload();
                         notify({
-                            type:'success',
-                            message:result.message
+                            type: 'error',
+                            message: result.message
                         });
-                    }else{
+                    } else {
                         notify({
-                            type:'warning',
-                            message:result.message
+                            type: 'warning',
+                            message: result.message
                         });
-                    } 
-				},
-				complete:function(){ jQuery('.loading-event').fadeOut();}
-			 }); 
+                    }
+                },
+                complete: function() {
+                    jQuery('.loading-event').fadeOut();
+                }
+            });
         })
     });
 
@@ -202,18 +301,23 @@
 
         jQuery("#edit_id").val(id);
         jQuery('#username').prop("readonly", true);
-        var result = jQuery.parseJSON(JSON.stringify(dataJson("{{ url('users/edit/?id=') }}"+id)));
+        var result = jQuery.parseJSON(JSON.stringify(dataJson("{{ url('users/edit/?id=') }}" + id)));
         jQuery("#edit_id").val(result.id);
         jQuery("#username").val(result.username);
-        jQuery("#name").val(result.nama);
+        jQuery("#name").val(result.name);
         jQuery("#email").val(result.email);
         jQuery("#job_code").val(result.job_code);
-        jQuery("#nik").val(result.nik);
+        jQuery("#nik").val(result.NIK);
         var area_code = result.area_code;
         jQuery("#area_code").val(area_code.split(','));
         jQuery("#area_code").trigger('change');
 
-        jQuery("#add-data-modal .modal-title").html("<i class='fa fa-edit'></i> Update data");			
+        jQuery('#material-images-1').prop('src', (result.img ? result.img : "{{URL::asset('img/add-img.png')}}"));
+
+        jQuery('#role_id').val(result.role_id);
+        jQuery('#role_id').trigger("change");
+
+        jQuery("#add-data-modal .modal-title").html("<i class='fa fa-edit'></i> Update data");
         jQuery("#add-data-modal").modal("show");
     }
 
@@ -225,28 +329,34 @@
         });
 
         jQuery.ajax({
-            url:"{{ url('users/inactive') }}",
-            method:"POST",
-            data: {id:id},
-            beforeSend:function(){ jQuery('.loading-event').fadeIn();},
-            success:function(result){
-                if(result.status){
+            url: "{{ url('users/inactive') }}",
+            method: "POST",
+            data: {
+                id: id
+            },
+            beforeSend: function() {
+                jQuery('.loading-event').fadeIn();
+            },
+            success: function(result) {
+                if (result.status) {
                     jQuery("#data-table").DataTable().ajax.reload();
                     notify({
-                        type:'success',
-                        message:result.message
+                        type: 'error',
+                        message: result.message
                     });
-                }else{
+                } else {
                     notify({
-                        type:'warning',
-                        message:result.message
+                        type: 'warning',
+                        message: result.message
                     });
-                } 
+                }
             },
-            complete:function(){ jQuery('.loading-event').fadeOut();}
-        }); 
+            complete: function() {
+                jQuery('.loading-event').fadeOut();
+            }
+        });
     }
-    
+
     function active(id) {
         jQuery.ajaxSetup({
             headers: {
@@ -255,26 +365,53 @@
         });
 
         jQuery.ajax({
-            url:"{{ url('users/active') }}",
-            method:"POST",
-            data: {id:id},
-            beforeSend:function(){ jQuery('.loading-event').fadeIn();},
-            success:function(result){
-                if(result.status){
+            url: "{{ url('users/active') }}",
+            method: "POST",
+            data: {
+                id: id
+            },
+            beforeSend: function() {
+                jQuery('.loading-event').fadeIn();
+            },
+            success: function(result) {
+                if (result.status) {
                     jQuery("#data-table").DataTable().ajax.reload();
                     notify({
-                        type:'success',
-                        message:result.message
+                        type: 'error',
+                        message: result.message
                     });
-                }else{
+                } else {
                     notify({
-                        type:'warning',
-                        message:result.message
+                        type: 'warning',
+                        message: result.message
                     });
-                } 
+                }
             },
-            complete:function(){ jQuery('.loading-event').fadeOut();}
-        }); 
+            complete: function() {
+                jQuery('.loading-event').fadeOut();
+            }
+        });
     }
-</script>            
+
+    function openFile(id) {
+        jQuery("#files_" + id).trigger('click');
+    }
+
+    function showImage(id) {
+        var src = document.getElementById("files_" + id);
+        var target = document.getElementById("material-images-" + id);
+        var fr = new FileReader();
+        fr.onload = function(e) {
+            target.src = this.result;
+        };
+        fr.readAsDataURL(src.files[0]);
+        jQuery('.btn-remove-image' + id).removeClass('hide');
+        var status = jQuery('#material-images-' + id).data('status');
+    }
+
+    function removeImage(id) {
+        var input = jQuery("input:file");
+        jQuery('#panel-image-' + id).remove();
+    }
+</script>
 @stop

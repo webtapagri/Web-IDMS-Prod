@@ -95,4 +95,13 @@ class ModuleController extends Controller
             return response()->json(['status' => false, "message" => $e->getMessage()]);
         }
     }
+
+    public function select2() {
+        $data = DB::table('tbm_module')
+        ->select('id', 'name as text')
+        ->where('deleted', 0)
+        ->get();
+
+        return response()->json(array("data"=>$data));
+    }
 }

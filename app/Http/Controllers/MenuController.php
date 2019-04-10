@@ -8,6 +8,7 @@ use App\TmRole;
 use function GuzzleHttp\json_encode;
 use Session;
 use API;
+use App\Menu;
 use AccessRight;
 
 class MenuController extends Controller
@@ -29,7 +30,7 @@ class MenuController extends Controller
     {
         $data = Db::table('tbm_menu as menu')
         ->join('tbm_module as module', 'module.id', '=', 'menu.module_id')
-        ->select('module.id as module_id', 'module.name as module_name', 'menu.id', 'menu.name', 'menu.url', 'menu.deleted')
+        ->select('module.id as module_id', 'module.name as module_name', 'menu.id', 'menu.name', 'menu.url', 'menu.sort', 'menu.deleted')
         ->get();
 
         return response()->json(array('data' => $data));
@@ -38,52 +39,34 @@ class MenuController extends Controller
     public function store(Request $request)
     {
         try {
-            $param["menu_code"] = $request->code;
-            $param["menu_name"] = $request->name;
-            $param["url"] = $request->url;
-            $param["sorting"] = $request->sorting;
-
             if ($request->edit_id) {
-                $param["updated_at"] = date('Y-m-d H:i:s');
-                $param["updated_by"] = Session::get('user');
-                $data =API::exec(array(
-                    'request' => 'PUT',
-                    'method' => 'tm_menu/' . $request->edit_id,
-                    'data' => $param
-                ));
+                $data = Menu::find($request->edit_id);
+                $data->updated_by = Session::get('user_id');
             } else {
-                if($this->validateCode($request->code)) {
-                    $param["created_at"] = date('Y-m-d H:i:s');
-                    $param["created_by"] = Session::get('user');
-                    $data =API::exec(array(
-                        'request' => 'POST',
-                        'method' => 'tm_menu',
-                        'data' => $param
-                    ));
-                } else {
-                    return response()->json(['status' => false, "message" => "Menu code sudah digunakan"]);
-                    exit();
-                }
+                $data = new Menu();
+                $data->created_by = Session::get('user_id');
             }
 
-            $res = $data;
-            if ($res->code == '201') {
-                return response()->json(['status' => true, "message" => 'Data is successfully ' . ($request->edit_id ? 'updated' : 'added')]);;
-            } else {
-                return response()->json(['status' => false, "message" => $res->message]);
-            }
+            $data->module_id = $request->module;
+            $data->name = $request->name;
+            $data->sort = $request->sorting;
+            $data->url = $request->url;
+
+            $data->save();
+
+            return response()->json(['status' => true, "message" => 'Data is successfully ' . ($request->edit_id ? 'updated' : 'added')]);
         } catch (\Exception $e) {
             return response()->json(['status' => false, "message" => $e->getMessage()]);
         }
     }
 
-    function validateCode($code) {
-        $service =API::exec(array(
-            'request' => 'GET',
-            'method' => "tm_menu/" . $code
-        ));
-        $res = $service;
-        if ($res->data) {
+    function validateName($name) {
+        $data = DB::table('tbm_menu')
+            ->select('id', 'name as text')
+            ->where('name', $name)
+            ->get();
+
+        if (count($data > 0)) {
             return false;
         } else {
             return true;
@@ -93,34 +76,48 @@ class MenuController extends Controller
     public function show()
     {
         $param = $_REQUEST;
-        $service =API::exec(array(
-            'request' => 'GET',
-            'method' => "tm_menu/" . $param["id"]
-        ));
-        $data = $service;
-
-        return response()->json(array('data' => $data->data));
+        $data = Menu::find($param["id"]);
+        return response()->json(array('data' => $data));
         
     }
 
     public function inactive(Request $request)
     {
         try {
-            $data =API::exec(array(
-                'request' => 'DELETE',
-                'method' => 'tm_menu/' . $request->id,
-            ));
+            $data = Menu::find($request->id);
+            $data->updated_by = Session::get('user_id');
+            $data->deleted = 1;
 
-            $res = $data;
+            $data->save();
 
-            if ($res->code == '201') {
-                return response()->json(['status' => true, "message" => 'Data is successfully deleted']);;
-            } else {
-                return response()->json(['status' => false, "message" => $res->message]);
-            }
-
+            return response()->json(['status' => true, "message" => 'Data is successfully inactived']);
         } catch (\Exception $e) {
             return response()->json(['status' => false, "message" => $e->getMessage()]);
         }
+    }
+
+    public function active(Request $request)
+    {
+        try {
+            $data = Menu::find($request->id);
+            $data->updated_by = Session::get('user_id');
+            $data->deleted = 0;
+
+            $data->save();
+
+            return response()->json(['status' => true, "message" => 'Data is successfully activated']);
+        } catch (\Exception $e) {
+            return response()->json(['status' => false, "message" => $e->getMessage()]);
+        }
+    }
+
+    public function select2()
+    {
+        $data = DB::table('tbm_menu')
+            ->select('id', 'name as text')
+            ->where('deleted', 0)
+            ->get();
+
+        return response()->json(array("data" => $data));
     }
 }

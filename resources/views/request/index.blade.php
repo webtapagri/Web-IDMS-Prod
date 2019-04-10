@@ -129,13 +129,24 @@
                             </div>
                         </div>
                 </div>
-
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-flat btn-default" data-dismiss="modal">Close</button>
                 <button type="button" class="btn btn-flat label-danger" OnClick="saveRequest()" style="margin-right: 5px;">Submit</button>
             </div>
             </form>
+        </div>
+    </div>
+</div>
+<div id="pdf-modal" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title"><i id="modalHeader"></i></h4>
+            </div>
+            <div class="modal-body"></div>
         </div>
     </div>
 </div>
@@ -372,7 +383,6 @@
                             </div>
                         </div>
                 </div>
-
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-flat btn-default" data-dismiss="modal">Close</button>
@@ -382,22 +392,9 @@
         </div>
     </div>
 </div>
-<div id="pdf-modal" class="modal fade" role="dialog">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title"><i id="modalHeader"></i></h4>
-            </div>
-            <div class="modal-body"></div>
-        </div>
-    </div>
-</div>
 @stop
 @section('js')
 <script>
-    
     var request_item = [];
     var bulan = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
     jQuery(document).ready(function() {
@@ -462,7 +459,7 @@
                     {
                         "render": function(data, type, row) {
                             var content = '<button class="btn btn-flat btn-flat btn-xs label-danger btn-action btn-edit " title="edit" onClick="edit(' + row.id + ')"><i class="fa fa-pencil"></i></button>';
-                            content += '<button class="btn btn-flat btn-flat btn-xs btn-danger btn-action" title="pengajuan kode aset" style="margin-left:5px" onClick="codeAsset(' + row.request_no + ')"><i class="fa fa-barcode"></i></button>';
+                            content += '<button class="btn btn-flat btn-flat btn-xs btn-danger btn-action btn-code-asset" title="pengajuan kode aset" style="margin-left:5px" onClick="codeAsset(' + row.request_no + ')"><i class="fa fa-barcode"></i></button>';
                             content += '<button class="btn btn-flat btn-flat btn-xs btn-danger btn-action btn-activated" title="Convert document pengajuan" style="margin-left:5px" onClick="printPdf(' + row.id + ')"><i class="fa fa-file-pdf-o"></i></button>';
                             content += '<button class="btn btn-flat btn-flat btn-xs btn-danger btn-action btn-activated" title="cancel" style="margin-left:5px" onClick="cancel(' + row.id + ')"><i class="fa fa-trash"></i></button>';
                             return content;
@@ -477,7 +474,7 @@
                         targets: [5],
                         className: 'text-center',
                         orderable: false,
-                        width: '15%'
+                        width: '12%'
                     },
                 ]
             }
@@ -757,15 +754,30 @@
 
     function codeAsset(id) {
         jQuery("#code-asset-modal .modal-title").html("<i class='fa fa-edit'></i> Pengajuan kode asset - <span style='color:#dd4b39'>" + id + "</span>");
+        jQuery("#code-asset-modal").modal({
+            backdrop: 'static',
+            keyboard: false
+        })
         jQuery("#code-asset-modal").modal("show");
     }
 
     function saveRequest() {
-        notify({
-            type: 'error',
-            message: 'Penambahan Asset melalui PO berhasil disimpan'
-        });
+        /*  notify({
+             type: 'error',
+             message: 'Penambahan Asset melalui PO berhasil disimpan'
+         }); */
         jQuery("#add-data-modal").modal('hide');
+
+
+        $('#add-data-modal').on('hidden.bs.modal', function() {
+            jQuery("#code-asset-modal .modal-title").html("<i class='fa fa-edit'></i> Pengajuan kode asset - <span style='color:#dd4b39'>294039049309403943</span>");
+            jQuery("#code-asset-modal").modal({
+                backdrop: 'static',
+                keyboard: false
+            });
+            jQuery("#code-asset-modal").modal("show");
+        })
+
     }
 
     function cancel(id) {
@@ -890,6 +902,5 @@
         });
         jQuery('#print-modal').modal('show');
     }
-
 </script>
 @stop

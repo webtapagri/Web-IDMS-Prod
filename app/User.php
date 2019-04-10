@@ -15,8 +15,27 @@ class User extends Authenticatable
      *
      * @var array
      */
+
+    protected $table = "tbm_user";
+    public $timestamps = false;
+
     protected $fillable = [
-        'name', 'email', 'password',
+        'username', 
+        'name', 
+        'email', 
+        'role_id',
+        'NIK',
+        'gender',
+        'img',
+        'job_code',
+        'area_code',
+        'date_log',
+        'time_log',
+        'st_log',
+        'status',
+        'created_by',
+        'updated_by',
+        'deleted',
     ];
 
     /**

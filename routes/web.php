@@ -107,7 +107,6 @@ Route::post('/roleusers/inactive', 'RoleUserController@inactive');
 Route::post('/roleusers/active', 'RoleUserController@active');
 Route::get('grid-role-user', ['as' => 'get.role_user', 'uses' => 'RoleUserController@dataGrid']);
 Route::get('get-select_tr_user', ['as' => 'get.select_tr_user', 'uses' => 'RoleUserController@get_tr_user']);
-Route::get('get-select_role', ['as' => 'get.select_role', 'uses' => 'RoleUserController@get_role']);
 
 Route::resource('/accessright', 'AccessRightController');
 Route::post('/accessright/post', 'AccessRightController@store');
@@ -121,3 +120,9 @@ Route::resource('/roleaccess', 'RoleAccessController');
 
 
 Route::get('SapDownloadExcel', 'SAPController@downloadExcel');
+
+
+/* SELECT 2 */
+Route::get('get-select_module', ['as' => 'get.select_module', 'uses' => 'ModuleController@select2']);
+Route::get('get-select_menu', ['as' => 'get.select_menu', 'uses' => 'MenuController@select2']);
+Route::get('get-select_role', ['as' => 'get.select_role', 'uses' => 'RolesController@select2']);
