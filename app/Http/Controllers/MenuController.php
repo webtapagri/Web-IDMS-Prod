@@ -18,8 +18,8 @@ class MenuController extends Controller
         if (empty(Session::get('authenticated')))
             return redirect('/login');
             
-        if (AccessRight::granted() == false)
-            return response(view('errors.403'), 403);;
+        /* if (AccessRight::granted() == false)
+            return response(view('errors.403'), 403); */
 
         $access = AccessRight::access();
         return view('usersetting.menu')->with(compact('access'));
@@ -27,13 +27,12 @@ class MenuController extends Controller
 
     public function dataGrid()
     {
-        $service =API::exec(array(
-            'request' => 'GET',
-            'method' => "tm_menu"
-        ));
-        $data = $service;
+        $data = Db::table('tbm_menu as menu')
+        ->join('tbm_module as module', 'module.id', '=', 'menu.module_id')
+        ->select('module.id as module_id', 'module.name as module_name', 'menu.id', 'menu.name', 'menu.url', 'menu.deleted')
+        ->get();
 
-        return response()->json(array('data' => $data->data));
+        return response()->json(array('data' => $data));
     }
 
     public function store(Request $request)

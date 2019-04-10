@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Cookie;
 use Session;
+use DB;
 
 class HomeController extends Controller
 {

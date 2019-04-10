@@ -78,6 +78,20 @@ Route::post('/menu/inactive', 'MenuController@inactive');
 Route::post('/menu/active', 'MenuController@active');
 Route::get('grid-menu', ['as' => 'get.menu_grid', 'uses' => 'MenuController@dataGrid']);
 
+Route::resource('/modules', 'ModuleController');
+Route::post('/modules/post', 'ModuleController@store');
+Route::get('/modules/edit/', 'ModuleController@show');
+Route::post('/modules/inactive', 'ModuleController@inactive');
+Route::post('/modules/active', 'ModuleController@active');
+Route::get('grid-modules', ['as' => 'get.grid_modules', 'uses' => 'ModuleController@dataGrid']);
+
+Route::resource('/menu', 'MenuController');
+Route::post('/menu/post', 'MenuController@store');
+Route::get('/menu/edit/', 'MenuController@show');
+Route::post('/menu/inactive', 'MenuController@inactive');
+Route::post('/menu/active', 'MenuController@active');
+Route::get('grid-menu', ['as' => 'get.grid_menu', 'uses' => 'MenuController@dataGrid']);
+
 Route::resource('/roles', 'RolesController');
 Route::post('/roles/post', 'RolesController@store');
 Route::get('/roles/edit/', 'RolesController@show');

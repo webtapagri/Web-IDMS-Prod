@@ -4,7 +4,7 @@
 <section class="content">
     <div class="row">
         <div class="col-xs-4">
-            <span style="font-size:24px">Role</span>
+            <span style="font-size:24px">Modules</span>
         </div>
         <div class="col-xs-8" align="right">
             <span href="#" class="btn btn-sm btn-flat btn-danger btn-add">&nbsp;<i class="glyphicon glyphicon-plus" title="Add new data"></i>&nbsp; Add</span>
@@ -17,7 +17,9 @@
                     <table id="data-table" class="table table-bordered table-hover table-condensed" width="100%">
                         <thead>
                             <tr>
-                                <th width="30%">Name</th>
+                                <th width="10%">Icon</th>
+                                <th width="10%">Sort</th>
+                                <th width="20%">Name</th>
                                 <th>Desc</th>
                                 <th width="10%">Active</th>
                                 <th width="8%">Action</th>
@@ -41,6 +43,10 @@
             <form id="data-form">
                 <div class="modal-body">
                     <div class="box-body">
+                        <div class="col-xs-3">
+                            <label class="control-label" for="name">Sort</label>
+                            <input class="form-control" name='sort' id="sort" maxlength="2" requried>
+                        </div>
                         <div class="col-xs-12">
                             <label class="control-label" for="name">Nama</label>
                             <input class="form-control" name='name' id="name" maxlength="200" requried>
@@ -49,6 +55,13 @@
                         <div class="col-xs-12">
                             <label class="control-label" for="name">Description</label>
                             <textarea class="form-control" name='description' id="description"></textarea>
+                        </div>
+                        <div class="col-xs-6">
+                            <label class="control-label" for="name">Icon</label>
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="" id="font-awesome-result"></i></span>
+                                <input type="text" class="form-control" placeholder="use fontawesome" name="icon" id="icon">
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -66,8 +79,17 @@
     var attribute = [];
     jQuery(document).ready(function() {
         jQuery('#data-table').DataTable({
-            ajax: "{!! route('get.grid_tm_role') !!}",
+            ajax: "{!! route('get.grid_modules') !!}",
             columns: [{
+                    "render": function(data, type, row) {
+                        return '<i  class="' + row.icon + '"></i>';
+                    }
+                },
+                {
+                    data: 'sort',
+                    name: 'sort'
+                },
+                {
                     data: 'name',
                     name: 'name'
                 },
@@ -96,21 +118,27 @@
                 }
             ],
             columnDefs: [{
-                    targets: [3],
+                    targets: [0, 5],
                     className: 'text-center',
                     orderable: false
                 },
                 {
-                    targets: [2],
+                    targets: [4],
                     className: 'text-center'
                 }
             ]
+        });
+
+        jQuery("#icon").on('keyup', function() {
+            jQuery("#font-awesome-result").removeClass();
+            jQuery("#font-awesome-result").addClass(jQuery(this).val());
         });
 
         jQuery('.btn-add').on('click', function() {
             document.getElementById("data-form").reset();
             jQuery('#role_id').prop('disabled', false);
             jQuery("#edit_id").val("");
+            jQuery("#font-awesome-result").removeClass();
             jQuery("#add-data-modal").modal({
                 backdrop: 'static',
                 keyboard: false
@@ -138,7 +166,7 @@
             });
 
             jQuery.ajax({
-                url: "{{ url('roles/post') }}",
+                url: "{{ url('modules/post') }}",
                 method: "POST",
                 data: param,
                 beforeSend: function() {
@@ -171,9 +199,13 @@
     function edit(id) {
         document.getElementById("data-form").reset();
         jQuery("#edit_id").val(id);
-        var result = jQuery.parseJSON(JSON.stringify(dataJson("{{ url('roles/edit/?id=') }}" + id)));
+        var result = jQuery.parseJSON(JSON.stringify(dataJson("{{ url('modules/edit/?id=') }}" + id)));
         jQuery("#edit_id").val(result.id);
         jQuery("#name").val(result.name);
+        jQuery("#sort").val(result.sort);
+        jQuery("#icon").val(result.icon);
+        jQuery("#font-awesome-result").removeClass();
+        jQuery("#font-awesome-result").addClass(result.icon);
         jQuery("#description").val(result.description);
         jQuery("#add-data-modal .modal-title").html("<i class='fa fa-edit'></i> Update data " + result.name);
         jQuery("#add-data-modal").modal("show");
@@ -187,7 +219,7 @@
         });
 
         jQuery.ajax({
-            url: "{{ url('roles/inactive') }}",
+            url: "{{ url('modules/inactive') }}",
             method: "POST",
             data: {
                 id: id
@@ -223,7 +255,7 @@
         });
 
         jQuery.ajax({
-            url: "{{ url('roles/active') }}",
+            url: "{{ url('modules/active') }}",
             method: "POST",
             data: {
                 id: id

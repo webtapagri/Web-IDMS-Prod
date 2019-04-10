@@ -8,9 +8,9 @@ use function GuzzleHttp\json_encode;
 use Session;
 use API;
 use AccessRight;
-use App\Role;
+use App\Module;
 
-class RolesController extends Controller
+class ModuleController extends Controller
 {
 
     public function index()
@@ -22,12 +22,12 @@ class RolesController extends Controller
             return response(view('errors.403'), 403);; */
 
         $access = AccessRight::access();    
-        return view('usersetting.roles')->with(compact('access'));
+        return view('usersetting.modules')->with(compact('access'));
     }
 
     public function dataGrid()
     {
-        $data = Db::table('tbm_role')->get();
+        $data = Db::table('tbm_Module')->get();
 
         return response()->json(array('data' => $data));
     }
@@ -36,14 +36,16 @@ class RolesController extends Controller
     {
         try {
             if ($request->edit_id) {
-                $data = Role::find($request->edit_id);
+                $data = Module::find($request->edit_id);
                 $data->updated_by = Session::get('user_id');
             } else {
-                $data = new Role();
+                $data = new Module();
                 $data->created_by = Session::get('user_id');
             }
 
             $data->name = $request->name;
+            $data->sort = $request->sort;
+            $data->icon = $request->icon;
             $data->description = $request->description;
 
             $data->save();
@@ -57,7 +59,7 @@ class RolesController extends Controller
     public function show()
     {
         $param = $_REQUEST;
-        $data = Role::find($param["id"]);
+        $data = Module::find($param["id"]);
         return response()->json(array('data' => $data));
         
     }
@@ -66,7 +68,7 @@ class RolesController extends Controller
     {
         try {
 
-            $data = Role::find($request->id);
+            $data = Module::find($request->id);
             $data->updated_by = Session::get('user_id');
             $data->deleted = 1;
 
@@ -82,7 +84,7 @@ class RolesController extends Controller
     public function active(Request $request)
     {
         try {
-            $data = Role::find($request->id);
+            $data = Module::find($request->id);
             $data->updated_by = Session::get('user_id');
             $data->deleted = 0;
 
