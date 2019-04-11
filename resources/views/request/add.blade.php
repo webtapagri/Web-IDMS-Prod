@@ -37,7 +37,7 @@
                             <div class="form-group">
                                 <label for="plant" class="col-md-3">Business Area</label>
                                 <div class="col-md-4">
-                                    <input type="text" class="form-control input-sm" name="business_area" id="business_area" >
+                                    <input type="text" class="form-control input-sm" name="business_area" id="business_area">
                                 </div>
                             </div>
                             <div class="form-group">
@@ -383,6 +383,7 @@
         var addFile = 2;
         request_item = [];
         item_count = 1;
+        request_item_page = [];
         jQuery(document).ready(function() {
             jQuery(".btn-cancel").on('click', function() {
                 var conf = confirm("Are you sure you want to cancel this request?");
@@ -529,9 +530,23 @@
                 outstanding_qty: 2,
             });
             item_count++;
+            createPage();
+            createItemRequestTable();
+        }
+
+        function createPage() {
+            request_item_page = [];
+            jQuery.each(request_item, function(key, val) {
+                for (var i = 0; i < val.request_qty; i++) {
+                    request_item_page.push({
+                        item_po: val.item_po,
+                        code: val.code,
+                        name: val.name,
+                    });
+                }
+            });
             changePage(1);
             assetInfo(1);
-            createItemRequestTable();
         }
 
         function makeid(length) {
@@ -594,12 +609,12 @@
                     item += "<td style='text-align:right'>" + val.qty + "</td>";
                     item += '<td class="text-center">';
                     item += '<div class="input-group">';
-                    item += ' <div style="cursor:pointer" class="input-group-addon bg-gray"  OnClick="min(\'qty_' + key + '\');">-</div>';
+                    item += ' <div style="cursor:pointer" class="input-group-addon bg-gray"  OnClick="min(\'qty_' + key + '\');qtyEdit(\'' + key + '\')">-</div>';
                     item += '<input type="text" class="form-control input-sm text-center" value=' + val.request_qty + ' id="qty_' + key + '" maxlength="6">';
-                    item += ' <div style="cursor:pointer" class="input-group-addon bg-gray" OnClick="plus(\'qty_' + key + '\');">+</div>';
+                    item += ' <div style="cursor:pointer" class="input-group-addon bg-gray" OnClick="plus(\'qty_' + key + '\');qtyEdit(\'' + key + '\')">+</div>';
                     item += '</td>';
                     item += "<td style='text-align:right'>" + val.outstanding_qty + "</td>";
-                    item += '<td width="30px" style="text-align:center"><button type="button" class="btn btn-flat btn-xs btn-danger" onClick="remove(\'' + key + '\')"><i class="fa fa-trash"></i></button></td>';
+                    item += '<td width="30px" style="text-align:center"><button type="button" class="btn btn-flat btn-xs btn-danger" onClick="remove(\'' + key + '\');"><i class="fa fa-trash"></i></button></td>';
                     item += "</tr>";
                 });
             } else {
@@ -609,6 +624,22 @@
             }
             item += "</table>";
             jQuery("#request-item-table").html(item);
+        }
+
+        function qtyEdit(obj) {
+            var selected = request_item[obj];
+            var qty = jQuery('#qty_' + obj).val();
+
+            request_item[obj] = {
+                item_po: selected.item_po,
+                code: selected.codes,
+                name: selected.name,
+                qty: selected.qty,
+                request_qty: qty,
+                outstanding_qty: selected.outstanding_qty,
+            };
+            createItemRequestTable();
+            createPage();
         }
 
         function assetInfo(id) {
@@ -655,30 +686,7 @@
             var input = jQuery("input:file");
             jQuery('#panel-image-' + id).remove();
         }
-        /* 
-                function showImage(id) {
-                    var src = document.getElementById("files_" + id);
-                    var target = document.getElementById("material-images-" + id);
-                    var fr = new FileReader();
-                    fr.onload = function(e) {
-                        target.src = this.result;
-                    };
-                    fr.readAsDataURL(src.files[0]);
-                    imgFiles.push(src.files[0]);
-                    jQuery('.btn-remove-image' + id).removeClass('hide');
-                    var status = jQuery('#material-images-' + id).data('status');
 
-                    if (status === 0) {
-                        genAddFile();
-                        jQuery('#material-images-' + id).data('status', 1);
-                    }
-                }
-
-
-                function removeImage(id) {
-                    var input = jQuery("input:file");
-                    jQuery('#panel-image-' + id).remove();
-                } */
 
         var current_page = 1;
         var records_per_page = 1;
@@ -706,7 +714,7 @@
 
             if (page < 1) page = 1;
             if (page > numPages()) page = numPages();
-            page_span.innerHTML = page + '/' + request_item.length;
+            page_span.innerHTML = page + '/' + request_item_page.length;
 
             if (page == 1) {
                 btn_prev.style.visibility = "hidden";
@@ -725,7 +733,28 @@
         }
 
         function numPages() {
-            return Math.ceil(request_item.length / records_per_page);
+            return Math.ceil(request_item_page.length / records_per_page);
         }
+
+
+        function min(param) {
+            if (jQuery("#" + param).val() > 1) {
+                if (jQuery("#" + param).val() > 1) jQuery("#" + param).val(+jQuery("#" + param).val() - 1);
+            }
+        }
+
+        function plus(param) {
+            jQuery("#" + param).val(+jQuery("#" + param).val() + 1)
+        }
+
+        jQuery('.add').click(function() {
+            jQuery(this).prev().val(+jQuery(this).prev().val() + 1);
+        });
+
+        jQuery('.sub').click(function() {
+            if (jQuery(this).next().val() > 1) {
+                if (jQuery(this).next().val() > 1) jQuery(this).next().val(+jQuery(this).next().val() - 1);
+            }
+        });
     </script>
     @stop

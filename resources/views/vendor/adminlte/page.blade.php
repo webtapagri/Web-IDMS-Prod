@@ -139,7 +139,7 @@
                         </li>
                         <li class="treeview">
                             <a href="#">
-                                <i class="fa fa-pencil"></i> <span>Pendatfaran</span>
+                                <i class="fa fa-pencil"></i> <span>Pendaftaran</span>
                                 <span class="pull-right-container">
                                     <i class="fa fa-angle-left pull-right"></i>
                                 </span>
