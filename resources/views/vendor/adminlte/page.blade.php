@@ -122,7 +122,7 @@
                                     </a>
                                 </li>
                             @endforeach  -->
-                        <li class="treeview">
+                        <li class="treeview hide">
                             <a href="#">
                                 <i class="fa fa-cogs"></i> <span>Setting</span>
                                 <span class="pull-right-container">

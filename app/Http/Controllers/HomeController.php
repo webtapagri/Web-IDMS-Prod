@@ -25,10 +25,12 @@ class HomeController extends Controller
         if(empty(Session::get('authenticated')))
             return redirect('/login');
 
+        $data['page_title'] = "Dashboard";
+
         if(Session::get('role_id')) {
-            return view('dashboard');
+            return view('dashboard')->with(compact('data'));
         } else {
-            return view('home');
+            return view('home')->with(compact('data'));
         }    
     }
 }
