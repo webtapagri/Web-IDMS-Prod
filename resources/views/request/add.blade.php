@@ -191,19 +191,19 @@
                                                 <div class="form-group">
                                                     <label for="plant" class="col-md-2 text-right">Jenis asset</label>
                                                     <div class="col-md-10">
-                                                        <input type="text" class="form-control input-sm" name="description" value="" id="description" autocomplete="off">
+                                                        <input type="text" class="form-control input-sm" name="asset_type" value="" id="asset_type" autocomplete="off">
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label for="plant" class="col-md-2 text-right">Group</label>
                                                     <div class="col-md-10">
-                                                        <input type="text" class="form-control input-sm" name="description" value="" id="description" autocomplete="off">
+                                                        <input type="text" class="form-control input-sm" name="asset_group" value="" id="asset_group" autocomplete="off">
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label for="plant" class="col-md-2 text-right">Sub Group</label>
                                                     <div class="col-md-10">
-                                                        <input type="text" class="form-control input-sm" name="description" value="" id="description" autocomplete="off">
+                                                        <input type="text" class="form-control input-sm" name="asset_sub_group" value="" id="asset_sub_group" autocomplete="off">
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
@@ -260,7 +260,7 @@
                                                 <div class="form-group material-group-input" id="input-specification">
                                                     <label for="part_no" class="col-md-2 col-md-offset-1 col-form-label">Tahun Asset</label>
                                                     <div class="col-md-8">
-                                                        <input type="text" class="form-control input-sm attr-material-group" name="specification" id="specification">
+                                                        <input type="text" class="form-control input-sm attr-material-group" name="asset_year" id="asset_year">
                                                     </div>
                                                 </div>
                                                 <div class="form-group material-group-input" id="input-specification">
@@ -269,19 +269,19 @@
                                                         <div class="form-group">
                                                             <div class="radio-inline">
                                                                 <label>
-                                                                    <input type="radio" name="optionsRadios" id="optionsRadios1" value="option1" checked>
+                                                                    <input type="radio" name="asset_condition" id="optionsRadios1" value="1" checked>
                                                                     Baik
                                                                 </label>
                                                             </div>
                                                             <div class="radio-inline">
                                                                 <label>
-                                                                    <input type="radio" name="optionsRadios" id="optionsRadios2" value="option2">
+                                                                    <input type="radio" name="asset_condition" id="optionsRadios2" value="2">
                                                                     Butuh Perbaikan
                                                                 </label>
                                                             </div>
                                                             <div class="radio-inline">
                                                                 <label>
-                                                                    <input type="radio" name="optionsRadios" id="optionsRadios3" value="option3">
+                                                                    <input type="radio" name="asset_condition" id="optionsRadios3" value="3">
                                                                     Tidak baik
                                                                 </label>
                                                             </div>
@@ -349,13 +349,13 @@
                                                 <div class="form-group material-group-input" id="input-specification">
                                                     <label for="part_no" class="col-md-2 col-md-offset-1 col-form-label">Nama</label>
                                                     <div class="col-md-8">
-                                                        <input type="text" class="form-control input-sm attr-material-group" name="specification" id="specification">
+                                                        <input type="text" class="form-control input-sm attr-material-group" name="asset_pic_name" id="asset_pic_name">
                                                     </div>
                                                 </div>
                                                 <div class="form-group material-group-input" id="input-specification">
                                                     <label for="part_no" class="col-md-2 col-md-offset-1 col-form-label">Jabatan</label>
                                                     <div class="col-md-8">
-                                                        <input type="text" class="form-control input-sm attr-material-group" name="specification" id="specification">
+                                                        <input type="text" class="form-control input-sm attr-material-group" name="asset_pic_level" id="asset_pic_level">
                                                     </div>
                                                 </div>
                                             </div>
@@ -384,6 +384,10 @@
         request_item = [];
         item_count = 1;
         request_item_page = [];
+        var data_page = new Array(3);
+        var current_page = 1;
+        var records_per_page = 1;
+
         jQuery(document).ready(function() {
             jQuery(".btn-cancel").on('click', function() {
                 var conf = confirm("Are you sure you want to cancel this request?");
@@ -518,6 +522,65 @@
                 });
             });
 
+            jQuery("#asset_name").on('keyup', function() {
+                var id = current_page - 1;
+                data_page[id].asset_name = jQuery(this).val();
+            });
+           
+            jQuery("#asset_type").on('keyup', function() {
+                var id = current_page - 1;
+                data_page[id].asset_type = jQuery(this).val();
+            });
+           
+            jQuery("#asset_group").on('keyup', function() {
+                var id = current_page - 1;
+                data_page[id].asset_group = jQuery(this).val();
+            });
+           
+            jQuery("#asset_sub_group").on('keyup', function() {
+                var id = current_page - 1;
+                data_page[id].asset_sub_group = jQuery(this).val();
+            });
+           
+            jQuery("#asset_brand").on('keyup', function() {
+                var id = current_page - 1;
+                data_page[id].asset_brand = jQuery(this).val();
+            });
+          
+            jQuery("#asset_imei").on('keyup', function() {
+                var id = current_page - 1;
+                data_page[id].asset_imei = jQuery(this).val();
+            });
+          
+            jQuery("#asset_police_no").on('keyup', function() {
+                var id = current_page - 1;
+                data_page[id].asset_police_no = jQuery(this).val();
+            });
+           
+            jQuery("#asset_serie_no").on('keyup', function() {
+                var id = current_page - 1;
+                data_page[id].asset_serie_no = jQuery(this).val();
+            });
+           
+            jQuery("#asset_specification").on('keyup', function() {
+                var id = current_page - 1;
+                data_page[id].asset_specification = jQuery(this).val();
+            });
+           
+            jQuery("#asset_year").on('keyup', function() {
+                var id = current_page - 1;
+                data_page[id].asset_year = jQuery(this).val();
+            });
+          
+            jQuery("#asset_pic_name").on('keyup', function() {
+                var id = current_page - 1;
+                data_page[id].asset_pic_name = jQuery(this).val();
+            });
+          
+            jQuery("#asset_pic_level").on('keyup', function() {
+                var id = current_page - 1;
+                data_page[id].asset_pic_level = jQuery(this).val();
+            });        
         });
 
         function addItem() {
@@ -536,12 +599,47 @@
 
         function createPage() {
             request_item_page = [];
+            data_page = [];
             jQuery.each(request_item, function(key, val) {
                 for (var i = 0; i < val.request_qty; i++) {
                     request_item_page.push({
                         item_po: val.item_po,
                         code: val.code,
                         name: val.name,
+                    });
+
+                    data_page.push({
+                        asset_type: '',
+                        asset_group: '',
+                        asset_sub_group: '',
+                        asset_name: '',
+                        asset_brand: '',
+                        asset_imei: '',
+                        asset_police_no: '',
+                        asset_serie_no: '',
+                        asset_specification: '',
+                        asset_year: '',
+                        asset_pic_name: '',
+                        asset_pic_level: '',
+                        asset_foto: '',
+                        foto_asset: {
+                            name:'',
+                            size:'',
+                            type:'',
+                            file:''
+                        },
+                         foto_asset_seri: {
+                            name:'',
+                            size:'',
+                            type:'',
+                            file:''
+                        },
+                         foto_asset_mesin: {
+                            name:'',
+                            size:'',
+                            type:'',
+                            file:''
+                        }
                     });
                 }
             });
@@ -646,7 +744,25 @@
             var obj = id - 1;
             var item = request_item[obj];
 
-            jQuery('#asset_name').val(item.name);
+             var id = current_page - 1;
+             var item = data_page[id];
+
+            jQuery('#asset_name').val(item.asset_name);
+            jQuery('#asset_type').val(item.asset_type);
+            jQuery('#asset_group').val(item.asset_group);
+            jQuery('#asset_sub_group').val(item.asset_sub_group);
+            jQuery('#asset_brand').val(item.asset_brand);
+            jQuery('#asset_imei').val(item.asset_imei);
+            jQuery('#asset_police_no').val(item.asset_police_no);
+            jQuery('#asset_serie_no').val(item.asset_police_no);
+            jQuery('#asset_specification').val(item.asset_specification);
+            jQuery('#asset_year').val(item.asset_year);
+            jQuery('#asset_pic_name').val(item.asset_pic_name);
+            jQuery('#asset_pic_level').val(item.asset_pic_level);
+
+            jQuery("#foto_asset_thumb_1").prop('src', (item.foto_asset.file ? item.foto_asset.file:"{{URL::asset('img/add-img.png')}}"));
+            jQuery("#foto_no_seri_thumb_1").prop('src',(item.foto_asset_seri.file ? item.foto_asset_seri.file:"{{URL::asset('img/add-img.png')}}"));
+            jQuery("#foto_mesin_thumb_1").prop('src', (item.foto_asset_mesin.file ? item.foto_asset_mesin.file:"{{URL::asset('img/add-img.png')}}"));
         }
 
         function openFile(code, id) {
@@ -660,10 +776,11 @@
         }
 
         function showImage(code, id) {
+            var obj = current_page - 1;
+
             if (code == 'asset') {
                 var src = document.getElementById("foto_asset_" + id);
                 var target = document.getElementById("foto_asset_thumb_" + id);
-
             } else if (code == 'seri') {
                 var src = document.getElementById("foto_no_seri_" + id);
                 var target = document.getElementById("foto_no_seri_thumb_" + id);
@@ -676,20 +793,43 @@
             var fr = new FileReader();
             fr.onload = function(e) {
                 target.src = this.result;
+                data_page[obj].foto_asset.file = this.result;
+                if (code == 'asset') {
+                    data_page[obj].foto_asset.file = this.result;
+                } else if (code == 'seri') {
+                    data_page[obj].foto_asset_seri.file = this.result;
+                } else if (code == 'mesin') {
+                    data_page[obj].foto_asset_mesin.file = this.result;
+                }
             };
+
+            var foto = src.files[0];
+            if (code == 'asset') {
+                data_page[obj].foto_asset.name = foto.name;
+                data_page[obj].foto_asset.type = foto.type;
+                data_page[obj].foto_asset.size = foto.size;
+            } else if (code == 'seri') {
+                data_page[obj].foto_asset_seri.name = foto.name;
+                data_page[obj].foto_asset_seri.type = foto.type;
+                data_page[obj].foto_asset_seri.size = foto.size;
+            } else if (code == 'mesin') {
+                data_page[obj].foto_asset_mesin.name = foto.name;
+                data_page[obj].foto_asset_mesin.type = foto.type;
+                data_page[obj].foto_asset_mesin.size = foto.size;
+            }
+
             fr.readAsDataURL(src.files[0]);
             jQuery('.btn-remove-image' + id).removeClass('hide');
             var status = jQuery('#material-images-' + id).data('status');
+
+            data_page[obj].asset_pic_level
+
         }
 
         function removeImage(id) {
             var input = jQuery("input:file");
             jQuery('#panel-image-' + id).remove();
         }
-
-
-        var current_page = 1;
-        var records_per_page = 1;
 
         function prevPage() {
             if (current_page > 1) {
