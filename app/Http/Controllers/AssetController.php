@@ -21,8 +21,9 @@ class AssetController extends Controller
         /* if (AccessRight::granted() == false)
             return response(view('errors.403'), 403); */
 
-        $access = AccessRight::access();
-        return view('assets.index')->with(compact('access'));
+        //$access = AccessRight::access();
+        $data['page_title'] = "Asset List";
+        return view('assets.index')->with(compact('data'));
     }
 
     public function create(Request $request) {

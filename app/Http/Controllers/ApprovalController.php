@@ -15,14 +15,15 @@ class ApprovalController extends Controller
 {
     public function index()
     {
-       /*  if (empty(Session::get('authenticated')))
+        /*  if (empty(Session::get('authenticated')))
             return redirect('/login');
 
         if (AccessRight::granted() == false)
             return response(view('errors.403'), 403);
 
         $access = AccessRight::access(); */
-        return view('approval.index')->with(compact('access'));
+        $data['page_title'] = "Approval";
+        return view('approval.index')->with(compact('data'));
     }
 
     public function dataGrid()

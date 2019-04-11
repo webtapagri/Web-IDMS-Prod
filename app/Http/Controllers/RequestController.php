@@ -25,8 +25,9 @@ class RequestController extends Controller
     }
 
     public function create(Request $request) {
-        $type = ($request->type == "amp" ? 'Melalui PO AMP':'Melalui PO Sendiri');
-        return view('assets.add')->with(compact('type'));
+        $data['page_title'] = 'Request '.($request->type == "amp" ? 'Melalui PO AMP':'Melalui PO Sendiri');
+        $data['type'] = ($request->type == "amp" ? 'Melalui PO AMP':'Melalui PO Sendiri');
+        return view('request.add')->with(compact('data'));
     }
 
     public function dataGrid() {

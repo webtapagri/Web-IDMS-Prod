@@ -52,6 +52,10 @@
                     <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
                         <span class="sr-only">{{ trans('adminlte::adminlte.toggle_navigation') }}</span>
                     </a>
+                    <div class="collapse navbar-collapse pull-left" id="navbar-collapse">
+                        <ul class="nav navbar-nav">
+                            <li class=""><a href="javascript:;" style="pointer-events: none;"><i class="fa fa-dashboard"></i> {{ $data['page_title'] }} <span class="sr-only">(current)</span></a></li>
+                    </div>
                     @endif
                     <!-- Navbar Right Menu -->
                     <div class="navbar-custom-menu">
@@ -141,8 +145,8 @@
                                 </span>
                             </a>
                             <ul class="treeview-menu">
-                                <li><a href="{{ url('request') }}"><i class="fa fa-fw fa-caret-right"></i> Melalui PO Sendiri</a></li>
-                                <li><a href="{{ url('request') }}"><i class="fa fa-fw fa-caret-right"></i> Melalui PO AMP</a></li>
+                                <li><a href="{{ url('request/create/po') }}"><i class="fa fa-fw fa-caret-right"></i> Melalui PO Sendiri</a></li>
+                                <li><a href="{{ url('request/create/amp') }}"><i class="fa fa-fw fa-caret-right"></i> Melalui PO AMP</a></li>
                             </ul>
                         </li>
                         <li class="treeview">

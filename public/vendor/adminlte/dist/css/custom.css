@@ -364,3 +364,14 @@ table.dataTable.table-condensed .sorting:after, table.dataTable.table-condensed 
     .dropdown-menu {
       min-width: 100px !important;
     }
+
+    .select2-container--default .select2-results__option--highlighted[aria-selected] {
+    background-color: #dd4b39;
+}
+
+.select2-container--default.select2-container--focus .select2-selection--multiple, .select2-container--default .select2-search--dropdown .select2-search__field {
+    border-color: #dd4b39 !important;
+}
+.toast-top-right {
+  top: 60px !important;
+}

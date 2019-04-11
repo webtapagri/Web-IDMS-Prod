@@ -40,6 +40,7 @@ var Datatable = function() {
                 filterCancelAction: "filter_cancel",
                 resetGroupActionInputOnSuccess: true,
                 loadingMessage: 'Loading...',
+                searching: true,
                 dataTable: {
                     "dom": "<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'<'table-group-actions pull-right'>>r><'table-responsive't><'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'>>", // datatable layout
                     "pageLength": 10, // default records per page
