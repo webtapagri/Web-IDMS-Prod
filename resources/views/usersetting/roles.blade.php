@@ -1,37 +1,39 @@
 @extends('adminlte::page')
 @section('title', 'FAMS - Role')
 @section('content')
-<section class="content">
-    <div class="row">
-        <div class="col-xs-4">
-            <span style="font-size:24px">Role</span>
-        </div>
-        <div class="col-xs-8" align="right">
-            <span href="#" class="btn btn-sm btn-flat btn-danger btn-add">&nbsp;<i class="glyphicon glyphicon-plus" title="Add new data"></i>&nbsp; Add</span>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-xs-12">
-            <div class="box">
-                <div class="box-body">
-                    <table id="data-table" class="table table-bordered table-hover table-condensed" width="100%">
+<div class="row">
+    <div class="col-xs-12">
+        <div class="box">
+            <div class="box-body">
+                <div class="table-container">
+                    <div class="table-actions-wrapper">
+                        <button class="btn btn-flat btn-sm btn-flat label-danger btn-refresh"><i class="glyphicon glyphicon-refresh" title="Refresh"></i></button>
+                        <button class="btn btn-flat btn-sm btn-flat label-danger btn-add"><i class="glyphicon glyphicon-plus" title="Add new data"></i></button>
+                    </div>
+                    <table id="data-table" class="table table-bordered table-condensed">
                         <thead>
-                            <tr>
+                            <tr role="row" class="heading">
                                 <th width="30%">Name</th>
                                 <th>Desc</th>
                                 <th width="10%">Active</th>
                                 <th width="8%">Action</th>
                             </tr>
+                            <tr role="row" class="filter">
+                                <th><input type="text" class="form-control input-sm form-filter" name="active"></th>
+                                <th><input type="text" class="form-control input-sm form-filter" name="active"></th>
+                                <th><input type="text" class="form-control input-sm form-filter" name="active"></th>
+                                <th></th>
+                            </tr>
                         </thead>
                         <tbody></tbody>
                     </table>
                 </div>
-                <!-- /.box-body -->
             </div>
+            <!-- /.box-body -->
         </div>
     </div>
-    </div>
-</section>
+</div>
+
 <div id="add-data-modal" class="modal fade" role="dialog">
     <div class="modal-dialog" width="900px">
         <div class="modal-content">
@@ -65,46 +67,61 @@
 <script>
     var attribute = [];
     jQuery(document).ready(function() {
-        jQuery('#data-table').DataTable({
-            ajax: "{!! route('get.grid_tm_role') !!}",
-            columns: [{
-                    data: 'name',
-                    name: 'name'
-                },
-                {
-                    data: 'description',
-                    name: 'description'
-                },
-                {
-                    "render": function(data, type, row) {
-                        if (row.deleted == 0) {
-                            var content = '<span class="badge bg-red">Y</span>';
-                        } else {
-                            var content = '<span class="badge bg-grey">N</span>';
+        var grid = new Datatable();
+        grid.init({
+            src: jQuery("#data-table"),
+            onSuccess: function(grid) {},
+            onError: function(grid) {},
+            onDataLoad: function(grid) {},
+            loadingMessage: 'Loading...',
+            dataTable: {
+                "dom": "<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'<'table-group-actions pull-right'>>r>t<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'>>",
+                "bStateSave": true, // save datatable state(pagination, sort, etc) in cookie.
+                "lengthMenu": [
+                    [10, 20, 50, 100, 150],
+                    [10, 20, 50, 100, 150]
+                ],
+                "pageLength": 10,
+                ajax: "{!! route('get.grid_tm_role') !!}",
+                columns: [{
+                        data: 'name',
+                        name: 'name'
+                    },
+                    {
+                        data: 'description',
+                        name: 'description'
+                    },
+                    {
+                        "render": function(data, type, row) {
+                            if (row.deleted == 0) {
+                                var content = '<span class="badge bg-red">Y</span>';
+                            } else {
+                                var content = '<span class="badge bg-grey">N</span>';
+                            }
+                            return content;
                         }
-                        return content;
-                    }
-                },
-                {
-                    "render": function(data, type, row) {
-                        var content = '<button class="btn btn-flat btn-xs btn-danger btn-action btn-edit " title="edit data ' + row.id + '" onClick="edit(' + row.id + ')"><i class="fa fa-pencil"></i></button>';
-                        content += '<button class="btn btn-flat btn-xs btn-danger btn-action btn-activated  ' + (row.deleted == 0 ? '' : 'hide') + '" style="margin-left:5px"  onClick="inactive(' + row.id + ')"><i class="fa fa-trash"></i></button>';
-                        content += '<button class="btn btn-flat btn-xs btn-danger btn-action btn-inactivated ' + (row.deleted == 1 ? '' : 'hide') + '" style="margin-left:5px"  onClick="active(' + row.id + ')"><i class="fa fa-check"></i></button>';
+                    },
+                    {
+                        "render": function(data, type, row) {
+                            var content = '<button class="btn btn-flat btn-xs btn-danger btn-action btn-edit " title="edit data ' + row.id + '" onClick="edit(' + row.id + ')"><i class="fa fa-pencil"></i></button>';
+                            content += '<button class="btn btn-flat btn-xs btn-danger btn-action btn-activated  ' + (row.deleted == 0 ? '' : 'hide') + '" style="margin-left:5px"  onClick="inactive(' + row.id + ')"><i class="fa fa-trash"></i></button>';
+                            content += '<button class="btn btn-flat btn-xs btn-danger btn-action btn-inactivated ' + (row.deleted == 1 ? '' : 'hide') + '" style="margin-left:5px"  onClick="active(' + row.id + ')"><i class="fa fa-check"></i></button>';
 
-                        return content;
+                            return content;
+                        }
                     }
-                }
-            ],
-            columnDefs: [{
-                    targets: [3],
-                    className: 'text-center',
-                    orderable: false
-                },
-                {
-                    targets: [2],
-                    className: 'text-center'
-                }
-            ]
+                ],
+                columnDefs: [{
+                        targets: [3],
+                        className: 'text-center',
+                        orderable: false
+                    },
+                    {
+                        targets: [2],
+                        className: 'text-center'
+                    }
+                ]
+            }
         });
 
         jQuery('.btn-add').on('click', function() {

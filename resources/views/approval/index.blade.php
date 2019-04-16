@@ -2,40 +2,37 @@
 @section('title', 'FAMS - approval')
 @section('content')
 <div class="row">
-    <div class="col-xs-4">
-        <span style="font-size:24px">Approval</span>
-    </div>
-    <div class="col-xs-8" align="right">
-        <span href="#" class="btn btn-flat btn-sm btn-flat label-danger btn-refresh"><i class="glyphicon glyphicon-refresh" title="Refresh"></i></span>
-    </div>
-</div>
-<div class="row">
     <div class="col-xs-12">
         <div class="box">
             <div class="box-body">
-                <table id="data-table" class="table table-bordered table-condensed">
-                    <thead>
-                        <tr role="row" class="heading">
-                            <th width="">No Registrasi</th>
-                            <th width="">Kategori Pengajuan</th>
-                            <th width="">Jenis Pengajuan</th>
-                            <th width="">BA Pemilik Aset</th>
-                            <th width="">BA Lokasi Aset</th>
-                            <th width="">Requestor</th>
-                            <th width="">Tgl pengajuan</th>
-                        </tr>
-                        <tr role="row" class="filter">
-                            <th><input type="text" class="form-control input-sm form-filter" name="name"></th>
-                            <th><input type="text" class="form-control input-sm form-filter" name="name"></th>
-                            <th><input type="text" class="form-control input-sm form-filter" name="email"></th>
-                            <th><input type="text" class="form-control input-sm form-filter" name="job_code"></th>
-                            <th><input type="text" class="form-control input-sm form-filter" name="nik"></th>
-                            <th><input type="text" class="form-control input-sm form-filter" name="active"></th>
-                            <th><input type="text" class="form-control input-sm form-filter" name="active"></th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
+                <div class="table-container">
+                    <div class="table-actions-wrapper">
+                        <button class="btn btn-flat btn-sm btn-flat label-danger btn-refresh"><i class="glyphicon glyphicon-refresh" title="Refresh"></i></button>
+                    </div>
+                    <table id="data-table" class="table table-bordered table-condensed">
+                        <thead>
+                            <tr role="row" class="heading">
+                                <th width="">No Registrasi</th>
+                                <th width="">Kategori Pengajuan</th>
+                                <th width="">Jenis Pengajuan</th>
+                                <th width="">BA Pemilik Aset</th>
+                                <th width="">BA Lokasi Aset</th>
+                                <th width="">Requestor</th>
+                                <th width="">Tgl pengajuan</th>
+                            </tr>
+                            <tr role="row" class="filter">
+                                <th><input type="text" class="form-control input-sm form-filter" name="name"></th>
+                                <th><input type="text" class="form-control input-sm form-filter" name="name"></th>
+                                <th><input type="text" class="form-control input-sm form-filter" name="email"></th>
+                                <th><input type="text" class="form-control input-sm form-filter" name="job_code"></th>
+                                <th><input type="text" class="form-control input-sm form-filter" name="nik"></th>
+                                <th><input type="text" class="form-control input-sm form-filter" name="active"></th>
+                                <th><input type="text" class="form-control input-sm form-filter" name="active"></th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
             </div>
             <!-- /.box-body -->
         </div>

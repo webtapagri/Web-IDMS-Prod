@@ -22,7 +22,9 @@ class RolesController extends Controller
             return response(view('errors.403'), 403);; */
 
         $access = AccessRight::access();    
-        return view('usersetting.roles')->with(compact('access'));
+        $data["page_title"] = "Role";
+        $data["access"] = $access;
+        return view('usersetting.roles')->with(compact('data'));
     }
 
     public function dataGrid()

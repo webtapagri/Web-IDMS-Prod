@@ -54,7 +54,7 @@
                     </a>
                     <div class="collapse navbar-collapse pull-left" id="navbar-collapse">
                         <ul class="nav navbar-nav">
-                            <li class="" style="margin-left:60px"><a href="javascript:;" style="pointer-events: none;"><i class="fa fa-dashboard"></i> <b>{{ strtoupper($data['page_title']) }}</b> <span class="sr-only">(current)</span></a></li>
+                            <li class=""><a href="javascript:;" style="pointer-events: none;"><i class="fa fa-dashboard"></i> <b>{{ strtoupper($data['page_title']) }}</b> <span class="sr-only">(current)</span></a></li>
                         </ul>
                     </div>
                     @endif
@@ -232,6 +232,7 @@
 
 @section('adminlte_js')
 <script src="{{ asset('vendor/adminlte/dist/js/adminlte.min.js') }}"></script>
+
 @stack('js')
 @yield('js')
 @stop

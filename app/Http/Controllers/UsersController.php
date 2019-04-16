@@ -21,23 +21,78 @@ class UsersController extends Controller
             return response(view('errors.403'), 403); */
 
        /*  $access = AccessRight::access(); */
-        return view('usersetting.users')->with(compact('access'));
+       $data["page_title"] = "User";
+        return view('usersetting.users')->with(compact('data'));
     }
 
-    public function dataGrid() {
-        $data = DB::table('tbm_user as user')
-        ->join('tbm_role as role', 'role.id','=', 'user.role_id')
-        ->select('user.*', 'role.name as role_name')
-        ->get();
+    public function dataGrid(Request $request) {
+        $orderColumn = $request->order[0]["column"];
+        $dirColumn = $request->order[0]["dir"];
+        $sortColumn = "";
+        $selectedColumn[] = "";
 
-        return response()->json(array('data' => $data));
+        $selectedColumn = ['user.img', "user.username", "user.name","role.name as role_name", "user.email", "user.job_code", "user.NIK", "user.area_code", "user.deleted", "user.id"];
+        if($orderColumn) {
+            $order = explode("as", $selectedColumn[$orderColumn]);
+            if(count($order)>1) {
+                $orderBy = $order[0]; 
+            } else {
+                $orderBy = $selectedColumn[$orderColumn];
+            }
 
+        }
+
+        $sql = '
+            SELECT ' . implode(", ", $selectedColumn) . '
+                FROM tbm_user as user
+                INNER JOIN tbm_role as role ON (role.id=user.role_id)
+        ';
+
+        $total_data = DB::select(DB::raw($sql));
+        //$sql .=  " limit " . $request->start . ', ' .$request->length;
+
+        if ($request->username)
+            $whereClause[] = [ "user.username", 'like',"%". $request->username ."%"];
+        
+            if ($request->role)
+            $whereClause[] = [ "role.id", 'like',"%". $request->role ."%"];
+
+       
+        if ($orderColumn != "") {
+            $sql .= " ORDER BY " . $orderBy . " " . $dirColumn;
+        }
+
+        $data = DB::select(DB::raw($sql));
+
+        $iTotalRecords = count($data);
+        $iDisplayLength = intval($request->length);
+        $iDisplayLength = $iDisplayLength < 0 ? $iTotalRecords : $iDisplayLength;
+        $iDisplayStart = intval($request->start);
+        $sEcho = intval($request->draw);
+        $records = array();
+        $records["data"] = array();
+
+        $end = $iDisplayStart + $iDisplayLength;
+        $end = $end > $iTotalRecords ? $iTotalRecords : $end;
+
+        for ($i = $iDisplayStart; $i < $end; $i++) {
+            $records["data"][] =  $data[$i];
+        }
+
+        if (isset($_REQUEST["customActionType"]) && $_REQUEST["customActionType"] == "group_action") {
+            $records["customActionStatus"] = "OK"; // pass custom message(useful for getting status of group actions)
+            $records["customActionMessage"] = "Group action successfully has been completed. Well done!"; // pass custom message(useful for getting status of group actions)
+        }
+
+        $records["draw"] = $sEcho;
+        $records["recordsTotal"] = $iTotalRecords;
+        $records["recordsFiltered"] = $iTotalRecords;
+        return response()->json($records);
     }
 
     public function store(Request $request)
     {
        try {
-
             if ($request->edit_id) {
                 $data = User::find($request->edit_id);
                 $data->updated_by = Session::get('user_id');
@@ -85,9 +140,8 @@ class UsersController extends Controller
         } else {
             return true;
         }
-
-    }
-
+    } 
+    
     public function show()
     {
         $param = $_REQUEST;

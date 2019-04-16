@@ -2,32 +2,28 @@
 @section('title', 'FAMS - asset')
 @section('content')
 <div class="row">
-    <div class="col-xs-4">
-        <span style="font-size:24px">Asset</span>
-    </div>
-    <div class="col-xs-8" align="right">
-        <span href="#" class="btn btn-flat btn-sm btn-flat label-danger btn-refresh"><i class="glyphicon glyphicon-refresh" title="Refresh"></i></span>
-        <span href="#" class="btn btn-flat btn-sm btn-flat label-danger btn-search"><i class="fa fa-search" title="Search data"></i></span>
-        <span href="#" class="btn btn-flat btn-sm btn-flat label-danger btn-download"><i class=" fa fa-file-pdf-o" title="Add new data"></i></span>
-    </div>
-</div>
-<div class="row">
     <div class="col-xs-12">
         <div class="box">
             <div class="box-body">
-                <table id="data-table" class="table table-bordered table-condensed">
-                    <thead>
-                        <tr role="row" class="heading">
-                            <th width="15px"></th>
-                            <th width="40px">#</th>
-                            <th width="">Count Reprint</th>
-                            <th width="">Kode Aset FAMS</th>
-                            <th width="">Kode SAP</th>
-                            <th width="">Kode Aset Controller</th>
-                            <th width="">BA PT Pemilik</th>
-                            <th width="">Nama PT Pemilik</th>
-                            <th width="">BA PT Lokasi</th>
-                            <!--<th width="">Nama PT Lokasi</th>
+                <div class="table-container">
+                    <div class="table-actions-wrapper">
+                        <button class="btn btn-flat btn-sm btn-flat label-danger btn-refresh"><i class="glyphicon glyphicon-refresh" title="Refresh"></i></button>
+                        <button class="btn btn-flat btn-sm btn-flat label-danger btn-search"><i class="fa fa-search" title="Search data"></i></button>
+                        <button class="btn btn-flat btn-sm btn-flat label-danger btn-download"><i class=" fa fa-file-pdf-o" title="Add new data"></i></button>
+                    </div>
+                    <table id="data-table" class="table table-bordered table-condensed">
+                        <thead>
+                            <tr role="row" class="heading">
+                                <th width="15px"></th>
+                                <th width="40px">#</th>
+                                <th width="">Count Reprint</th>
+                                <th width="">Kode Aset FAMS</th>
+                                <th width="">Kode SAP</th>
+                                <th width="">Kode Aset Controller</th>
+                                <th width="">BA PT Pemilik</th>
+                                <th width="">Nama PT Pemilik</th>
+                                <th width="">BA PT Lokasi</th>
+                                <!--<th width="">Nama PT Lokasi</th>
                             <th width="">Nama Aset</th>
                             <th width="180px"> Merk</th>
                             <th width="180px"> No Seri / Rangka</th>
@@ -61,18 +57,18 @@
                             <th width="180px"> status aset </th>
                             <th width="180px"> status sewa </th>
                             <th width="180px"> status Disposal </th> -->
-                        </tr>
-                        <tr role="row" class="filter">
-                            <th></th>
-                            <th></th>
-                            <th><input type="text" class="form-control input-sm form-filter" name="name"></th>
-                            <th><input type="text" class="form-control input-sm form-filter" name="email"></th>
-                            <th><input type="text" class="form-control input-sm form-filter" name="job_code"></th>
-                            <th><input type="text" class="form-control input-sm form-filter" name="nik"></th>
-                            <th><input type="text" class="form-control input-sm form-filter" name="active"></th>
-                            <th><input type="text" class="form-control input-sm form-filter" name="active"></th>
-                            <th><input type="text" class="form-control input-sm form-filter" name="active"></th>
-                            <!--<th><input type="text" class="form-control input-sm form-filter" name="active"></th>
+                            </tr>
+                            <tr role="row" class="filter">
+                                <th></th>
+                                <th></th>
+                                <th><input type="text" class="form-control input-sm form-filter" name="name"></th>
+                                <th><input type="text" class="form-control input-sm form-filter" name="email"></th>
+                                <th><input type="text" class="form-control input-sm form-filter" name="job_code"></th>
+                                <th><input type="text" class="form-control input-sm form-filter" name="nik"></th>
+                                <th><input type="text" class="form-control input-sm form-filter" name="active"></th>
+                                <th><input type="text" class="form-control input-sm form-filter" name="active"></th>
+                                <th><input type="text" class="form-control input-sm form-filter" name="active"></th>
+                                <!--<th><input type="text" class="form-control input-sm form-filter" name="active"></th>
                             <th><input type="text" class="form-control input-sm form-filter" name="active"></th>
                             <th><input type="text" class="form-control input-sm form-filter" name="active"></th>
                             <th><input type="text" class="form-control input-sm form-filter" name="active"></th>
@@ -106,10 +102,11 @@
                             <th><input type="text" class="form-control input-sm form-filter" name="active"></th>
                             <th><input type="text" class="form-control input-sm form-filter" name="active"></th>
                             <th><input type="text" class="form-control input-sm form-filter" name="active"></th> -->
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
             </div>
             <!-- /.box-body -->
         </div>
@@ -424,12 +421,11 @@
                 ],
                 columnDefs: [{
                         className: 'details-control text-center',
-                        orderable: false,
                         targets: [0],
 
                     },
                     {
-                        targets: [1],
+                        targets: [0],
                         className: 'text-center',
                         orderable: false,
                     },

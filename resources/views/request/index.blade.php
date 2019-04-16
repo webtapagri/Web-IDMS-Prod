@@ -2,55 +2,51 @@
 @section('title', 'FAMS - request')
 @section('content')
 <div class="row">
-    <div class="col-xs-4">
-        <span style="font-size:24px">Request</span>
-    </div>
-    <div class="col-xs-8" align="right">
-        <span href="#" class="btn btn-flat btn-sm btn-flat label-danger btn-refresh"><i class="glyphicon glyphicon-refresh" title="Refresh"></i></span>
-        <div class="btn-group">
-            <button type="button" class="btn btn-danger btn-sm btn-flat dropdown-toggle" data-toggle="dropdown">
-                Pengajuan &nbsp;&nbsp;&nbsp;
-                <span class="caret"></span>
-                <span class="sr-only">Toggle Dropdown</span>
-            </button>
-            <ul class="dropdown-menu" role="menu">
-                <li><a href="javascript:;" class="btn-add-po">PO</a></li>
-                <li><a href="javascript:;" class="btn-sewa-amp">Sewa AMP</a></li>
-                <li><a href="javascript:;" class="btn-mutasi-amp" title="Mutasi asset sewa AMP antar site">Mutasi AMP</a></li>
-            </ul>
-        </div>
-    </div>
-</div>
-<div class="row">
     <div class="col-xs-12">
         <div class="box">
             <div class="box-body">
-                <table id="data-table" class="table table-hover table-condensed" width="100%">
-                    <thead>
-                        <tr role="row" class="heading">
-                            <th>No Reqgistrasi</th>
-                            <th>Tgl Pengajuan</th>
-                            <th>Kode Asset</th>
-                            <th>Kode Asset FAMS</th>
-                            <th>Verifikasi BA</th>
-                            <th width="35px">Action</th>
-                        </tr>
-                        <tr role="row" class="filter">
-                            <th><input type="text" class="form-control input-sm form-filter" name="request_no"></th>
-                            <th><input type="text" class="form-control input-sm form-filter" name="request_date"></th>
-                            <th><input type="text" class="form-control input-sm form-filter" name="controller_asset_code"></th>
-                            <th><input type="text" class="form-control input-sm form-filter" name="controller_asset_code"></th>
-                            <th><input type="text" class="form-control input-sm form-filter" name="verification"></th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
+                <div class="table-container">
+                    <div class="table-actions-wrapper">
+                        <button href="#" class="btn btn-flat btn-sm btn-flat label-danger btn-refresh pull-right"><i class="glyphicon glyphicon-refresh" title="Refresh"></i></button>
+                        <div class="btn-group pull-right">
+                            <button type="button" class="btn btn-danger btn-sm btn-flat dropdown-toggle" data-toggle="dropdown">
+                                Pengajuan &nbsp;&nbsp;&nbsp;
+                                <span class="caret"></span>
+                                <span class="sr-only">Toggle Dropdown</span>
+                            </button>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="javascript:;" class="btn-add-po">PO</a></li>
+                                <li><a href="javascript:;" class="btn-sewa-amp">Sewa AMP</a></li>
+                                <li><a href="javascript:;" class="btn-mutasi-amp" title="Mutasi asset sewa AMP antar site">Mutasi AMP</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <table id="data-table" class="table table-hover table-condensed" width="100%">
+                        <thead>
+                            <tr role="row" class="heading">
+                                <th>No Reqgistrasi</th>
+                                <th>Tgl Pengajuan</th>
+                                <th>Kode Asset</th>
+                                <th>Kode Asset FAMS</th>
+                                <th>Verifikasi BA</th>
+                                <th width="35px">Action</th>
+                            </tr>
+                            <tr role="row" class="filter">
+                                <th><input type="text" class="form-control input-sm form-filter" name="request_no"></th>
+                                <th><input type="text" class="form-control input-sm form-filter" name="request_date"></th>
+                                <th><input type="text" class="form-control input-sm form-filter" name="controller_asset_code"></th>
+                                <th><input type="text" class="form-control input-sm form-filter" name="controller_asset_code"></th>
+                                <th><input type="text" class="form-control input-sm form-filter" name="verification"></th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
             </div>
             <!-- /.box-body -->
         </div>
     </div>
-</div>
 </div>
 <div id="add-data-modal" class="modal fade" role="dialog">
     <div class="modal-dialog modal-lg">
@@ -459,7 +455,6 @@
                     {
                         "render": function(data, type, row) {
                             var content = '<button class="btn btn-flat btn-flat btn-xs label-danger btn-action btn-edit " title="edit" onClick="edit(' + row.id + ')"><i class="fa fa-pencil"></i></button>';
-                            content += '<button class="btn btn-flat btn-flat btn-xs btn-danger btn-action btn-code-asset" title="pengajuan kode aset" style="margin-left:5px" onClick="codeAsset(' + row.request_no + ')"><i class="fa fa-barcode"></i></button>';
                             content += '<button class="btn btn-flat btn-flat btn-xs btn-danger btn-action btn-activated" title="Convert document pengajuan" style="margin-left:5px" onClick="printPdf(' + row.id + ')"><i class="fa fa-file-pdf-o"></i></button>';
                             content += '<button class="btn btn-flat btn-flat btn-xs btn-danger btn-action btn-activated" title="cancel" style="margin-left:5px" onClick="cancel(' + row.id + ')"><i class="fa fa-trash"></i></button>';
                             return content;

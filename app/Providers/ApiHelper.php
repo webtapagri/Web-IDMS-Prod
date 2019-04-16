@@ -20,7 +20,7 @@ class ApiHelper extends ServiceProvider
         
         $api = "http://149.129.213.146:8080/api/";
         $ldap = "http://tap-ldapdev.tap-agri.com/";
-
+            
         if (!empty($param['host'])) {
             if ($param['host'] == 'ldap') {
                 $url = $ldap . ($param['method'] == 'login' ? $param['method'] : 'data-sap/' . $param['method']);

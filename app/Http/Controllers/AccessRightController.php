@@ -23,8 +23,9 @@ class AccessRightController extends Controller
             return response(view('errors.403'), 403);; */
 
         $access = AccessRight::access();
-        
-        return view('usersetting.accessright')->with(compact('access'));
+        $data["page_title"] = "Access Right";
+        $data["access"] = $access;    
+        return view('usersetting.accessright')->with(compact('data'));
     }
 
     public function dataGrid(Request $request)

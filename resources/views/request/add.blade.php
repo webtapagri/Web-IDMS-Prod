@@ -18,7 +18,7 @@
 <div class="row">
     <div class="col-md-10 col-md-offset-1">
         <div class="box">
-            <form class="form-horizontal request-form" id="request-form">
+            <form class="form-horizontal request-form" id="request-form" enctype="multipart/form-data">
                 <div class="box-body">
                     <div class="box-body">
                         <div class="form-group">
@@ -48,19 +48,25 @@
                         <div class="form-group">
                             <label for="plant" class="col-md-3">Tgl PO</label>
                             <div class="col-md-4">
-                                <input type="text" class="form-control input-sm" name="description" value="23/03/2019" id="description" autocomplete="off" readonly required>
+                                <input type="text" class="form-control input-sm datepicker" name="po_date" id="po_date" autocomplete="off" required>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="plant" class="col-md-3">Kode vendor</label>
                             <div class="col-md-6">
-                                <input type="text" class="form-control input-sm" name="description" id="description" value="XXXXX" autocomplete="off" readonly required>
+                                <input type="text" class="form-control input-sm" name="vendor_code" id="vendor_code" autocomplete="off" required>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="plant" class="col-md-3">Nama vendor</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control input-sm" name="description" value="DAYA ANUGERAH MANDIRI" id="description" autocomplete="off" readonly required>
+                                <input type="text" class="form-control input-sm" name="vendor_name" id="vendor_name" autocomplete="off" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="plant" class="col-md-3">Berita acara serah terima</label>
+                            <div class="col-md-4">
+                                <input type="file" class="form-control input-sm" name="docs" multiple id="docs">
                             </div>
                         </div>
                         <div class="form-group">
@@ -91,8 +97,8 @@
 
                     </div>
                     <div class="box-footer clearfix">
-                        <button type="submit" class="btn btn-danger btn-flat pull-right" style="margin-right: 5px;">Next <i class="fa fa-arrow-circle-o-right"></i></button>
-                        <button type="button" class="btn btn-default btn-flat btn-cancel pull-right" style="margin-right: 5px;">Cancel</button>
+                        <button type="submit" class="btn btn-danger btn-flat pull-right" style="margin-right: 5px;">Submit</button>
+                        <button type="button" class="btn btn-default btn-flat btn-cancel pull-right" style="margin-right: 5px;">Clear</button>
                     </div>
                 </div>
             </form>
@@ -102,73 +108,80 @@
                         <div class="form-group">
                             <label for="plant" class="col-md-2">Tanggal</label>
                             <div class="col-md-3">
-                                <input type="text" class="form-control input-sm " name="" id="" value="23/03/2019" readonly>
+                                <input type="text" class="form-control input-sm " name="asset_request_date" id="asset_request_date" readonly>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="plant" class="col-md-2">Business Area</label>
                             <div class="col-md-3">
-                                <input type="text" class="form-control input-sm" name="business_area" id="business_area" readonly>
+                                <input type="text" class="form-control input-sm" name="asset_business_area" id="asset_business_area" readonly>
                             </div>
                         </div>
                         <hr>
                         <div class="form-group">
                             <label for="plant" class="col-md-2">No. PO</label>
                             <div class="col-md-10">
-                                <input type="text" class="form-control input-sm" name="po_no" id="po_no" value="5013103287" readonly>
+                                <input type="text" class="form-control input-sm" name="asset_po_no" id="asset_po_no" readonly>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="plant" class="col-md-2">Tgl PO</label>
                             <div class="col-md-3">
-                                <input type="text" class="form-control input-sm" name="description" value="23/03/2019" id="description" autocomplete="off" readonly>
+                                <input type="text" class="form-control input-sm" name="asset_po_date" id="asset_po_date" readonly>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="plant" class="col-md-2">Kode vendor</label>
                             <div class="col-md-6">
-                                <input type="text" class="form-control input-sm" name="description" id="description" value="XXXXX" autocomplete="off" readonly>
+                                <input type="text" class="form-control input-sm" name="asset_vendor_code" id="asset_vendor_code" autocomplete="off" readonly>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="plant" class="col-md-2">Nama vendor</label>
                             <div class="col-md-10">
-                                <input type="text" class="form-control input-sm" name="description" value="DAYA ANUGERAH MANDIRI" id="description" autocomplete="off" readonly>
+                                <input type="text" class="form-control input-sm" name="asset_vendor_name" id="asset_vendor_name" autocomplete="off" readonly>
                             </div>
                         </div>
                         <hr>
                         <div class="form-group">
+                            <label class="col-md-2"><b>ITEM DETAIL</b></label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control input-sm text-right" name="detail_item_selected" id="detail_item_selected" readonly style="border:1px solid red;background-color: #f4433630">
+                                <span class="help-block">Please select the item to show the detail</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
                             <label for="plant" class="col-md-2">Item PO</label>
-                            <div class="col-md-3">
-                                <input type="text" class="form-control input-sm text-right" name="description" value="1" id="description" autocomplete="off" readonly>
+                            <div class="col-md-2">
+                                <input type="text" class="form-control input-sm text-right" name="item_po" value="" id="item_po" autocomplete="off" readonly>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="plant" class="col-md-2">Qty Index</label>
-                            <div class="col-md-3">
-                                <input type="text" class="form-control input-sm text-right" name="description" value="1" id="description" autocomplete="off" readonly>
+                            <div class="col-md-2">
+                                <input type="text" class="form-control input-sm text-right" name="item_qty_index" id="item_qty_index" autocomplete="off" readonly>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="plant" class="col-md-2">Kode material</label>
                             <div class="col-md-10">
-                                <input type="text" class="form-control input-sm" name="description" value="XXXX-1" id="description" autocomplete="off" readonly>
+                                <input type="text" class="form-control input-sm" name="item_code" id="item_code" autocomplete="off" readonly>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="plant" class="col-md-2">Nama material</label>
                             <div class="col-md-10">
-                                <input type="text" class="form-control input-sm" name="description" value="SEPEDA MOTOR 150 HONDA VERZA" id="description" autocomplete="off" readonly>
+                                <input type="text" class="form-control input-sm" name="item_name" value="" id="item_name" autocomplete="off" readonly>
                             </div>
                         </div>
                         <div class="form-group">
                             <div class="col-md-12">
                                 <ul class="nav nav-tabs">
-                                    <li class="active"><a href="#panel-initial" data-toggle="tab" class="panel-initial">Rincian Informasi Asset | page: <span id="page"></span></a></li>
+                                    <li class="active" style="border-bottom:none !important;"><a href="#panel-initial" data-toggle="tab" class="panel-initial" style="background-color:#f3f3f3;border-bottom:none;font-weight:800">Rincian Informasi Asset | page: <span id="page"></span></a></li>
                                     <li class="pull-right"><a href="javascript:nextPage()" class="text-muted" id="btn_next">Next <i class="fa fa-arrow-right"></i></a></li>
                                     <li class="pull-right"><a href="javascript:prevPage()" class="text-muted" id="btn_prev"><i class="fa fa-arrow-left"></i> Prev</a></li>
                                 </ul>
-                                <div class="tab-content" style="border: 1px solid #e0dcdc;border-top:none">
+                                <div class="tab-content" style="border-left: 1px solid #e0dcdc;border-right: 1px solid #e0dcdc;border-bottom: 1px solid #e0dcdc;border-top:none;background-color:#f3f3f3;">
                                     <!-- Font Awesome Icons -->
                                     <div class="tab-pane active" id="panel-initial">
                                         <div class="box-body">
@@ -253,7 +266,7 @@
                                             <div class="form-group material-group-input" id="input-specification">
                                                 <label for="part_no" class="col-md-2 col-md-offset-1 col-form-label">Lokasi Asset</label>
                                                 <div class="col-md-8">
-                                                    <input type="text" class="form-control input-sm attr-material-group" name="specification" id="specification">
+                                                    <input type="text" class="form-control input-sm attr-material-group" name="asset_location" id="asset_location">
                                                 </div>
                                             </div>
                                             <div class="form-group material-group-input" id="input-specification">
@@ -364,8 +377,9 @@
                         </div>
                     </div>
                     <div class="box-footer clearfix">
-                        <button type="submit" class="btn btn-danger btn-flat pull-right" style="margin-right: 5px;"><i class="fa fa-save"></i> Submit</button>
-                        <button type="button" class="btn btn-default btn-flat btn-back-request-form pull-right" style="margin-right: 5px;"><i class="fa fa-arrow-circle-left"></i> Back</button>
+                        <button type="submit" class="btn btn-danger btn-flat pull-right" style="margin-right: 5px;">Draft</button>
+                        <button type="submit" class="btn btn-danger btn-flat pull-right" style="margin-right: 5px;">Submit</button>
+                        <button type="button" class="btn btn-default btn-flat btn-back-request-form pull-right hide" style="margin-right: 5px;"><i class="fa fa-arrow-circle-left"></i> Back</button>
                     </div>
                 </div>
             </form>
@@ -380,20 +394,26 @@
 <script>
     var imgFiles = [];
     var addFile = 2;
-    var request_item = [];
+    var request_item = {};
     var item_count = 1;
     var request_item_page = [];
     var data_page = new Array(3);
     var current_page = 1;
     var records_per_page = 1;
-    window.onbeforeunload = confirmExit;
+    var data_detail = {};
+    var request_docs = [];
+    var transaction_type = jQuery("#transaction_type");
+    var request_date = jQuery("#request_date");
+    var business_area = jQuery("#business_area");
+    var po_no = jQuery("#po_no");
+    var po_date = jQuery("#po_date");
+    var po_date = jQuery("#po_date");
+    var vendor_code = jQuery("#vendor_code");
+    var vendor_name = jQuery("#vendor_name");
 
-
-    function confirmExit() {
-        return "You have attempted to leave this page.If you have made any changes to the fields without clicking the Save button, your changes will be lost. Are you sure you want to exit this page?";
-    }
 
     jQuery(document).ready(function() {
+        jQuery('#request-detail-page').addClass('sub-loader');
         jQuery(".btn-cancel").on('click', function() {
             var conf = confirm("Are you sure you want to cancel this request?");
             document.getElementById("request-form").reset();
@@ -408,8 +428,8 @@
             }
         });
 
-        jQuery("#request_date").datepicker({
-            format: "dd/mm/yyyy",
+        jQuery("#request_date, #po_date").datepicker({
+            format: "mm/dd/yyyy",
             autoclose: true
         });
 
@@ -458,30 +478,99 @@
         jQuery("#request-form").on("submit", function(e) {
             e.preventDefault();
 
-            if (request_item.length > 0) {
+            if (requestItemData() > 0) {
                 jQuery('.request-form').addClass('hide');
                 jQuery('.code-asset-form').removeClass('hide');
+
+                jQuery("#asset_request_date").val(request_date.val());
+                jQuery("#asset_business_area").val(business_area.val());
+                jQuery("#asset_po_no").val(po_no.val());
+                jQuery("#asset_po_date").val(po_date.val());
+                jQuery("#asset_vendor_code").val(vendor_code.val());
+                jQuery("#asset_vendor_name").val(vendor_name.val());
+
                 topFunction();
+                var items = [];
+                jQuery.each(request_item, function(key, val) {
+                    if (val.name) {
+                        items.push({
+                            id: val.id,
+                            text: val.code + ' - ' + val.name
+                        })
+                    }
+                });
+
+
+                jQuery("#detail_item_selected").select2({
+                    data: items,
+                    width: "100%",
+                    allowClear: true,
+                    placeholder: ' '
+                }).on("change", function() {
+                    getProp(jQuery(this).val());
+                });
+
+
             } else {
                 notify({
                     type: 'warning',
                     message: 'please, add an item'
                 });
             }
-
-
         });
 
         jQuery("#code-asset-form").on("submit", function(e) {
             e.preventDefault();
-            jQuery('.code-asset-form').addClass('hide');
-            jQuery('.request-form').removeClass('hide');
-            notify({
-                type: 'error',
-                message: 'reqeust has been submited!'
+            jQuery.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
             });
-            document.getElementById("request-form").reset();
-            topFunction();
+
+            var param = {
+                transaction_type: transaction_type.val(),
+                request_date: request_date.val(),
+                business_area: business_area.val(),
+                po_no: po_no.val(),
+                po_date: po_date.val(),
+                vendor_code: vendor_code.val(),
+                vendor_name: vendor_name.val(),
+                docs: request_docs,
+                asset: request_item
+            };
+
+            jQuery.ajax({
+                url: "{{ url('request/post') }}",
+                type: "POST",
+                data: param,
+               /*  contentType: false,
+                processData: false,
+                cache: false, */
+                beforeSend: function() {
+                    jQuery('.loading-event').fadeIn();
+                },
+                success: function(result) {
+                    if (result.status) {
+                        notify({
+                            type: 'success',
+                            message: result.message
+                        });
+                        notify({
+                            type: 'error',
+                            message: 'reqeust has been submited!'
+                        });
+                       window.location.href = "{{ url('request') }}";
+                    } else {
+                        notify({
+                            type: 'warning',
+                            message: result.message
+                        });
+                    }
+                },
+                complete: function() {
+                    jQuery('.loading-event').fadeOut();
+                }
+            });
         });
 
         jQuery(".btn-back-request-form").on("click", function(e) {
@@ -498,8 +587,16 @@
                 }
             });
 
-            var form = jQuery('#form-initial').find('input, select, textarea').appendTo('#form-basic-data');
-            var param = new FormData(this);
+            /* var form = jQuery('#form-initial').find('input, select, textarea').appendTo('#form-basic-data'); */
+            /* var param = new FormData(this); */
+            var init_form = jQuery(this).serializeArray();
+            var param = {
+                "asset": request_form,
+                "docs": request_docs
+            };
+            param.push(init_form);
+            console.log(param);
+            return false;
             jQuery.ajax({
                 url: "{{ url('materialrequest/post') }}",
                 type: "POST",
@@ -530,136 +627,174 @@
             });
         });
 
+        jQuery("#docs").on("change", function() {
+            for (var i = 0; i < $(this).get(0).files.length; ++i) {
+
+                request_docs[i] = {
+                    'name': '',
+                    'size': '',
+                    'type': '',
+                    'file': ''
+                };
+            }
+            for (var i = 0; i < $(this).get(0).files.length; ++i) {
+                var file = $(this).get(0).files[i];
+
+                request_docs[i].name = file.name;
+                request_docs[i].size = file.size;
+                request_docs[i].type = file.type;
+                getBase64(i, file);
+            }
+        });
+
         jQuery("#asset_name").on('keyup', function() {
             var id = current_page - 1;
-            data_page[id].asset_name = jQuery(this).val();
+            var obj = jQuery('#detail_item_selected').val();
+            request_item[obj].detail[id].asset_name = jQuery(this).val();
         });
 
         jQuery("#asset_type").on('keyup', function() {
             var id = current_page - 1;
-            data_page[id].asset_type = jQuery(this).val();
+            var obj = jQuery('#detail_item_selected').val();
+            request_item[obj].detail[id].asset_type = jQuery(this).val();
         });
 
         jQuery("#asset_group").on('keyup', function() {
             var id = current_page - 1;
-            data_page[id].asset_group = jQuery(this).val();
+            var obj = jQuery('#detail_item_selected').val();
+            request_item[obj].detail[id].asset_group = jQuery(this).val();
         });
 
         jQuery("#asset_sub_group").on('keyup', function() {
             var id = current_page - 1;
-            data_page[id].asset_sub_group = jQuery(this).val();
+            var obj = jQuery('#detail_item_selected').val();
+            request_item[obj].detail[id].asset_sub_group = jQuery(this).val();
         });
 
         jQuery("#asset_brand").on('keyup', function() {
             var id = current_page - 1;
-            data_page[id].asset_brand = jQuery(this).val();
+            var obj = jQuery('#detail_item_selected').val();
+            request_item[obj].detail[id].asset_brand = jQuery(this).val();
         });
 
         jQuery("#asset_imei").on('keyup', function() {
             var id = current_page - 1;
-            data_page[id].asset_imei = jQuery(this).val();
+            var obj = jQuery('#detail_item_selected').val();
+            request_item[obj].detail[id].asset_imei = jQuery(this).val();
         });
 
         jQuery("#asset_police_no").on('keyup', function() {
             var id = current_page - 1;
-            data_page[id].asset_police_no = jQuery(this).val();
+            var obj = jQuery('#detail_item_selected').val();
+            request_item[obj].detail[id].asset_police_no = jQuery(this).val();
         });
 
         jQuery("#asset_serie_no").on('keyup', function() {
             var id = current_page - 1;
-            data_page[id].asset_serie_no = jQuery(this).val();
+            var obj = jQuery('#detail_item_selected').val();
+            request_item[obj].detail[id].asset_serie_no = jQuery(this).val();
         });
 
         jQuery("#asset_specification").on('keyup', function() {
             var id = current_page - 1;
-            data_page[id].asset_specification = jQuery(this).val();
+            var obj = jQuery('#detail_item_selected').val();
+            request_item[obj].detail[id].asset_specification = jQuery(this).val();
         });
 
         jQuery("#asset_year").on('keyup', function() {
             var id = current_page - 1;
-            data_page[id].asset_year = jQuery(this).val();
+            var obj = jQuery('#detail_item_selected').val();
+            request_item[obj].detail[id].asset_year = jQuery(this).val();
         });
 
         jQuery("#asset_info").on('keyup', function() {
             var id = current_page - 1;
-            data_page[id].asset_info = jQuery(this).val();
+            var obj = jQuery('#detail_item_selected').val();
+            request_item[obj].detail[id].asset_info = jQuery(this).val();
         });
 
         jQuery("#asset_pic_name").on('keyup', function() {
             var id = current_page - 1;
-            data_page[id].asset_pic_name = jQuery(this).val();
+            var obj = jQuery('#detail_item_selected').val();
+            request_item[obj].detail[id].asset_pic_name = jQuery(this).val();
         });
 
         jQuery("#asset_pic_level").on('keyup', function() {
             var id = current_page - 1;
-            data_page[id].asset_pic_level = jQuery(this).val();
+            var obj = jQuery('#detail_item_selected').val();
+            request_item[obj].detail[id].asset_pic_level = jQuery(this).val();
+        });
+
+        jQuery("#asset_location").on('keyup', function() {
+            var id = current_page - 1;
+            var obj = jQuery('#detail_item_selected').val();
+            request_item[obj].detail[id].asset_location = jQuery(this).val();
         });
     });
 
     function addItem() {
-        request_item.push({
-            item_po: 1,
+        var id = makeInt(5);
+        request_item[id] = {
+            id: id,
+            item_po: item_count,
             code: makeid(5),
             name: "SEPEDA MOTOR 150 HONDA VERZA - " + item_count,
             qty: 1,
             request_qty: 1,
             outstanding_qty: 2,
-        });
+            detail: []
+        };
+
         item_count++;
 
-        createPage();
+        createPage(id);
         createItemRequestTable();
     }
 
-    function createPage() {
+    function createPage(id) {
         request_item_page = [];
         data_page = [];
-        jQuery.each(request_item, function(key, val) {
-            for (var i = 0; i < val.request_qty; i++) {
-                request_item_page.push({
-                    item_po: val.item_po,
-                    code: val.code,
-                    name: val.name,
-                });
+        var item_detail = [];
+        var item = request_item[id];
+        for (var i = 0; i < item.request_qty; i++) {
+            item_detail.push({
+                asset_type: '',
+                asset_group: '',
+                asset_sub_group: '',
+                asset_name: '',
+                asset_brand: '',
+                asset_imei: '',
+                asset_police_no: '',
+                asset_serie_no: '',
+                asset_specification: '',
+                asset_location: '',
+                asset_year: '',
+                asset_pic_name: '',
+                asset_pic_level: '',
+                asset_foto: '',
+                asset_info: '',
+                foto_asset: {
+                    name: '',
+                    size: '',
+                    type: '',
+                    file: ''
+                },
+                foto_asset_seri: {
+                    name: '',
+                    size: '',
+                    type: '',
+                    file: ''
+                },
+                foto_asset_mesin: {
+                    name: '',
+                    size: '',
+                    type: '',
+                    file: ''
+                }
+            });
+        }
 
-                data_page.push({
-                    asset_type: '',
-                    asset_group: '',
-                    asset_sub_group: '',
-                    asset_name: '',
-                    asset_brand: '',
-                    asset_imei: '',
-                    asset_police_no: '',
-                    asset_serie_no: '',
-                    asset_specification: '',
-                    asset_year: '',
-                    asset_pic_name: '',
-                    asset_pic_level: '',
-                    asset_foto: '',
-                    asset_info: '',
-                    foto_asset: {
-                        name: '',
-                        size: '',
-                        type: '',
-                        file: ''
-                    },
-                    foto_asset_seri: {
-                        name: '',
-                        size: '',
-                        type: '',
-                        file: ''
-                    },
-                    foto_asset_mesin: {
-                        name: '',
-                        size: '',
-                        type: '',
-                        file: ''
-                    }
-                });
-            }
-        });
-        changePage(1);
-        assetInfo(1);
+        request_item[id].detail = item_detail;
     }
 
     function makeid(length) {
@@ -683,29 +818,10 @@
     }
 
     function remove(obj) {
-        var selected = request_item[obj];
         var conf = confirm("Are you sure you want to delete this data?");
         if (conf == true) {
-            /*  if (selected.id) {
-                 request_item[obj] = {
-                     "id": selected.id,
-                     "item": selected.item,
-                     "name": selected.name,
-                     "price": selected.price,
-                     "qty": selected.qty,
-                     "deleted": 1
-                 }
-             } else {
-                 var index = product_selected.indexOf(product_selected[obj]);
-                 if (index > -1) {
-                     product_selected.splice(obj, 1);
-                 }
-             } */
-
-            var index = request_item.indexOf(request_item[obj]);
-            if (index > -1) {
-                request_item.splice(obj, 1);
-            }
+            request_item[obj] = [];
+            data_detail[obj] = [];
 
             createItemRequestTable();
         }
@@ -723,22 +839,24 @@
         item += '<th style="width: 40px"></th>';
         item += '</tr>';
 
-        if (request_item.length > 0) {
+        if (requestItemData() > 0) {
             jQuery.each(request_item, function(key, val) {
-                item += "<tr>";
-                item += "<td>" + val.item_po + "</td>";
-                item += "<td>" + val.code + "</td>";
-                item += "<td>" + val.name + "</td>";
-                item += "<td style='text-align:right'>" + val.qty + "</td>";
-                item += '<td class="text-center">';
-                item += '<div class="input-group">';
-                item += ' <div style="cursor:pointer" class="input-group-addon bg-gray"  OnClick="min(\'qty_' + key + '\');qtyEdit(\'' + key + '\')">-</div>';
-                item += '<input type="text" class="form-control input-sm text-center" value=' + val.request_qty + ' id="qty_' + key + '" maxlength="6">';
-                item += ' <div style="cursor:pointer" class="input-group-addon bg-gray" OnClick="plus(\'qty_' + key + '\');qtyEdit(\'' + key + '\')">+</div>';
-                item += '</td>';
-                item += "<td style='text-align:right'>" + val.outstanding_qty + "</td>";
-                item += '<td width="30px" style="text-align:center"><button type="button" class="btn btn-flat btn-xs btn-danger" onClick="remove(\'' + key + '\');"><i class="fa fa-trash"></i></button></td>';
-                item += "</tr>";
+                if (val.name) {
+                    item += "<tr>";
+                    item += "<td>" + val.item_po + "</td>";
+                    item += "<td>" + val.code + "</td>";
+                    item += "<td>" + val.name + "</td>";
+                    item += "<td style='text-align:right'>" + val.qty + "</td>";
+                    item += '<td class="text-center">';
+                    item += '<div class="input-group">';
+                    item += ' <div style="cursor:pointer" class="input-group-addon bg-gray"  OnClick="min(\'qty_' + val.id + '\');qtyEdit(\'' + val.id + '\')">-</div>';
+                    item += '<input type="text" class="form-control input-sm text-center" value=' + val.request_qty + ' id="qty_' + val.id + '" maxlength="6">';
+                    item += ' <div style="cursor:pointer" class="input-group-addon bg-gray" OnClick="plus(\'qty_' + val.id + '\');qtyEdit(\'' + val.id + '\')">+</div>';
+                    item += '</td>';
+                    item += "<td style='text-align:right'>" + val.outstanding_qty + "</td>";
+                    item += '<td width="30px" style="text-align:center"><button type="button" class="btn btn-flat btn-xs btn-danger" onClick="remove(\'' + val.id + '\');"><i class="fa fa-trash"></i></button></td>';
+                    item += "</tr>";
+                }
             });
         } else {
             item += '<tr>';
@@ -752,26 +870,27 @@
     function qtyEdit(obj) {
         var selected = request_item[obj];
         var qty = jQuery('#qty_' + obj).val();
-
-        request_item[obj] = {
-            item_po: selected.item_po,
-            code: selected.code,
-            name: selected.name,
-            qty: selected.qty,
-            request_qty: qty,
-            outstanding_qty: selected.outstanding_qty,
-        };
-
+        request_item[obj].request_qty = qty;
         createItemRequestTable();
-        createPage();
+        createPage(obj);
     }
 
-    function assetInfo(id) {
-        var obj = id - 1;
-        var item = request_item[obj];
+    function getProp(id) {
+        var item = request_item[id];
+        request_item_page = item.detail;
+        jQuery('#item_po').val(item.item_po);
+        jQuery('#item_code').val(item.code);
+        jQuery('#item_name').val(item.name);
+        jQuery('#item_qty_index').val(item.request_qty);
 
-        var id = current_page - 1;
-        var item = data_page[id];
+        changePage(1);
+    }
+
+    function assetInfo(index) {
+        var obj = index - 1;
+        var key = jQuery('#detail_item_selected').val();
+        var request = request_item[key];
+        var item = request.detail[obj];
 
         jQuery('#asset_name').val(item.asset_name);
         jQuery('#asset_type').val(item.asset_type);
@@ -785,6 +904,11 @@
         jQuery('#asset_year').val(item.asset_year);
         jQuery('#asset_pic_name').val(item.asset_pic_name);
         jQuery('#asset_pic_level').val(item.asset_pic_level);
+        jQuery('#asset_info').val(item.asset_info);
+        jQuery('#asset_location').val(item.asset_location);
+        jQuery('#asset_pic_name').val(item.asset_pic_name);
+        jQuery('#asset_pic_level').val(item.asset_pic_level);
+
 
         if (item.foto_asset.file) {
             jQuery("#foto_asset_thumb_1").prop('src', item.foto_asset.file);
@@ -823,6 +947,9 @@
 
     function showImage(code, id) {
         var obj = current_page - 1;
+        var key = jQuery('#detail_item_selected').val();
+        var request = request_item[key];
+        var item = request.detail[obj];
 
         if (code == 'asset') {
             var src = document.getElementById("foto_asset_1");
@@ -840,80 +967,83 @@
         fr.onload = function(e) {
             target.src = this.result;
             if (code == 'asset') {
-                data_page[obj].foto_asset.file = this.result;
+                item.foto_asset.file = this.result;
             } else if (code == 'seri') {
-                data_page[obj].foto_asset_seri.file = this.result;
+                item.foto_asset_seri.file = this.result;
             } else if (code == 'mesin') {
-                data_page[obj].foto_asset_mesin.file = this.result;
+                item.foto_asset_mesin.file = this.result;
             }
         };
 
         var foto = src.files[0];
         if (code == 'asset') {
-            data_page[obj].foto_asset.name = foto.name;
-            data_page[obj].foto_asset.type = foto.type;
-            data_page[obj].foto_asset.size = foto.size;
+            item.foto_asset.name = foto.name;
+            item.foto_asset.type = "asset";
+            item.foto_asset.size = foto.size;
             jQuery(".btn-foto-asset-remove").removeClass('hide');
-
         } else if (code == 'seri') {
-            data_page[obj].foto_asset_seri.name = foto.name;
-            data_page[obj].foto_asset_seri.type = foto.type;
-            data_page[obj].foto_asset_seri.size = foto.size;
+            item.foto_asset_seri.name = foto.name;
+            item.foto_asset_seri.type = "no seri";
+            item.foto_asset_seri.size = foto.size;
             jQuery(".btn-foto-seri-remove").removeClass('hide');
         } else if (code == 'mesin') {
-            data_page[obj].foto_asset_mesin.name = foto.name;
-            data_page[obj].foto_asset_mesin.type = foto.type;
-            data_page[obj].foto_asset_mesin.size = foto.size;
+            item.foto_asset_mesin.name = foto.name;
+            item.foto_asset_mesin.type = "imei";
+            item.foto_asset_mesin.size = foto.size;
             jQuery(".btn-foto-mesin-remove").removeClass('hide');
         }
 
         fr.readAsDataURL(src.files[0]);
         jQuery('.btn-remove-image' + id).removeClass('hide');
         var status = jQuery('#material-images-' + id).data('status');
-
-        data_page[obj].asset_pic_level;
     }
 
     function removeImage(code, id) {
         var obj = id - 1;
+        var key = jQuery('#detail_item_selected').val();
+        var request = request_item[key];
+        var item = request.detail[obj];
+
         if (code == 'asset') {
-            data_page[obj].foto_asset.file = '';
-            data_page[obj].foto_asset.name = '';
-            data_page[obj].foto_asset.type = '';
-            data_page[obj].foto_asset.size = '';
+            item.foto_asset.file = '';
+            item.foto_asset.name = '';
+            item.foto_asset.type = '';
+            item.foto_asset.size = '';
             jQuery("#foto_asset_thumb_1").prop('src', "{{URL::asset('img/add-img.png')}}");
             jQuery(".btn-foto-asset-remove").addClass('hide');
         } else if (code == 'seri') {
-            data_page[obj].foto_asset_seri.file = "";
-            data_page[obj].foto_asset_seri.name = "";
-            data_page[obj].foto_asset_seri.type = "";
-            data_page[obj].foto_asset_seri.size = "";
+            item.foto_asset_seri.file = "";
+            item.foto_asset_seri.name = "";
+            item.foto_asset_seri.type = "";
+            item.foto_asset_seri.size = "";
             jQuery("#foto_no_seri_thumb_1").prop('src', "{{URL::asset('img/add-img.png')}}");
             jQuery(".btn-foto-seri-remove").addClass('hide');
         } else if (code == 'mesin') {
-            data_page[obj].foto_asset_mesin.file = "";
-            data_page[obj].foto_asset_mesin.name = "";
-            data_page[obj].foto_asset_mesin.type = "";
-            data_page[obj].foto_asset_mesin.size = "";
+            item.foto_asset_mesin.file = "";
+            item.foto_asset_mesin.name = "";
+            item.foto_asset_mesin.type = "";
+            item.foto_asset_mesin.size = "";
             jQuery("#foto_mesin_thumb_1").prop('src', "{{URL::asset('img/add-img.png')}}");
             jQuery(".btn-foto-mesin-remove").addClass('hide');
         }
     }
 
     function prevPage() {
+        jQuery(".loading-event").fadeIn();
         if (current_page > 1) {
             current_page--;
             changePage(current_page);
-            assetInfo(current_page);
         }
+        jQuery(".loading-event").fadeOut();
     }
 
     function nextPage() {
+        jQuery(".loading-event").fadeIn();
         if (current_page < numPages()) {
             current_page++;
             changePage(current_page);
-            assetInfo(current_page);
         }
+        jQuery(".loading-event").fadeOut();
     }
 
     function changePage(page) {
@@ -937,6 +1067,8 @@
             btn_next.style.visibility = "visible";
 
         }
+
+        assetInfo(current_page);
     }
 
     function numPages() {
@@ -962,5 +1094,28 @@
             if (jQuery(this).next().val() > 1) jQuery(this).next().val(+jQuery(this).next().val() - 1);
         }
     });
+
+    function requestItemData() {
+        var total = 0;
+        jQuery.each(request_item, function(key, val) {
+            if (val.name) {
+                total++;
+            }
+        });
+        return total;
+    }
+
+    function getBase64(i, file) {
+        var reader = new FileReader();
+        var base64 = ''
+        reader.readAsDataURL(file);
+        reader.onload = function() {
+            request_docs[i].file = reader.result;
+        };
+        reader.onerror = function(error) {
+            console.log('Error: ', error);
+        };
+    }
 </script>
+
 @stop

@@ -1,47 +1,44 @@
 @extends('adminlte::page')
 @section('title', 'FMDB - Access right')
 @section('content')
-<section class="content">
-    <div class="row">
-        <div class="col-xs-12">
-            <div class="box">
-                <div class="box-body">
-                    <div class="table-container">
-                        <div class="table-actions-wrapper">
-                            <span></span>
-                            <button class="btn btn-sm btn-flat btn-default btn-refresh-data-table" title="refresh"><i class="glyphicon glyphicon-refresh"></i></button>
-                        </div>
-                        <table id="data-table" class="table table-condensed" width="100%">
-                            <thead>
-                                <tr role="row" class="heading">
-                                    <th width="30%">Role</th>
-                                    <th>Module</th>
-                                    <th>Menu</th>
-                                    <th>C</th>
-                                    <th>R</th>
-                                    <th>U</th>
-                                    <th>D</th>
-                                </tr>
-                                <tr role="row" class="filter">
-                                    <td><input type="text" class="form-control input-sm form-filter" name="role"> </td>
-                                    <td><input type="text" class="form-control input-sm form-filter" name="module"> </td>
-                                    <td><input type="text" class="form-control input-sm form-filter" name="menu"> </td>
-                                    <td><input type="text" class="form-control input-sm form-filter" name="create"> </td>
-                                    <td><input type="text" class="form-control input-sm form-filter" name="read"> </td>
-                                    <td><input type="text" class="form-control input-sm form-filter" name="update"> </td>
-                                    <td><input type="text" class="form-control input-sm form-filter" name="delete"> </td>
-                                </tr>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
+<div class="row">
+    <div class="col-xs-12">
+        <div class="box">
+            <div class="box-body">
+                <div class="table-container">
+                    <div class="table-actions-wrapper">
+                        <span></span>
+                        <button class="btn btn-sm btn-flat btn-default btn-refresh-data-table" title="refresh"><i class="glyphicon glyphicon-refresh"></i></button>
                     </div>
+                    <table id="data-table" class="table table-condensed" width="100%">
+                        <thead>
+                            <tr role="row" class="heading">
+                                <th width="30%">Role</th>
+                                <th>Module</th>
+                                <th>Menu</th>
+                                <th>C</th>
+                                <th>R</th>
+                                <th>U</th>
+                                <th>D</th>
+                            </tr>
+                            <tr role="row" class="filter">
+                                <td><input type="text" class="form-control input-sm form-filter" name="role"> </td>
+                                <td><input type="text" class="form-control input-sm form-filter" name="module"> </td>
+                                <td><input type="text" class="form-control input-sm form-filter" name="menu"> </td>
+                                <td><input type="text" class="form-control input-sm form-filter" name="create"> </td>
+                                <td><input type="text" class="form-control input-sm form-filter" name="read"> </td>
+                                <td><input type="text" class="form-control input-sm form-filter" name="update"> </td>
+                                <td><input type="text" class="form-control input-sm form-filter" name="delete"> </td>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
                 </div>
-                <!-- /.box-body -->
             </div>
+            <!-- /.box-body -->
         </div>
     </div>
-    </div>
-</section>
+</div>
 <div id="add-data-modal" class="modal fade" role="dialog">
     <div class="modal-dialog" width="900px">
         <div class="modal-content">

@@ -69,7 +69,10 @@ Route::post('/users/post', 'UsersController@store');
 Route::get('/users/edit/', 'UsersController@show');
 Route::post('/users/inactive', 'UsersController@inactive');
 Route::post('/users/active', 'UsersController@active');
-Route::get('grid-tr-user', ['as' => 'get.grid_tr_user', 'uses' => 'UsersController@dataGrid']);
+Route::match(['get', 'post'], 'grid-users', [
+    'as' => 'get.users',
+    'uses' => 'UsersController@dataGrid'
+]);
 
 Route::resource('/menu', 'MenuController');
 Route::post('/menu/post', 'MenuController@store');
@@ -123,7 +126,6 @@ Route::resource('/roleaccess', 'RoleAccessController');
 
 
 Route::get('SapDownloadExcel', 'SAPController@downloadExcel');
-
 
 /* SELECT 2 */
 Route::get('get-select_module', ['as' => 'get.select_module', 'uses' => 'ModuleController@select2']);
