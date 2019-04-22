@@ -22,6 +22,13 @@ Route::group(['middleware' => ['web']], function () {
 
 });
 
+/* DASHBOARD */
+Route::match(['get', 'post'], 'grid-outstanding', [
+    'as' => 'get.outstanding',
+    'uses' => 'HomeController@dataGrid'
+]);
+
+
 Route::get('/', 'HomeController@index')->name('home');
 Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/profile', 'ProfileController@index');
