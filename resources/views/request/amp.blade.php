@@ -24,59 +24,81 @@
                         <div class="form-group">
                             <label for="plant" class="col-md-3">Tipe Transaksi</label>
                             <div class="col-md-6">
-                                <input type="text" class="form-control input-sm" name="transaction_type" id="transaction_type">
+                                <input type="text" class="form-control input-sm" name="transaction_type" id="transaction_type" required>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="plant" class="col-md-3">Tanggal</label>
                             <div class="col-md-4">
-                                <input type="text" class="form-control input-sm datepicker" name="request_date" id="request_date" autocomplete="off">
+                                <input type="text" class="form-control input-sm datepicker" name="request_date" id="request_date" autocomplete="off" required>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="plant" class="col-md-3">Business Area</label>
                             <div class="col-md-4">
-                                <input type="text" class="form-control input-sm" name="business_area" id="business_area">
+                                <input type="text" class="form-control input-sm" name="business_area" id="business_area" required>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="plant" class="col-md-3">No. Purchare Order</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control input-sm" name="po_no" id="po_no" value="" autocomplete="off" maxlength="10" onkeypress="return isNumber(event)">
+                                <input type="text" class="form-control input-sm" name="po_no" id="po_no" value="" autocomplete="off" required>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="plant" class="col-md-3">Tgl PO</label>
                             <div class="col-md-4">
-                                <input type="text" class="form-control input-sm datepicker" name="po_date" id="po_date" autocomplete="off" required readonly>
+                                <input type="text" class="form-control input-sm datepicker" name="po_date" id="po_date" autocomplete="off" required>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="plant" class="col-md-3">Kode vendor</label>
                             <div class="col-md-6">
-                                <input type="text" class="form-control input-sm" name="vendor_code" id="vendor_code" autocomplete="off" required readonly>
+                                <input type="text" class="form-control input-sm" name="vendor_code" id="vendor_code" autocomplete="off" required>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="plant" class="col-md-3">Nama vendor</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control input-sm" name="vendor_name" id="vendor_name" autocomplete="off" required readonly>
+                                <input type="text" class="form-control input-sm" name="vendor_name" id="vendor_name" autocomplete="off" required>
                             </div>
                         </div>
-                        <div class="form-group {{ $data['type'] == 'amp' ? '':'hide' }}">
+                        <div class="form-group">
                             <label for="plant" class="col-md-3">Berita acara serah terima</label>
                             <div class="col-md-4">
                                 <input type="file" class="form-control input-sm" name="docs" multiple id="docs">
                             </div>
                         </div>
-                        <div class="form-group select-item-panel hide">
-                            <label for="plant" class="col-md-3">
-                                <button type="button" class="btn btn-flat btn-danger btn-add-items">Select Item</button>
-                            </label>
-                            <div class="col-md-9">
-
+                        <hr>
+                        <h4>Detail item</h4>
+                        <div class="row">
+                            <div class="col-md-2">
+                                <label>Item PO</label>
+                                <input type="text" class="form-control input-sm" name="detail_item_po" id="detail_item_po">
+                            </div>
+                            <div class="col-md-3">
+                                <label>Kode</label>
+                                <input type="text" class="form-control input-sm" name="detail_item_code" id="detail_item_code">
+                            </div>
+                            <div class="col-md-4">
+                                <label>Name</label>
+                                <input type="text" class="form-control input-sm" name="detail_item_name" id="detail_item_name">
+                            </div>
+                            <div class="col-md-2">
+                                <label class="control-label">Qty</label>
+                                <div class="input-group">
+                                    <div style="cursor:pointer" class="input-group-addon bg-gray" OnClick="min('detail_item_qty');">-</div>
+                                    <input type="text" class="form-control input-sm text-center" value='1' id="detail_item_qty" maxlength="6">
+                                    <div style="cursor:pointer" class="input-group-addon bg-gray" OnClick="plus('detail_item_qty');">+</div>
+                                </div>
+                            </div>
+                            <div class="col-md-1">
+                                <label>&nbsp;</label>
+                                <button type="button" class="btn btn-flat btn-danger btn-add-items" OnClick="addItem();"><i class="fa fa-plus"></i></button>
                             </div>
                         </div>
+
+                        <hr>
                         <div class="form-group">
                             <div class="col-md-12">
                                 <table class="table table-bordered table-condensed" id="request-item-table">
@@ -84,9 +106,9 @@
                                         <th>Item PO</th>
                                         <th>Kode</th>
                                         <th>Name</th>
-                                        <th>Qty</th>
+                                        <!-- <th>Qty</th> -->
                                         <th>Qty diajukan</th>
-                                        <th>Qty Outstanding</th>
+                                        <!-- <th>Qty Outstanding</th> -->
                                     </tr>
                                     <tr>
                                         <td colspan="6" style="text-align:center">No item selected</td>
@@ -388,32 +410,6 @@
     </div>
     <!-- /.col -->
 </div>
-<div id="item-detail-modal" class="modal fade" role="dialog">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title"></h4>
-            </div>
-            <div class="modal-body">
-                <table class="table table-hover table-condensed" width="100%" id="table-detail-item">
-                    <thead>
-                        <tr>
-                            <th>Item PO</th>
-                            <th>Kode</th>
-                            <th>Name</th>
-                            <th>Qty</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-flat btn-default" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-flat label-danger" OnClick="addItem()" style="margin-right: 5px;">Select</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 @stop
 @section('js')
 <script>
@@ -681,21 +677,6 @@
             }
         });
 
-        jQuery("#po_no").on("keyup", function(e) {
-            if (e.keyCode == 13) {
-                showPO();
-            }
-        });
-
-        jQuery('.btn-add-items').on("click", function() {
-            jQuery("#item-detail-modal").modal({
-                backdrop: 'static',
-                keyboard: false
-            });
-            jQuery("#item-detail-modal .modal-title").text('Detail item from PO ' + jQuery("#po_no").val());
-            jQuery("#item-detail-modal").modal('show');
-        });
-
         jQuery("#asset_name").on('keyup', function() {
             var id = current_page - 1;
             var obj = jQuery('#detail_item_selected').val();
@@ -781,75 +762,64 @@
         });
     });
 
-    function showPO() {
-        jQuery('.loading-event').fadeIn();
-        var no_po = jQuery("#po_no").val();
-        var data = jQuery.parseJSON(JSON.stringify(dataJson('{!! route("get.no_po") !!}?no_po=' + no_po)));
+    function validateItem() {
+        var valid = true;
+        var item_po = jQuery("#detail_item_po");
+        var code = jQuery("#detail_item_code");
+        var name = jQuery("#detail_item_name");
+        var qty = jQuery("#detail_item_qty");
 
-        if (data.AEDAT) {
-            jQuery("#po_date").val(data.AEDAT);
-            jQuery("#vendor_code").val(data.LIFNR);
-            jQuery("#vendor_name").val(data.NAME1);
-            jQuery('.select-item-panel').removeClass("hide");
-            var item = '<table class="table table-bordered table-condensed" id="request-item-table">';
-            item += '<tr>';
-            item += '<th width="45px">Select</th>';
-            item += '<th>Item PO</th>';
-            item += '<th>Kode</th>';
-            item += ' <th>Name</th>';
-            item += '<th>Qty</th>';
-            item += '</tr>';
-
-            jQuery.each(data.DETAIL_ITEM, function(key, val) {
-                selected_detail_item.push(val);
-                item += "<tr>";
-                item += "<td><input type='checkbox' value='" + key + "' ></td>";
-                item += "<td>" + val.EBELP + "</td>";
-                item += "<td>" + val.MATNR + "</td>";
-                item += "<td>" + val.MAKTX + "</td>";
-                item += "<td style='text-align:right'>" + val.MENGE + "</td>";
-                item += "</tr>";
-            });
-            item += "</table>";
-            jQuery("#table-detail-item").html(item);
-        } else {
-            jQuery("#po_date").val("");
-            jQuery("#vendor_code").val("");
-            jQuery("#vendor_name").val("");
-            jQuery('.select-item-panel').addClass("hide");
-            notify({
-                type: 'warning',
-                message: "No PO is not found!"
-            });
+        if(item_po.val() == "") {
+            item_po.focus();
+            valid = false;
         }
-        jQuery('.loading-event').fadeOut();
+       
+        if(code.val() == "") {
+            code.focus();
+            valid = false;
+        }
+       
+        if(name.val() == "") {
+            name.focus();
+            valid = false;
+        }
+        
+        if(qty.val() == "") {
+            qty.focus();
+            valid = false;
+        }
+
+        return valid;
+        
     }
 
+
     function addItem() {
-        $('#table-detail-item').find('input[type="checkbox"]:checked').each(function() {
-            var index = jQuery(this).val();
-            console.log(index);
-        });
+        if(validateItem()) {
+            var id = makeInt(5);
+            var item_po = jQuery("#detail_item_po");
+            var code = jQuery("#detail_item_code");
+            var name = jQuery("#detail_item_name");
+            var qty = jQuery("#detail_item_qty");
+            request_item[id] = {
+                id: id,
+                item_po: item_po.val(),
+                code: code.val(),
+                name: name.val(),
+                qty: 0,
+                request_qty: qty.val(),
+                outstanding_qty: 0,
+                detail: []
+            };
 
-        return false;
+            createPage(id);
+            createItemRequestTable();
 
-        var id = makeInt(5);
-        request_item[id] = {
-            id: id,
-            item_po: item_count,
-            code: makeid(5),
-            name: "SEPEDA MOTOR 150 HONDA VERZA - " + item_count,
-            qty: 1,
-            request_qty: 1,
-            outstanding_qty: 2,
-            detail: []
-        };
-
-        item_count++;
-
-        createPage(id);
-        createItemRequestTable();
-        jQuery("#item-detail-modal").modal('hide');
+            item_po.val("");
+            code.val("");
+            name.val("");
+            qty.val(1);
+        }
     }
 
     function createPage(id) {
@@ -934,9 +904,9 @@
         item += '<th>Item PO</th>';
         item += '<th>Kode</th>';
         item += ' <th>Name</th>';
-        item += '<th>Qty</th>';
+       /*  item += '<th>Qty</th>'; */
         item += '<th width="115px">Qty diajukan</th></th>';
-        item += '<th>Qty Outstanding</th>';
+        /* item += '<th>Qty Outstanding</th>'; */
         item += '<th style="width: 40px"></th>';
         item += '</tr>';
 
@@ -947,21 +917,21 @@
                     item += "<td>" + val.item_po + "</td>";
                     item += "<td>" + val.code + "</td>";
                     item += "<td>" + val.name + "</td>";
-                    item += "<td style='text-align:right'>" + val.qty + "</td>";
+                    /* item += "<td style='text-align:right'>" + val.qty + "</td>"; */
                     item += '<td class="text-center">';
                     item += '<div class="input-group">';
                     item += ' <div style="cursor:pointer" class="input-group-addon bg-gray"  OnClick="min(\'qty_' + val.id + '\');qtyEdit(\'' + val.id + '\')">-</div>';
                     item += '<input type="text" class="form-control input-sm text-center" value=' + val.request_qty + ' id="qty_' + val.id + '" maxlength="6">';
                     item += ' <div style="cursor:pointer" class="input-group-addon bg-gray" OnClick="plus(\'qty_' + val.id + '\');qtyEdit(\'' + val.id + '\')">+</div>';
                     item += '</td>';
-                    item += "<td style='text-align:right'>" + val.outstanding_qty + "</td>";
+                    /* item += "<td style='text-align:right'>" + val.outstanding_qty + "</td>"; */
                     item += '<td width="30px" style="text-align:center"><button type="button" class="btn btn-flat btn-xs btn-danger" onClick="remove(\'' + val.id + '\');"><i class="fa fa-trash"></i></button></td>';
                     item += "</tr>";
                 }
             });
         } else {
             item += '<tr>';
-            item += ' <td colspan="7" style="text-align:center">No item selected</td>';
+            item += ' <td colspan="5" style="text-align:center">No item selected</td>';
             item += '</tr>';
         }
         item += "</table>";

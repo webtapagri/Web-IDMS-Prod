@@ -24,31 +24,31 @@
                         <div class="form-group">
                             <label for="plant" class="col-md-3">Tipe Transaksi</label>
                             <div class="col-md-6">
-                                <input type="text" class="form-control input-sm" name="transaction_type" id="transaction_type">
+                                <input type="text" class="form-control input-sm" name="transaction_type" id="transaction_type" required>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="plant" class="col-md-3">Tanggal</label>
                             <div class="col-md-4">
-                                <input type="text" class="form-control input-sm datepicker" name="request_date" id="request_date" autocomplete="off">
+                                <input type="text" class="form-control input-sm datepicker" name="request_date" id="request_date" autocomplete="off" required>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="plant" class="col-md-3">Business Area</label>
                             <div class="col-md-4">
-                                <input type="text" class="form-control input-sm" name="business_area" id="business_area">
+                                <input type="text" class="form-control input-sm" name="business_area" id="business_area" required>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="plant" class="col-md-3">No. Purchare Order</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control input-sm" name="po_no" id="po_no" value="" autocomplete="off" maxlength="10" onkeypress="return isNumber(event)">
+                                <input type="text" class="form-control input-sm" name="po_no" id="po_no" value="" autocomplete="off" maxlength="10" onkeypress="return isNumber(event)" required>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="plant" class="col-md-3">Tgl PO</label>
                             <div class="col-md-4">
-                                <input type="text" class="form-control input-sm datepicker" name="po_date" id="po_date" autocomplete="off" required readonly>
+                                <input type="text" class="form-control input-sm" name="po_date" id="po_date" autocomplete="off" required readonly>
                             </div>
                         </div>
                         <div class="form-group">
@@ -629,8 +629,7 @@
                 "docs": request_docs
             };
             param.push(init_form);
-            console.log(param);
-            return false;
+
             jQuery.ajax({
                 url: "{{ url('materialrequest/post') }}",
                 type: "POST",
@@ -791,7 +790,7 @@
             jQuery("#vendor_code").val(data.LIFNR);
             jQuery("#vendor_name").val(data.NAME1);
             jQuery('.select-item-panel').removeClass("hide");
-            var item = '<table class="table table-bordered table-condensed" id="request-item-table">';
+            var item = '<table class="table table-bordered table-condensed table-hover" id="table-detail-item">';
             item += '<tr>';
             item += '<th width="45px">Select</th>';
             item += '<th>Item PO</th>';
@@ -799,7 +798,7 @@
             item += ' <th>Name</th>';
             item += '<th>Qty</th>';
             item += '</tr>';
-
+            selected_detail_item = [];
             jQuery.each(data.DETAIL_ITEM, function(key, val) {
                 selected_detail_item.push(val);
                 item += "<tr>";
@@ -826,28 +825,37 @@
     }
 
     function addItem() {
+        request_item = [];
         $('#table-detail-item').find('input[type="checkbox"]:checked').each(function() {
             var index = jQuery(this).val();
-            console.log(index);
+            var item = selected_detail_item[index];
+
+            var id = makeInt(5);
+            request_item[index] = {
+                id: index,
+                item_po: item.EBELP,
+                code: item.MATNR,
+                name: item.MAKTX,
+                qty: item.MENGE,
+                request_qty: 1,
+                outstanding_qty: (item.MENGE - 1),
+                detail: []
+            };
+
+            /*  request_item.push({
+                 id: index,
+                 item_po: item.EBELP,
+                 code: item.MATNR,
+                 name: item.MAKTX,
+                 qty: item.MENGE,
+                 request_qty: 1,
+                 outstanding_qty: (item.MENGE - 1),
+                 detail: []
+             }) */
+
+            createPage(index);
         });
 
-        return false;
-
-        var id = makeInt(5);
-        request_item[id] = {
-            id: id,
-            item_po: item_count,
-            code: makeid(5),
-            name: "SEPEDA MOTOR 150 HONDA VERZA - " + item_count,
-            qty: 1,
-            request_qty: 1,
-            outstanding_qty: 2,
-            detail: []
-        };
-
-        item_count++;
-
-        createPage(id);
         createItemRequestTable();
         jQuery("#item-detail-modal").modal('hide');
     }
@@ -951,7 +959,7 @@
                     item += '<td class="text-center">';
                     item += '<div class="input-group">';
                     item += ' <div style="cursor:pointer" class="input-group-addon bg-gray"  OnClick="min(\'qty_' + val.id + '\');qtyEdit(\'' + val.id + '\')">-</div>';
-                    item += '<input type="text" class="form-control input-sm text-center" value=' + val.request_qty + ' id="qty_' + val.id + '" maxlength="6">';
+                    item += '<input type="text" class="form-control input-sm text-center" value=' + val.request_qty + ' id="qty_' + val.id + '" maxlength="6" max="' + val.outstanding_qty + '">';
                     item += ' <div style="cursor:pointer" class="input-group-addon bg-gray" OnClick="plus(\'qty_' + val.id + '\');qtyEdit(\'' + val.id + '\')">+</div>';
                     item += '</td>';
                     item += "<td style='text-align:right'>" + val.outstanding_qty + "</td>";
@@ -972,6 +980,7 @@
         var selected = request_item[obj];
         var qty = jQuery('#qty_' + obj).val();
         request_item[obj].request_qty = qty;
+        request_item[obj].outstanding_qty = (request_item[obj].qty - qty);
         createItemRequestTable();
         createPage(obj);
     }

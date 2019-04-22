@@ -35,7 +35,27 @@ class RequestController extends Controller
     public function create(Request $request) {
         $data['page_title'] = 'Request '.($request->type == "amp" ? 'Melalui PO AMP':'Melalui PO Sendiri');
         $data['type'] = ($request->type == "amp" ? 'Melalui PO AMP':'Melalui PO Sendiri');
-        return view('request.add')->with(compact('data'));
+        if($request->type == "amp") {
+            return view('request.amp')->with(compact('data'));
+        }else {
+            return view('request.sap')->with(compact('data'));
+        }
+        
+    }
+
+    public function getPO(Request $request) {
+        $param = $_REQUEST;
+        $service = API::exec(array(
+            'request' => 'GET',
+            'host' => 'ldap',
+            'method' => "select_po/" . $param["no_po"]
+        ));
+        $data = $service;
+       if(isset( $data->EBELN)) {
+            return response()->json(array('data' => $data));
+       } else {
+            return response()->json(array('data' => array())); 
+       }
     }
 
     public function dataGrid() {
