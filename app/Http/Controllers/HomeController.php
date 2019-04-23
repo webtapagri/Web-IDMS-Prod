@@ -74,7 +74,7 @@ class HomeController extends Controller
         $sql = '
             SELECT asset.NO_REG as id ' . implode(", ", $selectedColumn) . '
             FROM TR_REG_ASSET as asset
-            INNER JOIN tbm_user as requestor ON (requestor.id=asset.CREATED_BY)
+            INNER JOIN TBM_USER as requestor ON (requestor.id=asset.CREATED_BY)
             WHERE asset.NO_REG > 0
         ';
 
@@ -108,6 +108,8 @@ class HomeController extends Controller
         if ($orderColumn != "") {
             $sql .= " ORDER BY " . $orderBy . " " . $dirColumn;
         }
+
+        /* var_dump($sql); */
 
         $data = DB::select(DB::raw($sql));
 

@@ -9,6 +9,27 @@
 @stop
 
 @section('content')
+<style>
+    #transaction_type.select2-container--default .select2-selection--single,
+    .select2-selection .select2-selection--single {
+        border: 1px solid #d2d6de;
+        border-radius: 0;
+        padding: 6px 12px;
+        height: 24px;
+    }
+
+    .input-xs {
+        height: 24px;
+        padding: 2px 5px;
+        font-size: 12px;
+        line-height: 1.5;
+        /* If Placeholder of the input is moved up, rem/modify this. */
+        border-radius: 3px;
+        font-weight: normal;
+        border-radius: 0;
+    }
+</style>
+
 <!-- /.row -->
 <div class="row">
     <div class="col-xs-12">
@@ -19,9 +40,9 @@
                         <span></span>
                         <button class="btn btn-sm btn-flat btn-default btn-refresh-data-table" title="refresh"><i class="glyphicon glyphicon-refresh"></i></button>
                     </div>
-                    <table id="data-table" class="table table-condensed" width="100%">
+                    <table id="data-table" class="table table-bordered table-condensed" width="100%">
                         <thead>
-                            <tr role="row" class="heading">
+                            <tr role="row" style="background-color: #d2d6dd;" class="heading">
                                 <th>Tipe</th>
                                 <th>No PO</th>
                                 <th>Tgl.Pengajuan</th>
@@ -31,14 +52,14 @@
                                 <th>Nama Vendor</th>
                                 <th>Status</th>
                             </tr>
-                            <tr role="row" class="filter">
-                                <th><input type="text" class="form-control input-sm form-filter" name="transaction_type"></th>
-                                <th><input type="text" class="form-control input-sm form-filter" name="no_po"></th>
-                                <th><input type="text" class="form-control input-sm form-filter datepicker" name="request_date" autocomplete="off"></th>
-                                <th><input type="text" class="form-control input-sm form-filter" name="requestor"></th>
-                                <th><input type="text" class="form-control input-sm form-filter datepicker" name="po_date" autocomplete="off"></th>
-                                <th><input type="text" class="form-control input-sm form-filter" name="vendor_code"></th>
-                                <th><input type="text" class="form-control input-sm form-filter" name="vendor_name"></th>
+                            <tr role="row" class="filter" style="background-color: #d2d6dd3d;">
+                                <th><input type="text" class="form-control input-xs form-filter" style="height:10px !important" name="transaction_type" id="transaction_type"></th>
+                                <th><input type="text" class="form-control input-xs form-filter" name="no_po"></th>
+                                <th><input type="text" class="form-control input-xs form-filter datepicker" name="request_date" autocomplete="off"></th>
+                                <th><input type="text" class="form-control input-xs form-filter" name="requestor"></th>
+                                <th><input type="text" class="form-control input-xs form-filter datepicker" name="po_date" autocomplete="off"></th>
+                                <th><input type="text" class="form-control input-xs form-filter" name="vendor_code"></th>
+                                <th><input type="text" class="form-control input-xs form-filter" name="vendor_name"></th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -84,11 +105,11 @@
                 },
                 columns: [{
                         "render": function(data, type, row) {
-                            if(row.type == 1) {
+                            if (row.type == 1) {
                                 var content = 'Barang'
-                            } else  if(row.type == 2) {
+                            } else if (row.type == 2) {
                                 var content = 'Jasa'
-                            }else  if(row.type == 3) {
+                            } else if (row.type == 3) {
                                 var content = 'lain-lain'
                             }
 
@@ -126,9 +147,8 @@
                         }
                     }
                 ],
-                columnDefs: [
-                    {
-                        targets: [1,5],
+                columnDefs: [{
+                        targets: [1, 5],
                         width: '12%'
                     },
                     {
@@ -136,7 +156,7 @@
                         width: '15%'
                     },
                     {
-                        targets: [2,4,0,3],
+                        targets: [2, 4, 0, 3],
                         width: '10%'
                     },
 
@@ -150,12 +170,12 @@
             }
         });
 
-          jQuery(".datepicker").datepicker({
+        jQuery(".datepicker").datepicker({
             format: "mm/dd/yyyy",
             autoclose: true
         });
 
-          jQuery("input[name='transaction_type']").select2({
+        jQuery("input[name='transaction_type']").select2({
             data: [{
                     id: '1',
                     text: 'Barang'
@@ -198,6 +218,5 @@
         });
 
     });
-
 </script>
-@stop 
+@stop
