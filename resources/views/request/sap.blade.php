@@ -445,7 +445,6 @@
             }
         });
 
-
         jQuery('#request-detail-page').addClass('sub-loader');
         jQuery(".btn-cancel").on('click', function() {
             var conf = confirm("Are you sure you want to cancel this request?");
@@ -795,7 +794,7 @@
             item += '<th>Item PO</th>';
             item += '<th>Kode</th>';
             item += ' <th>Name</th>';
-            item += '<th>Qty</th>';
+            item += '<th class="text-right">Qty</th>';
             item += '</tr>';
             selected_detail_item = [];
             jQuery.each(data.DETAIL_ITEM, function(key, val) {
@@ -805,7 +804,7 @@
                 item += "<td>" + val.EBELP + "</td>";
                 item += "<td>" + val.MATNR + "</td>";
                 item += "<td>" + val.MAKTX + "</td>";
-                item += "<td style='text-align:right'>" + val.MENGE + "</td>";
+                item += "<td class='text-right'>" + val.MENGE + "</td>";
                 item += "</tr>";
             });
             item += "</table>";
@@ -841,20 +840,7 @@
                 detail: []
             };
 
-            /*  request_item.push({
-                 id: index,
-                 item_po: item.EBELP,
-                 code: item.MATNR,
-                 name: item.MAKTX,
-                 qty: item.MENGE,
-                 request_qty: 1,
-                 outstanding_qty: (item.MENGE - 1),
-                 detail: []
-             }) */
-
             createPage(index);
-
-            console.log(request_item);
         });
 
         createItemRequestTable();
@@ -951,7 +937,7 @@
 
         if (requestItemData() > 0) {
             jQuery.each(request_item, function(key, val) {
-                if (val.name) {
+                if (val) {
                     item += "<tr>";
                     item += "<td>" + val.item_po + "</td>";
                     item += "<td>" + val.code + "</td>";
@@ -980,8 +966,17 @@
     function qtyEdit(obj) {
         var selected = request_item[obj];
         var qty = jQuery('#qty_' + obj).val();
-        request_item[obj].request_qty = qty;
-        request_item[obj].outstanding_qty = (request_item[obj].qty - qty);
+
+        if (qty < request_item[obj].qty) {
+            request_item[obj].request_qty = qty;
+            request_item[obj].outstanding_qty = (request_item[obj].qty - qty);
+        } else {
+            request_item[obj].request_qty = request_item[obj].qty;
+            request_item[obj].outstanding_qty = 0;
+        }
+
+
+
         createItemRequestTable();
         createPage(obj);
     }
@@ -1208,8 +1203,10 @@
 
     function requestItemData() {
         var total = 0;
+        console.log(request_item);
         jQuery.each(request_item, function(key, val) {
-            if (val.name) {
+
+            if (val) {
                 total++;
             }
         });
