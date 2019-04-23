@@ -103,13 +103,9 @@ class HomeController extends Controller
         if($request->po_date)
         $sql .= " AND DATE_FORMAT(asset.TANGGAL_PO, '%Y-%m-%d') = " . DATE_FORMAT(date_create($request->po_date), 'Y-m-d');
         
-
-       
         if ($orderColumn != "") {
             $sql .= " ORDER BY " . $orderBy . " " . $dirColumn;
         }
-
-        /* var_dump($sql); */
 
         $data = DB::select(DB::raw($sql));
 

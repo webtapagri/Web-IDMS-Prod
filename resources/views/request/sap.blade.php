@@ -42,7 +42,7 @@
                         <div class="form-group">
                             <label for="plant" class="col-md-3">No. Purchare Order</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control input-sm" name="po_no" id="po_no" value="" autocomplete="off" maxlength="10" onkeypress="return isNumber(event)" required>
+                                <input type="text" class="form-control input-sm" name="po_no" id="po_no" value="" autocomplete="off" maxlength="10" required>
                             </div>
                         </div>
                         <div class="form-group">
@@ -433,7 +433,6 @@
     var business_area = jQuery("#business_area");
     var po_no = jQuery("#po_no");
     var po_date = jQuery("#po_date");
-    var po_date = jQuery("#po_date");
     var vendor_code = jQuery("#vendor_code");
     var vendor_name = jQuery("#vendor_name");
 
@@ -462,7 +461,7 @@
             }
         });
 
-        jQuery("#request_date, #po_date").datepicker({
+        jQuery("#request_date").datepicker({
             format: "mm/dd/yyyy",
             autoclose: true
         });
@@ -818,7 +817,7 @@
             jQuery('.select-item-panel').addClass("hide");
             notify({
                 type: 'warning',
-                message: "No PO is not found!"
+                message: "PO number is not found!"
             });
         }
         jQuery('.loading-event').fadeOut();
@@ -854,6 +853,8 @@
              }) */
 
             createPage(index);
+
+            console.log(request_item);
         });
 
         createItemRequestTable();

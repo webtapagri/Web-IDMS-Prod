@@ -9,26 +9,6 @@
 @stop
 
 @section('content')
-<style>
-    #transaction_type.select2-container--default .select2-selection--single,
-    .select2-selection .select2-selection--single {
-        border: 1px solid #d2d6de;
-        border-radius: 0;
-        padding: 6px 12px;
-        height: 24px;
-    }
-
-    .input-xs {
-        height: 24px;
-        padding: 2px 5px;
-        font-size: 12px;
-        line-height: 1.5;
-        /* If Placeholder of the input is moved up, rem/modify this. */
-        border-radius: 3px;
-        font-weight: normal;
-        border-radius: 0;
-    }
-</style>
 
 <!-- /.row -->
 <div class="row">

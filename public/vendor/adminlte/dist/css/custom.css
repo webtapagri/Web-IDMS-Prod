@@ -375,3 +375,30 @@ table.dataTable.table-condensed .sorting:after, table.dataTable.table-condensed 
 .toast-top-right {
   top: 60px !important;
 }
+
+    .filter .select2-container--default .select2-selection--single,
+    .select2-selection .select2-selection--single {
+        height: 24px !important;
+        font-weight: normal !important;
+        padding: 2px 5px !important;
+        font-size: 12px !important;
+    }
+
+    .filter .select2-container--default .select2-selection--single .select2-selection__arrow {
+        height: 20px !important;
+    }
+
+    .input-xs {
+        height: 24px;
+        padding: 2px 5px;
+        font-size: 12px;
+        line-height: 1.5;
+        /* If Placeholder of the input is moved up, rem/modify this. */
+        border-radius: 3px;
+        font-weight: normal;
+        border-radius: 0;
+    }
+
+    .filter .datepicker {
+    border-radius: 0 !important;
+}
