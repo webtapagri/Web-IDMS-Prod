@@ -134,7 +134,7 @@ Route::post('/accessright/post', 'AccessRightController@store');
 Route::get('/accessright/edit/', 'AccessRightController@show');
 Route::post('/accessright/inactive', 'AccessRightController@inactive');
 Route::post('/accessright/active', 'AccessRightController@active');
-/* Route::get('grid-accessright', ['as' => 'get.accessright_grid', 'uses' => 'AccessRightController@dataGrid']); */
+
 Route::match(['get', 'post'], 'grid-accessright', [
     'as' => 'get.accessright_grid',
     'uses' => 'AccessRightController@dataGrid'
