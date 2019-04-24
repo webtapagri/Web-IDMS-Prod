@@ -103,13 +103,6 @@ Route::match(['get', 'post'], 'grid-modules', [
     'uses' => 'ModuleController@dataGrid'
 ]);
 
-Route::resource('/menu', 'MenuController');
-Route::post('/menu/post', 'MenuController@store');
-Route::get('/menu/edit/', 'MenuController@show');
-Route::post('/menu/inactive', 'MenuController@inactive');
-Route::post('/menu/active', 'MenuController@active');
-Route::get('grid-menu', ['as' => 'get.grid_menu', 'uses' => 'MenuController@dataGrid']);
-
 Route::resource('/roles', 'RolesController');
 Route::post('/roles/post', 'RolesController@store');
 Route::get('/roles/edit/', 'RolesController@show');
@@ -119,15 +112,6 @@ Route::match(['get', 'post'], 'grid-role_grid', [
     'as' => 'get.role_grid',
     'uses' => 'RolesController@dataGrid'
 ]);
-
-
-Route::resource('/roleusers', 'RoleUserController');
-Route::post('/roleusers/post', 'RoleUserController@store');
-Route::get('/roleusers/edit/', 'RoleUserController@show');
-Route::post('/roleusers/inactive', 'RoleUserController@inactive');
-Route::post('/roleusers/active', 'RoleUserController@active');
-Route::get('grid-role-user', ['as' => 'get.role_user', 'uses' => 'RoleUserController@dataGrid']);
-Route::get('get-select_tr_user', ['as' => 'get.select_tr_user', 'uses' => 'RoleUserController@get_tr_user']);
 
 Route::resource('/accessright', 'AccessRightController');
 Route::post('/accessright/post', 'AccessRightController@store');
@@ -139,8 +123,6 @@ Route::match(['get', 'post'], 'grid-accessright', [
     'as' => 'get.accessright_grid',
     'uses' => 'AccessRightController@dataGrid'
 ]);
-
-Route::resource('/roleaccess', 'RoleAccessController');
 
 
 /* DOCS */
