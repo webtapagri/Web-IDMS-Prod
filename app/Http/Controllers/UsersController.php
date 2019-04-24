@@ -79,7 +79,7 @@ class UsersController extends Controller
         }
 
         $data = DB::select(DB::raw($sql));
-
+        var_dump($sql);    
         $iTotalRecords = count($data);
         $iDisplayLength = intval($request->length);
         $iDisplayLength = $iDisplayLength < 0 ? $iTotalRecords : $iDisplayLength;
