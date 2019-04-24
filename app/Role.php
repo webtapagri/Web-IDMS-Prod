@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Role extends Model
 {
-    protected $table = 'tbm_role';
+    protected $table = 'TBM_ROLE';
     public $timestamps = false;
 
     protected $fillable = [

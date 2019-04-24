@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Module extends Model
 {
-    protected $table = 'tbm_module';
+    protected $table = 'TBM_MODULE';
     public $timestamps = false;
 
     protected $fillable = [
