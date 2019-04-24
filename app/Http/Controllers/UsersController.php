@@ -78,8 +78,9 @@ class UsersController extends Controller
             $sql .= " ORDER BY " . $orderBy . " " . $dirColumn;
         }
 
-        $data = DB::select(DB::raw($sql));
+        /* $data = DB::select(DB::raw($sql)); */
         var_dump($sql);    
+        exit();
         $iTotalRecords = count($data);
         $iDisplayLength = intval($request->length);
         $iDisplayLength = $iDisplayLength < 0 ? $iTotalRecords : $iDisplayLength;
