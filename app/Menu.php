@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Menu extends Model
 {
-    protected $table = "tbm_menu";
+    protected $table = "TBM_MENU";
     public $timestamps = false;
 
     protected $fillable = [

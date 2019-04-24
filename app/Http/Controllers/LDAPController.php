@@ -12,6 +12,7 @@ use Cookie;
 use Route;
 use Session;
 use AccessRight;
+use DB;
 
 class LDAPController extends Controller
 {
@@ -50,15 +51,15 @@ class LDAPController extends Controller
             Session::put('authenticated', time());
             Session::put('user', $username);
 
-            $service = API::exec(array(
-                'request' => 'GET',
-                'method' => "tr_user_profile/" . $username
-            ));
-            
-            $profile = $service->data;    
+            $profile = DB::table('TBM_USER as user')
+            ->select('user.id as id', 'user.username', 'role.id as role_id', 'user.name as name', 'role.name as role_name')
+            ->join('TBM_ROLE as role', 'role.id', '=', 'user.role_id')
+            ->where('user.username',  $username)
+            ->get();
+
             if($profile) {
                 Session::put('user_id', $profile[0]->id);
-                Session::put('name', $profile[0]->nama);
+                Session::put('name', $profile[0]->name);
                 Session::put('role', $profile[0]->role_name);
                 Session::put('role_id', $profile[0]->role_id);
             } else {

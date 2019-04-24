@@ -975,8 +975,6 @@
             request_item[obj].outstanding_qty = 0;
         }
 
-
-
         createItemRequestTable();
         createPage(obj);
     }

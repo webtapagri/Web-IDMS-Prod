@@ -402,3 +402,11 @@ table.dataTable.table-condensed .sorting:after, table.dataTable.table-condensed 
     .filter .datepicker {
     border-radius: 0 !important;
 }
+
+.heading {
+  background-color: #d2d6dd !important;
+}
+
+.filter {
+  background-color: #d2d6dd3d !important;
+}
