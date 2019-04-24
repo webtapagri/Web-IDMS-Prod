@@ -127,7 +127,7 @@ class MenuController extends Controller
     }
 
     function validateName($name) {
-        $data = DB::table('tbm_menu')
+        $data = DB::table('TBM_MENU')
             ->select('id', 'name as text')
             ->where('name', $name)
             ->get();
@@ -179,7 +179,7 @@ class MenuController extends Controller
 
     public function select2()
     {
-        $data = DB::table('tbm_menu')
+        $data = DB::table('TBM_MENU')
             ->select('id', 'name as text')
             ->where('deleted', 0)
             ->get();

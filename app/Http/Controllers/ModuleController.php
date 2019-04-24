@@ -164,7 +164,7 @@ class ModuleController extends Controller
     }
 
     public function select2() {
-        $data = DB::table('tbm_module')
+        $data = DB::table('TBM_MODULE')
         ->select('id', 'name as text')
         ->where('deleted', 0)
         ->get();

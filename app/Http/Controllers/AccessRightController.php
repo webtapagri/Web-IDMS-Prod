@@ -64,7 +64,7 @@ class AccessRightController extends Controller
                 role_access.id as access_id
                 '.implode(", ",$selectedColumn).'
                 FROM  
-                    tbm_role as role
+                    TBM_ROLE as role
                 JOIN(
                     SELECT 
                         module.id as module_id,
@@ -72,13 +72,13 @@ class AccessRightController extends Controller
                         menu.id as menu_id,
                         menu.name as menu_name
                     FROM 
-                        tbm_module as module
-                    INNER JOIN tbm_menu as menu ON (module.id=menu.module_id)
+                        TBM_MODULE as module
+                    INNER JOIN TBM_MENU as menu ON (module.id=menu.module_id)
                     WHERE module.deleted=0
                 ) as module
                 LEFT OUTER JOIN(
                     select id, role_id, menu_id, module_id, `create`, `read`, `update`, `delete`
-                    from tbm_role_access 
+                    from TBM_ROLE_access 
                 )  as role_access ON (role_access.role_id = role.id AND role_access.module_id=module.module_id  AND role_access.menu_id=module.menu_id)
                 WHERE role.deleted=0 
         ';
