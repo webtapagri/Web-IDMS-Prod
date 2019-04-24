@@ -26,7 +26,6 @@ class HomeController extends Controller
             return redirect('/login');
 
         $data['page_title'] = "Dashboard";
-
         if(Session::get('role_id')) {
             return view('dashboard')->with(compact('data'));
         } else {

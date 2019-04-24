@@ -54,8 +54,10 @@ class LDAPController extends Controller
             $profile = DB::table('TBM_USER as user')
             ->select('user.id as id', 'user.img as img', 'user.username', 'role.id as role_id', 'user.name as name', 'role.name as role_name')
             ->join('TBM_ROLE as role', 'role.id', '=', 'user.role_id')
-            ->where('user.username',  $username)
-            ->where('user.deleted',  0)
+            ->where([
+                ['user.username','=',  $username],
+                ['user.deleted','=',  '0']
+            ])
             ->get();
 
             if($profile) {

@@ -89,7 +89,7 @@ Route::get('/menu/edit/', 'MenuController@show');
 Route::post('/menu/inactive', 'MenuController@inactive');
 Route::post('/menu/active', 'MenuController@active');
 Route::match(['get', 'post'], 'grid-menu', [
-    'as' => 'get.menu_grid',
+    'as' => 'get.grid_menu',
     'uses' => 'MenuController@dataGrid'
 ]);
 

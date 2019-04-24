@@ -9,6 +9,7 @@ use JeroenNoten\LaravelAdminLte\Menu\Builder;
 use JeroenNoten\LaravelAdminLte\Menu\Filters\FilterInterface;
 use Session;
 use AccessRight;
+use App\RoleAccess;
 use API;
 
 
@@ -82,8 +83,6 @@ class AccessRightController extends Controller
                 )  as role_access ON (role_access.role_id = role.id AND role_access.module_id=module.module_id  AND role_access.menu_id=module.menu_id)
                 WHERE role.deleted=0 
         ';
-        //$total_data = DB::select(DB::raw($sql));
-        //$sql .=  " limit " . $request->start . ', ' .$request->length;
 
         if($request->role)
             $sql .= ' AND role.id = ' . $request->role;
@@ -156,83 +155,27 @@ class AccessRightController extends Controller
     public function store(Request $request)
     {
         try {
-            $param["menu_code"] = \trim($request->menu) ;
-            $param["id_role"] = \trim($request->role_id);
-            $param["operation"] = trim($request->operation);
-            $param["description"] = $request->description;
-
-            if ($request->edit_id) {
-                $data = explode('-', $request->edit_id);
-
-                $param["updated_at"] = date('Y-m-d H:i:s');
-                $param["updated_by"] = Session::get('user');
-
-                $data = API::exec(array(
-                    'request' => 'PUT',
-                    'method' => "tr_role_accessright/" . $data[0] . '/' . $data[1] . '/' . $data[2],
-                    'data' => $param
-                ));
-            } else {
-                $param["created_at"] = date('Y-m-d H:i:s');
-                $param["created_by"] = Session::get('user');
-                $data = API::exec(array(
-                    'request' => 'POST',
-                    'method' => 'tr_role_accessright',
-                    'data' => $param
-                ));
-            }
-            $res = $data;
-            if ($res->code == '201') {
-                if($res->status == 'failed') {
-                    return response()->json(['status' => true, "exist"=>true, "message" => $res->message]);
-                }else {
-                    return response()->json(['status' => true, "exist" => false, "message" => 'Data is successfully ' . ($request->edit_id ? 'updated' : 'added')]);
+            foreach($request->param as $row) {
+                if($row["access_id"]) {
+                    $data = RoleAccess::find( $row["access_id"]);
+                    $data->updated_by = Session::get('user_id');
+                } else {
+                    $data = new RoleAccess();
+                    $data->created_by = Session::get('user_id');
                 }
-            } else {
-                return response()->json(['status' => false, "message" => $res->message]);
+
+                $data->module_id = $row["module_id"];
+                $data->menu_id = $row["menu_id"];
+                $data->create = $row["create"];
+                $data->read = $row["read"];
+                $data->update = $row["update"];
+                $data->delete = $row["delete"];
+                $data->save();
             }
+
+            return response()->json(['status' => true, "message" => 'Data is successfully ' . ($request->edit_id ? 'updated' : 'added')]);
         } catch (\Exception $e) {
             return response()->json(['status' => false, "message" => $e->getMessage()]);
         }
-    }
-
-    public function inactive(Request $request)
-    {
-        try {
-            $param = explode('-', $request->id);
-            $data = API::exec(array(
-                'request' => 'DELETE',
-                'method' => "tr_role_accessright/" . $param[0] . '/' . $param[1] . '/' . $param[2]
-            ));
-
-            $res = $data;
-
-            if ($res->code == '201') {
-                return response()->json(['status' => true, "message" => 'Data is successfully deleted']);;
-            } else {
-                return response()->json(['status' => false, "message" => $res->message]);
-            }
-
-        } catch (\Exception $e) {
-            return response()->json(['status' => false, "message" => $e->getMessage()]);
-        }
-    }
-
-    public function get_menu()
-    {
-        $service = API::exec(array(
-            'request' => 'GET',
-            'method' => "tm_menu"
-        ));
-        $data = $service->data;
-        $item = array();
-        foreach ($data as $row) {
-            $item[] = array(
-                'id' => $row->menu_code,
-                'text' => $row->menu_name
-            );
-        }
-
-        return response()->json(array('data' => $item));
     }
 }

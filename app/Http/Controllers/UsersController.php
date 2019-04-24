@@ -32,7 +32,6 @@ class UsersController extends Controller
         $selectedColumn[] = "";
 
         $selectedColumn = ['user.img', "user.username", "user.name","role.name as role_name", "user.email", "user.job_code", "user.NIK", "user.area_code", "user.deleted", "user.id"];
-        
         if($orderColumn) {
             $order = explode("as", $selectedColumn[$orderColumn]);
             if(count($order)>1) {
@@ -78,9 +77,8 @@ class UsersController extends Controller
             $sql .= " ORDER BY " . $orderBy . " " . $dirColumn;
         }
 
-        /* $data = DB::select(DB::raw($sql)); */
-        var_dump($sql);    
-        exit();
+        $data = DB::select(DB::raw($sql));
+
         $iTotalRecords = count($data);
         $iDisplayLength = intval($request->length);
         $iDisplayLength = $iDisplayLength < 0 ? $iTotalRecords : $iDisplayLength;
@@ -125,7 +123,7 @@ class UsersController extends Controller
             $data->job_code = $request->job_code;
             $data->nik = $request->nik;
             $data->area_code = implode(',', $request->area_code);
-          
+
             foreach ($_FILES as $row) {
                 if ($row["name"]) {
                     $name = $row["name"];

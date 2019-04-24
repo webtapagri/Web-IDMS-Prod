@@ -100,7 +100,7 @@
                 ],
                 "pageLength": 10,
                 "ajax": {
-                    url: "{!! route('get.grid_menu') !!}"
+                    url: "{!! route('get.menu_grid') !!}"
                 },
                 columns: [{
                         data: 'sort',

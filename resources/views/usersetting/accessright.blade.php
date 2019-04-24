@@ -9,6 +9,7 @@
                     <div class="table-actions-wrapper">
                         <span></span>
                         <button class="btn btn-sm btn-flat btn-danger btn-refresh-data-table" title="refresh"><i class="glyphicon glyphicon-refresh"></i></button>
+                        <button class="btn btn-sm btn-flat btn-danger btn-save" OnClick="save()" title="refresh"><i class="fa fa-save"></i></button>
                     </div>
                     <table id="data-table" class="table table-condensed" width="100%">
                         <thead>
@@ -119,33 +120,33 @@
                         name: 'module_name'
                     },
                     {
-                        data: 'menu_name',
-                        name: 'menu_name'
+                        "render": function(data, type, row) {
+                            var content = '<span data-id="' + row.role_id + "-" + row.module_id + "-" + row.menu_id + "-" + (row.access_id ? row.access_id : '') + '">' + row.menu_name + '</span>';
+                            return content;
+                        }
                     },
                     {
                         "render": function(data, type, row) {
-                            var content = '<center><input type="checkbox" class="checkbox" data-id="' + row.access_id + "-" + row.role_id + "-" + row.module_id + "-" + row.menu_id + '"  ' + (row.create ? 'checked' : '') + '/></center>';
+                            var content = '<center><input type="checkbox" class="checkbox create"  ' + (row.create ? 'checked' : '') + '/></center>';
 
                             return content;
                         }
                     },
                     {
                         "render": function(data, type, row) {
-                            var content = '<center><input type="checkbox" class="checkbox" data-id="' + row.access_id + "-" + row.role_id + "-" + row.module_id + "-" + row.menu_id + '"  ' + (row.read ? 'checked' : '') + '/></center>';
-
+                            var content = '<center><input type="checkbox" class="checkbox read" ' + (row.read ? 'checked' : '') + '/></center>';
                             return content;
                         }
                     },
                     {
                         "render": function(data, type, row) {
-                            var content = '<center><input type="checkbox" class="checkbox text-center" data-id="' + row.access_id + "-" + row.role_id + "-" + row.module_id + "-" + row.menu_id + '"  ' + (row.update ? 'checked' : '') + '/></center>';
-
+                            var content = '<center><input type="checkbox" class="checkbox update" ' + (row.update ? 'checked' : '') + '/></center>';
                             return content;
                         }
                     },
                     {
                         "render": function(data, type, row) {
-                            var content = '<center><input type="checkbox" class="checkbox text-center" data-id="' + row.access_id + "-" + row.role_id + "-" + row.module_id + "-" + row.menu_id + '"  ' + (row.delete ? 'checked' : '') + '/></center>';
+                            var content = '<center><input type="checkbox" class="checkbox delete" ' + (row.delete ? 'checked' : '') + '/></center>';
 
                             return content;
                         }
@@ -165,8 +166,6 @@
                 "order": [],
             }
         });
-
-
 
         var role = jQuery.parseJSON(JSON.stringify(dataJson("{!! route('get.select_role') !!}")));
         jQuery('input[name="role"]').select2({
@@ -280,59 +279,56 @@
         })
     });
 
-    function edit(row) {
-        document.getElementById("data-form").reset();
-        var result = jQuery.parseJSON(JSON.stringify(dataJson("{{ url('accessright/edit/?id=') }}" + row)));
-        jQuery("#edit_id").val(row);
-        jQuery('#menu').select2('val', result.menu_code);
-        jQuery('#menu').trigger('change');
-        jQuery('#role_id').select2('val', result.id_role);
-        jQuery('#role_id').trigger('change');
-        jQuery('#operation').select2('val', result.operation);
-        jQuery('#operation').trigger('change');
-        jQuery('#description').val(result.description);
-
-        jQuery("#add-data-modal .modal-title").html("<i class='fa fa-edit'></i> Update data " + result.role_name);
-        jQuery("#add-data-modal").modal("show");
-    }
-
-    function inactive(id) {
-        var conf = confirm("anda yakin mau menghapus data ini?");
-        if (conf == true) {
-            jQuery.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
+    function save() {
+        var param = [];
+        jQuery('#data-table > tbody  > tr').each(function() {
+            var create = jQuery(this).find('.create').is(':checked');
+            var read = jQuery(this).find('.read').is(':checked');
+            var update = jQuery(this).find('.update').is(':checked');
+            var remove = jQuery(this).find('.deleted').is(':checked');
+            var detail_id = jQuery(this).find('span').data('id');
+            var id = detail_id.split('-');
+            param.push({
+                role_id: id[0],
+                module_id: id[1],
+                menu_id: id[2],
+                access_id: (id[3] === null ? '' : id[3]),
+                create: (create ? 1 : 0),
+                read: (read ? 1 : 0),
+                update: (update ? 1 : 0),
+                delete: (remove ? 1 : 0)
             });
+        });
 
-            jQuery.ajax({
-                url: "{{ url('accessright/inactive') }}",
-                method: "POST",
-                data: {
-                    id: id
-                },
-                beforeSend: function() {
-                    jQuery('.loading-event').fadeIn();
-                },
-                success: function(result) {
-                    if (result.status) {
-                        jQuery("#data-table").DataTable().ajax.reload();
-                        notify({
-                            type: 'success',
-                            message: result.message
-                        });
-                    } else {
-                        notify({
-                            type: 'warning',
-                            message: result.message
-                        });
-                    }
-                },
-                complete: function() {
-                    jQuery('.loading-event').fadeOut();
+        jQuery.ajax({
+            url: "{{ url('accessright/post') }}",
+            type: "POST",
+            data: {
+                param: param
+            },
+            beforeSend: function() {
+                jQuery('.loading-event').fadeIn();
+            },
+            success: function(result) {
+                if (result.status) {
+                    jQuery("#data-table").DataTable().ajax.reload();
+                    notify({
+                        type: 'success',
+                        message: result.message
+                    });
+                } else {
+                    notify({
+                        type: 'warning',
+                        message: result.message
+                    });
                 }
-            });
-        }
+            },
+            complete: function() {
+                jQuery('.loading-event').fadeOut();
+            }
+        });
+
+
     }
 </script>
 @stop
