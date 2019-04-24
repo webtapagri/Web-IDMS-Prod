@@ -7,10 +7,10 @@
             <div class="box-body">
                 <div class="table-container">
                     <div class="table-actions-wrapper">
-                        <button class="btn btn-flat btn-sm btn-flat label-danger btn-refresh"><i class="glyphicon glyphicon-refresh" title="Refresh"></i></button>
+                        <button class="btn btn-flat btn-sm btn-flat label-danger btn-refresh-data-table"><i class="glyphicon glyphicon-refresh" title="Refresh"></i></button>
                         <button class="btn btn-flat btn-sm btn-flat label-danger btn-add"><i class="glyphicon glyphicon-plus" title="Add new data"></i></button>
                     </div>
-                    <table id="data-table" class="table table-bordered table-condensed">
+                    <table id="data-table" class="table table-condensed">
                         <thead>
                             <tr role="row" class="heading">
                                 <th width="30%">Name</th>
@@ -19,9 +19,9 @@
                                 <th width="8%">Action</th>
                             </tr>
                             <tr role="row" class="filter">
-                                <th><input type="text" class="form-control input-sm form-filter" name="active"></th>
-                                <th><input type="text" class="form-control input-sm form-filter" name="active"></th>
-                                <th><input type="text" class="form-control input-sm form-filter" name="active"></th>
+                                <th><input type="text" class="form-control input-xs form-filter" name="name" autocomplete="off"></th>
+                                <th><input type="text" class="form-control input-xs form-filter" name="desc" autocomplete="off"></th>
+                                <th><input type="text" class="form-control input-xs form-filter" name="status" autocomplete="off"></th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -67,6 +67,11 @@
 <script>
     var attribute = [];
     jQuery(document).ready(function() {
+        jQuery.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
         var grid = new Datatable();
         grid.init({
             src: jQuery("#data-table"),
@@ -82,7 +87,9 @@
                     [10, 20, 50, 100, 150]
                 ],
                 "pageLength": 10,
-                ajax: "{!! route('get.grid_tm_role') !!}",
+                "ajax": {
+                    url: "{!! route('get.role_grid') !!}"
+                },
                 columns: [{
                         data: 'name',
                         name: 'name'
@@ -103,9 +110,9 @@
                     },
                     {
                         "render": function(data, type, row) {
-                            var content = '<button class="btn btn-flat btn-xs btn-danger btn-action btn-edit " title="edit data ' + row.id + '" onClick="edit(' + row.id + ')"><i class="fa fa-pencil"></i></button>';
-                            content += '<button class="btn btn-flat btn-xs btn-danger btn-action btn-activated  ' + (row.deleted == 0 ? '' : 'hide') + '" style="margin-left:5px"  onClick="inactive(' + row.id + ')"><i class="fa fa-trash"></i></button>';
-                            content += '<button class="btn btn-flat btn-xs btn-danger btn-action btn-inactivated ' + (row.deleted == 1 ? '' : 'hide') + '" style="margin-left:5px"  onClick="active(' + row.id + ')"><i class="fa fa-check"></i></button>';
+                            var content = '<button class="btn btn-flat btn-xs btn-danger btn-action btn-edit {{ (isset($access["CREATE"]) ? "":"") }}" title="edit data ' + row.id + '" onClick="edit(' + row.id + ')"><i class="fa fa-pencil"></i></button>';
+                            content += '<button class="btn btn-flat btn-xs btn-danger btn-action btn-activated  {{ (isset($access["CREATE"]) ? "":"") }}  ' + (row.deleted == 0 ? '' : 'hide') + '" style="margin-left:5px"  onClick="inactive(' + row.id + ')"><i class="fa fa-trash"></i></button>';
+                            content += '<button class="btn btn-flat btn-xs btn-danger btn-action btn-inactivated {{ (isset($access["CREATE"]) ? "":"") }} ' + (row.deleted == 1 ? '' : 'hide') + '" style="margin-left:5px"  onClick="active(' + row.id + ')"><i class="fa fa-check"></i></button>';
 
                             return content;
                         }
@@ -118,11 +125,33 @@
                     },
                     {
                         targets: [2],
-                        className: 'text-center'
+                        className: 'text-center',
+                        width: '6%'
                     }
-                ]
+                ],
+                oLanguage: {
+                    sProcessing: "<div id='datatable-loader'></div>",
+                    sEmptyTable: "Data tidak di temukan",
+                    sLoadingRecords: ""
+                },
+                "order": [],
             }
         });
+
+        jQuery("input[name='status']").select2({
+            data: [{
+                    id: 0,
+                    text: 'Y'
+                },
+                {
+                    id: 1,
+                    text: 'N'
+                },
+            ],
+            width: '100%',
+            placeholder: ' ',
+            allowClear: true
+        })
 
         jQuery('.btn-add').on('click', function() {
             document.getElementById("data-form").reset();

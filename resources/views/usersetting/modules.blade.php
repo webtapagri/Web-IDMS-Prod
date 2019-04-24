@@ -1,22 +1,19 @@
 @extends('adminlte::page')
-@section('title', 'FAMS - Role')
+@section('title', 'FAMS - Module')
 @section('content')
-<section class="content">
-    <div class="row">
-        <div class="col-xs-4">
-            <span style="font-size:24px">Modules</span>
-        </div>
-        <div class="col-xs-8" align="right">
-            <span href="#" class="btn btn-sm btn-flat btn-danger btn-add">&nbsp;<i class="glyphicon glyphicon-plus" title="Add new data"></i>&nbsp; Add</span>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-xs-12">
-            <div class="box">
-                <div class="box-body">
-                    <table id="data-table" class="table table-bordered table-hover table-condensed" width="100%">
+<div class="row">
+    <div class="col-xs-12">
+        <div class="box">
+            <div class="box-body">
+                <div class="table-container">
+                    <div class="table-actions-wrapper">
+                        <span></span>
+                        <button class="btn btn-sm btn-flat btn-danger btn-refresh-data-table" title="refresh"><i class="glyphicon glyphicon-refresh"></i></button>
+                        <button class="btn btn-sm btn-flat btn-danger btn-add"><i class="glyphicon glyphicon-plus" title="Add new data"></i></button>
+                    </div>
+                    <table id="data-table" class="table table-condensed" width="100%">
                         <thead>
-                            <tr>
+                            <tr role="row" class="heading">
                                 <th width="10%">Icon</th>
                                 <th width="10%">Sort</th>
                                 <th width="20%">Name</th>
@@ -24,16 +21,23 @@
                                 <th width="10%">Active</th>
                                 <th width="8%">Action</th>
                             </tr>
+                            <tr role="row" class="filter">
+                                <th></th>
+                                <th><input type="text" class="form-control input-xs form-filter" name="sort" autocomplete="off"></th>
+                                <th><input type="text" class="form-control input-xs form-filter" name="name" autocomplete="off"></th>
+                                <th><input type="text" class="form-control input-xs form-filter" name="desc" autocomplete="off"></th>
+                                <th><input type="text" class="form-control input-xs form-filter" name="status" autocomplete="off"></th>
+                                <th></th>
+                            </tr>
                         </thead>
                         <tbody></tbody>
                     </table>
                 </div>
-                <!-- /.box-body -->
             </div>
+            <!-- /.box-body -->
         </div>
     </div>
-    </div>
-</section>
+</div>
 <div id="add-data-modal" class="modal fade" role="dialog">
     <div class="modal-dialog" width="900px">
         <div class="modal-content">
@@ -78,56 +82,111 @@
 <script>
     var attribute = [];
     jQuery(document).ready(function() {
-        jQuery('#data-table').DataTable({
-            ajax: "{!! route('get.grid_modules') !!}",
-            columns: [{
-                    "render": function(data, type, row) {
-                        return '<i  class="' + row.icon + '"></i>';
-                    }
-                },
-                {
-                    data: 'sort',
-                    name: 'sort'
-                },
-                {
-                    data: 'name',
-                    name: 'name'
-                },
-                {
-                    data: 'description',
-                    name: 'description'
-                },
-                {
-                    "render": function(data, type, row) {
-                        if (row.deleted == 0) {
-                            var content = '<span class="badge bg-red">Y</span>';
-                        } else {
-                            var content = '<span class="badge bg-grey">N</span>';
-                        }
-                        return content;
-                    }
-                },
-                {
-                    "render": function(data, type, row) {
-                        var content = '<button class="btn btn-flat btn-xs btn-danger btn-action btn-edit " title="edit data ' + row.id + '" onClick="edit(' + row.id + ')"><i class="fa fa-pencil"></i></button>';
-                        content += '<button class="btn btn-flat btn-xs btn-danger btn-action btn-activated  ' + (row.deleted == 0 ? '' : 'hide') + '" style="margin-left:5px"  onClick="inactive(' + row.id + ')"><i class="fa fa-trash"></i></button>';
-                        content += '<button class="btn btn-flat btn-xs btn-danger btn-action btn-inactivated ' + (row.deleted == 1 ? '' : 'hide') + '" style="margin-left:5px"  onClick="active(' + row.id + ')"><i class="fa fa-check"></i></button>';
-
-                        return content;
-                    }
-                }
-            ],
-            columnDefs: [{
-                    targets: [0, 5],
-                    className: 'text-center',
-                    orderable: false
-                },
-                {
-                    targets: [4],
-                    className: 'text-center'
-                }
-            ]
+        jQuery.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
         });
+        var grid = new Datatable();
+        grid.init({
+            src: jQuery("#data-table"),
+            onSuccess: function(grid) {},
+            onError: function(grid) {},
+            onDataLoad: function(grid) {},
+            loadingMessage: 'Loading...',
+            dataTable: {
+                "dom": "<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'<'table-group-actions pull-right'>>r>t<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'>>",
+                "bStateSave": true, // save datatable state(pagination, sort, etc) in cookie.
+                "lengthMenu": [
+                    [10, 20, 50, 100, 150],
+                    [10, 20, 50, 100, 150]
+                ],
+                "pageLength": 10,
+                "ajax": {
+                    url: "{!! route('get.grid_modules') !!}"
+                },
+                columns: [{
+                        "render": function(data, type, row) {
+                            return '<i  class="' + row.icon + '"></i>';
+                        }
+                    },
+                    {
+                        data: 'sort',
+                        name: 'sort'
+                    },
+                    {
+                        data: 'name',
+                        name: 'name'
+                    },
+                    {
+                        data: 'description',
+                        name: 'description'
+                    },
+                    {
+                        "render": function(data, type, row) {
+                            if (row.deleted == 0) {
+                                var content = '<span class="badge bg-red">Y</span>';
+                            } else {
+                                var content = '<span class="badge bg-grey">N</span>';
+                            }
+                            return content;
+                        }
+                    },
+                    {
+                        "render": function(data, type, row) {
+                            var content = '<button class="btn btn-flat btn-xs btn-danger btn-action btn-edit {{ (isset($access["CREATE"]) ? "":"") }}" title="edit data ' + row.id + '" onClick="edit(' + row.id + ')"><i class="fa fa-pencil"></i></button>';
+                            content += '<button class="btn btn-flat btn-xs btn-danger btn-action btn-activated  {{ (isset($access["CREATE"]) ? "":"") }}  ' + (row.deleted == 0 ? '' : 'hide') + '" style="margin-left:5px"  onClick="inactive(' + row.id + ')"><i class="fa fa-trash"></i></button>';
+                            content += '<button class="btn btn-flat btn-xs btn-danger btn-action btn-inactivated {{ (isset($access["CREATE"]) ? "":"") }} ' + (row.deleted == 1 ? '' : 'hide') + '" style="margin-left:5px"  onClick="active(' + row.id + ')"><i class="fa fa-check"></i></button>';
+
+                            return content;
+                        }
+                    }
+                ],
+                columnDefs: [{
+                        targets: [5],
+                        className: 'text-center',
+                        orderable: false
+                    },
+                    {
+                        targets: [0],
+                        className: 'text-center',
+                        orderable: false,
+                        width: '5%'
+                    },
+                    {
+                        targets: [1],
+                        className: 'text-center',
+                        width: '6%'
+                    },
+                    {
+                        targets: [4],
+                        width: '6%',
+                        className: 'text-center'
+                    }
+                ],
+                oLanguage: {
+                    sProcessing: "<div id='datatable-loader'></div>",
+                    sEmptyTable: "Data tidak di temukan",
+                    sLoadingRecords: ""
+                },
+                "order": [],
+            }
+        });
+
+        jQuery("input[name='status']").select2({
+            data: [{
+                    id: 0,
+                    text: 'Y'
+                },
+                {
+                    id: 1,
+                    text: 'N'
+                },
+            ],
+            width: '100%',
+            placeholder: ' ',
+            allowClear: true
+        })
 
         jQuery("#icon").on('keyup', function() {
             jQuery("#font-awesome-result").removeClass();

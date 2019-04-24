@@ -20,16 +20,83 @@ class ModuleController extends Controller
 /* 
         if (AccessRight::granted() == false)
             return response(view('errors.403'), 403);; */
-
+        
         $access = AccessRight::access();    
-        return view('usersetting.modules')->with(compact('access'));
+        $data['page_title'] = 'Module';
+        $data["role_access"] = $access;
+        return view('usersetting.modules')->with(compact('data'));
     }
 
-    public function dataGrid()
+    public function dataGrid(Request $request)
     {
-        $data = Db::table('tbm_Module')->get();
+        $orderColumn = $request->order[0]["column"];
+        $dirColumn = $request->order[0]["dir"];
+        $sortColumn = "";
+        $selectedColumn[] = "";
 
-        return response()->json(array('data' => $data));
+        $selectedColumn = ['icon', 'sort', 'name', "description", "deleted", "id"];
+
+        if ($orderColumn) {
+            $order = explode("as", $selectedColumn[$orderColumn]);
+            if (count($order) > 1) {
+                $orderBy = $order[0];
+            } else {
+                $orderBy = $selectedColumn[$orderColumn];
+            }
+        }
+
+        $sql = '
+            SELECT ' . implode(", ", $selectedColumn) . '
+                FROM TBM_MODULE
+                WHERE id > 0
+        ';
+
+
+        if ($request->name)
+        $sql .= " AND name like'%" . $request->name . "%'";
+
+
+        if ($request->desc)
+        $sql .= " AND description like'%" . $request->desc . "%'";
+
+
+
+        if ($request->status)
+        $sql .= " AND deleted = " . $request->status;
+       
+        if ($request->sort)
+        $sql .= " AND sort = " . $request->sort;
+
+        if ($orderColumn != "") {
+            $sql .= " ORDER BY " . $orderBy . " " . $dirColumn;
+        }
+
+        $data = DB::select(DB::raw($sql));
+
+        $iTotalRecords = count($data);
+        $iDisplayLength = intval($request->length);
+        $iDisplayLength = $iDisplayLength < 0 ? $iTotalRecords : $iDisplayLength;
+        $iDisplayStart = intval($request->start);
+        $sEcho = intval($request->draw);
+        $records = array();
+        $records["data"] = array();
+
+        $end = $iDisplayStart + $iDisplayLength;
+        $end = $end > $iTotalRecords ? $iTotalRecords : $end;
+
+        for ($i = $iDisplayStart; $i < $end; $i++) {
+            $records["data"][] =  $data[$i];
+        }
+
+        if (isset($_REQUEST["customActionType"]) && $_REQUEST["customActionType"] == "group_action") {
+            $records["customActionStatus"] = "OK"; // pass custom message(useful for getting status of group actions)
+            $records["customActionMessage"] = "Group action successfully has been completed. Well done!"; // pass custom message(useful for getting status of group actions)
+        }
+
+        $records["draw"] = $sEcho;
+        $records["recordsTotal"] = $iTotalRecords;
+        $records["recordsFiltered"] = $iTotalRecords;
+        return response()->json($records);
     }
 
     public function store(Request $request)

@@ -95,7 +95,7 @@
         <section class="sidebar">
             <div class="user-panel">
                 <div class="pull-left image">
-                    <img src="{{ asset('img/user-default.png') }}" class="img-circle" alt="User Image">
+                    <img src="{{ (Session::get('user_img') ? Session::get('user_img'):asset('img/user-default.png')) }}" class="img-circle" alt="User Image">
                 </div>
                 <div class="pull-left info">
                     <p>{{ strtoupper(Session::get('name')) }}</p>
@@ -123,7 +123,7 @@
                                     </a>
                                 </li>
                             @endforeach  -->
-                        <li class="treeview hide">
+                        <li class="treeview">
                             <a href="#">
                                 <i class="fa fa-cogs"></i> <span>Setting</span>
                                 <span class="pull-right-container">
@@ -131,11 +131,11 @@
                                 </span>
                             </a>
                             <ul class="treeview-menu">
-                                <li><a href="{{ url('request') }}"><i class="fa fa-fw fa-caret-right"></i> Module</a></li>
-                                <li><a href="{{ url('request') }}"><i class="fa fa-fw fa-caret-right"></i> Menu</a></li>
-                                <li><a href="{{ url('request') }}"><i class="fa fa-fw fa-caret-right"></i> Role</a></li>
-                                <li><a href="{{ url('request') }}"><i class="fa fa-fw fa-caret-right"></i> User</a></li>
-                                <li><a href="{{ url('request') }}"><i class="fa fa-fw fa-caret-right"></i> Role Access</a></li>
+                                <li><a href="{{ url('modules') }}"><i class="fa fa-fw fa-caret-right"></i> Module</a></li>
+                                <li><a href="{{ url('menu') }}"><i class="fa fa-fw fa-caret-right"></i> Menu</a></li>
+                                <li><a href="{{ url('roles') }}"><i class="fa fa-fw fa-caret-right"></i> Role</a></li>
+                                <li><a href="{{ url('users') }}"><i class="fa fa-fw fa-caret-right"></i> User</a></li>
+                                <li><a href="{{ url('accessright') }}"><i class="fa fa-fw fa-caret-right"></i> Role Access</a></li>
                             </ul>
                         </li>
                         <li class="treeview">

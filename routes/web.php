@@ -88,14 +88,20 @@ Route::post('/menu/post', 'MenuController@store');
 Route::get('/menu/edit/', 'MenuController@show');
 Route::post('/menu/inactive', 'MenuController@inactive');
 Route::post('/menu/active', 'MenuController@active');
-Route::get('grid-menu', ['as' => 'get.menu_grid', 'uses' => 'MenuController@dataGrid']);
+Route::match(['get', 'post'], 'grid-menu', [
+    'as' => 'get.menu_grid',
+    'uses' => 'MenuController@dataGrid'
+]);
 
 Route::resource('/modules', 'ModuleController');
 Route::post('/modules/post', 'ModuleController@store');
 Route::get('/modules/edit/', 'ModuleController@show');
 Route::post('/modules/inactive', 'ModuleController@inactive');
 Route::post('/modules/active', 'ModuleController@active');
-Route::get('grid-modules', ['as' => 'get.grid_modules', 'uses' => 'ModuleController@dataGrid']);
+Route::match(['get', 'post'], 'grid-modules', [
+    'as' => 'get.grid_modules',
+    'uses' => 'ModuleController@dataGrid'
+]);
 
 Route::resource('/menu', 'MenuController');
 Route::post('/menu/post', 'MenuController@store');
@@ -109,7 +115,10 @@ Route::post('/roles/post', 'RolesController@store');
 Route::get('/roles/edit/', 'RolesController@show');
 Route::post('/roles/inactive', 'RolesController@inactive');
 Route::post('/roles/active', 'RolesController@active');
-Route::get('grid-tm-role', ['as' => 'get.grid_tm_role', 'uses' => 'RolesController@dataGrid']);
+Route::match(['get', 'post'], 'grid-role_grid', [
+    'as' => 'get.role_grid',
+    'uses' => 'RolesController@dataGrid'
+]);
 
 
 Route::resource('/roleusers', 'RoleUserController');

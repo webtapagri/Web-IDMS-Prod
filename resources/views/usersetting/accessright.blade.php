@@ -8,7 +8,7 @@
                 <div class="table-container">
                     <div class="table-actions-wrapper">
                         <span></span>
-                        <button class="btn btn-sm btn-flat btn-default btn-refresh-data-table" title="refresh"><i class="glyphicon glyphicon-refresh"></i></button>
+                        <button class="btn btn-sm btn-flat btn-danger btn-refresh-data-table" title="refresh"><i class="glyphicon glyphicon-refresh"></i></button>
                     </div>
                     <table id="data-table" class="table table-condensed" width="100%">
                         <thead>
@@ -124,28 +124,28 @@
                     },
                     {
                         "render": function(data, type, row) {
-                            var content = '<input type="checkbox" class="checkbox" data-id="' + row.access_id + "-" + row.role_id + "-" + row.module_id + "-" + row.menu_id + '"  ' + (row.create ? 'checked' : '') + '/>';
+                            var content = '<center><input type="checkbox" class="checkbox" data-id="' + row.access_id + "-" + row.role_id + "-" + row.module_id + "-" + row.menu_id + '"  ' + (row.create ? 'checked' : '') + '/></center>';
 
                             return content;
                         }
                     },
                     {
                         "render": function(data, type, row) {
-                            var content = '<input type="checkbox" class="checkbox" data-id="' + row.access_id + "-" + row.role_id + "-" + row.module_id + "-" + row.menu_id + '"  ' + (row.read ? 'checked' : '') + '/>';
+                            var content = '<center><input type="checkbox" class="checkbox" data-id="' + row.access_id + "-" + row.role_id + "-" + row.module_id + "-" + row.menu_id + '"  ' + (row.read ? 'checked' : '') + '/></center>';
 
                             return content;
                         }
                     },
                     {
                         "render": function(data, type, row) {
-                            var content = '<input type="checkbox" class="checkbox text-center" data-id="' + row.access_id + "-" + row.role_id + "-" + row.module_id + "-" + row.menu_id + '"  ' + (row.update ? 'checked' : '') + '/>';
+                            var content = '<center><input type="checkbox" class="checkbox text-center" data-id="' + row.access_id + "-" + row.role_id + "-" + row.module_id + "-" + row.menu_id + '"  ' + (row.update ? 'checked' : '') + '/></center>';
 
                             return content;
                         }
                     },
                     {
                         "render": function(data, type, row) {
-                            var content = '<input type="checkbox" class="checkbox text-center" data-id="' + row.access_id + "-" + row.role_id + "-" + row.module_id + "-" + row.menu_id + '"  ' + (row.delete ? 'checked' : '') + '/>';
+                            var content = '<center><input type="checkbox" class="checkbox text-center" data-id="' + row.access_id + "-" + row.role_id + "-" + row.module_id + "-" + row.menu_id + '"  ' + (row.delete ? 'checked' : '') + '/></center>';
 
                             return content;
                         }
@@ -154,8 +154,8 @@
                 columnDefs: [{
                     targets: [3, 4, 5, 6],
                     orderable: false,
-                    width: '8%',
-                    className: 'align-middle'
+                    width: '6%',
+                    className: 'text-center'
                 }],
                 oLanguage: {
                     sProcessing: "<div id='datatable-loader'></div>",

@@ -32,6 +32,7 @@ class UsersController extends Controller
         $selectedColumn[] = "";
 
         $selectedColumn = ['user.img', "user.username", "user.name","role.name as role_name", "user.email", "user.job_code", "user.NIK", "user.area_code", "user.deleted", "user.id"];
+        
         if($orderColumn) {
             $order = explode("as", $selectedColumn[$orderColumn]);
             if(count($order)>1) {
@@ -44,19 +45,34 @@ class UsersController extends Controller
 
         $sql = '
             SELECT ' . implode(", ", $selectedColumn) . '
-                FROM tbm_user as user
-                INNER JOIN tbm_role as role ON (role.id=user.role_id)
+                FROM TBM_USER as user
+                INNER JOIN TBM_ROLE as role ON (role.id=user.role_id)
+                WHERE user.id > 0
         ';
 
-        $total_data = DB::select(DB::raw($sql));
-        //$sql .=  " limit " . $request->start . ', ' .$request->length;
-
         if ($request->username)
-            $whereClause[] = [ "user.username", 'like',"%". $request->username ."%"];
+        $sql .= " AND user.username like'%". $request->username ."%'";
+       
+        if ($request->name)
+        $sql .= " AND user.name like'%". $request->name ."%'";
+     
+        if ($request->email)
+        $sql .= " AND user.email like'%". $request->email ."%'";
         
-            if ($request->role)
-            $whereClause[] = [ "role.id", 'like',"%". $request->role ."%"];
-
+        if ($request->job_code)
+        $sql .= " AND user.job_code like'%". $request->job_code ."%'";
+     
+        if ($request->nik)
+        $sql .= " AND user.NIK like'%". $request->nik ."%'";
+       
+        if ($request->area_code)
+        $sql .= " AND user.area_code like'%". $request->area_code ."%'";
+        
+        if ($request->role)
+        $sql .= " AND role.id = " . $request->role;
+       
+        if ($request->status)
+        $sql .= " AND user.deleted = " . $request->status;
        
         if ($orderColumn != "") {
             $sql .= " ORDER BY " . $orderBy . " " . $dirColumn;

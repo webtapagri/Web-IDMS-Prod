@@ -8,7 +8,8 @@
                 <div class="table-container">
                     <div class="table-actions-wrapper">
                         <span></span>
-                        <button class="btn btn-sm btn-flat btn-default btn-refresh-data-table" title="refresh"><i class="glyphicon glyphicon-refresh"></i></button>
+                        <button class="btn btn-sm btn-flat btn-danger btn-refresh-data-table" title="refresh"><i class="glyphicon glyphicon-refresh"></i></button>
+                        <button class="btn btn-sm btn-flat btn-danger btn-add"><i class="glyphicon glyphicon-plus" title="Add new data"></i></button>
                     </div>
                     <table id="data-table" class="table table-condensed" width="100%">
                         <thead>
@@ -26,15 +27,14 @@
                             </tr>
                             <tr role="row" class="filter">
                                 <th></th>
-                                <th><input type="text" class="form-control input-sm form-filter" name="username"></th>
-                                <th><input type="text" class="form-control input-sm form-filter" name="role"></th>
-                                <th><input type="text" class="form-control input-sm form-filter" name="name"></th>
-                                <th><input type="text" class="form-control input-sm form-filter" name="email"></th>
-                                <th><input type="text" class="form-control input-sm form-filter" name="job_code"></th>
-                                <th><input type="text" class="form-control input-sm form-filter" name="nik"></th>
-                                <th><input type="text" class="form-control input-sm form-filter" name="area_code"></th>
-                                <th><input type="text" class="form-control input-sm form-filter" name="status"></th>
-                                <th><input type="text" class="form-control input-sm form-filter" name="active"></th>
+                                <th><input type="text" class="form-control input-xs form-filter" name="username" autocomplete="off"></th>
+                                <th><input type="text" class="form-control input-xs form-filter" name="role" id="flt_role" autocomplete="off"></th>
+                                <th><input type="text" class="form-control input-xs form-filter" name="name" autocomplete="off"></th>
+                                <th><input type="text" class="form-control input-xs form-filter" name="email" autocomplete="off"></th>
+                                <th><input type="text" class="form-control input-xs form-filter" name="job_code" autocomplete="off"></th>
+                                <th><input type="text" class="form-control input-xs form-filter" name="nik" autocomplete="off"></th>
+                                <th><input type="text" class="form-control input-xs form-filter" name="area_code" autocomplete="off"></th>
+                                <th><input type="text" class="form-control input-xs form-filter" name="status" autocomplete="off"></th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -229,10 +229,8 @@
             }
         });
 
-
-
         var role = jQuery.parseJSON(JSON.stringify(dataJson('{!! route("get.select_role") !!}')));
-        jQuery('input[name="name"], #role_id').select2({
+        jQuery('input[name="role"], #role_id').select2({
             data: role,
             width: '100%',
             placeholder: ' ',
@@ -265,6 +263,21 @@
             placeholder: ' ',
             allowClear: true
         });
+
+        jQuery("input[name='status']").select2({
+            data: [{
+                    id: 0,
+                    text: 'Y'
+                },
+                {
+                    id: 1,
+                    text: 'N'
+                },
+            ],
+            width: '100%',
+            placeholder: ' ',
+            allowClear: true
+        })
 
         jQuery('.btn-add').on('click', function() {
             document.getElementById("data-form").reset();
