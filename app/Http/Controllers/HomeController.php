@@ -133,10 +133,79 @@ class HomeController extends Controller
         return response()->json($records);
     }
 
-    public function outstanding()
+    function requestDetail()
     {
+        $no_reg = $_REQUEST['no_reg'];
         $data = DB::table('TR_REG_ASSET')
+            ->select("NO_REG  as id","TYPE_TRANSAKSI as transaction_type", "TANGGAL_REG as request_date","NO_PO as no_po", "TANGGAL_PO as po_date","KODE_VENDOR as vendor_code","NAMA_VENDOR as vendor_name")
             ->where("NO_REG", "=", $no_reg)
+            ->get();
+
+        return response()->json(array('data' => $data));
+    }
+   
+    function requestDetailItem()
+    {
+        $no_reg = $_REQUEST['no_reg'];
+        $data = DB::table('TR_REG_ASSET_DETAIL_PO')
+            ->select("NO_REG  as id", "ITEM_PO as item_id", "KODE_MATERIAL as material_code", "NAMA_MATERIAL as material_name","QUANTITY_PO as qty", "QUANTITY_SUBMIT as qty_request")
+            ->where("NO_REG", "=", $no_reg)
+            ->get();
+
+        return response()->json(array('data' => $data));
+    }
+    
+    function requestDetailItemPO()
+    {
+        $no_reg = $_REQUEST['no_reg'];
+        $item_po = $_REQUEST['item_po'];
+        $data = DB::table('TR_REG_ASSET_DETAIL')
+            ->select(
+            "ITEM_PO as item_po",
+            "KODE_MATERIAL as code",
+            "NAMA_MATERIAL as name",
+            "NO_PO as po_no",
+            "KODE_JENIS_ASSET  as asset_type",
+            "JENIS_ASSET as asset_type",
+            "GROUP as asset_group",
+            "SUB_GROUP as asset_sub_group",
+            "NAMA_ASSET as asset_name",
+            "MERK as asset_brand",
+            "SPESIFIKASI_OR_WARNA as asset_specification",
+            "NO_RANGKA_OR_NO_SERI as asset_serie_no",
+            "NO_MESIN_OR_IMEI as asset_imei",
+            "NO_POLISI as asset_police_no",
+            "LOKASI_BA_CODE as asset_ba_code",
+            "LOKASI_BA_DESCRIPTION  as  asset_location",
+            "TAHUN_ASSET as asset_year",
+            "KONDISI_ASSET  as asset_condition",
+            "INFORMASI as asset_info",
+            "NAMA_PENANGGUNG_JAWAB_ASSET as asset_pic_name",
+            "JABATAN_PENANGGUNG_JAWAB_ASSET as asset_pic_level")
+            ->where([
+                ["ITEM_PO", "=", $item_po],
+                [ "NO_REG", "=", $no_reg],
+            ])
+            ->get();
+
+        return response()->json(array('data' => $data));
+    }
+    
+    function requestDetailItemFile()
+    {
+        $no_reg = $_REQUEST['no_reg'];
+        $item_file = $_REQUEST['item_file'];
+        $data = DB::table('TR_REG_ASSET_DETAIL_FILE')
+            ->select(
+            "JENIS_FOTO as type",
+            "FILE_CATEGORY as category",
+            "FILENAME as file_name",
+            "DOC_SIZE as size",
+            "FILE_UPLOAD as file")
+            ->where([
+                [ "NO_REG_ITEM_FILE", "=", $item_file],
+                [ "NO_REG", "=", $no_reg],
+            ])
             ->get();
 
         return response()->json(array('data' => $data));

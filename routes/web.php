@@ -88,7 +88,7 @@ Route::get('/menu/edit/', 'MenuController@show');
 Route::post('/menu/inactive', 'MenuController@inactive');
 Route::post('/menu/active', 'MenuController@active');
 Route::match(['get', 'post'], 'grid-menu', [
-    'as' => 'get.grid_menu',
+    'as' => 'get.menu_grid',
     'uses' => 'MenuController@dataGrid'
 ]);
 
@@ -126,8 +126,13 @@ Route::match(['get', 'post'], 'grid-accessright', [
 Route::get('SapDownloadExcel', 'SAPController@downloadExcel');
 
 /* JSON DATA SOURCE */
-Route::get('get-outstandingdetail', ['as' => 'get.outstandingdetail', 'uses' => 'OutstandingController@requestDetail']);
+Route::get( 'get-outstandingdetail', ['as' => 'get.outstandingdetail', 'uses' => 'HomeController@requestDetail']);
+Route::get( 'get-outstandingdetailitem', ['as' => 'get.outstandingdetailitem', 'uses' => 'HomeController@requestDetailItem']);
+Route::get( 'get-outstandingdetailitempo', ['as' => 'get.outstandingdetailitempo', 'uses' => 'HomeController@requestDetailItemPO']);
+Route::get( 'get-outstandingdetailitemfile', ['as' => 'get.outstandingdetailitemfile', 'uses' => 'HomeController@requestDetailItemFile']);
+
 
 /* SELECT 2 */
 Route::get('get-select_module', ['as' => 'get.select_module', 'uses' => 'ModuleController@select2']);
 Route::get('get-select_menu', ['as' => 'get.select_menu', 'uses' => 'MenuController@select2']);
+Route::get('get-select_role', ['as' => 'get.select_role', 'uses' => 'RoleController@select2']);

@@ -87,6 +87,9 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
+
+        var role = jQuery.parseJSON(JSON.stringify(dataJson('{!! route("get.outstandingdetail") !!}')));
+
         var grid = new Datatable();
         grid.init({
             src: jQuery("#data-table"),

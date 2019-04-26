@@ -351,6 +351,17 @@
 @section('js')
 <script>
     var attribute = [];
+    var imgFiles = [];
+    var addFile = 2;
+    var request_item = {};
+    var item_count = 1;
+    var request_item_page = [];
+    var data_page = new Array(3);
+    var current_page = 1;
+    var records_per_page = 1;
+    var data_detail = {};
+    var request_docs = [];
+    var selected_detail_item = [];
     jQuery(document).ready(function() {
 
         jQuery.ajaxSetup({
@@ -505,13 +516,247 @@
 
     function requestDetail(id) {
 
-        var result = jQuery.parseJSON(JSON.stringify(dataJson("{{ url('menu/edit/?id=') }}" + id)));
+        var asset = jQuery.parseJSON(JSON.stringify(dataJson('{!! route("get.outstandingdetail") !!}/?no_reg=' + id)));
+        var data = asset[0];
+        jQuery("#asset_request_date").val(getDate(data.request_date));
+        /* jQuery("#asset_business_area").val(data.business_area); */
+        jQuery("#asset_po_no").val(data.no_po);
+        jQuery("#asset_po_date").val(getDate(data.po_date));
+        jQuery("#asset_vendor_code").val(data.vendor_code);
+        jQuery("#asset_vendor_name").val(data.vendor_name);
+
+        var asset_item = jQuery.parseJSON(JSON.stringify(dataJson('{!! route("get.outstandingdetailitem") !!}/?no_reg=' + id)));
+
+        var select_item = [];
+        jQuery.each(asset_item, function(key, val) {
+            select_item.push({
+                id: key,
+                text: val.material_code + ' - ' + val.material_name
+            });
+        });
+
+        jQuery("#detail_item_selected").select2({
+            data: select_item,
+            width: "100%",
+            allowClear: true,
+            placeholder: ' '
+        }).on("change", function() {
+            getProp(jQuery(this).val());
+        });
+
+        request_item = [];
+        jQuery.each(asset_item, function(key, val) {
+            request_item[key] = {
+                id: key,
+                item_po: val.item_id,
+                code: val.material_code,
+                name: val.material_name,
+                qty: val.qty,
+                request_qty: val.qty_request,
+                outstanding_qty: (val.qty - val.qty_request),
+                detail: []
+            };
+
+            createPage(key, id);
+
+        });
 
         jQuery("#detail-modal").modal({
             backdrop: 'static',
             keyboard: false
         });
         jQuery("#detrail-modal").modal('show');
+    }
+
+    function createPage(id, no_reg) {
+        request_item_page = [];
+        data_page = [];
+        var item_detail = [];
+        var item = request_item[id];
+        var asset_item_po = jQuery.parseJSON(JSON.stringify(dataJson('{!! route("get.outstandingdetailitempo") !!}/?no_reg=' + no_reg + '&item_po=' + item.item_po)));
+        jQuery.each(asset_item_po, function(key, val) {
+            var file = jQuery.parseJSON(JSON.stringify(dataJson('{!! route("get.outstandingdetailitemfile") !!}/?no_reg=' + no_reg + '&item_file=' + item.item_po.toString() + (key + 1))));
+            var file_foto_asset = [];
+            var file_foto_seri = [];
+            var file_foto_mesin = [];
+            jQuery.each(file, function(i, field) {
+                if (field.category == "asset") {
+                    file_foto_asset = {
+                        name: field.name,
+                        size: field.size,
+                        type: field.type,
+                        file: field.file
+                    }
+                } else if (field.category === "no seri") {
+                    file_foto_seri = {
+                        name: field.name,
+                        size: field.size,
+                        type: field.type,
+                        file: field.file
+                    }
+                } else if (field.category === "imei") {
+                    file_foto_mesin = {
+                        name: field.name,
+                        size: field.size,
+                        type: field.type,
+                        file: field.file
+                    }
+                }
+            });
+
+
+            item_detail.push({
+                asset_type: val.asset_type,
+                asset_group: val.asset_group,
+                asset_sub_group: val.asset_sub_group,
+                asset_name: val.asset_name,
+                asset_brand: val.asset_brand,
+                asset_imei: val.asset_imei,
+                asset_police_no: val.asset_police_no,
+                asset_serie_no: val.asset_serie_no,
+                asset_specification: val.asset_specification,
+                asset_location: val.asset_location,
+                asset_year: val.asset_year,
+                asset_pic_name: val.asset_pic_name,
+                asset_pic_level: val.asset_pic_level,
+                asset_foto: '',
+                asset_info: val.asset_info,
+                foto_asset: file_foto_asset,
+                foto_asset_seri: file_foto_seri,
+                foto_asset_mesin: file_foto_mesin
+            });
+        });
+
+        request_item[id].detail = item_detail;
+    }
+
+
+    function requestItemData() {
+        var total = 0;
+        jQuery.each(request_item, function(key, val) {
+
+            if (val) {
+                total++;
+            }
+        });
+        return total;
+    }
+
+    function getProp(id) {
+
+        var item = request_item[id];
+        request_item_page = item.detail;
+        jQuery('#item_po').val(item.item_po);
+        jQuery('#item_code').val(item.code);
+        jQuery('#item_name').val(item.name);
+        jQuery('#item_qty_index').val(item.request_qty);
+
+        changePage(1);
+    }
+
+    function prevPage() {
+        jQuery(".loading-event").fadeIn();
+        if (current_page > 1) {
+            current_page--;
+            changePage(current_page);
+        }
+        jQuery(".loading-event").fadeOut();
+    }
+
+    function nextPage() {
+        jQuery(".loading-event").fadeIn();
+        if (current_page < numPages()) {
+            current_page++;
+            changePage(current_page);
+        }
+        jQuery(".loading-event").fadeOut();
+    }
+
+    function changePage(page) {
+        var btn_next = document.getElementById("btn_next");
+        var btn_prev = document.getElementById("btn_prev");
+        var page_span = document.getElementById("page");
+
+        if (page < 1) page = 1;
+        if (page > numPages()) page = numPages();
+        page_span.innerHTML = page + '/' + request_item_page.length;
+
+        if (page == 1) {
+            btn_prev.style.visibility = "hidden";
+        } else {
+            btn_prev.style.visibility = "visible";
+        }
+
+        if (page == numPages()) {
+            btn_next.style.visibility = "hidden";
+        } else {
+            btn_next.style.visibility = "visible";
+
+        }
+
+        assetInfo(current_page);
+    }
+
+    function assetInfo(index) {
+        var obj = index - 1;
+        var key = jQuery('#detail_item_selected').val();
+        var request = request_item[key];
+        var item = request.detail[obj];
+
+        jQuery('#asset_name').val(item.asset_name);
+        jQuery('#asset_type').val(item.asset_type);
+        jQuery('#asset_group').val(item.asset_group);
+        jQuery('#asset_sub_group').val(item.asset_sub_group);
+        jQuery('#asset_brand').val(item.asset_brand);
+        jQuery('#asset_imei').val(item.asset_imei);
+        jQuery('#asset_police_no').val(item.asset_police_no);
+        jQuery('#asset_serie_no').val(item.asset_police_no);
+        jQuery('#asset_specification').val(item.asset_specification);
+        jQuery('#asset_year').val(item.asset_year);
+        jQuery('#asset_pic_name').val(item.asset_pic_name);
+        jQuery('#asset_pic_level').val(item.asset_pic_level);
+        jQuery('#asset_info').val(item.asset_info);
+        jQuery('#asset_location').val(item.asset_location);
+        jQuery('#asset_pic_name').val(item.asset_pic_name);
+        jQuery('#asset_pic_level').val(item.asset_pic_level);
+
+
+        if (item.foto_asset.file) {
+            jQuery("#foto_asset_thumb_1").prop('src', item.foto_asset.file);
+            jQuery(".btn-foto-asset-remove").removeClass('hide');
+        } else {
+            jQuery("#foto_asset_thumb_1").prop('src', "{{URL::asset('img/add-img.png')}}");
+            jQuery(".btn-foto-asset-remove").addClass('hide');
+        }
+
+        if (item.foto_asset_seri.file) {
+            jQuery("#foto_no_seri_thumb_1").prop('src', item.foto_asset_seri.file);
+            jQuery(".btn-foto-seri-remove").removeClass('hide');
+        } else {
+            jQuery("#foto_no_seri_thumb_1").prop('src', "{{URL::asset('img/add-img.png')}}");
+            jQuery(".btn-foto-seri-remove").addClass('hide');
+        }
+
+        if (item.foto_asset_mesin.file) {
+            jQuery("#foto_mesin_thumb_1").prop('src', item.foto_asset_mesin.file);
+            jQuery(".btn-foto-mesin-remove").removeClass('hide');
+        } else {
+            jQuery("#foto_mesin_thumb_1").prop('src', "{{URL::asset('img/add-img.png')}}");
+            jQuery(".btn-foto-mesin-remove").addClass('hide');
+        }
+    }
+
+
+    function numPages() {
+        return Math.ceil(request_item_page.length / records_per_page);
+    }
+
+    function getDate(param) {
+        var bulan = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+        var date = new Date(param);
+        var month = date.getMonth();
+
+        return date.getDate() + " " + bulan[month] + " " + date.getFullYear();
     }
 </script>
 @stop
