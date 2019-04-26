@@ -505,10 +505,8 @@
 
     function requestDetail(id) {
 
-        var role = jQuery.parseJSON(JSON.stringify(dataJson('{!! route("get.getRequest") !!}')));
-        console.log(role);
+        var result = jQuery.parseJSON(JSON.stringify(dataJson("{{ url('menu/edit/?id=') }}" + id)));
 
-        var role = jQuery.parseJSON(JSON.stringify(dataJson('{!! route("get.select_module") !!}')));
         jQuery("#detail-modal").modal({
             backdrop: 'static',
             keyboard: false

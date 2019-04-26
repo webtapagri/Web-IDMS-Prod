@@ -25,15 +25,11 @@ Route::group(['middleware' => ['web']], function () {
 /* DASHBOARD */
 Route::match(['get', 'post'], 'grid-outstanding', [
     'as' => 'get.outstanding',
-    'uses' => 'HomeController@dataGrid'
+    'uses' => 'OutstandingController@dataGrid'
 ]);
+Route::get('/asset/edit/', 'AssetController@show');
 
-Route::get('/', 'HomeController@index')->name('home');
-Route::get('/home', 'HomeController@index')->name('home');
-Route::get('/profile', 'ProfileController@index');
-Route::post('/ldaplogin', 'LDAPController@login');
-Route::post('/ldaplogout', 'LDAPController@logout');
-
+/* PAGES */
 Route::resource('/asset', 'AssetController');
 Route::get('/asset/create/{type}', 'AssetController@create')->name('type');
 Route::post('/asset/post', 'AssetController@store');
@@ -53,7 +49,6 @@ Route::get('grid-request', ['as' => 'get.request_grid', 'uses' => 'RequestContro
 Route::get('get-no_po', ['as' => 'get.no_po', 'uses' => 'RequestController@getPO']);
 Route::get('requestpdf', ['as' => 'get.requestpdf', 'uses' => 'RequestController@pdfDoc']);
 
-
 Route::resource('/approval', 'ApprovalController');
 Route::get('/approval/create/{type}', 'ApprovalController@create')->name('type');
 Route::post('/approval/post', 'ApprovalController@store');
@@ -61,7 +56,6 @@ Route::get('/approval/edit/', 'ApprovalController@show');
 Route::post('/approval/inactive', 'ApprovalController@inactive');
 Route::post('/approval/active', 'ApprovalController@active');
 Route::get('grid-approval', ['as' => 'get.approval_grid', 'uses' => 'ApprovalController@dataGrid']);
-
 
 Route::resource('/mutasi', 'MutasiController');
 Route::get('/mutasi/create/{type}', 'MutasiController@create')->name('type');
@@ -72,6 +66,12 @@ Route::post('/mutasi/active', 'MutasiController@active');
 Route::get('grid-mutasi', ['as' => 'get.mutasi_grid', 'uses' => 'MutasiController@dataGrid']);
 
 /* USER SETTINGS */
+Route::get('/', 'HomeController@index')->name('home');
+Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/profile', 'ProfileController@index');
+Route::post('/ldaplogin', 'LDAPController@login');
+Route::post('/ldaplogout', 'LDAPController@logout');
+
 Route::resource('/users', 'UsersController');
 Route::post('/users/post', 'UsersController@store');
 Route::get('/users/edit/', 'UsersController@show');
@@ -126,7 +126,6 @@ Route::match(['get', 'post'], 'grid-accessright', [
 Route::get('SapDownloadExcel', 'SAPController@downloadExcel');
 
 /* JSON DATA SOURCE */
-Route::get('get-data_requestdetail', ['as' => 'get.data_requestdetail', 'uses' => 'HomeController@getRequest']);
 
 /* SELECT 2 */
 Route::get('get-select_module', ['as' => 'get.select_module', 'uses' => 'ModuleController@select2']);

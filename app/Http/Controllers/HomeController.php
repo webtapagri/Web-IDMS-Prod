@@ -33,7 +33,8 @@ class HomeController extends Controller
         }    
     }
 
-    public function dataGrid(Request $request) {
+    public function dataGrid(Request $request)
+    {
         $orderColumn = $request->order[0]["column"];
         $dirColumn = $request->order[0]["dir"];
         $sortColumn = "";
@@ -60,14 +61,13 @@ class HomeController extends Controller
             }
         }
 
-        if($orderColumn) {
+        if ($orderColumn) {
             $order = explode("as", $selectedColumn[$orderColumn]);
-            if(count($order)>1) {
-                $orderBy = $order[0]; 
+            if (count($order) > 1) {
+                $orderBy = $order[0];
             } else {
                 $orderBy = $selectedColumn[$orderColumn];
             }
-
         }
 
         $sql = '
@@ -78,30 +78,29 @@ class HomeController extends Controller
         ';
 
         $total_data = DB::select(DB::raw($sql));
-        //$sql .=  " limit " . $request->start . ', ' .$request->length;
 
-        if($request->no_po)
-        $sql .= " AND asset.NO_PO  like '%" . $request->no_po . "%'";
-       
-        if($request->requestor)
-        $sql .= " AND requestor.name  like '%" . $request->requestor . "%'";
-       
-        if($request->vendor_code)
-        $sql .= " AND asset.KODE_VENDOR  like '%" . $request->vendor_code . "%'";
-        
-        if($request->vendor_name)
-        $sql .= " AND asset.NAMA_VENDOR  like '%" . $request->vendor_name . "%'";
+        if ($request->no_po)
+            $sql .= " AND asset.NO_PO  like '%" . $request->no_po . "%'";
 
-        if($request->transaction_type)
-        $sql .= " AND asset.TYPE_TRANSAKSI  = " . $request->transaction_type;
-        
-        if($request->request_date)
-        $sql .= " AND DATE_FORMAT(asset.TANGGAL_REG, '%Y-%m-%d') = " . DATE_FORMAT(date_create($request->request_date), 'Y-m-d');
-        
-        
-        if($request->po_date)
-        $sql .= " AND DATE_FORMAT(asset.TANGGAL_PO, '%Y-%m-%d') = " . DATE_FORMAT(date_create($request->po_date), 'Y-m-d');
-        
+        if ($request->requestor)
+            $sql .= " AND requestor.name  like '%" . $request->requestor . "%'";
+
+        if ($request->vendor_code)
+            $sql .= " AND asset.KODE_VENDOR  like '%" . $request->vendor_code . "%'";
+
+        if ($request->vendor_name)
+            $sql .= " AND asset.NAMA_VENDOR  like '%" . $request->vendor_name . "%'";
+
+        if ($request->transaction_type)
+            $sql .= " AND asset.TYPE_TRANSAKSI  = " . $request->transaction_type;
+
+        if ($request->request_date)
+            $sql .= " AND DATE_FORMAT(asset.TANGGAL_REG, '%Y-%m-%d') = " . DATE_FORMAT(date_create($request->request_date), 'Y-m-d');
+
+
+        if ($request->po_date)
+            $sql .= " AND DATE_FORMAT(asset.TANGGAL_PO, '%Y-%m-%d') = " . DATE_FORMAT(date_create($request->po_date), 'Y-m-d');
+
         if ($orderColumn != "") {
             $sql .= " ORDER BY " . $orderBy . " " . $dirColumn;
         }
@@ -134,11 +133,12 @@ class HomeController extends Controller
         return response()->json($records);
     }
 
-    function getRequest() {
+    public function outstanding()
+    {
         $data = DB::table('TR_REG_ASSET')
-        ->where("NO_REG", "=", $no_reg)
-        ->get();
+            ->where("NO_REG", "=", $no_reg)
+            ->get();
 
-        return response()->json(array('data'=>$data));
+        return response()->json(array('data' => $data));
     }
 }
