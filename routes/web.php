@@ -126,8 +126,8 @@ Route::match(['get', 'post'], 'grid-accessright', [
 Route::get('SapDownloadExcel', 'SAPController@downloadExcel');
 
 /* JSON DATA SOURCE */
+Route::get('get-outstandingdetail', ['as' => 'get.outstandingdetail', 'uses' => 'OutstandingController@requestDetail']);
 
 /* SELECT 2 */
 Route::get('get-select_module', ['as' => 'get.select_module', 'uses' => 'ModuleController@select2']);
 Route::get('get-select_menu', ['as' => 'get.select_menu', 'uses' => 'MenuController@select2']);
-Route::get('get-select_role', ['as' => 'get.select_role', 'uses' => 'RolesController@select2']);
