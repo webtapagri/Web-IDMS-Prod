@@ -39,6 +39,9 @@ class RequestController extends Controller
     public function create(Request $request) {
         $data['page_title'] = 'Request '.($request->type == "amp" ? 'Melalui PO AMP':'Melalui PO Sendiri');
         $data['type'] = ($request->type == "amp" ? 'Melalui PO AMP':'Melalui PO Sendiri');
+        $access = AccessRight::access();
+        $data["access"] = (object)$access;
+        
         if($request->type == "amp") {
             return view('request.amp')->with(compact('data'));
         }else {
