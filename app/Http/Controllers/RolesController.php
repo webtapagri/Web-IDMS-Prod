@@ -17,13 +17,15 @@ class RolesController extends Controller
     {
         if (empty(Session::get('authenticated')))
             return redirect('/login');
-/* 
-        if (AccessRight::granted() == false)
-            return response(view('errors.403'), 403);; */
+
+        if (AccessRight::granted() === false) {
+            $data['page_title'] = 'Oops! Unauthorized.';
+            return response(view('errors.403')->with(compact('data')), 403);
+        }
 
         $access = AccessRight::access();    
         $data["page_title"] = "Role";
-        $data["access"] = $access;
+        $data["access"] = (object)$access;
         return view('usersetting.roles')->with(compact('data'));
     }
 

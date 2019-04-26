@@ -17,11 +17,14 @@ class UsersController extends Controller
         if (empty(Session::get('authenticated')))
             return redirect('/login');
 
-       /*  if (AccessRight::granted() == false)
-            return response(view('errors.403'), 403); */
+        if (AccessRight::granted() === false) {
+            $data['page_title'] = 'Oops! Unauthorized.';
+            return response(view('errors.403')->with(compact('data')), 403);
+        }
 
-       /*  $access = AccessRight::access(); */
-       $data["page_title"] = "User";
+        $access = AccessRight::access();
+        $data["page_title"] = "User";
+        $data["access"] = (object)$access;
         return view('usersetting.users')->with(compact('data'));
     }
 

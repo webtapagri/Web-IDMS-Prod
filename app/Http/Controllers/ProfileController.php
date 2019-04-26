@@ -19,8 +19,9 @@ class ProfileController extends Controller
             return redirect('/login');
             
 
-        $profile = AccessRight::profile();
-        return view('profile')->with(compact('profile'));
+        $data["page_title"] = "Profile";    
+        $data["profile"] = AccessRight::profile();
+        return view('profile')->with(compact('data'));
     }
 
 }

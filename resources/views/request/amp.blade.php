@@ -119,7 +119,9 @@
 
                     </div>
                     <div class="box-footer clearfix">
+                        @if($data['access']->create == 1)
                         <button type="submit" class="btn btn-danger btn-flat pull-right" style="margin-right: 5px;">Submit</button>
+                        @endif
                         <button type="button" class="btn btn-default btn-flat btn-cancel pull-right" style="margin-right: 5px;">Clear</button>
                     </div>
                 </div>
@@ -399,8 +401,10 @@
                         </div>
                     </div>
                     <div class="box-footer clearfix">
+                        @if($data['access']->create == 1)
                         <button type="submit" class="btn btn-danger btn-flat pull-right" style="margin-right: 5px;">Draft</button>
                         <button type="submit" class="btn btn-danger btn-flat pull-right" style="margin-right: 5px;">Submit</button>
+                        @endif
                         <button type="button" class="btn btn-default btn-flat btn-back-request-form pull-right hide" style="margin-right: 5px;"><i class="fa fa-arrow-circle-left"></i> Back</button>
                     </div>
                 </div>
@@ -769,33 +773,33 @@
         var name = jQuery("#detail_item_name");
         var qty = jQuery("#detail_item_qty");
 
-        if(item_po.val() == "") {
+        if (item_po.val() == "") {
             item_po.focus();
             valid = false;
         }
-       
-        if(code.val() == "") {
+
+        if (code.val() == "") {
             code.focus();
             valid = false;
         }
-       
-        if(name.val() == "") {
+
+        if (name.val() == "") {
             name.focus();
             valid = false;
         }
-        
-        if(qty.val() == "") {
+
+        if (qty.val() == "") {
             qty.focus();
             valid = false;
         }
 
         return valid;
-        
+
     }
 
 
     function addItem() {
-        if(validateItem()) {
+        if (validateItem()) {
             var id = makeInt(5);
             var item_po = jQuery("#detail_item_po");
             var code = jQuery("#detail_item_code");
@@ -904,7 +908,7 @@
         item += '<th>Item PO</th>';
         item += '<th>Kode</th>';
         item += ' <th>Name</th>';
-       /*  item += '<th>Qty</th>'; */
+        /*  item += '<th>Qty</th>'; */
         item += '<th width="115px">Qty diajukan</th></th>';
         /* item += '<th>Qty Outstanding</th>'; */
         item += '<th style="width: 40px"></th>';

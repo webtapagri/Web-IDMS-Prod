@@ -21,14 +21,18 @@ class RequestController extends Controller
 {
     public function index()
     {
-       /*  if (empty(Session::get('authenticated')))
+        if (empty(Session::get('authenticated')))
             return redirect('/login');
 
-        if (AccessRight::granted() == false)
-            return response(view('errors.403'), 403);
 
-        $access = AccessRight::access(); */
+        if (AccessRight::granted() === false) {
+            $data['page_title'] = 'Oops! Unauthorized.';
+            return response(view('errors.403')->with(compact('data')), 403);
+        }
+
+        $access = AccessRight::access();
         $data["page_title"] = "Request";
+        $data["access"] = (object)$access;
         return view('request.index')->with(compact('data'));
     }
 

@@ -9,7 +9,9 @@
                     <div class="table-actions-wrapper">
                         <span></span>
                         <button class="btn btn-sm btn-flat btn-danger btn-refresh-data-table" title="refresh"><i class="glyphicon glyphicon-refresh"></i></button>
+                        @if($data['access']->create == 1)
                         <button class="btn btn-sm btn-flat btn-danger btn-add"><i class="glyphicon glyphicon-plus" title="Add new data"></i></button>
+                        @endif
                     </div>
                     <table id="data-table" class="table table-condensed" width="100%">
                         <thead>
@@ -190,9 +192,16 @@
                     },
                     {
                         "render": function(data, type, row) {
-                            var content = '<button class="btn btn-flat btn-xs btn-danger btn-action btn-edit {{ (isset($access["CREATE"]) ? "":"") }}" title="edit data ' + row.id + '" onClick="edit(' + row.id + ')"><i class="fa fa-pencil"></i></button>';
-                            content += '<button class="btn btn-flat btn-xs btn-danger btn-action btn-activated  {{ (isset($access["CREATE"]) ? "":"") }}  ' + (row.deleted == 0 ? '' : 'hide') + '" style="margin-left:5px"  onClick="inactive(' + row.id + ')"><i class="fa fa-trash"></i></button>';
-                            content += '<button class="btn btn-flat btn-xs btn-danger btn-action btn-inactivated {{ (isset($access["CREATE"]) ? "":"") }} ' + (row.deleted == 1 ? '' : 'hide') + '" style="margin-left:5px"  onClick="active(' + row.id + ')"><i class="fa fa-check"></i></button>';
+                            var update = "{{ $data['access']->update }}";
+                            var remove = "{{ $data['access']->delete }}";
+                            var content = '';
+                            if (update == 1) {
+                                content += '<button class="btn btn-flat btn-xs btn-danger btn-action btn-edit" title="edit data ' + row.id + '" onClick="edit(' + row.id + ')"><i class="fa fa-pencil"></i></button>';
+                            }
+                            if (remove == 1) {
+                                content += '<button class="btn btn-flat btn-xs btn-danger btn-action btn-activated  {{ ($data["access"]->delete == 1 ? "":"hide") }}  ' + (row.deleted == 0 ? '' : 'hide') + '" style="margin-left:5px"  onClick="inactive(' + row.id + ')"><i class="fa fa-trash"></i></button>';
+                                content += '<button class="btn btn-flat btn-xs btn-danger btn-action btn-inactivated {{ ($data["access"]->delete == 1 ? "":"hide") }}  ' + (row.deleted == 1 ? '' : 'hide') + '" style="margin-left:5px"  onClick="active(' + row.id + ')"><i class="fa fa-check"></i></button>';
+                            }
 
                             return content;
                         }

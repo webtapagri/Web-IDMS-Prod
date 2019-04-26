@@ -54,7 +54,7 @@
                     </a>
                     <div class="collapse navbar-collapse pull-left" id="navbar-collapse">
                         <ul class="nav navbar-nav">
-                            <li class=""><a href="javascript:;" style="pointer-events: none;"><i class="fa fa-dashboard"></i> <b>{{ strtoupper($data['page_title']) }}</b> <span class="sr-only">(current)</span></a></li>
+                            <li class=""><a href="javascript:;" style="pointer-events: none;"><i class="fa fa-dashboard"></i> <b>{{ (isset($data['page_title']) ? strtoupper($data['page_title']):'FAMS') }}</b> <span class="sr-only">(current)</span></a></li>
                         </ul>
                     </div>
                     @endif
@@ -62,6 +62,12 @@
                     <div class="navbar-custom-menu">
 
                         <ul class="nav navbar-nav">
+                            <li class="dropdown user user-menu" style="pointer-events: none;">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                    <img src="{{ (Session::get('user_img') ? Session::get('user_img'):asset('img/user-default.png')) }}" class="user-image" alt="User Image">
+                                    <span class="hidden-xs">{{ strtoupper(Session::get('name')) }}</span>
+                                </a>
+                            </li>
                             <li>
                                 @if(config('adminlte.logout_method') == 'GET' || !config('adminlte.logout_method') && version_compare(\Illuminate\Foundation\Application::VERSION, '5.3.0', '<')) <a href="{{ url(config('adminlte.logout_url', 'auth/logout')) }}">
                                     <i class="fa fa-fw fa-power-off"></i> {{ trans('adminlte::adminlte.log_out') }}
@@ -114,80 +120,25 @@
                             <i class="fa fa-angle-left pull-right"></i>
                         </span>
                     </a>
+
+
                     <ul class="treeview-menu" style="display:block">
-                        <!--     @foreach(AccessRight::menu() as $row) 
-                                <li class="{{ (str_replace(url('/').'/','', url()->current()) == $row->url ? 'active':'') }}">
-                                    <a href="{{ url(($row->url ? $row->url:'/')) }}">
-                                        <i class="fa fa-fw fa-caret-right"></i>
-                                        <span>{{ $row->name }}</span>
-                                    </a>
-                                </li>
-                            @endforeach  -->
+                        @foreach(AccessRight::menu() as $row)
                         <li class="treeview">
                             <a href="#">
-                                <i class="fa fa-cogs"></i> <span>Setting</span>
+                                <i class="{{ $row['module_icon'] }}"></i> <span>{{ $row['module'] }}</span>
                                 <span class="pull-right-container">
                                     <i class="fa fa-angle-left pull-right"></i>
                                 </span>
                             </a>
                             <ul class="treeview-menu">
-                                <li><a href="{{ url('modules') }}"><i class="fa fa-fw fa-caret-right"></i> Module</a></li>
-                                <li><a href="{{ url('menu') }}"><i class="fa fa-fw fa-caret-right"></i> Menu</a></li>
-                                <li><a href="{{ url('roles') }}"><i class="fa fa-fw fa-caret-right"></i> Role</a></li>
-                                <li><a href="{{ url('users') }}"><i class="fa fa-fw fa-caret-right"></i> User</a></li>
-                                <li><a href="{{ url('accessright') }}"><i class="fa fa-fw fa-caret-right"></i> Role Access</a></li>
+                                @foreach($row["menu"] as $menu)
+                                <li><a href="{{ url($menu->url) }}"><i class="fa fa-fw fa-caret-right"></i> {{ $menu->name }}</a></li>
+                                @endforeach
                             </ul>
                         </li>
-                        <li class="treeview">
-                            <a href="#">
-                                <i class="fa fa-pencil"></i> <span>Pendaftaran</span>
-                                <span class="pull-right-container">
-                                    <i class="fa fa-angle-left pull-right"></i>
-                                </span>
-                            </a>
-                            <ul class="treeview-menu">
-                                <li><a href="{{ url('request/create/po') }}"><i class="fa fa-fw fa-caret-right"></i> Melalui PO Sendiri</a></li>
-                                <li><a href="{{ url('request/create/amp') }}"><i class="fa fa-fw fa-caret-right"></i> Melalui PO AMP</a></li>
-                            </ul>
-                        </li>
-                        <li class="treeview">
-                            <a href="#">
-                                <i class="fa fa-recycle"></i> <span>Mutasi</span>
-                                <span class="pull-right-container">
-                                    <i class="fa fa-angle-left pull-right"></i>
-                                </span>
-                            </a>
-                            <ul class="treeview-menu">
-                                <li><a href="{{ url('mutasi') }}"><i class="fa fa-fw fa-caret-right"></i> antar BA dalam 1 PT</a></li>
-                                <li><a href="{{ url('mutasi') }}"><i class="fa fa-fw fa-caret-right"></i> sewa AMP antar BA</a></li>
-                            </ul>
-                        </li>
-                        <li class="treeview">
-                            <a href="#">
-                                <i class="fa fa-check-square-o"></i> <span>Approval</span>
-                                <span class="pull-right-container">
-                                    <i class="fa fa-angle-left pull-right"></i>
-                                </span>
-                            </a>
-                            <ul class="treeview-menu">
-                                <li><a href="{{ url('approval') }}"><i class="fa fa-fw fa-caret-right"></i> pendaftaran</a></li>
-                                <li><a href="{{ url('approval') }}"><i class="fa fa-fw fa-caret-right"></i> Mutasi</a></li>
-                            </ul>
-                        </li>
-                        <li class="treeview">
-                            <a href="#">
-                                <i class="fa fa-file-o"></i> <span>Report</span>
-                                <span class="pull-right-container">
-                                    <i class="fa fa-angle-left pull-right"></i>
-                                </span>
-                            </a>
-                            <ul class="treeview-menu menu-open">
-                                <li><a href="{{ url('request') }}"><i class="fa fa-fw fa-caret-right"></i> Outstanding pengajuan</a>
-                                </li>
-                                <li><a href="{{ url('asset') }}"><i class="fa fa-fw fa-caret-right"></i> Outstanding Mutasi</a></li>
-                                <li><a href="{{ url('asset') }}"><i class="fa fa-fw fa-caret-right"></i> List Asset</a></li>
-                            </ul>
-                        </li>
+
+                        @endforeach
                     </ul>
                 </li>
                 <li class="{{ (Session::get('role') == 'GUEST' ? 'hide':'') }}  {{ (str_replace(url('/').'/','', url()->current()) == 'profile'? 'active':'') }}"><a style="border-top:1px solid #182225" href="{{ url('profile') }}"><i class="fa fa-user"></i> <span>Profile</span></a></li>

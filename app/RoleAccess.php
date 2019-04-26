@@ -17,7 +17,7 @@ class RoleAccess extends Model
         "create",
         "read",
         "update",
-        "deleted",
+        "delete",
         "deleted",
         "created_by",
         "updated_by"

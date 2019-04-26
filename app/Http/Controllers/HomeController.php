@@ -133,4 +133,12 @@ class HomeController extends Controller
         $records["recordsFiltered"] = $iTotalRecords;
         return response()->json($records);
     }
+
+    function getRequest() {
+        $data = DB::table('TR_REG_ASSET')
+        ->where("NO_REG", "=", $no_reg)
+        ->get();
+
+        return response()->json(array('data'=>$data));
+    }
 }

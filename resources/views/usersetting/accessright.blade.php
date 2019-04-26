@@ -9,7 +9,9 @@
                     <div class="table-actions-wrapper">
                         <span></span>
                         <button class="btn btn-sm btn-flat btn-danger btn-refresh-data-table" title="refresh"><i class="glyphicon glyphicon-refresh"></i></button>
+                        @if($data['access']->create == 1)
                         <button class="btn btn-sm btn-flat btn-danger btn-save" OnClick="save()" title="refresh"><i class="fa fa-save"></i></button>
+                        @endif
                     </div>
                     <table id="data-table" class="table table-condensed" width="100%">
                         <thead>
@@ -21,6 +23,7 @@
                                 <th>R</th>
                                 <th>U</th>
                                 <th>D</th>
+                                <th>All</th>
                             </tr>
                             <tr role="row" class="filter">
                                 <td><input type="text" class="form-control input-sm form-filter" name="role"> </td>
@@ -30,6 +33,7 @@
                                 <td><input type="text" class="form-control input-sm form-filter" name="read"> </td>
                                 <td><input type="text" class="form-control input-sm form-filter" name="update"> </td>
                                 <td><input type="text" class="form-control input-sm form-filter" name="delete"> </td>
+                                <td class="text-center"><i class="fa fa-check"></i></td>
                             </tr>
                         </thead>
                         <tbody></tbody>
@@ -127,33 +131,45 @@
                     },
                     {
                         "render": function(data, type, row) {
-                            var content = '<center><input type="checkbox" class="checkbox create"  ' + (row.create ? 'checked' : '') + '/></center>';
+                            var content = '<center><input type="checkbox" class="checkbox create"  ' + (row.create == 1 ? 'checked' : '') + ' OnChange="changeAccess(this)"/></center>';
 
                             return content;
                         }
                     },
                     {
                         "render": function(data, type, row) {
-                            var content = '<center><input type="checkbox" class="checkbox read" ' + (row.read ? 'checked' : '') + '/></center>';
+                            var content = '<center><input type="checkbox" class="checkbox read" ' + (row.read == 1 ? 'checked' : '') + ' OnChange="changeAccess(this)"/></center>';
                             return content;
                         }
                     },
                     {
                         "render": function(data, type, row) {
-                            var content = '<center><input type="checkbox" class="checkbox update" ' + (row.update ? 'checked' : '') + '/></center>';
+                            var content = '<center><input type="checkbox" class="checkbox update" ' + (row.update == 1 ? 'checked' : '') + ' OnChange="changeAccess(this)"/></center>';
                             return content;
                         }
                     },
                     {
                         "render": function(data, type, row) {
-                            var content = '<center><input type="checkbox" class="checkbox delete" ' + (row.delete ? 'checked' : '') + '/></center>';
+                            var content = '<center><input type="checkbox" class="checkbox delete" ' + (row.delete == 1 ? 'checked' : '') + ' OnChange="changeAccess(this)" /></center>';
+
+                            return content;
+                        }
+                    },
+                    {
+                        "render": function(data, type, row) {
+                            var check = '';
+                            if (row.create == 1 && row.read == 1 && row.update == 1 && row.delete == 1) {
+                                check = 'checked';
+                            }
+
+                            var content = '<center><input type="checkbox" onclick="checkAll(this)" class="checkbox grant-access-all" ' + check + '/></center>';
 
                             return content;
                         }
                     },
                 ],
                 columnDefs: [{
-                    targets: [3, 4, 5, 6],
+                    targets: [3, 4, 5, 6, 7],
                     orderable: false,
                     width: '6%',
                     className: 'text-center'
@@ -276,8 +292,32 @@
                     jQuery('.loading-event').fadeOut();
                 }
             });
-        })
+        });
     });
+
+    function changeAccess(param) {
+        var row = jQuery(param).closest('tr');
+        if (row.find('.create').is(':checked') && row.find('.read').is(':checked') && row.find('.update').is(':checked') && row.find('.delete').is(':checked')) {
+            row.find('.grant-access-all').prop('checked', 'checked');
+        } else {
+            row.find('.grant-access-all').prop('checked', '');
+        }
+    }
+
+    function checkAll(param) {
+        var row = jQuery(param).closest('tr');
+        if (jQuery(param).is(':checked')) {
+            row.find('.create').prop('checked', 'checked');
+            row.find('.read').prop('checked', 'checked');
+            row.find('.update').prop('checked', 'checked');
+            row.find('.delete').prop('checked', 'checked');
+        } else {
+            row.find('.create').prop('checked', '');
+            row.find('.read').prop('checked', '');
+            row.find('.update').prop('checked', '');
+            row.find('.delete').prop('checked', '');
+        }
+    }
 
     function save() {
         var param = [];
@@ -285,7 +325,7 @@
             var create = jQuery(this).find('.create').is(':checked');
             var read = jQuery(this).find('.read').is(':checked');
             var update = jQuery(this).find('.update').is(':checked');
-            var remove = jQuery(this).find('.deleted').is(':checked');
+            var remove = jQuery(this).find('.delete').is(':checked');
             var detail_id = jQuery(this).find('span').data('id');
             var id = detail_id.split('-');
             param.push({
@@ -296,7 +336,7 @@
                 create: (create ? 1 : 0),
                 read: (read ? 1 : 0),
                 update: (update ? 1 : 0),
-                delete: (remove ? 1 : 0)
+                remove: (remove ? 1 : 0)
             });
         });
 

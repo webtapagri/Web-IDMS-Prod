@@ -28,7 +28,6 @@ Route::match(['get', 'post'], 'grid-outstanding', [
     'uses' => 'HomeController@dataGrid'
 ]);
 
-
 Route::get('/', 'HomeController@index')->name('home');
 Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/profile', 'ProfileController@index');
@@ -125,6 +124,9 @@ Route::match(['get', 'post'], 'grid-accessright', [
 
 /* DOCS */
 Route::get('SapDownloadExcel', 'SAPController@downloadExcel');
+
+/* JSON DATA SOURCE */
+Route::get('get-data_requestdetail', ['as' => 'get.data_requestdetail', 'uses' => 'HomeController@getRequest']);
 
 /* SELECT 2 */
 Route::get('get-select_module', ['as' => 'get.select_module', 'uses' => 'ModuleController@select2']);

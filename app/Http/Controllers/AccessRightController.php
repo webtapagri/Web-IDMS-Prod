@@ -20,12 +20,14 @@ class AccessRightController extends Controller
         if (empty(Session::get('authenticated')))
             return redirect('/login');
 
-       /*  if (AccessRight::granted() == false)
-            return response(view('errors.403'), 403);; */
+        if (AccessRight::granted() === false) {
+            $data['page_title'] = 'Oops! Unauthorized.';
+            return response(view('errors.403')->with(compact('data')), 403);
+        }
 
         $access = AccessRight::access();
         $data["page_title"] = "Access Right";
-        $data["access"] = $access;    
+        $data["access"] = (object)$access;
         return view('usersetting.accessright')->with(compact('data'));
     }
 
@@ -164,12 +166,13 @@ class AccessRightController extends Controller
                     $data->created_by = Session::get('user_id');
                 }
 
+                $data->role_id = $row["role_id"];
                 $data->module_id = $row["module_id"];
                 $data->menu_id = $row["menu_id"];
                 $data->create = $row["create"];
                 $data->read = $row["read"];
                 $data->update = $row["update"];
-                $data->delete = $row["delete"];
+                $data->delete = $row["remove"];
                 $data->save();
             }
 

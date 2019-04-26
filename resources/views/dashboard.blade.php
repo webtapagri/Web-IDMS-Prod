@@ -18,7 +18,7 @@
                 <div class="table-container">
                     <div class="table-actions-wrapper">
                         <span></span>
-                        <button class="btn btn-sm btn-flat btn-default btn-refresh-data-table" title="refresh"><i class="glyphicon glyphicon-refresh"></i></button>
+                        <button class="btn btn-sm btn-flat btn-danger btn-refresh-data-table" title="refresh"><i class="glyphicon glyphicon-refresh"></i></button>
                     </div>
                     <table id="data-table" class="table table-bordered table-condensed" width="100%">
                         <thead>
@@ -420,7 +420,7 @@
                     },
                     {
                         "render": function(data, type, row) {
-                            var content = '<button class="btn btn-flat btn-flat btn-xs btn-default" OnClick="requestDetail(' + row.id + ')" title="detail data ' + row.no_po + '" ><i class="fa fa-search"></i></button>';
+                            var content = '<button class="btn btn-flat btn-flat btn-xs btn-danger" OnClick="requestDetail(' + row.id + ')" title="detail data ' + row.no_po + '" ><i class="fa fa-search"></i></button>';
                             return content;
                         }
                     }
@@ -504,7 +504,11 @@
     });
 
     function requestDetail(id) {
-        console.log(id);
+
+        var role = jQuery.parseJSON(JSON.stringify(dataJson('{!! route("get.getRequest") !!}')));
+        console.log(role);
+
+        var role = jQuery.parseJSON(JSON.stringify(dataJson('{!! route("get.select_module") !!}')));
         jQuery("#detail-modal").modal({
             backdrop: 'static',
             keyboard: false
