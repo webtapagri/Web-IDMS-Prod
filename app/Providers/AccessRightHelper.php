@@ -13,7 +13,7 @@ class AccessRightHelper extends ServiceProvider
        $module = DB::table('TBM_ROLE_ACCESS as access')
        ->join('TBM_ROLE as role', "role.id", "=", "access.role_id")
        ->join("TBM_MODULE as module", "module.id", "=", "access.module_id")
-       ->select('role.id as role_id', 'module.id as module_id', 'module.name as module_name', "module.icon as module_icon")
+       ->select('module.id as module_id', 'module.name as module_name', "module.icon as module_icon")
        ->where([
             ["role.id","=",Session::get('role_id')]
        ])

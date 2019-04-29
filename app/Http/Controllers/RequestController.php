@@ -159,6 +159,7 @@ class RequestController extends Controller
                 $reg_asset->NO_REG = $reg_no;
             }
 
+            $reg_asset->BUSINESS_AREA = $request->business_area;
             $reg_asset->TYPE_TRANSAKSI = $request->transaction_type;
             $reg_asset->TANGGAL_REG = date_format(date_create($request->request_date), "Y-m-d");
             $reg_asset->NO_PO = $request->po_no;

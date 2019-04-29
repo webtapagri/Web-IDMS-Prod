@@ -932,7 +932,7 @@
         item += '<th>Qty</th>';
         item += '<th width="115px">Qty diajukan</th></th>';
         item += '<th>Qty Outstanding</th>';
-        item += '<th style="width: 40px"></th>';
+        item += '<th style="width: 40px;display:none"></th>';
         item += '</tr>';
 
         if (requestItemData() > 0) {
@@ -950,7 +950,7 @@
                     item += ' <div style="cursor:pointer" class="input-group-addon bg-gray" OnClick="plus(\'qty_' + val.id + '\');qtyEdit(\'' + val.id + '\')">+</div>';
                     item += '</td>';
                     item += "<td style='text-align:right'>" + val.outstanding_qty + "</td>";
-                    item += '<td width="30px" style="text-align:center"><button type="button" class="btn btn-flat btn-xs btn-danger" onClick="remove(\'' + val.id + '\');"><i class="fa fa-trash"></i></button></td>';
+                    item += '<td width="30px" style="text-align:center;display:none"><button type="button" class="btn btn-flat btn-xs btn-danger" onClick="remove(\'' + val.id + '\');"><i class="fa fa-trash"></i></button></td>';
                     item += "</tr>";
                 }
             });
@@ -959,6 +959,7 @@
             item += ' <td colspan="7" style="text-align:center">No item selected</td>';
             item += '</tr>';
         }
+
         item += "</table>";
         jQuery("#request-item-table").html(item);
     }
@@ -1012,7 +1013,6 @@
         jQuery('#asset_location').val(item.asset_location);
         jQuery('#asset_pic_name').val(item.asset_pic_name);
         jQuery('#asset_pic_level').val(item.asset_pic_level);
-
 
         if (item.foto_asset.file) {
             jQuery("#foto_asset_thumb_1").prop('src', item.foto_asset.file);
