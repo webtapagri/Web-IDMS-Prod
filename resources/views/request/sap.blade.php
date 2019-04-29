@@ -377,8 +377,8 @@
                         </div>
                     </div>
                     <div class="box-footer clearfix">
-                        <button type="submit" class="btn btn-danger btn-flat pull-right" style="margin-right: 5px;">Draft</button>
-                        <button type="submit" class="btn btn-danger btn-flat pull-right" style="margin-right: 5px;">Submit</button>
+                        <button type="submit" class="btn btn-danger btn-flat pull-right" OnClick="save(0)" style="margin-right: 5px;">Draft</button>
+                        <button type="submit" class="btn btn-danger btn-flat pull-right"onClick="save(1)" style="margin-right: 5px;">Submit</button>
                         <button type="button" class="btn btn-default btn-flat btn-back-request-form pull-right hide" style="margin-right: 5px;"><i class="fa fa-arrow-circle-left"></i> Back</button>
                     </div>
                 </div>
@@ -553,56 +553,6 @@
 
         jQuery("#code-asset-form").on("submit", function(e) {
             e.preventDefault();
-            jQuery.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-
-            var param = {
-                transaction_type: transaction_type.val(),
-                request_date: request_date.val(),
-                business_area: business_area.val(),
-                po_no: po_no.val(),
-                po_date: po_date.val(),
-                vendor_code: vendor_code.val(),
-                vendor_name: vendor_name.val(),
-                docs: request_docs,
-                asset: request_item
-            };
-
-            jQuery.ajax({
-                url: "{{ url('request/post') }}",
-                type: "POST",
-                data: param,
-                /*  contentType: false,
-                 processData: false,
-                 cache: false, */
-                beforeSend: function() {
-                    jQuery('.loading-event').fadeIn();
-                },
-                success: function(result) {
-                    if (result.status) {
-                        notify({
-                            type: 'success',
-                            message: result.message
-                        });
-                        notify({
-                            type: 'error',
-                            message: 'reqeust has been submited!'
-                        });
-                        window.location.href = "{{ url('request') }}";
-                    } else {
-                        notify({
-                            type: 'warning',
-                            message: result.message
-                        });
-                    }
-                },
-                complete: function() {
-                    jQuery('.loading-event').fadeOut();
-                }
-            });
         });
 
         jQuery(".btn-back-request-form").on("click", function(e) {
@@ -644,7 +594,7 @@
                             type: 'success',
                             message: result.message
                         });
-                        window.location.href = "{{ url('mastermaterial') }}";
+                        window.location.href = "{{ url('/') }}";
                     } else {
                         notify({
                             type: 'warning',
@@ -777,6 +727,60 @@
             request_item[obj].detail[id].asset_location = jQuery(this).val();
         });
     });
+
+    function save(status) {
+        jQuery.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
+        var param = {
+            transaction_type: transaction_type.val(),
+            request_date: request_date.val(),
+            business_area: business_area.val(),
+            po_no: po_no.val(),
+            po_date: po_date.val(),
+            vendor_code: vendor_code.val(),
+            vendor_name: vendor_name.val(),
+            docs: request_docs,
+            asset: request_item,
+            status: status
+        };
+
+        jQuery.ajax({
+            url: "{{ url('request/post') }}",
+            type: "POST",
+            data: param,
+            /*  contentType: false,
+             processData: false,
+             cache: false, */
+            beforeSend: function() {
+                jQuery('.loading-event').fadeIn();
+            },
+            success: function(result) {
+                if (result.status) {
+                    notify({
+                        type: 'success',
+                        message: result.message
+                    });
+                    notify({
+                        type: 'error',
+                        message: 'reqeust has been submited!'
+                    });
+                    window.location.href = "{{ url('/') }}";
+                } else {
+                    notify({
+                        type: 'warning',
+                        message: result.message
+                    });
+                }
+            },
+            complete: function() {
+                jQuery('.loading-event').fadeOut();
+            }
+        });
+    }
 
     function showPO() {
         jQuery('.loading-event').fadeIn();
