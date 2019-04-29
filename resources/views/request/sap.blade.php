@@ -524,12 +524,12 @@
                 topFunction();
                 var items = [];
                 jQuery.each(request_item, function(key, val) {
-                    if (val.name) {
-                        items.push({
-                            id: val.id,
-                            text: val.code + ' - ' + val.name
-                        })
-                    }
+                     if (val) {
+                         items.push({
+                             id: val.id,
+                             text: val.code + ' - ' + val.name
+                         })
+                     }
                 });
 
 
@@ -1201,7 +1201,6 @@
 
     function requestItemData() {
         var total = 0;
-        console.log(request_item);
         jQuery.each(request_item, function(key, val) {
 
             if (val) {
