@@ -13,6 +13,7 @@ class TR_REG_ASSET extends Model
     protected $fillable = [
         "NO_REG",
         "TYPE_TRANSAKSI",
+        "BUSINESS_AREA",
         "TANGGAL_REG",
         "NO_PO",
         "TANGGAL_PO",

@@ -524,12 +524,12 @@
                 topFunction();
                 var items = [];
                 jQuery.each(request_item, function(key, val) {
-                     if (val) {
-                         items.push({
-                             id: val.id,
-                             text: val.code + ' - ' + val.name
-                         })
-                     }
+                    if (val) {
+                        items.push({
+                            id: val.id,
+                            text: val.code + ' - ' + val.name
+                        })
+                    }
                 });
 
 
@@ -1172,7 +1172,7 @@
 
         }
 
-        assetInfo(current_page);
+        assetInfo(page);
     }
 
     function numPages() {

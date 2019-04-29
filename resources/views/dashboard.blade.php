@@ -694,7 +694,7 @@
 
         }
 
-        assetInfo(current_page);
+        assetInfo(page);
     }
 
     function assetInfo(index) {
