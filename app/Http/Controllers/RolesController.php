@@ -162,7 +162,7 @@ class RolesController extends Controller
 
     public function select2()
     {
-        $data = DB::table('tbm_role')
+        $data = DB::table('TBM_ROLE')
             ->select('id', 'name as text')
             ->where('deleted', 0)
             ->get();
