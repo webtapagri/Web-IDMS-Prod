@@ -276,8 +276,7 @@
                                                                     <p class="help-block">*jpg, png</p>
                                                                 </div>
                                                                 <div class="image-group">
-                                                                    <button type="button" class="btn btn-danger btn-xs btn-flat btn-foto-asset-remove hide" OnClick="removeImage('asset',1)"><i class="fa fa-trash"></i></button>
-                                                                    <img id="foto_asset_thumb_1" data-status="0" style="cursor:pointer" title="click to change image" OnClick="openFile('asset',1)" class="img-responsive select-img" src="{{URL::asset('img/add-img.png')}}">
+                                                                    <img id="foto_asset_thumb_1" data-status="0"  title="click to change image" class="img-responsive" src="{{URL::asset('img/add-img.png')}}">
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -293,8 +292,7 @@
                                                                     <p class="help-block">*jpg, png</p>
                                                                 </div>
                                                                 <div class="image-group">
-                                                                    <button type="button" class="btn btn-danger btn-xs btn-flat btn-foto-seri-remove hide" OnClick="removeImage('seri',1)"><i class="fa fa-trash"></i></button>
-                                                                    <img id="foto_no_seri_thumb_1" data-status="0" style="cursor:pointer" title="click to change image" OnClick="openFile('seri',1)" class="img-responsive select-img" src="{{URL::asset('img/add-img.png')}}">
+                                                                    <img id="foto_no_seri_thumb_1" data-status="0"  title="click to change image" class="img-responsive" src="{{URL::asset('img/add-img.png')}}">
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -310,8 +308,7 @@
                                                                     <p class="help-block">*jpg, png</p>
                                                                 </div>
                                                                 <div class="image-group">
-                                                                    <button type="button" class="btn btn-danger btn-xs btn-flat btn-foto-mesin-remove hide" OnClick="removeImage('mesin', 1)"><i class="fa fa-trash"></i></button>
-                                                                    <img id="foto_mesin_thumb_1" data-status="0" style="cursor:pointer" title="click to change image" OnClick="openFile('mesin', 1)" class="img-responsive select-img" src="{{URL::asset('img/add-img.png')}}">
+                                                                    <img id="foto_mesin_thumb_1" data-status="0" title="click to change image" class="img-responsive" src="{{URL::asset('img/add-img.png')}}">
                                                                 </div>
                                                             </div>
                                                         </div>

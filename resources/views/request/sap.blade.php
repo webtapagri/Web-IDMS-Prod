@@ -378,7 +378,7 @@
                     </div>
                     <div class="box-footer clearfix">
                         <button type="submit" class="btn btn-danger btn-flat pull-right" OnClick="save(0)" style="margin-right: 5px;">Draft</button>
-                        <button type="submit" class="btn btn-danger btn-flat pull-right"onClick="save(1)" style="margin-right: 5px;">Submit</button>
+                        <button type="submit" class="btn btn-danger btn-flat pull-right" onClick="save(1)" style="margin-right: 5px;">Submit</button>
                         <button type="button" class="btn btn-default btn-flat btn-back-request-form pull-right hide" style="margin-right: 5px;"><i class="fa fa-arrow-circle-left"></i> Back</button>
                     </div>
                 </div>
@@ -484,7 +484,7 @@
             placeholder: ' '
         });
 
-        jQuery("#business_area").select2({
+        jQuery("#business_area, #asset_location").select2({
             data: [{
                     id: '1',
                     text: 'LoV'
@@ -721,7 +721,7 @@
             request_item[obj].detail[id].asset_pic_level = jQuery(this).val();
         });
 
-        jQuery("#asset_location").on('keyup', function() {
+        jQuery("#asset_location").on('change', function() {
             var id = current_page - 1;
             var obj = jQuery('#detail_item_selected').val();
             request_item[obj].detail[id].asset_location = jQuery(this).val();
@@ -1014,7 +1014,13 @@
         jQuery('#asset_pic_name').val(item.asset_pic_name);
         jQuery('#asset_pic_level').val(item.asset_pic_level);
         jQuery('#asset_info').val(item.asset_info);
-        jQuery('#asset_location').val(item.asset_location);
+        if (item.asset_location) {
+            jQuery('#asset_location').select2('val', item.asset_location);
+        } else {
+            jQuery('#asset_location').select2('val', '');
+        }
+        jQuery('#asset_location').trigger('change');
+
         jQuery('#asset_pic_name').val(item.asset_pic_name);
         jQuery('#asset_pic_level').val(item.asset_pic_level);
 
