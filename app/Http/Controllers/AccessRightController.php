@@ -81,7 +81,7 @@ class AccessRightController extends Controller
                 ) as module
                 LEFT OUTER JOIN(
                     select id, role_id, menu_id, module_id, `create`, `read`, `update`, `delete`
-                    from TBM_ROLE_access 
+                    from TBM_ROLE_ACCESS 
                 )  as role_access ON (role_access.role_id = role.id AND role_access.module_id=module.module_id  AND role_access.menu_id=module.menu_id)
                 WHERE role.deleted=0 
         ';
