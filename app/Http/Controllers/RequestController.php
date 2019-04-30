@@ -37,6 +37,10 @@ class RequestController extends Controller
     }
 
     public function create(Request $request) {
+        if (empty(Session::get('authenticated')))
+            return redirect('/login');
+
+
         $data['page_title'] = 'Request '.($request->type == "amp" ? 'Melalui PO AMP':'Melalui PO Sendiri');
         $data['type'] = ($request->type == "amp" ? 'Melalui PO AMP':'Melalui PO Sendiri');
         $access = AccessRight::access();
@@ -147,125 +151,133 @@ class RequestController extends Controller
     {
         DB::beginTransaction();
        try {
-            $reg_no = rand(10, 100);
-           if ($request->asset_id) {
-                $reg_asset = TR_REG_ASSET::find($request->edit_id);
-                $reg_asset->UPDATED_BY = Session::get('user_id');
-            } else {
-                $reg_asset = new TR_REG_ASSET();
-                $reg_asset->CREATED_BY = Session::get('user_id');
-                $reg_asset->CREATED_AT = date('Y-m-d H:i:s');
-                $reg_asset->NO_REG = $reg_no;
-            }
-
-            $reg_asset->BUSINESS_AREA = $request->business_area;
-            $reg_asset->TYPE_TRANSAKSI = $request->transaction_type;
-            $reg_asset->TANGGAL_REG = date_format(date_create($request->request_date), "Y-m-d");
-            $reg_asset->NO_PO = $request->po_no;
-            $reg_asset->TANGGAL_PO = date_format(date_create($request->po_date), "Y-m-d");
-            $reg_asset->KODE_VENDOR = $request->vendor_code;
-            $reg_asset->NAMA_VENDOR = $request->vendor_name;
-            $reg_asset->save();
+           
+            $reg_no = rand(0, 1000000);
+            $asset_id = DB::table('TR_REG_ASSET')->insertGetId([
+                "CREATED_BY" => Session::get('user_id'),
+                "CREATED_AT" => date('Y-m-d H:i:s'),
+                "NO_REG" => $reg_no,
+                "BUSINESS_AREA" => $request->business_area,
+                "TYPE_TRANSAKSI" => $request->transaction_type,
+                "TANGGAL_REG" => date_format(date_create($request->request_date), "Y-m-d"),
+                "NO_PO" => $request->po_no,
+                "TANGGAL_PO" => date_format(date_create($request->po_date), "Y-m-d"),
+                "KODE_VENDOR" => $request->vendor_code,
+                "NAMA_VENDOR" => $request->vendor_name,
+            ]);
 
             $no = 1;
             if( $request->docs) {
                 foreach ($request->docs as $row) {
-                    $reg_asset_file = new TR_REG_ASSET_FILE();
-                    $reg_asset_file->NO_FILE = $no;
-                    $reg_asset_file->NO_REG = $reg_no;
-                    $reg_asset_file->FILENAME = $row['name'];
-                    $reg_asset_file->DOC_SIZE = $row["size"];
-                    $reg_asset_file->FILE_CATEGORY = $row['type'];
-                    $reg_asset_file->FILE_UPLOAD = $row['file'];
-                    $reg_asset_file->CREATED_BY = Session::get('user_id');
-                    $reg_asset_file->CREATED_AT = date('Y-m-d H:i:s');
-                    $reg_asset_file->save();
+                    DB::table('TR_REG_ASSET')->insert([
+                        "ASSET_REG_ID" => $asset_id,
+                        "NO_FILE" => $no,
+                        "NO_REG" => $reg_no,
+                        "FILENAME" => $row['name'],
+                        "DOC_SIZE" => $row["size"],
+                        "FILE_CATEGORY" => $row['type'],
+                        "FILE_UPLOAD" => $row['file'],
+                        "CREATED_BY" => Session::get('user_id'),
+                        "CREATED_AT" => date('Y-m-d H:i:s'),
+                    ]);
                     $no++;
                 }
             }
-
             
             $no = 0;
             if( $request->asset) {
                 foreach ($request->asset as $row) {
                     if (number_format($row["item_po"])) {
-                        $reg_asset_detail_po = new TR_REG_ASSET_DETAIL_PO();
-                        $reg_asset_detail_po->NO_REG = $reg_no;
-                        $reg_asset_detail_po->NO_PO = $request->po_no;
-                        $reg_asset_detail_po->ITEM_PO = number_format($row["item_po"]);
-                        $reg_asset_detail_po->KODE_MATERIAL = $row["code"];
-                        $reg_asset_detail_po->NAMA_MATERIAL = $row["name"];
-                        $reg_asset_detail_po->QUANTITY_PO = $row["qty"];
-                        $reg_asset_detail_po->QUANTITY_SUBMIT = $row["request_qty"];
-                        $reg_asset_detail_po->CREATED_BY = Session::get('user_id');
-                        $reg_asset_detail_po->save();
+
+                        $reg_asset_po_id = DB::table( 'TR_REG_ASSET_DETAIL_PO')-> insertGetId([
+                            "ASSET_REG_ID" =>  $asset_id,
+                            "NO_REG" =>  $reg_no,
+                            "NO_PO" =>  $request->po_no,
+                            "ITEM_PO" =>  number_format($row["item_po"]),
+                            "KODE_MATERIAL" =>  $row["code"],
+                            "NAMA_MATERIAL" =>  $row["name"],
+                            "QUANTITY_PO" =>  $row["qty"],
+                            "QUANTITY_SUBMIT" =>  $row["request_qty"],
+                            "CREATED_BY" =>  Session::get('user_id'),
+
+                        ]);
+
                         $detail = $row["detail"];
 
                         for ($i = 0; $i < count($detail); $i++) {
-                            $reg_asset_detail = new TR_REG_ASSET_DETAIL();
-                            $reg_asset_detail->NO_REG_ITEM = $i;
-                            $reg_asset_detail->NO_REG = $reg_no;
-                            $reg_asset_detail->ITEM_PO = number_format($row["item_po"]);
-                            $reg_asset_detail->KODE_MATERIAL = $row["code"];
-                            $reg_asset_detail->NAMA_MATERIAL = $row["name"];
-                            $reg_asset_detail->NO_PO = $request->po_no;
-                            $reg_asset_detail->KODE_JENIS_ASSET = '';
-                            $reg_asset_detail->JENIS_ASSET = $detail[$i]["asset_type"];
-                            $reg_asset_detail->GROUP = $detail[$i]["asset_group"];
-                            $reg_asset_detail->SUB_GROUP = $detail[$i]["asset_sub_group"];
-                            $reg_asset_detail->ASSET_CLASS = '';
-                            $reg_asset_detail->NAMA_ASSET = $detail[$i]["asset_name"];
-                            $reg_asset_detail->MERK = $detail[$i]["asset_brand"];
-                            $reg_asset_detail->SPESIFIKASI_OR_WARNA = $detail[$i]["asset_specification"];
-                            $reg_asset_detail->NO_RANGKA_OR_NO_SERI = $detail[$i]["asset_serie_no"];
-                            $reg_asset_detail->NO_MESIN_OR_IMEI = $detail[$i]["asset_imei"];
-                            $reg_asset_detail->NO_POLISI = $detail[$i]["asset_police_no"];
-                            $reg_asset_detail->LOKASI_BA_CODE = $detail[$i]["asset_location"];
-                            $reg_asset_detail->LOKASI_BA_DESCRIPTION = '';
-                            $reg_asset_detail->TAHUN_ASSET = $detail[$i]["asset_year"];
-                            $reg_asset_detail->KONDISI_ASSET = '';
-                            $reg_asset_detail->INFORMASI = $detail[$i]["asset_info"];
-                            $reg_asset_detail->NAMA_PENANGGUNG_JAWAB_ASSET = $detail[$i]["asset_pic_name"];
-                            $reg_asset_detail->JABATAN_PENANGGUNG_JAWAB_ASSET = $detail[$i]["asset_pic_level"];
-                            $reg_asset_detail->CREATED_BY = Session::get('user_id');
-                            $reg_asset_detail->save();
+                            $reg_asset_detail_id = DB::table( 'TR_REG_ASSET_DETAIL')->insertGetId([
+                                "ASSET_PO_ID" =>   $reg_asset_po_id,
+                                "NO_REG_ITEM" =>  $i + 1,
+                                "NO_REG" =>  $reg_no,
+                                "ITEM_PO" =>  number_format($row["item_po"]),
+                                "KODE_MATERIAL" =>  $row["code"],
+                                "NAMA_MATERIAL" =>  $row["name"],
+                                "NO_PO" =>  $request->po_no,
+                                "KODE_JENIS_ASSET" =>  '',
+                                "JENIS_ASSET" =>  $detail[$i]["asset_type"],
+                                "GROUP" =>  $detail[$i]["asset_group"],
+                                "SUB_GROUP" =>  $detail[$i]["asset_sub_group"],
+                                "ASSET_CLASS" =>  '',
+                                "NAMA_ASSET" =>  $detail[$i]["asset_name"],
+                                "MERK" =>  $detail[$i]["asset_brand"],
+                                "SPESIFIKASI_OR_WARNA" =>  $detail[$i]["asset_specification"],
+                                "NO_RANGKA_OR_NO_SERI" =>  $detail[$i]["asset_serie_no"],
+                                "NO_MESIN_OR_IMEI" =>  $detail[$i]["asset_imei"],
+                                "NO_POLISI" =>  $detail[$i]["asset_police_no"],
+                                "LOKASI_BA_CODE" =>  $detail[$i]["asset_location"],
+                                "LOKASI_BA_DESCRIPTION" =>  '',
+                                "TAHUN_ASSET" =>  $detail[$i]["asset_year"],
+                                "KONDISI_ASSET" =>  '',
+                                "INFORMASI" =>  $detail[$i]["asset_info"],
+                                "NAMA_PENANGGUNG_JAWAB_ASSET" =>  $detail[$i]["asset_pic_name"],
+                                "JABATAN_PENANGGUNG_JAWAB_ASSET" =>  $detail[$i]["asset_pic_level"],
+                                "CREATED_BY" =>  Session::get('user_id'),
+
+                            ]);
+
 
                             $item_file_id = ($no + 1) . ($i + 1);
-
+           
                             if ($detail[$i]["foto_asset"]["name"]) {
-                                $reg_asset_detail_file_asset = new TR_REG_ASSET_DETAIL_FILE();
-                                $reg_asset_detail_file_asset->NO_REG_ITEM_FILE = $item_file_id;
-                                $reg_asset_detail_file_asset->NO_REG = $reg_no;
-                                $reg_asset_detail_file_asset->JENIS_FOTO = 'foto asset';
-                                $reg_asset_detail_file_asset->FILENAME = $detail[$i]["foto_asset"]["name"];
-                                $reg_asset_detail_file_asset->DOC_SIZE = $detail[$i]["foto_asset"]["size"];
-                                $reg_asset_detail_file_asset->FILE_CATEGORY = $detail[$i]["foto_asset"]["type"];
-                                $reg_asset_detail_file_asset->FILE_UPLOAD = $detail[$i]["foto_asset"]["file"];
-                                $reg_asset_detail_file_asset->save();
+                                DB::table( 'TR_REG_ASSET_DETAIL_FILE')->insert([
+                                    "ASSET_PO_DETAIL_ID" =>  $reg_asset_detail_id,
+                                    "NO_REG_ITEM_FILE" => $item_file_id,
+                                    "NO_REG" => $reg_no,
+                                    "JENIS_FOTO" => 'foto asset',
+                                    "FILENAME" => $detail[$i]["foto_asset"]["name"],
+                                    "DOC_SIZE" => $detail[$i]["foto_asset"]["size"],
+                                    "FILE_CATEGORY" => 'asset',
+                                    "FILE_UPLOAD" => $detail[$i]["foto_asset"]["file"],
+
+                                ]);
                             }
 
                             if ($detail[$i]["foto_asset_seri"]["name"]) {
-                                $reg_asset_detail_file_seri = new TR_REG_ASSET_DETAIL_FILE();
-                                $reg_asset_detail_file_seri->NO_REG_ITEM_FILE = $item_file_id;
-                                $reg_asset_detail_file_seri->NO_REG = $reg_no;
-                                $reg_asset_detail_file_seri->JENIS_FOTO = 'Foto no. seri / no rangka';
-                                $reg_asset_detail_file_seri->FILENAME = $detail[$i]["foto_asset_seri"]["name"];
-                                $reg_asset_detail_file_seri->DOC_SIZE = $detail[$i]["foto_asset_seri"]["size"];
-                                $reg_asset_detail_file_seri->FILE_CATEGORY = $detail[$i]["foto_asset_seri"]["type"];
-                                $reg_asset_detail_file_seri->FILE_UPLOAD = $detail[$i]["foto_asset_seri"]["file"];
-                                $reg_asset_detail_file_seri->save();
+                                DB::table('TR_REG_ASSET_DETAIL_FILE')->insert([
+                                    "ASSET_PO_DETAIL_ID" =>  $reg_asset_detail_id,
+                                    "NO_REG_ITEM_FILE" => $item_file_id,
+                                    "NO_REG" => $reg_no,
+                                    "JENIS_FOTO" => 'Foto no. seri / no rangka',
+                                    "FILENAME" => $detail[$i]["foto_asset"]["name"],
+                                    "DOC_SIZE" => $detail[$i]["foto_asset"]["size"],
+                                    "FILE_CATEGORY" => 'no seri',
+                                    "FILE_UPLOAD" => $detail[$i]["foto_asset"]["file"],
+
+                                ]);
                             }
 
                             if ($detail[$i]["foto_asset_mesin"]["name"]) {
-                                $reg_asset_detail_file_mesin = new TR_REG_ASSET_DETAIL_FILE();
-                                $reg_asset_detail_file_mesin->NO_REG_ITEM_FILE = $item_file_id;
-                                $reg_asset_detail_file_mesin->NO_REG = $reg_no;
-                                $reg_asset_detail_file_mesin->JENIS_FOTO = 'Foto No msin / IMEI';
-                                $reg_asset_detail_file_mesin->FILENAME = $detail[$i]["foto_asset_mesin"]["name"];
-                                $reg_asset_detail_file_mesin->DOC_SIZE = $detail[$i]["foto_asset_mesin"]["size"];
-                                $reg_asset_detail_file_mesin->FILE_CATEGORY = $detail[$i]["foto_asset_mesin"]["type"];
-                                $reg_asset_detail_file_mesin->FILE_UPLOAD = $detail[$i]["foto_asset_mesin"]["file"];
-                                $reg_asset_detail_file_mesin->save();
+                                DB::table('TR_REG_ASSET_DETAIL_FILE')->insert([
+                                    "ASSET_PO_DETAIL_ID" =>  $reg_asset_detail_id,
+                                    "NO_REG_ITEM_FILE" => $item_file_id,
+                                    "NO_REG" => $reg_no,
+                                    "JENIS_FOTO" => 'Foto No msin / IMEI',
+                                    "FILENAME" => $detail[$i]["foto_asset"]["name"],
+                                    "DOC_SIZE" => $detail[$i]["foto_asset"]["size"],
+                                    "FILE_CATEGORY" => 'imei',
+                                    "FILE_UPLOAD" => $detail[$i]["foto_asset"]["file"],
+
+                                ]);
                             }
                         }
                         $no++;
@@ -280,73 +292,8 @@ class RequestController extends Controller
        }
     }
 
-    public function validateUsername($username) {
-        $service = API::exec(array(
-            'request' => 'GET',
-            'method' => "tr_user_profile/" . $username
-        ));
-        $profile = $service->data;    
-        if($profile) {
-            return false;
-        } else {
-            return true;
-        }
 
-    }
 
-    public function show()
-    {
-        $param = $_REQUEST;
-        $service = API::exec(array(
-            'request' => 'GET',
-            'method' => "tr_user/" . $param["id"]
-        ));
-        $data = $service;
-        return response()->json(array('data' => $data->data));
-    }
-
-    public function inactive(Request $request) {
-        try {
-            $param["updated_by"] = Session::get('user');
-            $data = API::exec(array(
-                'request' => 'ACTIVE',
-                'method' => 'tr_user/' . $request->id . '/0',
-                'data' => $param
-            ));
-
-            $res = $data;
-
-            if ($res->code == '201') {
-                return response()->json(['status' => true, "message" => 'Data is successfully inactived']);;
-            } else {
-                return response()->json(['status' => false, "message" => $res->message]);
-            }
-
-        } catch (\Exception $e) {
-            return response()->json(['status' => false, "message" => $e->getMessage()]);
-        }
-    }
-   
-    public function active(Request $request) {
-        try {
-            $param["updated_by"] = Session::get('user');
-            $data = API::exec(array(
-                'request' => 'ACTIVE',
-                'method' => 'tr_user/' . $request->id . '/1',
-                'data' => $param
-            ));
-
-            $res = $data;
-
-            if ($res->code == '201') {
-                return response()->json(['status' => true, "message" => 'Data is successfully inactived']);;
-            } else {
-                return response()->json(['status' => false, "message" => $res->message]);
-            }
-        } catch (\Exception $e) {
-            return response()->json(['status' => false, "message" => $e->getMessage()]);
-        }
-    }
 
     public function pdfDoc()
     {

@@ -63,6 +63,7 @@ return [
             'write' => [
                 'host' => '127.0.0.1'
             ],
+            'strict' => false,
             'driver'    => 'mysql',
             'database'  => 'fams',
             'username'  => 'root',

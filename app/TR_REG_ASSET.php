@@ -7,10 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 class TR_REG_ASSET extends Model
 {
     protected $table = 'TR_REG_ASSET';
-     protected $guarded = ['id'];
     public $timestamps = false;
 
     protected $fillable = [
+        "ID",
         "NO_REG",
         "TYPE_TRANSAKSI",
         "BUSINESS_AREA",

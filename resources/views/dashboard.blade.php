@@ -276,7 +276,7 @@
                                                                     <p class="help-block">*jpg, png</p>
                                                                 </div>
                                                                 <div class="image-group">
-                                                                    <img id="foto_asset_thumb_1" data-status="0"  title="click to change image" class="img-responsive" src="{{URL::asset('img/add-img.png')}}">
+                                                                    <img id="foto_asset_thumb_1" data-status="0" title="click to change image" class="img-responsive" src="{{URL::asset('img/add-img.png')}}">
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -292,7 +292,7 @@
                                                                     <p class="help-block">*jpg, png</p>
                                                                 </div>
                                                                 <div class="image-group">
-                                                                    <img id="foto_no_seri_thumb_1" data-status="0"  title="click to change image" class="img-responsive" src="{{URL::asset('img/add-img.png')}}">
+                                                                    <img id="foto_no_seri_thumb_1" data-status="0" title="click to change image" class="img-responsive" src="{{URL::asset('img/add-img.png')}}">
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -513,7 +513,7 @@
 
     function requestDetail(id) {
 
-        var asset = jQuery.parseJSON(JSON.stringify(dataJson('{!! route("get.outstandingdetail") !!}/?no_reg=' + id)));
+        var asset = jQuery.parseJSON(JSON.stringify(dataJson('{!! route("get.outstandingdetail") !!}/?id=' + id)));
         var data = asset[0];
         jQuery("#asset_request_date").val(getDate(data.request_date));
         /* jQuery("#asset_business_area").val(data.business_area); */
@@ -522,14 +522,14 @@
         jQuery("#asset_vendor_code").val(data.vendor_code);
         jQuery("#asset_vendor_name").val(data.vendor_name);
 
-        var asset_item = jQuery.parseJSON(JSON.stringify(dataJson('{!! route("get.outstandingdetailitem") !!}/?no_reg=' + id)));
-
+        var asset_item = jQuery.parseJSON(JSON.stringify(dataJson('{!! route("get.outstandingdetailitem") !!}/?id=' + id)));
         var select_item = [];
         jQuery.each(asset_item, function(key, val) {
             select_item.push({
-                id: key,
+                id: val.id,
                 text: val.material_code + ' - ' + val.material_name
             });
+
         });
 
         jQuery("#detail_item_selected").select2({
@@ -543,8 +543,8 @@
 
         request_item = [];
         jQuery.each(asset_item, function(key, val) {
-            request_item[key] = {
-                id: key,
+            request_item[val.id] = {
+                id: val.id,
                 item_po: val.item_id,
                 code: val.material_code,
                 name: val.material_name,
@@ -553,9 +553,7 @@
                 outstanding_qty: (val.qty - val.qty_request),
                 detail: []
             };
-
-            createPage(key, id);
-
+            createPage(val.id);
         });
 
         jQuery("#detail-modal").modal({
@@ -565,14 +563,14 @@
         jQuery("#detrail-modal").modal('show');
     }
 
-    function createPage(id, no_reg) {
+    function createPage(id) {
         request_item_page = [];
         data_page = [];
         var item_detail = [];
         var item = request_item[id];
-        var asset_item_po = jQuery.parseJSON(JSON.stringify(dataJson('{!! route("get.outstandingdetailitempo") !!}/?no_reg=' + no_reg + '&item_po=' + item.item_po)));
+        var asset_item_po = jQuery.parseJSON(JSON.stringify(dataJson('{!! route("get.outstandingdetailitempo") !!}/?id=' + id)));
         jQuery.each(asset_item_po, function(key, val) {
-            var file = jQuery.parseJSON(JSON.stringify(dataJson('{!! route("get.outstandingdetailitemfile") !!}/?no_reg=' + no_reg + '&item_file=' + item.item_po.toString() + (key + 1))));
+            var file = jQuery.parseJSON(JSON.stringify(dataJson('{!! route("get.outstandingdetailitemfile") !!}/?id=' + val.id)));
             var file_foto_asset = [];
             var file_foto_seri = [];
             var file_foto_mesin = [];

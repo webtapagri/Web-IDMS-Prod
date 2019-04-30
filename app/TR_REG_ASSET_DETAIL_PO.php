@@ -7,10 +7,15 @@ use Illuminate\Database\Eloquent\Model;
 class TR_REG_ASSET_DETAIL_PO extends Model
 {
     protected $table = 'TR_REG_ASSET_DETAIL_PO';
-     protected $guarded = ['id'];
     public $timestamps = false;
 
+    public function posts()
+    {
+        return $this->hasMany('App\TR_REG_ASSET');
+    }
+
     protected $fillable = [
+        "ASSET_REG_ID",
         "NO_REG",
         "NO_PO",
         "ITEM_PO",

@@ -71,7 +71,7 @@ class HomeController extends Controller
         }
 
         $sql = '
-            SELECT asset.NO_REG as id ' . implode(", ", $selectedColumn) . '
+            SELECT asset.ID as id ' . implode(", ", $selectedColumn) . '
             FROM TR_REG_ASSET as asset
             INNER JOIN TBM_USER as requestor ON (requestor.id=asset.CREATED_BY)
             WHERE asset.NO_REG > 0
@@ -135,10 +135,10 @@ class HomeController extends Controller
 
     function requestDetail()
     {
-        $no_reg = $_REQUEST['no_reg'];
+        $id = $_REQUEST['id'];
         $data = DB::table('TR_REG_ASSET')
-            ->select("NO_REG  as id","TYPE_TRANSAKSI as transaction_type", "TANGGAL_REG as request_date","NO_PO as no_po", "TANGGAL_PO as po_date","KODE_VENDOR as vendor_code","NAMA_VENDOR as vendor_name")
-            ->where("NO_REG", "=", $no_reg)
+            ->select("ID  as id","TYPE_TRANSAKSI as transaction_type", "TANGGAL_REG as request_date","NO_PO as no_po", "TANGGAL_PO as po_date","KODE_VENDOR as vendor_code","NAMA_VENDOR as vendor_name")
+            ->where("ID", "=", $id)
             ->get();
 
         return response()->json(array('data' => $data));
@@ -146,10 +146,10 @@ class HomeController extends Controller
    
     function requestDetailItem()
     {
-        $no_reg = $_REQUEST['no_reg'];
+        $id = $_REQUEST['id'];
         $data = DB::table('TR_REG_ASSET_DETAIL_PO')
-            ->select("NO_REG  as id", "ITEM_PO as item_id", "KODE_MATERIAL as material_code", "NAMA_MATERIAL as material_name","QUANTITY_PO as qty", "QUANTITY_SUBMIT as qty_request")
-            ->where("NO_REG", "=", $no_reg)
+            ->select("ID as id", "ITEM_PO as item_id", "KODE_MATERIAL as material_code", "NAMA_MATERIAL as material_name","QUANTITY_PO as qty", "QUANTITY_SUBMIT as qty_request")
+            ->where( "ASSET_REG_ID", "=", $id)
             ->get();
 
         return response()->json(array('data' => $data));
@@ -157,10 +157,10 @@ class HomeController extends Controller
     
     function requestDetailItemPO()
     {
-        $no_reg = $_REQUEST['no_reg'];
-        $item_po = $_REQUEST['item_po'];
+        $id = $_REQUEST['id'];
         $data = DB::table('TR_REG_ASSET_DETAIL')
             ->select(
+            "ID as id",
             "ITEM_PO as item_po",
             "KODE_MATERIAL as code",
             "NAMA_MATERIAL as name",
@@ -183,8 +183,7 @@ class HomeController extends Controller
             "NAMA_PENANGGUNG_JAWAB_ASSET as asset_pic_name",
             "JABATAN_PENANGGUNG_JAWAB_ASSET as asset_pic_level")
             ->where([
-                ["ITEM_PO", "=", $item_po],
-                [ "NO_REG", "=", $no_reg],
+                [ "ASSET_PO_ID", "=", $id]
             ])
             ->get();
 
@@ -193,18 +192,17 @@ class HomeController extends Controller
     
     function requestDetailItemFile()
     {
-        $no_reg = $_REQUEST['no_reg'];
-        $item_file = $_REQUEST['item_file'];
+        $id = $_REQUEST['id'];
         $data = DB::table('TR_REG_ASSET_DETAIL_FILE')
             ->select(
+            "ID as id",
             "JENIS_FOTO as type",
             "FILE_CATEGORY as category",
             "FILENAME as file_name",
             "DOC_SIZE as size",
             "FILE_UPLOAD as file")
             ->where([
-                [ "NO_REG_ITEM_FILE", "=", $item_file],
-                [ "NO_REG", "=", $no_reg],
+                [ "ASSET_PO_DETAIL_ID", "=", $id]
             ])
             ->get();
 

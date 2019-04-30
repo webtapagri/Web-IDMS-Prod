@@ -722,9 +722,19 @@
         });
 
         jQuery("#asset_location").on('change', function() {
-            var id = current_page - 1;
-            var obj = jQuery('#detail_item_selected').val();
-            request_item[obj].detail[id].asset_location = jQuery(this).val();
+            if (jQuery(this).val()) {
+                var id = current_page - 1;
+                var obj = jQuery('#detail_item_selected').val();
+                request_item[obj].detail[id].asset_location = jQuery(this).val();
+            }
+        });
+
+        jQuery("#asset_condition").on('change', function() {
+            if (jQuery(this).val()) {
+                var id = current_page - 1;
+                var obj = jQuery('#detail_item_selected').val();
+                request_item[obj].detail[id].asset_condition = jQuery(this).val();
+            }
         });
     });
 
@@ -868,6 +878,7 @@
                 asset_serie_no: '',
                 asset_specification: '',
                 asset_location: '',
+                asset_condition: '',
                 asset_year: '',
                 asset_pic_name: '',
                 asset_pic_level: '',
@@ -1000,6 +1011,10 @@
         var key = jQuery('#detail_item_selected').val();
         var request = request_item[key];
         var item = request.detail[obj];
+
+        jQuery('#asset_location').select2('val', '');
+        jQuery('#asset_location').trigger('change');
+
 
         jQuery('#asset_name').val(item.asset_name);
         jQuery('#asset_type').val(item.asset_type);

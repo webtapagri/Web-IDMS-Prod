@@ -64,7 +64,7 @@ class OutstandingController extends Controller
         }
 
         $sql = '
-            SELECT asset.NO_REG as id ' . implode(", ", $selectedColumn) . '
+            SELECT asset.ID as id ' . implode(", ", $selectedColumn) . '
             FROM TR_REG_ASSET as asset
             INNER JOIN TBM_USER as requestor ON (requestor.id=asset.CREATED_BY)
             WHERE asset.NO_REG > 0

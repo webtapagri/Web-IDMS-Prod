@@ -7,10 +7,16 @@ use Illuminate\Database\Eloquent\Model;
 class TR_REG_ASSET_FILE extends Model
 {
     protected $table = 'TR_REG_ASSET_FILE';
-     protected $guarded = ['id'];
     public $timestamps = false;
 
+    public function posts()
+    {
+        return $this->hasMany('App\TR_REG_ASSET');
+    }
+
     protected $fillable = [
+        "ID",
+        "ASSET_REG_ID",
         "NO_REG",
         "NO_FILE",
         "FILENAME",
