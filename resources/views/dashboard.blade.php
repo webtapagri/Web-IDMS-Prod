@@ -24,24 +24,24 @@
                         <thead>
                             <tr role="row" class="heading">
                                 <th>Tipe</th>
+                                <th>No Rrg</th>
                                 <th>No PO</th>
                                 <th>Tgl.Pengajuan</th>
                                 <th>Requestor</th>
                                 <th>Tgl. PO</th>
                                 <th>Kode Vendor</th>
                                 <th>Nama Vendor</th>
-                                <th>Status</th>
                                 <th>#</th>
                             </tr>
                             <tr role="row" class="filter">
                                 <th><input type="text" class="form-control input-xs form-filter" style="height:10px !important" name="transaction_type" id="transaction_type"></th>
+                                <th><input type="text" class="form-control input-xs form-filter" name="no_reg"></th>
                                 <th><input type="text" class="form-control input-xs form-filter" name="no_po"></th>
                                 <th><input type="text" class="form-control input-xs form-filter datepicker" name="request_date" autocomplete="off"></th>
                                 <th><input type="text" class="form-control input-xs form-filter" name="requestor"></th>
                                 <th><input type="text" class="form-control input-xs form-filter datepicker" name="po_date" autocomplete="off"></th>
                                 <th><input type="text" class="form-control input-xs form-filter" name="vendor_code"></th>
                                 <th><input type="text" class="form-control input-xs form-filter" name="vendor_name"></th>
-                                <th><input type="text" class="form-control input-xs form-filter" name="status" disabled></th>
                                 <th><input type="text" class="form-control input-xs form-filter" name="detail" disabled></th>
                             </tr>
                         </thead>
@@ -63,6 +63,7 @@
             </div>
             <div class="modal-body">
                 <form class="form-horizontal code-asset-form" id="code-asset-form">
+                  <fieldset disabled="disabled">
                     <div class="box-body">
                         <div class="box-body">
                             <div class="form-group">
@@ -103,6 +104,11 @@
                                 </div>
                             </div>
                             <hr>
+                            <div class="form-group docs-files-detail hide">
+                                <label for="plant" class="col-md-12">BERITA ACARA SERAH TERIMA</label>
+                                <div id="berita-acara-detail"></div>
+                            </div>
+                                <hr>
                             <div class="form-group">
                                 <label class="col-md-2"><b>ITEM DETAIL</b></label>
                                 <div class="col-md-9">
@@ -333,10 +339,12 @@
                                 </div>
                             </div>
                         </div>
+                         </fieldset>
                         <div class="box-footer clearfix">
                             <button type="button" class="btn btn-default btn-flat btn-back-request-form pull-right" data-dismiss="modal" style="margin-right: 5px;">Close</button>
                         </div>
                     </div>
+                     
                 </form>
             </div>
         </div>
@@ -397,6 +405,10 @@
                             return content;
                         }
                     },
+                     {
+                        data: 'no_reg',
+                        name: 'no_reg'
+                    },
                     {
                         data: 'no_po',
                         name: 'no_po'
@@ -423,18 +435,13 @@
                     },
                     {
                         "render": function(data, type, row) {
-                            return 'Waiting approval';
-                        }
-                    },
-                    {
-                        "render": function(data, type, row) {
                             var content = '<button class="btn btn-flat btn-flat btn-xs btn-danger" OnClick="requestDetail(' + row.id + ')" title="detail data ' + row.no_po + '" ><i class="fa fa-search"></i></button>';
                             return content;
                         }
                     }
                 ],
                 columnDefs: [{
-                        targets: [1, 5],
+                        targets: [2, 6],
                         width: '12%'
                     },
                     {
@@ -448,7 +455,7 @@
                         orderable: false
                     },
                     {
-                        targets: [2, 4, 0, 3],
+                        targets: [3, 5, 0, 4, 1],
                         width: '10%'
                     },
 
@@ -512,15 +519,32 @@
     });
 
     function requestDetail(id) {
-
         var asset = jQuery.parseJSON(JSON.stringify(dataJson('{!! route("get.outstandingdetail") !!}/?id=' + id)));
         var data = asset[0];
         jQuery("#asset_request_date").val(getDate(data.request_date));
         /* jQuery("#asset_business_area").val(data.business_area); */
         jQuery("#asset_po_no").val(data.no_po);
+        jQuery("#asset_business_area").val(data.business_area);
         jQuery("#asset_po_date").val(getDate(data.po_date));
         jQuery("#asset_vendor_code").val(data.vendor_code);
         jQuery("#asset_vendor_name").val(data.vendor_name);
+
+        var asset_files = jQuery.parseJSON(JSON.stringify(dataJson('{!! route("get.outstandingdetailfiles") !!}/?id=' + id)));
+        if(asset_files.length > 0) {
+            var body = '';
+            jQuery.each(asset_files, function(key, val) {
+                body += '<div class="col-md-8">';
+                body += '<div class="input-group">';
+                body += '<input type="text" class="form-control input-sm" value="' + val.file_name + '">';
+                body += '<a href="' + val.file + '" class="input-group-addon btn-red" Download="' + val.file_name + '"><i class="fa fa-download"></i></a>';
+                body += ' </div></div>';
+            });
+            jQuery('#berita-acara-detail').html(body);
+            jQuery(".docs-files-detail").removeClass("hide");
+        } else {
+            jQuery('#berita-acara-detail').html('');
+             jQuery(".docs-files-detail").addClass("hide");
+        }
 
         var asset_item = jQuery.parseJSON(JSON.stringify(dataJson('{!! route("get.outstandingdetailitem") !!}/?id=' + id)));
         var select_item = [];
@@ -529,7 +553,6 @@
                 id: val.id,
                 text: val.material_code + ' - ' + val.material_name
             });
-
         });
 
         jQuery("#detail_item_selected").select2({
@@ -556,11 +579,14 @@
             createPage(val.id);
         });
 
+        jQuery("#detail-modal .modal-title").text('Request detail of ' + data.no_reg + ' / ' + data.vendor_name);
         jQuery("#detail-modal").modal({
             backdrop: 'static',
             keyboard: false
         });
-        jQuery("#detrail-modal").modal('show');
+        jQuery("#detail-modal").modal('show');
+        jQuery("#detail_item_selected").val(select_item[0].id);
+        jQuery("#detail_item_selected").trigger("change");
     }
 
     function createPage(id) {
@@ -570,35 +596,34 @@
         var item = request_item[id];
         var asset_item_po = jQuery.parseJSON(JSON.stringify(dataJson('{!! route("get.outstandingdetailitempo") !!}/?id=' + id)));
         jQuery.each(asset_item_po, function(key, val) {
-            var file = jQuery.parseJSON(JSON.stringify(dataJson('{!! route("get.outstandingdetailitemfile") !!}/?id=' + val.id)));
+            var files = jQuery.parseJSON(JSON.stringify(dataJson('{!! route("get.outstandingdetailitemfile") !!}/?id=' + val.id)));
             var file_foto_asset = [];
             var file_foto_seri = [];
             var file_foto_mesin = [];
-            jQuery.each(file, function(i, field) {
-                if (field.category == "asset") {
+            jQuery.each(files, function(i, field) {
+                if (field.category === "asset") {
                     file_foto_asset = {
-                        name: field.name,
+                        name: field.file_name,
                         size: field.size,
                         type: field.type,
                         file: field.file
-                    }
+                    };
                 } else if (field.category === "no seri") {
                     file_foto_seri = {
-                        name: field.name,
+                        name: field.file_name,
                         size: field.size,
                         type: field.type,
                         file: field.file
-                    }
+                    };
                 } else if (field.category === "imei") {
                     file_foto_mesin = {
-                        name: field.name,
+                        name: field.file_name,
                         size: field.size,
                         type: field.type,
                         file: field.file
-                    }
+                    };
                 }
             });
-
 
             item_detail.push({
                 asset_type: val.asset_type,
@@ -623,6 +648,7 @@
         });
 
         request_item[id].detail = item_detail;
+        console.log(request_item[id].detail);
     }
 
 
@@ -716,29 +742,26 @@
         jQuery('#asset_pic_level').val(item.asset_pic_level);
 
 
+
         if (item.foto_asset.file) {
             jQuery("#foto_asset_thumb_1").prop('src', item.foto_asset.file);
-            jQuery(".btn-foto-asset-remove").removeClass('hide');
         } else {
             jQuery("#foto_asset_thumb_1").prop('src', "{{URL::asset('img/add-img.png')}}");
-            jQuery(".btn-foto-asset-remove").addClass('hide');
         }
 
         if (item.foto_asset_seri.file) {
             jQuery("#foto_no_seri_thumb_1").prop('src', item.foto_asset_seri.file);
-            jQuery(".btn-foto-seri-remove").removeClass('hide');
         } else {
             jQuery("#foto_no_seri_thumb_1").prop('src', "{{URL::asset('img/add-img.png')}}");
-            jQuery(".btn-foto-seri-remove").addClass('hide');
         }
 
         if (item.foto_asset_mesin.file) {
             jQuery("#foto_mesin_thumb_1").prop('src', item.foto_asset_mesin.file);
-            jQuery(".btn-foto-mesin-remove").removeClass('hide');
         } else {
             jQuery("#foto_mesin_thumb_1").prop('src', "{{URL::asset('img/add-img.png')}}");
-            jQuery(".btn-foto-mesin-remove").addClass('hide');
         }
+
+
     }
 
 

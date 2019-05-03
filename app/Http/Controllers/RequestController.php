@@ -168,7 +168,7 @@ class RequestController extends Controller
             $no = 1;
             if( $request->docs) {
                 foreach ($request->docs as $row) {
-                    DB::table('TR_REG_ASSET')->insert([
+                    DB::table('TR_REG_ASSET_FILE')->insert([
                         "ASSET_REG_ID" => $asset_id,
                         "NO_FILE" => $no,
                         "NO_REG" => $reg_no,
@@ -181,16 +181,16 @@ class RequestController extends Controller
                     $no++;
                 }
             }
-            
+
             $no = 0;
             if( $request->asset) {
                 foreach ($request->asset as $row) {
-                    if (number_format($row["item_po"])) {
+                    if ($row["item_po"]) {
                         $reg_asset_po_id = DB::table( 'TR_REG_ASSET_DETAIL_PO')-> insertGetId([
                             "ASSET_REG_ID" =>  $asset_id,
                             "NO_REG" =>  $reg_no,
                             "NO_PO" =>  $request->po_no,
-                            "ITEM_PO" =>  number_format($row["item_po"]),
+                            "ITEM_PO" =>  $row["item_po"],
                             "KODE_MATERIAL" =>  $row["code"],
                             "NAMA_MATERIAL" =>  $row["name"],
                             "QUANTITY_PO" =>  $row["qty"],
@@ -204,7 +204,7 @@ class RequestController extends Controller
                                 "ASSET_PO_ID" =>   $reg_asset_po_id,
                                 "NO_REG_ITEM" =>  $i + 1,
                                 "NO_REG" =>  $reg_no,
-                                "ITEM_PO" =>  number_format($row["item_po"]),
+                                "ITEM_PO" =>  $row["item_po"],
                                 "KODE_MATERIAL" =>  $row["code"],
                                 "NAMA_MATERIAL" =>  $row["name"],
                                 "NO_PO" =>  $request->po_no,
@@ -251,10 +251,10 @@ class RequestController extends Controller
                                     "NO_REG_ITEM_FILE" => $item_file_id,
                                     "NO_REG" => $reg_no,
                                     "JENIS_FOTO" => 'Foto no. seri / no rangka',
-                                    "FILENAME" => $detail[$i]["foto_asset"]["name"],
-                                    "DOC_SIZE" => $detail[$i]["foto_asset"]["size"],
+                                    "FILENAME" => $detail[$i]["foto_asset_seri"]["name"],
+                                    "DOC_SIZE" => $detail[$i]["foto_asset_seri"]["size"],
                                     "FILE_CATEGORY" => 'no seri',
-                                    "FILE_UPLOAD" => $detail[$i]["foto_asset"]["file"],
+                                    "FILE_UPLOAD" => $detail[$i]["foto_asset_seri"]["file"],
                                 ]);
                             }
 
@@ -264,11 +264,10 @@ class RequestController extends Controller
                                     "NO_REG_ITEM_FILE" => $item_file_id,
                                     "NO_REG" => $reg_no,
                                     "JENIS_FOTO" => 'Foto No msin / IMEI',
-                                    "FILENAME" => $detail[$i]["foto_asset"]["name"],
-                                    "DOC_SIZE" => $detail[$i]["foto_asset"]["size"],
+                                    "FILENAME" => $detail[$i]["foto_asset_mesin"]["name"],
+                                    "DOC_SIZE" => $detail[$i]["foto_asset_mesin"]["size"],
                                     "FILE_CATEGORY" => 'imei',
-                                    "FILE_UPLOAD" => $detail[$i]["foto_asset"]["file"],
-
+                                    "FILE_UPLOAD" => $detail[$i]["foto_asset_mesin"]["file"],
                                 ]);
                             }
                         }

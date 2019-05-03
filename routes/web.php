@@ -126,10 +126,11 @@ Route::match(['get', 'post'], 'grid-accessright', [
 Route::get('SapDownloadExcel', 'SAPController@downloadExcel');
 
 /* JSON DATA SOURCE */
-Route::get( 'get-outstandingdetail', ['as' => 'get.outstandingdetail', 'uses' => 'HomeController@requestDetail']);
-Route::get( 'get-outstandingdetailitem', ['as' => 'get.outstandingdetailitem', 'uses' => 'HomeController@requestDetailItem']);
-Route::get( 'get-outstandingdetailitempo', ['as' => 'get.outstandingdetailitempo', 'uses' => 'HomeController@requestDetailItemPO']);
-Route::get( 'get-outstandingdetailitemfile', ['as' => 'get.outstandingdetailitemfile', 'uses' => 'HomeController@requestDetailItemFile']);
+Route::get( 'get-outstandingdetail', ['as' => 'get.outstandingdetail', 'uses' => 'OutstandingController@requestDetail']);
+Route::get( 'get-outstandingdetailfiles', ['as' => 'get.outstandingdetailfiles', 'uses' => 'OutstandingController@requestDetailFiles']);
+Route::get( 'get-outstandingdetailitem', ['as' => 'get.outstandingdetailitem', 'uses' => 'OutstandingController@requestDetailItem']);
+Route::get( 'get-outstandingdetailitempo', ['as' => 'get.outstandingdetailitempo', 'uses' => 'OutstandingController@requestDetailItemPO']);
+Route::get( 'get-outstandingdetailitemfile', ['as' => 'get.outstandingdetailitemfile', 'uses' => 'OutstandingController@requestDetailItemFile']);
 
 
 /* SELECT 2 */

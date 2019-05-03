@@ -30,7 +30,7 @@
                         <div class="form-group">
                             <label for="plant" class="col-md-3">Tanggal</label>
                             <div class="col-md-4">
-                                <input type="text" class="form-control input-sm datepicker" name="request_date" id="request_date" autocomplete="off" required>
+                                <input type="text" class="form-control input-sm" name="request_date" id="request_date" value="{{ date('d M Y') }}" autocomplete="off" required readonly>
                             </div>
                         </div>
                         <div class="form-group">
@@ -462,7 +462,7 @@
             }
         });
 
-        jQuery("#request_date, #po_date").datepicker({
+        jQuery("#po_date").datepicker({
             format: "mm/dd/yyyy",
             autoclose: true
         });
@@ -593,7 +593,7 @@
                             type: 'error',
                             message: 'reqeust has been submited!'
                         });
-                        window.location.href = "{{ url('request') }}";
+                        window.location.href = "{{ url('/') }}";
                     } else {
                         notify({
                             type: 'warning',

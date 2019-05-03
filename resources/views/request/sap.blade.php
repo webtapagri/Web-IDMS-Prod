@@ -30,7 +30,7 @@
                         <div class="form-group">
                             <label for="plant" class="col-md-3">Tanggal</label>
                             <div class="col-md-4">
-                                <input type="text" class="form-control input-sm datepicker" name="request_date" id="request_date" autocomplete="off" required>
+                                <input type="text" class="form-control input-sm" name="request_date" id="request_date" value="{{ date('d M Y') }}" autocomplete="off" required readonly>
                             </div>
                         </div>
                         <div class="form-group">
@@ -460,10 +460,10 @@
             }
         });
 
-        jQuery("#request_date").datepicker({
+      /*   jQuery("#request_date").datepicker({
             format: "mm/dd/yyyy",
             autoclose: true
-        });
+        }); */
 
         jQuery("#transaction_type").select2({
             data: [{
@@ -1012,7 +1012,7 @@
         var request = request_item[key];
         var item = request.detail[obj];
 
-        jQuery('#asset_location').select2('val', '');
+        jQuery('#asset_location').val( '');
         jQuery('#asset_location').trigger('change');
 
 
@@ -1030,9 +1030,9 @@
         jQuery('#asset_pic_level').val(item.asset_pic_level);
         jQuery('#asset_info').val(item.asset_info);
         if (item.asset_location) {
-            jQuery('#asset_location').select2('val', item.asset_location);
+            jQuery('#asset_location').val(item.asset_location)
         } else {
-            jQuery('#asset_location').select2('val', '');
+            jQuery('#asset_location').val('val', '');
         }
         jQuery('#asset_location').trigger('change');
 
