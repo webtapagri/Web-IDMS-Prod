@@ -155,7 +155,6 @@ class RequestController extends Controller
             $reg_no = rand(0, 1000000);
             $asset_id = DB::table('TR_REG_ASSET')->insertGetId([
                 "CREATED_BY" => Session::get('user_id'),
-                "CREATED_AT" => date('Y-m-d H:i:s'),
                 "NO_REG" => $reg_no,
                 "BUSINESS_AREA" => $request->business_area,
                 "TYPE_TRANSAKSI" => $request->transaction_type,
@@ -178,7 +177,6 @@ class RequestController extends Controller
                         "FILE_CATEGORY" => $row['type'],
                         "FILE_UPLOAD" => $row['file'],
                         "CREATED_BY" => Session::get('user_id'),
-                        "CREATED_AT" => date('Y-m-d H:i:s'),
                     ]);
                     $no++;
                 }
@@ -188,7 +186,6 @@ class RequestController extends Controller
             if( $request->asset) {
                 foreach ($request->asset as $row) {
                     if (number_format($row["item_po"])) {
-
                         $reg_asset_po_id = DB::table( 'TR_REG_ASSET_DETAIL_PO')-> insertGetId([
                             "ASSET_REG_ID" =>  $asset_id,
                             "NO_REG" =>  $reg_no,
@@ -199,9 +196,7 @@ class RequestController extends Controller
                             "QUANTITY_PO" =>  $row["qty"],
                             "QUANTITY_SUBMIT" =>  $row["request_qty"],
                             "CREATED_BY" =>  Session::get('user_id'),
-
                         ]);
-
                         $detail = $row["detail"];
 
                         for ($i = 0; $i < count($detail); $i++) {
@@ -233,9 +228,7 @@ class RequestController extends Controller
                                 "JABATAN_PENANGGUNG_JAWAB_ASSET" =>  $detail[$i]["asset_pic_level"],
                                 "CREATED_BY" =>  Session::get('user_id'),
 
-                            ]);
-
-
+                            ]); 
                             $item_file_id = ($no + 1) . ($i + 1);
            
                             if ($detail[$i]["foto_asset"]["name"]) {
@@ -262,7 +255,6 @@ class RequestController extends Controller
                                     "DOC_SIZE" => $detail[$i]["foto_asset"]["size"],
                                     "FILE_CATEGORY" => 'no seri',
                                     "FILE_UPLOAD" => $detail[$i]["foto_asset"]["file"],
-
                                 ]);
                             }
 
@@ -291,9 +283,6 @@ class RequestController extends Controller
             return response()->json(['status' => false, "message" => $e->getMessage()]);
        }
     }
-
-
-
 
     public function pdfDoc()
     {

@@ -97,7 +97,6 @@ class HomeController extends Controller
         if ($request->request_date)
             $sql .= " AND DATE_FORMAT(asset.TANGGAL_REG, '%Y-%m-%d') = " . DATE_FORMAT(date_create($request->request_date), 'Y-m-d');
 
-
         if ($request->po_date)
             $sql .= " AND DATE_FORMAT(asset.TANGGAL_PO, '%Y-%m-%d') = " . DATE_FORMAT(date_create($request->po_date), 'Y-m-d');
 
