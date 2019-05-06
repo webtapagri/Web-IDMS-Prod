@@ -724,7 +724,10 @@
         jQuery("#asset_location").on('change', function() {
             if (jQuery(this).val()) {
                 var id = (current_page-1);
+                console.log(id);
+                console.log(current_page);
                 var obj = jQuery('#detail_item_selected').val();
+                console.log( request_item[obj].detail[id]);
                 request_item[obj].detail[id].asset_location = jQuery(this).val();
             }
         });
@@ -1002,7 +1005,7 @@
         jQuery('#item_code').val(item.code);
         jQuery('#item_name').val(item.name);
         jQuery('#item_qty_index').val(item.request_qty);
-
+        current_page = 1;
         changePage(1);
     }
 
@@ -1011,10 +1014,6 @@
         var key = jQuery('#detail_item_selected').val();
         var request = request_item[key];
         var item = request.detail[obj];
-
-        jQuery('#asset_location').val( '');
-        jQuery('#asset_location').trigger('change');
-
 
         jQuery('#asset_name').val(item.asset_name);
         jQuery('#asset_type').val(item.asset_type);
@@ -1175,6 +1174,7 @@
         jQuery(".loading-event").fadeOut();
     }
 
+
     function changePage(page) {
         var btn_next = document.getElementById("btn_next");
         var btn_prev = document.getElementById("btn_prev");
@@ -1194,7 +1194,6 @@
             btn_next.style.visibility = "hidden";
         } else {
             btn_next.style.visibility = "visible";
-
         }
 
         assetInfo(page);
@@ -1227,7 +1226,6 @@
     function requestItemData() {
         var total = 0;
         jQuery.each(request_item, function(key, val) {
-
             if (val) {
                 total++;
             }

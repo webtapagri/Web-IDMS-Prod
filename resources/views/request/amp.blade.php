@@ -957,7 +957,8 @@
         jQuery('#item_code').val(item.code);
         jQuery('#item_name').val(item.name);
         jQuery('#item_qty_index').val(item.request_qty);
-
+        
+        current_page = 1;
         changePage(1);
     }
 
