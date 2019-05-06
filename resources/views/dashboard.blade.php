@@ -518,6 +518,10 @@
             placeholder: ' '
         });
 
+        jQuery(".btn-refresh-data-table").on("click", function() {
+            jQuery("#transaction_type").val('');
+            jQuery("#transaction_type").trigger("change");
+        });
     });
 
     function requestDetail(id) {
@@ -747,26 +751,28 @@
             jQuery('#condition1').prop("checked", true);
         } else if(item.asset_condition === 'BP') {
             jQuery('#condition2').prop("checked", true);
-        }else if(item.asset_condition === 'BP') {
+        }else if(item.asset_condition === 'TB') {
             jQuery('#condition3').prop("checked", true);
+        } else {
+             jQuery("input[name='asset_condition']").prop("checked", false);
         }
 
         if (item.foto_asset.file) {
             jQuery("#foto_asset_thumb_1").prop('src', item.foto_asset.file);
         } else {
-            jQuery("#foto_asset_thumb_1").prop('src', "{{URL::asset('img/add-img.png')}}");
+            jQuery("#foto_asset_thumb_1").prop('src', "{{URL::asset('img/default-img.png')}}");
         }
 
         if (item.foto_asset_seri.file) {
             jQuery("#foto_no_seri_thumb_1").prop('src', item.foto_asset_seri.file);
         } else {
-            jQuery("#foto_no_seri_thumb_1").prop('src', "{{URL::asset('img/add-img.png')}}");
+            jQuery("#foto_no_seri_thumb_1").prop('src', "{{URL::asset('img/default-img.png')}}");
         }
 
         if (item.foto_asset_mesin.file) {
             jQuery("#foto_mesin_thumb_1").prop('src', item.foto_asset_mesin.file);
         } else {
-            jQuery("#foto_mesin_thumb_1").prop('src', "{{URL::asset('img/add-img.png')}}");
+            jQuery("#foto_mesin_thumb_1").prop('src', "{{URL::asset('img/default-img.png')}}");
         }
 
 

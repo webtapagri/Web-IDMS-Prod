@@ -305,19 +305,19 @@
                                                     <div class="form-group">
                                                         <div class="radio-inline">
                                                             <label>
-                                                                <input type="radio" name="asset_condition" id="optionsRadios1" value="B" checked>
+                                                                <input type="radio" name="asset_condition" id="condition1" value="B" checked>
                                                                 Baik
                                                             </label>
                                                         </div>
                                                         <div class="radio-inline">
                                                             <label>
-                                                                <input type="radio" name="asset_condition" id="optionsRadios2" value="BP">
+                                                                <input type="radio" name="asset_condition" id="condition2" value="BP">
                                                                 Butuh Perbaikan
                                                             </label>
                                                         </div>
                                                         <div class="radio-inline">
                                                             <label>
-                                                                <input type="radio" name="asset_condition" id="optionsRadios3" value="TB">
+                                                                <input type="radio" name="asset_condition" id="condition3" value="TB">
                                                                 Tidak baik
                                                             </label>
                                                         </div>
@@ -998,6 +998,16 @@
         jQuery('#asset_location').val(item.asset_location);
         jQuery('#asset_pic_name').val(item.asset_pic_name);
         jQuery('#asset_pic_level').val(item.asset_pic_level);
+
+        if(item.asset_condition === 'B') {
+            jQuery('#condition1').prop("checked", true);
+        } else if(item.asset_condition === 'BP') {
+            jQuery('#condition2').prop("checked", true);
+        }else if(item.asset_condition === 'TB') {
+            jQuery('#condition3').prop("checked", true);
+        } else {
+             jQuery("input[name='asset_condition']").prop("checked", false);
+        }
 
 
         if (item.foto_asset.file) {

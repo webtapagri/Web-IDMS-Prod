@@ -723,7 +723,7 @@
 
         jQuery("#asset_location").on('change', function() {
             if (jQuery(this).val()) {
-                var id = (current_page-1);
+                var id = current_page-1;
                 var obj = jQuery('#detail_item_selected').val();
 
                 var data = jQuery(this).select2('data');
@@ -1029,13 +1029,19 @@
         jQuery('#asset_pic_name').val(item.asset_pic_name);
         jQuery('#asset_pic_level').val(item.asset_pic_level);
         jQuery('#asset_info').val(item.asset_info);
-        jQuery("input[name='asset_condition'][value='"+ item.asset_condition +"']").prop('checked', true);
 
-        if (item.asset_location) {
-            jQuery('#asset_location').val(item.asset_location)
+        if(item.asset_condition === 'B') {
+            jQuery('#condition1').prop("checked", true);
+        } else if(item.asset_condition === 'BP') {
+            jQuery('#condition2').prop("checked", true);
+        }else if(item.asset_condition === 'TB') {
+            jQuery('#condition3').prop("checked", true);
         } else {
-            jQuery('#asset_location').val('');
+             jQuery("input[name='asset_condition']").prop("checked", false);
         }
+
+        jQuery('#asset_location').val(item.asset_location);
+        jQuery('#asset_location').select2('val', item.asset_location);
         jQuery('#asset_location').trigger('change');
 
         jQuery('#asset_pic_name').val(item.asset_pic_name);
