@@ -305,19 +305,19 @@
                                                     <div class="form-group">
                                                         <div class="radio-inline">
                                                             <label>
-                                                                <input type="radio" name="asset_condition" id="optionsRadios1" value="1" checked>
+                                                                <input type="radio" name="asset_condition" id="optionsRadios1" value="B" checked>
                                                                 Baik
                                                             </label>
                                                         </div>
                                                         <div class="radio-inline">
                                                             <label>
-                                                                <input type="radio" name="asset_condition" id="optionsRadios2" value="2">
+                                                                <input type="radio" name="asset_condition" id="optionsRadios2" value="BP">
                                                                 Butuh Perbaikan
                                                             </label>
                                                         </div>
                                                         <div class="radio-inline">
                                                             <label>
-                                                                <input type="radio" name="asset_condition" id="optionsRadios3" value="3">
+                                                                <input type="radio" name="asset_condition" id="optionsRadios3" value="TB">
                                                                 Tidak baik
                                                             </label>
                                                         </div>
@@ -629,8 +629,8 @@
                 "docs": request_docs
             };
             param.push(init_form);
-            console.log(param);
-            return false;
+
+
             jQuery.ajax({
                 url: "{{ url('materialrequest/post') }}",
                 type: "POST",
@@ -759,10 +759,23 @@
             request_item[obj].detail[id].asset_pic_level = jQuery(this).val();
         });
 
-        jQuery("#asset_location").on('keyup', function() {
-            var id = current_page - 1;
-            var obj = jQuery('#detail_item_selected').val();
-            request_item[obj].detail[id].asset_location = jQuery(this).val();
+        jQuery("#asset_location").on('change', function() {
+            if (jQuery(this).val()) {
+                var id = (current_page-1);
+                var obj = jQuery('#detail_item_selected').val();
+
+                var data = jQuery(this).select2('data');
+                request_item[obj].detail[id].asset_location = data[0].id;
+                request_item[obj].detail[id].asset_location_desc = data[0].text;
+            }
+        });
+
+        jQuery("input[name='asset_condition']").on('change', function() {
+            if (jQuery(this).val()) {
+                var id = current_page - 1;
+                var obj = jQuery('#detail_item_selected').val();
+                request_item[obj].detail[id].asset_condition = jQuery(this).val();
+            }
         });
     });
 
@@ -796,7 +809,6 @@
         return valid;
 
     }
-
 
     function addItem() {
         if (validateItem()) {
@@ -843,6 +855,8 @@
                 asset_serie_no: '',
                 asset_specification: '',
                 asset_location: '',
+                asset_location_desc: '',
+                asset_condition: '',
                 asset_year: '',
                 asset_pic_name: '',
                 asset_pic_level: '',
@@ -957,7 +971,7 @@
         jQuery('#item_code').val(item.code);
         jQuery('#item_name').val(item.name);
         jQuery('#item_qty_index').val(item.request_qty);
-        
+
         current_page = 1;
         changePage(1);
     }

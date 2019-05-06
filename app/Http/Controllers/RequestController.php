@@ -150,6 +150,7 @@ class RequestController extends Controller
     public function store(Request $request)
     {
         DB::beginTransaction();
+
        try {
            
             $reg_no = rand(0, 1000000);
@@ -220,14 +221,13 @@ class RequestController extends Controller
                                 "NO_MESIN_OR_IMEI" =>  $detail[$i]["asset_imei"],
                                 "NO_POLISI" =>  $detail[$i]["asset_police_no"],
                                 "LOKASI_BA_CODE" =>  $detail[$i]["asset_location"],
-                                "LOKASI_BA_DESCRIPTION" =>  '',
+                                "LOKASI_BA_DESCRIPTION" => $detail[$i]["asset_location_desc"],
+                                "KONDISI_ASSET" =>  $detail[$i]["asset_condition"],
                                 "TAHUN_ASSET" =>  $detail[$i]["asset_year"],
-                                "KONDISI_ASSET" =>  '',
                                 "INFORMASI" =>  $detail[$i]["asset_info"],
                                 "NAMA_PENANGGUNG_JAWAB_ASSET" =>  $detail[$i]["asset_pic_name"],
                                 "JABATAN_PENANGGUNG_JAWAB_ASSET" =>  $detail[$i]["asset_pic_level"],
                                 "CREATED_BY" =>  Session::get('user_id'),
-
                             ]); 
                             $item_file_id = ($no + 1) . ($i + 1);
            

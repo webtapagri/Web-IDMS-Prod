@@ -281,19 +281,19 @@
                                                     <div class="form-group">
                                                         <div class="radio-inline">
                                                             <label>
-                                                                <input type="radio" name="asset_condition" id="optionsRadios1" value="1" checked>
+                                                                <input type="radio" name="asset_condition" id="condition1" value="B" checked>
                                                                 Baik
                                                             </label>
                                                         </div>
                                                         <div class="radio-inline">
                                                             <label>
-                                                                <input type="radio" name="asset_condition" id="optionsRadios2" value="2">
+                                                                <input type="radio" name="asset_condition" id="condition2" value="BP">
                                                                 Butuh Perbaikan
                                                             </label>
                                                         </div>
                                                         <div class="radio-inline">
                                                             <label>
-                                                                <input type="radio" name="asset_condition" id="optionsRadios3" value="3">
+                                                                <input type="radio" name="asset_condition" id="condition3" value="TB">
                                                                 Tidak baik
                                                             </label>
                                                         </div>
@@ -724,15 +724,15 @@
         jQuery("#asset_location").on('change', function() {
             if (jQuery(this).val()) {
                 var id = (current_page-1);
-                console.log(id);
-                console.log(current_page);
                 var obj = jQuery('#detail_item_selected').val();
-                console.log( request_item[obj].detail[id]);
-                request_item[obj].detail[id].asset_location = jQuery(this).val();
+
+                var data = jQuery(this).select2('data');
+                request_item[obj].detail[id].asset_location = data[0].id;
+                request_item[obj].detail[id].asset_location_desc = data[0].text;
             }
         });
 
-        jQuery("#asset_condition").on('change', function() {
+        jQuery("input[name='asset_condition']").on('change', function() {
             if (jQuery(this).val()) {
                 var id = current_page - 1;
                 var obj = jQuery('#detail_item_selected').val();
@@ -881,6 +881,7 @@
                 asset_serie_no: '',
                 asset_specification: '',
                 asset_location: '',
+                asset_location_desc: '',
                 asset_condition: '',
                 asset_year: '',
                 asset_pic_name: '',
@@ -1028,6 +1029,8 @@
         jQuery('#asset_pic_name').val(item.asset_pic_name);
         jQuery('#asset_pic_level').val(item.asset_pic_level);
         jQuery('#asset_info').val(item.asset_info);
+        jQuery("input[name='asset_condition'][value='"+ item.asset_condition +"']").prop('checked', true);
+
         if (item.asset_location) {
             jQuery('#asset_location').val(item.asset_location)
         } else {

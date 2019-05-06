@@ -249,19 +249,19 @@
                                                         <div class="form-group">
                                                             <div class="radio-inline">
                                                                 <label>
-                                                                    <input type="radio" name="asset_condition" id="optionsRadios1" value="1" checked>
+                                                                    <input type="radio" name="asset_condition" id="condition1" value="B">
                                                                     Baik
                                                                 </label>
                                                             </div>
                                                             <div class="radio-inline">
                                                                 <label>
-                                                                    <input type="radio" name="asset_condition" id="optionsRadios2" value="2">
+                                                                    <input type="radio" name="asset_condition" id="condition2" value="BP">
                                                                     Butuh Perbaikan
                                                                 </label>
                                                             </div>
                                                             <div class="radio-inline">
                                                                 <label>
-                                                                    <input type="radio" name="asset_condition" id="optionsRadios3" value="3">
+                                                                    <input type="radio" name="asset_condition" id="condition3" value="TB">
                                                                     Tidak baik
                                                                 </label>
                                                             </div>
@@ -638,6 +638,7 @@
                 asset_serie_no: val.asset_serie_no,
                 asset_specification: val.asset_specification,
                 asset_location: val.asset_location,
+                asset_condition: val.asset_condition,
                 asset_year: val.asset_year,
                 asset_pic_name: val.asset_pic_name,
                 asset_pic_level: val.asset_pic_level,
@@ -742,7 +743,13 @@
         jQuery('#asset_pic_name').val(item.asset_pic_name);
         jQuery('#asset_pic_level').val(item.asset_pic_level);
 
-
+        if(item.asset_condition === 'B') {
+            jQuery('#condition1').prop("checked", true);
+        } else if(item.asset_condition === 'BP') {
+            jQuery('#condition2').prop("checked", true);
+        }else if(item.asset_condition === 'BP') {
+            jQuery('#condition3').prop("checked", true);
+        }
 
         if (item.foto_asset.file) {
             jQuery("#foto_asset_thumb_1").prop('src', item.foto_asset.file);
