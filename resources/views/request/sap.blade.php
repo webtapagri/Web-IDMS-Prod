@@ -723,7 +723,7 @@
 
         jQuery("#asset_location").on('change', function() {
             if (jQuery(this).val()) {
-                var id = current_page - 1;
+                var id = (current_page-1);
                 var obj = jQuery('#detail_item_selected').val();
                 request_item[obj].detail[id].asset_location = jQuery(this).val();
             }
@@ -1032,7 +1032,7 @@
         if (item.asset_location) {
             jQuery('#asset_location').val(item.asset_location)
         } else {
-            jQuery('#asset_location').val('val', '');
+            jQuery('#asset_location').val('');
         }
         jQuery('#asset_location').trigger('change');
 

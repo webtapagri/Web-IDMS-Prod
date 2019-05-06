@@ -105,8 +105,10 @@
                             </div>
                             <hr>
                             <div class="form-group docs-files-detail hide">
-                                <label for="plant" class="col-md-12">BERITA ACARA SERAH TERIMA</label>
-                                <div id="berita-acara-detail"></div>
+                                <label for="plant" class="col-md-2">Berita acara serah terima</label>
+                                 <div class="col-md-10">
+                                    <div id="berita-acara-detail"></div>    
+                                </div>
                             </div>
                                 <hr>
                             <div class="form-group">
