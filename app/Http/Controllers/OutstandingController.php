@@ -95,8 +95,7 @@ class OutstandingController extends Controller
         }
 
         $data = DB::select(DB::raw($sql));
-
-        $iTotalRecords = count($data);
+        $iTotalRecords = count($total_data);
         $iDisplayLength = intval($request->length);
         $iDisplayLength = $iDisplayLength < 0 ? $iTotalRecords : $iDisplayLength;
         $iDisplayStart = intval($request->start);

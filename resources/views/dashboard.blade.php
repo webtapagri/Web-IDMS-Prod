@@ -105,14 +105,17 @@
                                         <input type="text" class="form-control input-sm" name="asset_vendor_name" id="asset_vendor_name" autocomplete="off" readonly>
                                     </div>
                                 </div>
-                                <hr>
-                                <div class="form-group docs-files-detail hide">
-                                    <label for="plant" class="col-md-2">Berita acara serah terima</label>
-                                    <div class="col-md-10">
-                                        <div id="berita-acara-detail"></div>
-                                    </div>
+                               
+                                <div class="docs-files-detail hide">
+                                     <hr>
+                                     <div class="form-group">
+                                         <label for="plant" class="col-md-2">Berita acara serah terima</label>
+                                            <div class="col-md-10">
+                                                <div id="berita-acara-detail"></div>
+                                            </div>
+                                          </div>
+                                      <hr>
                                 </div>
-                                <hr>
                                 <div class="form-group">
                                     <label class="col-md-2"><b>ITEM DETAIL</b></label>
                                     <div class="col-md-9">
@@ -397,7 +400,7 @@
                 },
                 columns: [{
                         "render": function(data, type, row) {
-                            var content = '<a href="javascript:;" style="font-weight:bold" OnClick="requestDetail(' + row.id + ')" title="klik untuk menampikan detail request dari no reg ' + row.no_reg + '" >' + row.no_reg + '</a>';
+                            var content = '<a href="javascript:;" style="font-weight:bold" OnClick="requestDetail(' + row.id + ')" title="klik untuk menampikan detail request dari no reg ' + row.no_reg + '" >' + row.no_reg + ' &nbsp;<i style="font-size:7px" class="fa fa-mail-forward"></i></a>';
                             return content;
                         }
                     }, {
@@ -548,6 +551,7 @@
     });
 
     function requestDetail(id) {
+        jQuery(".loading-event").fadeIn();
         var asset = jQuery.parseJSON(JSON.stringify(dataJson('{!! route("get.outstandingdetail") !!}/?id=' + id)));
         var data = asset[0];
         jQuery("#asset_request_date").val(getDate(data.request_date));
@@ -616,6 +620,7 @@
         jQuery("#detail-modal").modal('show');
         jQuery("#detail_item_selected").val(select_item[0].id);
         jQuery("#detail_item_selected").trigger("change");
+        jQuery(".loading-event").fadeOut();
     }
 
     function createPage(id) {
