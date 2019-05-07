@@ -997,7 +997,6 @@
         jQuery('#asset_pic_name').val(item.asset_pic_name);
         jQuery('#asset_pic_level').val(item.asset_pic_level);
         jQuery('#asset_info').val(item.asset_info);
-        jQuery('#asset_location').val(item.asset_location);
         jQuery('#asset_pic_name').val(item.asset_pic_name);
         jQuery('#asset_pic_level').val(item.asset_pic_level);
 
@@ -1011,6 +1010,10 @@
             jQuery("input[name='asset_condition']").prop("checked", false);
         }
 
+
+
+        jQuery('#asset_location').val(item.asset_location);
+        jQuery('#asset_location').trigger('change');
 
         if (item.foto_asset.file) {
             jQuery("#foto_asset_thumb_1").prop('src', item.foto_asset.file);

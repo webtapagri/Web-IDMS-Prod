@@ -356,7 +356,6 @@
 </div>
 @stop
 
-
 @section('js')
 <script>
     var attribute = [];

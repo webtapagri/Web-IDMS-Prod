@@ -266,7 +266,8 @@
                                             <div class="form-group material-group-input" id="input-specification">
                                                 <label for="part_no" class="col-md-2 col-md-offset-1 col-form-label">Lokasi Asset</label>
                                                 <div class="col-md-8">
-                                                    <input type="text" class="form-control input-sm attr-material-group" name="asset_location" id="asset_location">
+                                                   <!--  <input type="text" class="form-control input-sm attr-material-group" name="asset_location" id="asset_location"> -->
+                                                    <select type="text" class="form-control input-sm attr-material-group" name="asset_location" id="asset_location"></select>
                                                 </div>
                                             </div>
                                             <div class="form-group material-group-input" id="input-specification">
@@ -820,7 +821,7 @@
             jQuery.each(data.DETAIL_ITEM, function(key, val) {
                 selected_detail_item.push(val);
                 item += "<tr>";
-                item += "<td><input type='checkbox' value='" + key + "' ></td>";
+                item += "<td><input type='checkbox' onClick='selectPOItem(this)' value='" + key + "' ></td>";
                 item += "<td>" + val.EBELP + "</td>";
                 item += "<td>" + val.MATNR + "</td>";
                 item += "<td>" + val.MAKTX + "</td>";
@@ -840,6 +841,14 @@
             });
         }
         jQuery('.loading-event').fadeOut();
+    }
+
+    function selectPOItem(param) {
+        if (jQuery(param).prop('checked') == true) {
+            jQuery(param).closest('tr').css('background-color', 'rgba(221, 75, 57, 0.38)');
+        } else {
+            jQuery(param).closest('tr').css('background-color', '');
+        }
     }
 
     function addItem() {
@@ -1044,7 +1053,6 @@
         }
 
         jQuery('#asset_location').val(item.asset_location);
-        jQuery('#asset_location').select2('val', item.asset_location);
         jQuery('#asset_location').trigger('change');
 
         jQuery('#asset_pic_name').val(item.asset_pic_name);
