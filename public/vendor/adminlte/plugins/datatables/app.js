@@ -11,9 +11,8 @@ var App = function() {
 
     var resizeHandlers = [];
 
-    var assetsPath = '../assets/';
-
-    var globalImgPath = 'images/';
+    var assetsPath = '../../public/';
+    var globalImgPath = 'img/';
 
     var globalPluginsPath = 'global/plugins/';
 
@@ -752,7 +751,7 @@ var App = function() {
         blockUI: function(options) {
             options = $.extend(true, {}, options);
             var html = '';
-            if (options.animate) {
+          /*   if (options.animate) {
                 html = '<div class="loading-message ' + (options.boxed ? 'loading-message-boxed' : '') + '">' + '<div class="block-spinner-bar"><div class="bounce1"></div><div class="bounce2"></div><div class="bounce3"></div></div>' + '</div>';
             } else if (options.iconOnly) {
                 html = '<div class="loading-message ' + (options.boxed ? 'loading-message-boxed' : '') + '"><img src="' + this.getGlobalImgPath() + 'reload.gif" align=""></div>';
@@ -760,7 +759,7 @@ var App = function() {
                 html = '<div class="loading-message ' + (options.boxed ? 'loading-message-boxed' : '') + '"><span>&nbsp;&nbsp;' + (options.message ? options.message : 'LOADING...') + '</span></div>';
             } else {
                 html = '<div class="loading-message ' + (options.boxed ? 'loading-message-boxed' : '') + '"><img src="' + this.getGlobalImgPath() + 'reload.gif" align=""><span>&nbsp;&nbsp;' + (options.message ? options.message : 'LOADING...') + '</span></div>';
-            }
+            } */
 
             if (options.target) { // element blocking
                 var el = $(options.target);

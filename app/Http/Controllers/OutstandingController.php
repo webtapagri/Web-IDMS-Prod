@@ -33,14 +33,15 @@ class OutstandingController extends Controller
         $sortColumn = "";
         $selectedColumn[] = "";
         $field = array(
-            array("index" => "0", "field" => "asset.TYPE_TRANSAKSI ", "alias" => "type"),
-            array("index" => "1", "field" => "asset.NO_PO", "alias" => "no_po"),
-            array("index" => "2", "field" => "asset.NO_REG", "alias" => "no_reg"),
-            array("index" => "3", "field" => "DATE_FORMAT(asset.TANGGAL_REG, '%d %M %Y')", "alias" => "request_date"),
-            array("index" => "4", "field" => "requestor.name", "alias" => "requestor"),
-            array("index" => "5", "field" => "DATE_FORMAT(asset.TANGGAL_PO, '%d %M %Y')", "alias" => "po_date"),
-            array("index" => "6", "field" => "asset.KODE_VENDOR", "alias" => "vendor_code"),
-            array("index" => "7", "field" => "asset.NAMA_VENDOR", "alias" => "vendor_name"),
+            array("index" => "0", "field" => "asset.NO_REG", "alias" => "no_reg"),
+            array("index" => "1", "field" => "asset.TYPE_TRANSAKSI ", "alias" => "type"),
+            array("index" => "2", "field" => "asset.PO_TYPE", "alias" => "po_type"),
+            array("index" => "3", "field" => "asset.NO_PO", "alias" => "no_po"),
+            array("index" => "4", "field" => "DATE_FORMAT(asset.TANGGAL_REG, '%d %b %Y')", "alias" => "request_date"),
+            array("index" => "5", "field" => "requestor.name", "alias" => "requestor"),
+            array("index" => "6", "field" => "DATE_FORMAT(asset.TANGGAL_PO, '%d %b %Y')", "alias" => "po_date"),
+            array("index" => "7", "field" => "asset.KODE_VENDOR", "alias" => "vendor_code"),
+            array("index" => "8", "field" => "asset.NAMA_VENDOR", "alias" => "vendor_name"),
         );
 
         foreach ($field as $row) {
@@ -52,15 +53,6 @@ class OutstandingController extends Controller
 
             if ($row["index"] == $orderColumn) {
                 $orderColumnName = $row["field"];
-            }
-        }
-
-        if ($orderColumn) {
-            $order = explode("as", $selectedColumn[$orderColumn]);
-            if (count($order) > 1) {
-                $orderBy = $order[0];
-            } else {
-                $orderBy = $selectedColumn[$orderColumn];
             }
         }
 
@@ -87,6 +79,9 @@ class OutstandingController extends Controller
 
         if ($request->transaction_type)
             $sql .= " AND asset.TYPE_TRANSAKSI  = " . $request->transaction_type;
+     
+        if($request->po_type !='')
+            $sql .= " AND asset.PO_TYPE  = " . $request->po_type;
 
         if ($request->request_date)
             $sql .= " AND DATE_FORMAT(asset.TANGGAL_REG, '%Y-%m-%d') = " . DATE_FORMAT(date_create($request->request_date), 'Y-m-d');
@@ -96,7 +91,7 @@ class OutstandingController extends Controller
             $sql .= " AND DATE_FORMAT(asset.TANGGAL_PO, '%Y-%m-%d') = " . DATE_FORMAT(date_create($request->po_date), 'Y-m-d');
 
         if ($orderColumn != "") {
-            $sql .= " ORDER BY " . $orderBy . " " . $dirColumn;
+            $sql .= " ORDER BY " . $field[$orderColumn]['field'] . " " . $dirColumn;
         }
 
         $data = DB::select(DB::raw($sql));

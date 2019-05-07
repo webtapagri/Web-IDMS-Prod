@@ -402,8 +402,8 @@
                     </div>
                     <div class="box-footer clearfix">
                         @if($data['access']->create == 1)
-                        <button type="submit" class="btn btn-danger btn-flat pull-right" style="margin-right: 5px;">Draft</button>
-                        <button type="submit" class="btn btn-danger btn-flat pull-right" style="margin-right: 5px;">Submit</button>
+                        <button type="submit" class="btn btn-danger btn-flat pull-right" OnClick="save(0)" style="margin-right: 5px;">Draft</button>
+                        <button type="submit" class="btn btn-danger btn-flat pull-right" onClick="save(1)" style="margin-right: 5px;">Submit</button>
                         @endif
                         <button type="button" class="btn btn-default btn-flat btn-back-request-form pull-right hide" style="margin-right: 5px;"><i class="fa fa-arrow-circle-left"></i> Back</button>
                     </div>
@@ -551,60 +551,6 @@
                     message: 'please, add an item'
                 });
             }
-        });
-
-        jQuery("#code-asset-form").on("submit", function(e) {
-            e.preventDefault();
-            jQuery.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-
-            var param = {
-                transaction_type: transaction_type.val(),
-                request_date: request_date.val(),
-                business_area: business_area.val(),
-                po_no: po_no.val(),
-                po_date: po_date.val(),
-                vendor_code: vendor_code.val(),
-                vendor_name: vendor_name.val(),
-                docs: request_docs,
-                asset: request_item
-            };
-
-            jQuery.ajax({
-                url: "{{ url('request/post') }}",
-                type: "POST",
-                data: param,
-                /*  contentType: false,
-                 processData: false,
-                 cache: false, */
-                beforeSend: function() {
-                    jQuery('.loading-event').fadeIn();
-                },
-                success: function(result) {
-                    if (result.status) {
-                        notify({
-                            type: 'success',
-                            message: result.message
-                        });
-                        notify({
-                            type: 'error',
-                            message: 'reqeust has been submited!'
-                        });
-                        window.location.href = "{{ url('/') }}";
-                    } else {
-                        notify({
-                            type: 'warning',
-                            message: result.message
-                        });
-                    }
-                },
-                complete: function() {
-                    jQuery('.loading-event').fadeOut();
-                }
-            });
         });
 
         jQuery(".btn-back-request-form").on("click", function(e) {
@@ -761,7 +707,7 @@
 
         jQuery("#asset_location").on('change', function() {
             if (jQuery(this).val()) {
-                var id = (current_page-1);
+                var id = (current_page - 1);
                 var obj = jQuery('#detail_item_selected').val();
 
                 var data = jQuery(this).select2('data');
@@ -778,6 +724,62 @@
             }
         });
     });
+
+    function save(status) {
+        jQuery.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
+        var param = {
+            transaction_type: transaction_type.val(),
+            request_date: request_date.val(),
+            business_area: business_area.val(),
+            po_no: po_no.val(),
+            po_type: 1,
+            po_date: po_date.val(),
+            vendor_code: vendor_code.val(),
+            vendor_name: vendor_name.val(),
+            docs: request_docs,
+            asset: request_item,
+            status: status
+        };
+
+        jQuery.ajax({
+            url: "{{ url('request/post') }}",
+            type: "POST",
+            data: param,
+            /*  contentType: false,
+             processData: false,
+             cache: false, */
+            beforeSend: function() {
+                jQuery('.loading-event').fadeIn();
+            },
+            success: function(result) {
+                if (result.status) {
+                    notify({
+                        type: 'success',
+                        message: result.message
+                    });
+                    notify({
+                        type: 'error',
+                        message: 'reqeust has been submited!'
+                    });
+                    window.location.href = "{{ url('/') }}";
+                } else {
+                    notify({
+                        type: 'warning',
+                        message: result.message
+                    });
+                }
+            },
+            complete: function() {
+                jQuery('.loading-event').fadeOut();
+            }
+        });
+    }
+
 
     function validateItem() {
         var valid = true;
@@ -999,14 +1001,14 @@
         jQuery('#asset_pic_name').val(item.asset_pic_name);
         jQuery('#asset_pic_level').val(item.asset_pic_level);
 
-        if(item.asset_condition === 'B') {
+        if (item.asset_condition === 'B') {
             jQuery('#condition1').prop("checked", true);
-        } else if(item.asset_condition === 'BP') {
+        } else if (item.asset_condition === 'BP') {
             jQuery('#condition2').prop("checked", true);
-        }else if(item.asset_condition === 'TB') {
+        } else if (item.asset_condition === 'TB') {
             jQuery('#condition3').prop("checked", true);
         } else {
-             jQuery("input[name='asset_condition']").prop("checked", false);
+            jQuery("input[name='asset_condition']").prop("checked", false);
         }
 
 

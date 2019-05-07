@@ -159,6 +159,7 @@ class RequestController extends Controller
                 "NO_REG" => $reg_no,
                 "BUSINESS_AREA" => $request->business_area,
                 "TYPE_TRANSAKSI" => $request->transaction_type,
+                "PO_TYPE" => $request->po_type,
                 "TANGGAL_REG" => date_format(date_create($request->request_date), "Y-m-d"),
                 "NO_PO" => $request->po_no,
                 "TANGGAL_PO" => date_format(date_create($request->po_date), "Y-m-d"),

@@ -23,26 +23,28 @@
                     <table id="data-table" class="table table-bordered table-condensed" width="100%">
                         <thead>
                             <tr role="row" class="heading">
+                                <th>No Reg</th>
                                 <th>Tipe</th>
-                                <th>No Rrg</th>
+                                <th>PO</th>
                                 <th>No PO</th>
                                 <th>Tgl.Pengajuan</th>
                                 <th>Requestor</th>
                                 <th>Tgl. PO</th>
                                 <th>Kode Vendor</th>
                                 <th>Nama Vendor</th>
-                                <th>#</th>
+                                <!-- <th>#</th> -->
                             </tr>
                             <tr role="row" class="filter">
-                                <th><input type="text" class="form-control input-xs form-filter" style="height:10px !important" name="transaction_type" id="transaction_type"></th>
                                 <th><input type="text" class="form-control input-xs form-filter" name="no_reg"></th>
+                                <th><input type="text" class="form-control input-xs form-filter" name="transaction_type" id="transaction_type"></th>
+                                <th><input type="text" class="form-control input-xs form-filter" name="po_type" id="po_type"></th>
                                 <th><input type="text" class="form-control input-xs form-filter" name="no_po"></th>
                                 <th><input type="text" class="form-control input-xs form-filter datepicker" name="request_date" autocomplete="off"></th>
                                 <th><input type="text" class="form-control input-xs form-filter" name="requestor"></th>
                                 <th><input type="text" class="form-control input-xs form-filter datepicker" name="po_date" autocomplete="off"></th>
                                 <th><input type="text" class="form-control input-xs form-filter" name="vendor_code"></th>
                                 <th><input type="text" class="form-control input-xs form-filter" name="vendor_name"></th>
-                                <th><input type="text" class="form-control input-xs form-filter" name="detail" disabled></th>
+                                <!-- <th><input type="text" class="form-control input-xs form-filter" name="detail" disabled></th> -->
                             </tr>
                         </thead>
                         <tbody></tbody>
@@ -63,276 +65,277 @@
             </div>
             <div class="modal-body">
                 <form class="form-horizontal code-asset-form" id="code-asset-form">
-                  <fieldset disabled="disabled">
-                    <div class="box-body">
+                    <fieldset disabled="disabled">
                         <div class="box-body">
-                            <div class="form-group">
-                                <label for="plant" class="col-md-2">Tanggal</label>
-                                <div class="col-md-3">
-                                    <input type="text" class="form-control input-sm " name="asset_request_date" id="asset_request_date" readonly>
+                            <div class="box-body">
+                                <div class="form-group">
+                                    <label for="plant" class="col-md-2">Tanggal</label>
+                                    <div class="col-md-3">
+                                        <input type="text" class="form-control input-sm " name="asset_request_date" id="asset_request_date" readonly>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="plant" class="col-md-2">Business Area</label>
-                                <div class="col-md-3">
-                                    <input type="text" class="form-control input-sm" name="asset_business_area" id="asset_business_area" readonly>
+                                <div class="form-group">
+                                    <label for="plant" class="col-md-2">Business Area</label>
+                                    <div class="col-md-3">
+                                        <input type="text" class="form-control input-sm" name="asset_business_area" id="asset_business_area" readonly>
+                                    </div>
                                 </div>
-                            </div>
-                            <hr>
-                            <div class="form-group">
-                                <label for="plant" class="col-md-2">No. PO</label>
-                                <div class="col-md-10">
-                                    <input type="text" class="form-control input-sm" name="asset_po_no" id="asset_po_no" readonly>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="plant" class="col-md-2">Tgl PO</label>
-                                <div class="col-md-3">
-                                    <input type="text" class="form-control input-sm" name="asset_po_date" id="asset_po_date" readonly>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="plant" class="col-md-2">Kode vendor</label>
-                                <div class="col-md-6">
-                                    <input type="text" class="form-control input-sm" name="asset_vendor_code" id="asset_vendor_code" autocomplete="off" readonly>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="plant" class="col-md-2">Nama vendor</label>
-                                <div class="col-md-10">
-                                    <input type="text" class="form-control input-sm" name="asset_vendor_name" id="asset_vendor_name" autocomplete="off" readonly>
-                                </div>
-                            </div>
-                            <hr>
-                            <div class="form-group docs-files-detail hide">
-                                <label for="plant" class="col-md-2">Berita acara serah terima</label>
-                                 <div class="col-md-10">
-                                    <div id="berita-acara-detail"></div>    
-                                </div>
-                            </div>
                                 <hr>
-                            <div class="form-group">
-                                <label class="col-md-2"><b>ITEM DETAIL</b></label>
-                                <div class="col-md-9">
-                                    <input type="text" class="form-control input-sm text-right" name="detail_item_selected" id="detail_item_selected" readonly style="border:1px solid red;background-color: #f4433630">
-                                    <span class="help-block">Please select the item to show the detail</span>
+                                <div class="form-group">
+                                    <label for="plant" class="col-md-2">No. PO</label>
+                                    <div class="col-md-10">
+                                        <input type="text" class="form-control input-sm" name="asset_po_no" id="asset_po_no" readonly>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="plant" class="col-md-2">Item PO</label>
-                                <div class="col-md-2">
-                                    <input type="text" class="form-control input-sm text-right" name="item_po" value="" id="item_po" autocomplete="off" readonly>
+                                <div class="form-group">
+                                    <label for="plant" class="col-md-2">Tgl PO</label>
+                                    <div class="col-md-3">
+                                        <input type="text" class="form-control input-sm" name="asset_po_date" id="asset_po_date" readonly>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="plant" class="col-md-2">Qty Index</label>
-                                <div class="col-md-2">
-                                    <input type="text" class="form-control input-sm text-right" name="item_qty_index" id="item_qty_index" autocomplete="off" readonly>
+                                <div class="form-group">
+                                    <label for="plant" class="col-md-2">Kode vendor</label>
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-control input-sm" name="asset_vendor_code" id="asset_vendor_code" autocomplete="off" readonly>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="plant" class="col-md-2">Kode material</label>
-                                <div class="col-md-10">
-                                    <input type="text" class="form-control input-sm" name="item_code" id="item_code" autocomplete="off" readonly>
+                                <div class="form-group">
+                                    <label for="plant" class="col-md-2">Nama vendor</label>
+                                    <div class="col-md-10">
+                                        <input type="text" class="form-control input-sm" name="asset_vendor_name" id="asset_vendor_name" autocomplete="off" readonly>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="plant" class="col-md-2">Nama material</label>
-                                <div class="col-md-10">
-                                    <input type="text" class="form-control input-sm" name="item_name" value="" id="item_name" autocomplete="off" readonly>
+                                <hr>
+                                <div class="form-group docs-files-detail hide">
+                                    <label for="plant" class="col-md-2">Berita acara serah terima</label>
+                                    <div class="col-md-10">
+                                        <div id="berita-acara-detail"></div>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="col-md-12">
-                                    <ul class="nav nav-tabs">
-                                        <li class="active" style="border-bottom:none !important;"><a href="#panel-initial" data-toggle="tab" class="panel-initial" style="background-color:#f3f3f3;border-bottom:none;font-weight:800">Rincian Informasi Asset | page: <span id="page"></span></a></li>
-                                        <li class="pull-right"><a href="javascript:nextPage()" class="text-muted" id="btn_next">Next <i class="fa fa-arrow-right"></i></a></li>
-                                        <li class="pull-right"><a href="javascript:prevPage()" class="text-muted" id="btn_prev"><i class="fa fa-arrow-left"></i> Prev</a></li>
-                                    </ul>
-                                    <div class="tab-content" style="border-left: 1px solid #e0dcdc;border-right: 1px solid #e0dcdc;border-bottom: 1px solid #e0dcdc;border-top:none;background-color:#f3f3f3;">
-                                        <!-- Font Awesome Icons -->
-                                        <div class="tab-pane active" id="panel-initial">
-                                            <div class="box-body">
-                                                <div class="form-group hide">
-                                                    <label for="plant" class="col-md-2 text-right">Company</label>
-                                                    <div class="col-md-3">
-                                                        <input type="text" class="form-control input-sm" name="description" value="" id="description" autocomplete="off" readonly>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group hide">
-                                                    <label for="plant" class="col-md-2 text-right">Asset</label>
-                                                    <div class="col-md-3">
-                                                        <div class="input-group">
-                                                            <input type="email" class="form-control input-sm" placeholder="" readonly>
-                                                            <span class="input-group-addon btn btn-sm btn-danger"><i class="fa fa-files-o"></i></span>
+                                <hr>
+                                <div class="form-group">
+                                    <label class="col-md-2"><b>ITEM DETAIL</b></label>
+                                    <div class="col-md-9">
+                                        <input type="text" class="form-control input-sm text-right" name="detail_item_selected" id="detail_item_selected" readonly style="border:1px solid red;background-color: #f4433630">
+                                        <span class="help-block">Please select the item to show the detail</span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="plant" class="col-md-2">Item PO</label>
+                                    <div class="col-md-2">
+                                        <input type="text" class="form-control input-sm text-right" name="item_po" value="" id="item_po" autocomplete="off" readonly>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="plant" class="col-md-2">Qty Index</label>
+                                    <div class="col-md-2">
+                                        <input type="text" class="form-control input-sm text-right" name="item_qty_index" id="item_qty_index" autocomplete="off" readonly>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="plant" class="col-md-2">Kode material</label>
+                                    <div class="col-md-10">
+                                        <input type="text" class="form-control input-sm" name="item_code" id="item_code" autocomplete="off" readonly>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="plant" class="col-md-2">Nama material</label>
+                                    <div class="col-md-10">
+                                        <input type="text" class="form-control input-sm" name="item_name" value="" id="item_name" autocomplete="off" readonly>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-12">
+                                        <ul class="nav nav-tabs">
+                                            <li class="active" style="border-bottom:none !important;"><a href="#panel-initial" data-toggle="tab" class="panel-initial" style="background-color:#f3f3f3;border-bottom:none;font-weight:800">Rincian Informasi Asset | page: <span id="page"></span></a></li>
+                                            <li class="pull-right"><a href="javascript:nextPage()" class="text-muted" id="btn_next">Next <i class="fa fa-arrow-right"></i></a></li>
+                                            <li class="pull-right"><a href="javascript:prevPage()" class="text-muted" id="btn_prev"><i class="fa fa-arrow-left"></i> Prev</a></li>
+                                        </ul>
+                                        <div class="tab-content" style="border-left: 1px solid #e0dcdc;border-right: 1px solid #e0dcdc;border-bottom: 1px solid #e0dcdc;border-top:none;background-color:#f3f3f3;">
+                                            <!-- Font Awesome Icons -->
+                                            <div class="tab-pane active" id="panel-initial">
+                                                <div class="box-body">
+                                                    <div class="form-group hide">
+                                                        <label for="plant" class="col-md-2 text-right">Company</label>
+                                                        <div class="col-md-3">
+                                                            <input type="text" class="form-control input-sm" name="description" value="" id="description" autocomplete="off" readonly>
                                                         </div>
                                                     </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="plant" class="col-md-2 text-right">Jenis asset</label>
-                                                    <div class="col-md-10">
-                                                        <input type="text" class="form-control input-sm" name="asset_type" value="" id="asset_type" autocomplete="off">
+                                                    <div class="form-group hide">
+                                                        <label for="plant" class="col-md-2 text-right">Asset</label>
+                                                        <div class="col-md-3">
+                                                            <div class="input-group">
+                                                                <input type="email" class="form-control input-sm" placeholder="" readonly>
+                                                                <span class="input-group-addon btn btn-sm btn-danger"><i class="fa fa-files-o"></i></span>
+                                                            </div>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="plant" class="col-md-2 text-right">Group</label>
-                                                    <div class="col-md-10">
-                                                        <input type="text" class="form-control input-sm" name="asset_group" value="" id="asset_group" autocomplete="off">
+                                                    <div class="form-group">
+                                                        <label for="plant" class="col-md-2 text-right">Jenis asset</label>
+                                                        <div class="col-md-10">
+                                                            <input type="text" class="form-control input-sm" name="asset_type" value="" id="asset_type" autocomplete="off">
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="plant" class="col-md-2 text-right">Sub Group</label>
-                                                    <div class="col-md-10">
-                                                        <input type="text" class="form-control input-sm" name="asset_sub_group" value="" id="asset_sub_group" autocomplete="off">
+                                                    <div class="form-group">
+                                                        <label for="plant" class="col-md-2 text-right">Group</label>
+                                                        <div class="col-md-10">
+                                                            <input type="text" class="form-control input-sm" name="asset_group" value="" id="asset_group" autocomplete="off">
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="plant" class="col-md-3">
-                                                        <h4>Asset Class</h4>
-                                                    </label>
-                                                    <div class="col-md-9">
-                                                        <h4>E4010</h4>
+                                                    <div class="form-group">
+                                                        <label for="plant" class="col-md-2 text-right">Sub Group</label>
+                                                        <div class="col-md-10">
+                                                            <input type="text" class="form-control input-sm" name="asset_sub_group" value="" id="asset_sub_group" autocomplete="off">
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div class="form-group material-group-input" id="input-description">
+                                                    <div class="form-group">
+                                                        <label for="plant" class="col-md-3">
+                                                            <h4>Asset Class</h4>
+                                                        </label>
+                                                        <div class="col-md-9">
+                                                            <h4>E4010</h4>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group material-group-input" id="input-description">
 
-                                                    <label for="part_no" class="col-md-2 col-md-offset-1">Nama Aset</label>
-                                                    <div class="col-md-8">
-                                                        <input type="text" class="form-control input-sm attr-material-group" name="asset_name" id="asset_name" autocomplete="off">
-                                                    </div>
-                                                </div>
-                                                <div class="form-group material-group-input" id="input-part-no">
-                                                    <label for="part_no" class="col-md-2 col-md-offset-1">Merk</label>
-                                                    <div class="col-md-8">
-                                                        <input type="text" class="form-control input-sm attr-material-group" name="asset_brand" id="asset_brand" autocomplete="off">
-                                                    </div>
-                                                </div>
-                                                <div class="form-group material-group-input" id="input-specification">
-                                                    <label for="part_no" class="col-md-2 col-md-offset-1 col-form-label">Spesifikasi / Warna</label>
-                                                    <div class="col-md-8">
-                                                        <input type="text" class="form-control input-sm attr-material-group" name="asset_specification" id="asset_specification">
-                                                    </div>
-                                                </div>
-                                                <div class="form-group material-group-input" id="input-specification">
-                                                    <label for="part_no" class="col-md-2 col-md-offset-1 col-form-label">No Seri / No Rangka</label>
-                                                    <div class="col-md-8">
-                                                        <input type="text" class="form-control input-sm attr-material-group" name="asset_serie_no" id="asset_serie_no">
-                                                    </div>
-                                                </div>
-                                                <div class="form-group material-group-input" id="input-specification">
-                                                    <label for="part_no" class="col-md-2 col-md-offset-1 col-form-label">No Mesin / IMEI</label>
-                                                    <div class="col-md-8">
-                                                        <input type="text" class="form-control input-sm attr-material-group" name="asset_imei" id="asset_imei">
-                                                    </div>
-                                                </div>
-                                                <div class="form-group material-group-input" id="input-specification">
-                                                    <label for="part_no" class="col-md-2 col-md-offset-1 col-form-label">No Polisi</label>
-                                                    <div class="col-md-8">
-                                                        <input type="text" class="form-control input-sm attr-material-group" name="asset_police_no" id="asset_police_no">
-                                                    </div>
-                                                </div>
-                                                <div class="form-group material-group-input" id="input-specification">
-                                                    <label for="part_no" class="col-md-2 col-md-offset-1 col-form-label">Lokasi Asset</label>
-                                                    <div class="col-md-8">
-                                                        <input type="text" class="form-control input-sm attr-material-group" name="asset_location" id="asset_location">
-                                                    </div>
-                                                </div>
-                                                <div class="form-group material-group-input" id="input-specification">
-                                                    <label for="part_no" class="col-md-2 col-md-offset-1 col-form-label">Tahun Asset</label>
-                                                    <div class="col-md-8">
-                                                        <input type="text" class="form-control input-sm attr-material-group" name="asset_year" id="asset_year">
-                                                    </div>
-                                                </div>
-                                                <div class="form-group material-group-input" id="input-specification">
-                                                    <label for="part_no" class="col-md-2 col-md-offset-1 col-form-label">Kondisi Asset</label>
-                                                    <div class="col-md-8">
-                                                        <div class="form-group">
-                                                            <div class="radio-inline">
-                                                                <label>
-                                                                    <input type="radio" name="asset_condition" id="condition1" value="B">
-                                                                    Baik
-                                                                </label>
-                                                            </div>
-                                                            <div class="radio-inline">
-                                                                <label>
-                                                                    <input type="radio" name="asset_condition" id="condition2" value="BP">
-                                                                    Butuh Perbaikan
-                                                                </label>
-                                                            </div>
-                                                            <div class="radio-inline">
-                                                                <label>
-                                                                    <input type="radio" name="asset_condition" id="condition3" value="TB">
-                                                                    Tidak baik
-                                                                </label>
-                                                            </div>
+                                                        <label for="part_no" class="col-md-2 col-md-offset-1">Nama Aset</label>
+                                                        <div class="col-md-8">
+                                                            <input type="text" class="form-control input-sm attr-material-group" name="asset_name" id="asset_name" autocomplete="off">
                                                         </div>
                                                     </div>
-                                                </div>
-                                                <div class="form-group material-group-input" id="input-specification">
-                                                    <label for="part_no" class="col-md-2 col-md-offset-1 col-form-label">Informasi</label>
-                                                    <div class="col-md-8">
-                                                        <textarea type="text" class="form-control input-sm attr-material-group" row="3" name="asset_info" id="asset_info"></textarea>
+                                                    <div class="form-group material-group-input" id="input-part-no">
+                                                        <label for="part_no" class="col-md-2 col-md-offset-1">Merk</label>
+                                                        <div class="col-md-8">
+                                                            <input type="text" class="form-control input-sm attr-material-group" name="asset_brand" id="asset_brand" autocomplete="off">
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label class="col-md-2 col-md-offset-1 ">Foto aset</label>
-                                                    <div class="col-md-9">
-                                                        <div id="filesContainer">
-                                                            <div class="col-md-4" id="panel-image-1">
-                                                                <div class="form-group hide">
-                                                                    <input type="file" id="foto_asset_1" name="foto_asset_1" accept='image/*' OnChange="showImage('asset', 1)">
-                                                                    <p class="help-block">*jpg, png</p>
+                                                    <div class="form-group material-group-input" id="input-specification">
+                                                        <label for="part_no" class="col-md-2 col-md-offset-1 col-form-label">Spesifikasi / Warna</label>
+                                                        <div class="col-md-8">
+                                                            <input type="text" class="form-control input-sm attr-material-group" name="asset_specification" id="asset_specification">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group material-group-input" id="input-specification">
+                                                        <label for="part_no" class="col-md-2 col-md-offset-1 col-form-label">No Seri / No Rangka</label>
+                                                        <div class="col-md-8">
+                                                            <input type="text" class="form-control input-sm attr-material-group" name="asset_serie_no" id="asset_serie_no">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group material-group-input" id="input-specification">
+                                                        <label for="part_no" class="col-md-2 col-md-offset-1 col-form-label">No Mesin / IMEI</label>
+                                                        <div class="col-md-8">
+                                                            <input type="text" class="form-control input-sm attr-material-group" name="asset_imei" id="asset_imei">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group material-group-input" id="input-specification">
+                                                        <label for="part_no" class="col-md-2 col-md-offset-1 col-form-label">No Polisi</label>
+                                                        <div class="col-md-8">
+                                                            <input type="text" class="form-control input-sm attr-material-group" name="asset_police_no" id="asset_police_no">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group material-group-input" id="input-specification">
+                                                        <label for="part_no" class="col-md-2 col-md-offset-1 col-form-label">Lokasi Asset</label>
+                                                        <div class="col-md-8">
+                                                            <input type="text" class="form-control input-sm attr-material-group" name="asset_location" id="asset_location">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group material-group-input" id="input-specification">
+                                                        <label for="part_no" class="col-md-2 col-md-offset-1 col-form-label">Tahun Asset</label>
+                                                        <div class="col-md-8">
+                                                            <input type="text" class="form-control input-sm attr-material-group" name="asset_year" id="asset_year">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group material-group-input" id="input-specification">
+                                                        <label for="part_no" class="col-md-2 col-md-offset-1 col-form-label">Kondisi Asset</label>
+                                                        <div class="col-md-8">
+                                                            <div class="form-group">
+                                                                <div class="radio-inline">
+                                                                    <label>
+                                                                        <input type="radio" name="asset_condition" id="condition1" value="B">
+                                                                        Baik
+                                                                    </label>
                                                                 </div>
-                                                                <div class="image-group">
-                                                                    <img id="foto_asset_thumb_1" data-status="0" title="click to change image" class="img-responsive" src="{{URL::asset('img/add-img.png')}}">
+                                                                <div class="radio-inline">
+                                                                    <label>
+                                                                        <input type="radio" name="asset_condition" id="condition2" value="BP">
+                                                                        Butuh Perbaikan
+                                                                    </label>
+                                                                </div>
+                                                                <div class="radio-inline">
+                                                                    <label>
+                                                                        <input type="radio" name="asset_condition" id="condition3" value="TB">
+                                                                        Tidak baik
+                                                                    </label>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label class="col-md-2 col-md-offset-1 ">Foto no. seri / no rangka</label>
-                                                    <div class="col-md-9">
-                                                        <div id="filesContainer">
-                                                            <div class="col-md-4" id="panel-image-1">
-                                                                <div class="form-group hide">
-                                                                    <input type="file" id="foto_no_seri_1" name="foto_no_seri_1" accept='image/*' OnChange="showImage('seri',1)">
-                                                                    <p class="help-block">*jpg, png</p>
-                                                                </div>
-                                                                <div class="image-group">
-                                                                    <img id="foto_no_seri_thumb_1" data-status="0" title="click to change image" class="img-responsive" src="{{URL::asset('img/add-img.png')}}">
+                                                    <div class="form-group material-group-input" id="input-specification">
+                                                        <label for="part_no" class="col-md-2 col-md-offset-1 col-form-label">Informasi</label>
+                                                        <div class="col-md-8">
+                                                            <textarea type="text" class="form-control input-sm attr-material-group" row="3" name="asset_info" id="asset_info"></textarea>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="col-md-2 col-md-offset-1 ">Foto aset</label>
+                                                        <div class="col-md-9">
+                                                            <div id="filesContainer">
+                                                                <div class="col-md-4" id="panel-image-1">
+                                                                    <div class="form-group hide">
+                                                                        <input type="file" id="foto_asset_1" name="foto_asset_1" accept='image/*' OnChange="showImage('asset', 1)">
+                                                                        <p class="help-block">*jpg, png</p>
+                                                                    </div>
+                                                                    <div class="image-group">
+                                                                        <img id="foto_asset_thumb_1" data-status="0" title="click to change image" class="img-responsive" src="{{URL::asset('img/add-img.png')}}">
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label class="col-md-2 col-md-offset-1 ">Foto No msin / IMEI</label>
-                                                    <div class="col-md-9">
-                                                        <div id="filesContainer">
-                                                            <div class="col-md-4" id="panel-image-1">
-                                                                <div class="form-group hide">
-                                                                    <input type="file" id="foto_mesin_1" name="foto_mesin_1" accept='image/*' OnChange="showImage('mesin', 1)">
-                                                                    <p class="help-block">*jpg, png</p>
-                                                                </div>
-                                                                <div class="image-group">
-                                                                    <img id="foto_mesin_thumb_1" data-status="0" title="click to change image" class="img-responsive" src="{{URL::asset('img/add-img.png')}}">
+                                                    <div class="form-group">
+                                                        <label class="col-md-2 col-md-offset-1 ">Foto no. seri / no rangka</label>
+                                                        <div class="col-md-9">
+                                                            <div id="filesContainer">
+                                                                <div class="col-md-4" id="panel-image-1">
+                                                                    <div class="form-group hide">
+                                                                        <input type="file" id="foto_no_seri_1" name="foto_no_seri_1" accept='image/*' OnChange="showImage('seri',1)">
+                                                                        <p class="help-block">*jpg, png</p>
+                                                                    </div>
+                                                                    <div class="image-group">
+                                                                        <img id="foto_no_seri_thumb_1" data-status="0" title="click to change image" class="img-responsive" src="{{URL::asset('img/add-img.png')}}">
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                                <h4>Penanggung jawab Aset:</h4>
-                                                <div class="form-group material-group-input" id="input-specification">
-                                                    <label for="part_no" class="col-md-2 col-md-offset-1 col-form-label">Nama</label>
-                                                    <div class="col-md-8">
-                                                        <input type="text" class="form-control input-sm attr-material-group" name="asset_pic_name" id="asset_pic_name">
+                                                    <div class="form-group">
+                                                        <label class="col-md-2 col-md-offset-1 ">Foto No msin / IMEI</label>
+                                                        <div class="col-md-9">
+                                                            <div id="filesContainer">
+                                                                <div class="col-md-4" id="panel-image-1">
+                                                                    <div class="form-group hide">
+                                                                        <input type="file" id="foto_mesin_1" name="foto_mesin_1" accept='image/*' OnChange="showImage('mesin', 1)">
+                                                                        <p class="help-block">*jpg, png</p>
+                                                                    </div>
+                                                                    <div class="image-group">
+                                                                        <img id="foto_mesin_thumb_1" data-status="0" title="click to change image" class="img-responsive" src="{{URL::asset('img/add-img.png')}}">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div class="form-group material-group-input" id="input-specification">
-                                                    <label for="part_no" class="col-md-2 col-md-offset-1 col-form-label">Jabatan</label>
-                                                    <div class="col-md-8">
-                                                        <input type="text" class="form-control input-sm attr-material-group" name="asset_pic_level" id="asset_pic_level">
+                                                    <h4>Penanggung jawab Aset:</h4>
+                                                    <div class="form-group material-group-input" id="input-specification">
+                                                        <label for="part_no" class="col-md-2 col-md-offset-1 col-form-label">Nama</label>
+                                                        <div class="col-md-8">
+                                                            <input type="text" class="form-control input-sm attr-material-group" name="asset_pic_name" id="asset_pic_name">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group material-group-input" id="input-specification">
+                                                        <label for="part_no" class="col-md-2 col-md-offset-1 col-form-label">Jabatan</label>
+                                                        <div class="col-md-8">
+                                                            <input type="text" class="form-control input-sm attr-material-group" name="asset_pic_level" id="asset_pic_level">
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -340,17 +343,16 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                         </fieldset>
-                        <div class="box-footer clearfix">
-                            <button type="button" class="btn btn-default btn-flat btn-back-request-form pull-right" data-dismiss="modal" style="margin-right: 5px;">Close</button>
-                        </div>
+                    </fieldset>
+                    <div class="box-footer clearfix">
+                        <button type="button" class="btn btn-default btn-flat btn-back-request-form pull-right" data-dismiss="modal" style="margin-right: 5px;">Close</button>
                     </div>
-                     
-                </form>
             </div>
+
+            </form>
         </div>
     </div>
+</div>
 </div>
 @stop
 
@@ -396,6 +398,11 @@
                 },
                 columns: [{
                         "render": function(data, type, row) {
+                            var content = '<a href="javascript:;" style="font-weight:bold" OnClick="requestDetail(' + row.id + ')" title="klik untuk menampikan detail request dari no reg ' + row.no_reg + '" >' + row.no_reg + '</a>';
+                            return content;
+                        }
+                    }, {
+                        "render": function(data, type, row) {
                             if (row.type == 1) {
                                 var content = 'Barang'
                             } else if (row.type == 2) {
@@ -406,10 +413,16 @@
 
                             return content;
                         }
-                    },
-                     {
-                        data: 'no_reg',
-                        name: 'no_reg'
+                    }, {
+                        "render": function(data, type, row) {
+                            if (row.po_type == 0) {
+                                var content = '<span class="label label-primary">SAP</span>';
+                            } else if (row.po_type == 1) {
+                                var content = '<span class="label label-danger">AMP</span>';
+                            }
+
+                            return content;
+                        }
                     },
                     {
                         data: 'no_po',
@@ -434,33 +447,29 @@
                     {
                         data: 'vendor_name',
                         name: 'vendor_name'
-                    },
-                    {
-                        "render": function(data, type, row) {
-                            var content = '<button class="btn btn-flat btn-flat btn-xs btn-danger" OnClick="requestDetail(' + row.id + ')" title="detail data ' + row.no_po + '" ><i class="fa fa-search"></i></button>';
-                            return content;
-                        }
                     }
                 ],
                 columnDefs: [{
-                        targets: [2, 6],
+                        targets: [3, 7],
                         width: '12%'
                     },
                     {
-                        targets: [7],
+                        targets: [8],
                         width: '15%'
                     },
                     {
-                        targets: [8],
-                        width: '5%',
-                        className: 'text-center',
-                        orderable: false
-                    },
-                    {
-                        targets: [3, 5, 0, 4, 1],
+                        targets: [4, 6, 5],
                         width: '10%'
                     },
-
+                    {
+                        targets: [0, 1],
+                        width: '8%'
+                    },
+                    {
+                        targets: [2],
+                        className: 'text-center',
+                        width: '5%'
+                    },
                 ],
                 oLanguage: {
                     sProcessing: "<div id='datatable-loader'></div>",
@@ -488,6 +497,21 @@
                 {
                     id: '3',
                     text: 'Lain-lain'
+                },
+            ],
+            width: "100%",
+            allowClear: true,
+            placeholder: ' '
+        });
+
+        jQuery("input[name='po_type']").select2({
+            data: [{
+                    id: '0',
+                    text: 'SAP'
+                },
+                {
+                    id: '1',
+                    text: 'AMP'
                 },
             ],
             width: "100%",
@@ -536,7 +560,7 @@
         jQuery("#asset_vendor_name").val(data.vendor_name);
 
         var asset_files = jQuery.parseJSON(JSON.stringify(dataJson('{!! route("get.outstandingdetailfiles") !!}/?id=' + id)));
-        if(asset_files.length > 0) {
+        if (asset_files.length > 0) {
             var body = '';
             jQuery.each(asset_files, function(key, val) {
                 body += '<div class="col-md-8">';
@@ -549,7 +573,7 @@
             jQuery(".docs-files-detail").removeClass("hide");
         } else {
             jQuery('#berita-acara-detail').html('');
-             jQuery(".docs-files-detail").addClass("hide");
+            jQuery(".docs-files-detail").addClass("hide");
         }
 
         var asset_item = jQuery.parseJSON(JSON.stringify(dataJson('{!! route("get.outstandingdetailitem") !!}/?id=' + id)));
@@ -747,14 +771,14 @@
         jQuery('#asset_pic_name').val(item.asset_pic_name);
         jQuery('#asset_pic_level').val(item.asset_pic_level);
 
-        if(item.asset_condition === 'B') {
+        if (item.asset_condition === 'B') {
             jQuery('#condition1').prop("checked", true);
-        } else if(item.asset_condition === 'BP') {
+        } else if (item.asset_condition === 'BP') {
             jQuery('#condition2').prop("checked", true);
-        }else if(item.asset_condition === 'TB') {
+        } else if (item.asset_condition === 'TB') {
             jQuery('#condition3').prop("checked", true);
         } else {
-             jQuery("input[name='asset_condition']").prop("checked", false);
+            jQuery("input[name='asset_condition']").prop("checked", false);
         }
 
         if (item.foto_asset.file) {

@@ -377,8 +377,10 @@
                         </div>
                     </div>
                     <div class="box-footer clearfix">
+                        @if($data['access']->create == 1)
                         <button type="submit" class="btn btn-danger btn-flat pull-right" OnClick="save(0)" style="margin-right: 5px;">Draft</button>
                         <button type="submit" class="btn btn-danger btn-flat pull-right" onClick="save(1)" style="margin-right: 5px;">Submit</button>
+                        @endif
                         <button type="button" class="btn btn-default btn-flat btn-back-request-form pull-right hide" style="margin-right: 5px;"><i class="fa fa-arrow-circle-left"></i> Back</button>
                     </div>
                 </div>
@@ -460,10 +462,10 @@
             }
         });
 
-      /*   jQuery("#request_date").datepicker({
-            format: "mm/dd/yyyy",
-            autoclose: true
-        }); */
+        /*   jQuery("#request_date").datepicker({
+              format: "mm/dd/yyyy",
+              autoclose: true
+          }); */
 
         jQuery("#transaction_type").select2({
             data: [{
@@ -723,7 +725,7 @@
 
         jQuery("#asset_location").on('change', function() {
             if (jQuery(this).val()) {
-                var id = current_page-1;
+                var id = current_page - 1;
                 var obj = jQuery('#detail_item_selected').val();
 
                 var data = jQuery(this).select2('data');
@@ -753,6 +755,7 @@
             request_date: request_date.val(),
             business_area: business_area.val(),
             po_no: po_no.val(),
+            po_type: 0,
             po_date: po_date.val(),
             vendor_code: vendor_code.val(),
             vendor_name: vendor_name.val(),
@@ -1030,14 +1033,14 @@
         jQuery('#asset_pic_level').val(item.asset_pic_level);
         jQuery('#asset_info').val(item.asset_info);
 
-        if(item.asset_condition === 'B') {
+        if (item.asset_condition === 'B') {
             jQuery('#condition1').prop("checked", true);
-        } else if(item.asset_condition === 'BP') {
+        } else if (item.asset_condition === 'BP') {
             jQuery('#condition2').prop("checked", true);
-        }else if(item.asset_condition === 'TB') {
+        } else if (item.asset_condition === 'TB') {
             jQuery('#condition3').prop("checked", true);
         } else {
-             jQuery("input[name='asset_condition']").prop("checked", false);
+            jQuery("input[name='asset_condition']").prop("checked", false);
         }
 
         jQuery('#asset_location').val(item.asset_location);
