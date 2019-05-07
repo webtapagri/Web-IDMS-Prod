@@ -84,18 +84,18 @@ class OutstandingController extends Controller
             $sql .= " AND asset.PO_TYPE  = " . $request->po_type;
 
         if ($request->request_date)
-            $sql .= " AND DATE_FORMAT(asset.TANGGAL_REG, '%Y-%m-%d') = " . DATE_FORMAT(date_create($request->request_date), 'Y-m-d');
+            $sql .= " AND DATE_FORMAT(asset.TANGGAL_REG, '%Y-%m-%d') = '" . DATE_FORMAT(date_create($request->request_date), 'Y-m-d'). "'";
 
 
         if ($request->po_date)
-            $sql .= " AND DATE_FORMAT(asset.TANGGAL_PO, '%Y-%m-%d') = " . DATE_FORMAT(date_create($request->po_date), 'Y-m-d');
+            $sql .= " AND DATE_FORMAT(asset.TANGGAL_PO, '%Y-%m-%d') = '" . DATE_FORMAT(date_create($request->po_date), 'Y-m-d') ."'";
 
         if ($orderColumn != "") {
             $sql .= " ORDER BY " . $field[$orderColumn]['field'] . " " . $dirColumn;
         }
 
         $data = DB::select(DB::raw($sql));
-        $iTotalRecords = count($total_data);
+        $iTotalRecords = count($data);
         $iDisplayLength = intval($request->length);
         $iDisplayLength = $iDisplayLength < 0 ? $iTotalRecords : $iDisplayLength;
         $iDisplayStart = intval($request->start);
