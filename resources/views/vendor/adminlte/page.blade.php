@@ -137,13 +137,12 @@
                                 @endforeach
                             </ul>
                         </li>
-
                         @endforeach
                     </ul>
                 </li>
                 <li class="{{ (Session::get('role') == 'GUEST' ? 'hide':'') }}  {{ (str_replace(url('/').'/','', url()->current()) == 'profile'? 'active':'') }}"><a style="border-top:1px solid #182225" href="{{ url('profile') }}"><i class="fa fa-user"></i> <span>Profile</span></a></li>
                 <li><a href="#" OnClick="logOut()"><i class="fa fa-power-off text-red"></i> <span>Log out</span></a></li>
-                <li><a href=""><i class="fa fa-question text-green"></i> <span>Help</span></a></li>
+                <li><a href="{{ url('/help') }}"><i class="fa fa-question text-green"></i> <span>Help</span></a></li>
 
             </ul>
             <!-- /.sidebar-menu -->

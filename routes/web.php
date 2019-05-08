@@ -29,6 +29,8 @@ Route::match(['get', 'post'], 'grid-outstanding', [
 ]);
 Route::get('/asset/edit/', 'AssetController@show');
 
+Route::resource('/help', 'HelpController');
+
 /* PAGES */
 Route::resource('/asset', 'AssetController');
 Route::get('/asset/create/{type}', 'AssetController@create')->name('type');
