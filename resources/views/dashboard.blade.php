@@ -105,17 +105,17 @@
                                         <input type="text" class="form-control input-sm" name="asset_vendor_name" id="asset_vendor_name" autocomplete="off" readonly>
                                     </div>
                                 </div>
-                               
+
                                 <div class="docs-files-detail hide">
-                                     <hr>
-                                     <div class="form-group">
-                                         <label for="plant" class="col-md-2">Berita acara serah terima</label>
-                                            <div class="col-md-10">
-                                                <div id="berita-acara-detail"></div>
-                                            </div>
-                                          </div>
-                                      <hr>
+                                    <hr>
+                                    <div class="form-group">
+                                        <label for="plant" class="col-md-2">Berita acara serah terima</label>
+                                        <div class="col-md-10">
+                                            <div id="berita-acara-detail"></div>
+                                        </div>
+                                    </div>
                                 </div>
+                                <hr>
                                 <div class="form-group">
                                     <label class="col-md-2"><b>ITEM DETAIL</b></label>
                                     <div class="col-md-9">
@@ -289,7 +289,9 @@
                                                                         <p class="help-block">*jpg, png</p>
                                                                     </div>
                                                                     <div class="image-group">
-                                                                        <img id="foto_asset_thumb_1" data-status="0" title="click to change image" class="img-responsive" src="{{URL::asset('img/add-img.png')}}">
+                                                                        <div class="sp-wrap">
+                                                                            <a href="" id="a_foto_asset_thumb_1"><img id="foto_asset_thumb_1" data-status="0" title="click to change image" class="img-responsive" src="{{URL::asset('img/add-img.png')}}"></a>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -305,7 +307,11 @@
                                                                         <p class="help-block">*jpg, png</p>
                                                                     </div>
                                                                     <div class="image-group">
-                                                                        <img id="foto_no_seri_thumb_1" data-status="0" title="click to change image" class="img-responsive" src="{{URL::asset('img/add-img.png')}}">
+                                                                        <div class="sp-wrap">
+                                                                            <a href="" id="a_foto_no_seri_thumb_1">
+                                                                                <img id="foto_no_seri_thumb_1" data-status="0" title="click to change image" class="img-responsive" src="{{URL::asset('img/add-img.png')}}">
+                                                                            </a>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -321,7 +327,11 @@
                                                                         <p class="help-block">*jpg, png</p>
                                                                     </div>
                                                                     <div class="image-group">
-                                                                        <img id="foto_mesin_thumb_1" data-status="0" title="click to change image" class="img-responsive" src="{{URL::asset('img/add-img.png')}}">
+                                                                        <div class="sp-wrap">
+                                                                            <a href="" id="a_foto_mesin_thumb_1">
+                                                                                <img id="foto_mesin_thumb_1" data-status="0" title="click to change image" class="img-responsive" src="{{URL::asset('img/add-img.png')}}">
+                                                                            </a>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -453,14 +463,14 @@
                 ],
                 columnDefs: [{
                         targets: [3, 7],
-                        width: '12%'
+                        width: '10%'
                     },
                     {
                         targets: [8],
                         width: '15%'
                     },
                     {
-                        targets: [4, 6, 5],
+                        targets: [4, 6, 5, 7],
                         width: '10%'
                     },
                     {
@@ -481,6 +491,8 @@
                 "order": [],
             }
         });
+
+        jQuery('.sp-wrap').smoothproducts();
 
         jQuery(".datepicker").datepicker({
             format: "mm/dd/yyyy",
@@ -787,20 +799,26 @@
 
         if (item.foto_asset.file) {
             jQuery("#foto_asset_thumb_1").prop('src', item.foto_asset.file);
+            jQuery("#a_foto_asset_thumb_1").prop('href', item.foto_asset.file);
         } else {
             jQuery("#foto_asset_thumb_1").prop('src', "{{URL::asset('img/default-img.png')}}");
+            jQuery("#a_foto_asset_thumb_1").prop('href', "{{URL::asset('img/default-img.png')}}");
         }
 
         if (item.foto_asset_seri.file) {
             jQuery("#foto_no_seri_thumb_1").prop('src', item.foto_asset_seri.file);
+            jQuery("#a_foto_no_seri_thumb_1").prop('href', item.foto_asset_seri.file);
         } else {
             jQuery("#foto_no_seri_thumb_1").prop('src', "{{URL::asset('img/default-img.png')}}");
+            jQuery("#a_foto_no_seri_thumb_1").prop('href', "{{URL::asset('img/default-img.png')}}");
         }
 
         if (item.foto_asset_mesin.file) {
             jQuery("#foto_mesin_thumb_1").prop('src', item.foto_asset_mesin.file);
+            jQuery("#a_foto_mesin_thumb_1").prop('href', item.foto_asset_mesin.file);
         } else {
             jQuery("#foto_mesin_thumb_1").prop('src', "{{URL::asset('img/default-img.png')}}");
+            jQuery("#a_foto_mesin_thumb_1").prop('href', "{{URL::asset('img/default-img.png')}}");
         }
 
 
