@@ -410,3 +410,8 @@ table.dataTable.table-condensed .sorting:after, table.dataTable.table-condensed 
 .filter {
   background-color: #d2d6dd3d !important;
 }
+
+table.dataTable.dtr-inline.collapsed>tbody>tr>td:first-child:before, table.dataTable.dtr-inline.collapsed>tbody>tr>th:first-child:before {
+    box-shadow: 0 0 0 !important;
+    background-color: #dd4b39 !important;
+}

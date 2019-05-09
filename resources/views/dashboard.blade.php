@@ -9,8 +9,6 @@
 @stop
 
 @section('content')
-
-<!-- /.row -->
 <div class="row">
     <div class="col-xs-12">
         <div class="box">
@@ -20,9 +18,9 @@
                         <span></span>
                         <button class="btn btn-sm btn-flat btn-danger btn-refresh-data-table" title="refresh"><i class="glyphicon glyphicon-refresh"></i></button>
                     </div>
-                    <table id="data-table" class="table table-bordered table-condensed" width="100%">
+                    <table id="data-table" class="table table-bordered table-condensed" width="100%" cellspacing="0">
                         <thead>
-                            <tr role="row" class="heading">
+                            <tr class="heading">
                                 <th>No Reg</th>
                                 <th>Tipe</th>
                                 <th>PO</th>
@@ -32,9 +30,8 @@
                                 <th>Tgl. PO</th>
                                 <th>Kode Vendor</th>
                                 <th>Nama Vendor</th>
-                                <!-- <th>#</th> -->
                             </tr>
-                            <tr role="row" class="filter">
+                            <tr class="filter">
                                 <th><input type="text" class="form-control input-xs form-filter" name="no_reg"></th>
                                 <th><input type="text" class="form-control input-xs form-filter" name="transaction_type" id="transaction_type"></th>
                                 <th><input type="text" class="form-control input-xs form-filter" name="po_type" id="po_type"></th>
@@ -44,14 +41,12 @@
                                 <th><input type="text" class="form-control input-xs form-filter datepicker" name="po_date" autocomplete="off"></th>
                                 <th><input type="text" class="form-control input-xs form-filter" name="vendor_code"></th>
                                 <th><input type="text" class="form-control input-xs form-filter" name="vendor_name"></th>
-                                <!-- <th><input type="text" class="form-control input-xs form-filter" name="detail" disabled></th> -->
                             </tr>
                         </thead>
                         <tbody></tbody>
                     </table>
                 </div>
             </div>
-            <!-- /.box-body -->
         </div>
     </div>
 </div>
@@ -400,6 +395,7 @@
             dataTable: {
                 "dom": "<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'<'table-group-actions pull-right'>>r>t<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'>>",
                 "bStateSave": true, // save datatable state(pagination, sort, etc) in cookie.
+                "autoWidth": true,
                 "lengthMenu": [
                     [10, 20, 50, 100, 150],
                     [10, 20, 50, 100, 150]
@@ -491,6 +487,13 @@
                 "order": [],
             }
         });
+
+        jQuery("#data-table").on('shown.bs.collapse', function () {
+            jQuery($.fn.dataTable.tables(true)).DataTable()
+                .columns.adjust();
+        });
+
+        jQuery('#data-table').wrap('<div class="dataTables_scroll" />');
 
         jQuery('.sp-wrap').smoothproducts();
 
