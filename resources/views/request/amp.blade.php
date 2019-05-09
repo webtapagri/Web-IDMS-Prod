@@ -270,13 +270,13 @@
                                                 </div>
                                             </div>
                                             <div class="form-group material-group-input" id="input-specification">
-                                                <label for="part_no" class="col-md-2 col-md-offset-1 col-form-label">No Seri / No Rangka</label>
+                                                <label for="part_no" class="col-md-2 col-md-offset-1 col-form-label">No Seri / No Rangka <sup style="color:red">*</sup></label>
                                                 <div class="col-md-8">
                                                     <input type="text" class="form-control input-sm attr-material-group" name="asset_serie_no" id="asset_serie_no">
                                                 </div>
                                             </div>
                                             <div class="form-group material-group-input" id="input-specification">
-                                                <label for="part_no" class="col-md-2 col-md-offset-1 col-form-label">No Mesin / IMEI</label>
+                                                <label for="part_no" class="col-md-2 col-md-offset-1 col-form-label">No Mesin / IMEI <sup style="color:red">*</sup></label>
                                                 <div class="col-md-8">
                                                     <input type="text" class="form-control input-sm attr-material-group" name="asset_imei" id="asset_imei">
                                                 </div>
@@ -288,19 +288,19 @@
                                                 </div>
                                             </div>
                                             <div class="form-group material-group-input" id="input-specification">
-                                                <label for="part_no" class="col-md-2 col-md-offset-1 col-form-label">Lokasi Asset</label>
+                                                <label for="part_no" class="col-md-2 col-md-offset-1 col-form-label">Lokasi Asset <sup style="color:red">*</sup></label>
                                                 <div class="col-md-8">
                                                     <input type="text" class="form-control input-sm attr-material-group" name="asset_location" id="asset_location">
                                                 </div>
                                             </div>
                                             <div class="form-group material-group-input" id="input-specification">
-                                                <label for="part_no" class="col-md-2 col-md-offset-1 col-form-label">Tahun Asset</label>
+                                                <label for="part_no" class="col-md-2 col-md-offset-1 col-form-label">Tahun Asset <sup style="color:red">*</sup></label>
                                                 <div class="col-md-8">
                                                     <input type="text" class="form-control input-sm attr-material-group" name="asset_year" id="asset_year">
                                                 </div>
                                             </div>
                                             <div class="form-group material-group-input" id="input-specification">
-                                                <label for="part_no" class="col-md-2 col-md-offset-1 col-form-label">Kondisi Asset</label>
+                                                <label for="part_no" class="col-md-2 col-md-offset-1 col-form-label">Kondisi Asset <sup style="color:red">*</sup></label>
                                                 <div class="col-md-8">
                                                     <div class="form-group">
                                                         <div class="radio-inline">
@@ -402,8 +402,8 @@
                     </div>
                     <div class="box-footer clearfix">
                         @if($data['access']->create == 1)
-                        <button type="submit" class="btn btn-danger btn-flat pull-right" OnClick="save(0)" style="margin-right: 5px;">Draft</button>
-                        <button type="submit" class="btn btn-danger btn-flat pull-right" onClick="save(1)" style="margin-right: 5px;">Submit</button>
+                        <button type="button" class="btn btn-danger btn-flat pull-right" OnClick="save(0)" style="margin-right: 5px;">Draft</button>
+                        <button type="button" class="btn btn-danger btn-flat pull-right" onClick="save(1)" style="margin-right: 5px;">Submit</button>
                         @endif
                         <button type="button" class="btn btn-default btn-flat btn-back-request-form pull-right hide" style="margin-right: 5px;"><i class="fa fa-arrow-circle-left"></i> Back</button>
                     </div>
@@ -486,24 +486,9 @@
             placeholder: ' '
         });
 
-        jQuery("#business_area").select2({
-            data: [{
-                    id: '1',
-                    text: 'LoV'
-                },
-                {
-                    id: '2111',
-                    text: '2111 - HO JAKARTA SAWIT'
-                },
-                {
-                    id: '2112',
-                    text: '2112 - RO JAMBI'
-                },
-                {
-                    id: '2113',
-                    text: '2113 - HO JAKARTA KARET'
-                },
-            ],
+         var plant = jQuery.parseJSON(JSON.stringify(dataJson('{!! route("get.generaldataplant") !!}')));
+        jQuery("#business_area,  #asset_location").select2({
+            data: plant,
             width: "100%",
             allowClear: true,
             placeholder: ' '
@@ -543,6 +528,9 @@
                 }).on("change", function() {
                     getProp(jQuery(this).val());
                 });
+
+                jQuery("#detail_item_selected").val(items[0].id);
+                jQuery("#detail_item_selected").trigger("change");
 
 
             } else {
@@ -732,52 +720,112 @@
             }
         });
 
-        var param = {
-            transaction_type: transaction_type.val(),
-            request_date: request_date.val(),
-            business_area: business_area.val(),
-            po_no: po_no.val(),
-            po_type: 1,
-            po_date: po_date.val(),
-            vendor_code: vendor_code.val(),
-            vendor_name: vendor_name.val(),
-            docs: request_docs,
-            asset: request_item,
-            status: status
-        };
+         if(validateSave()) {
+            var param = {
+                transaction_type: transaction_type.val(),
+                request_date: request_date.val(),
+                business_area: business_area.val(),
+                po_no: po_no.val(),
+                po_type: 1,
+                po_date: po_date.val(),
+                vendor_code: vendor_code.val(),
+                vendor_name: vendor_name.val(),
+                docs: request_docs,
+                asset: request_item,
+                status: status
+            };
 
-        jQuery.ajax({
-            url: "{{ url('request/post') }}",
-            type: "POST",
-            data: param,
-            /*  contentType: false,
-             processData: false,
-             cache: false, */
-            beforeSend: function() {
-                jQuery('.loading-event').fadeIn();
-            },
-            success: function(result) {
-                if (result.status) {
-                    notify({
-                        type: 'success',
-                        message: result.message
-                    });
-                    notify({
-                        type: 'error',
-                        message: 'reqeust has been submited!'
-                    });
-                    window.location.href = "{{ url('/') }}";
-                } else {
+            jQuery.ajax({
+                url: "{{ url('request/post') }}",
+                type: "POST",
+                data: param,
+                /*  contentType: false,
+                processData: false,
+                cache: false, */
+                beforeSend: function() {
+                    jQuery('.loading-event').fadeIn();
+                },
+                success: function(result) {
+                    if (result.status) {
+                        notify({
+                            type: 'success',
+                            message: result.message
+                        });
+                        notify({
+                            type: 'error',
+                            message: 'reqeust has been submited!'
+                        });
+                        window.location.href = "{{ url('/') }}";
+                    } else {
+                        notify({
+                            type: 'warning',
+                            message: result.message
+                        });
+                    }
+                },
+                complete: function() {
+                    jQuery('.loading-event').fadeOut();
+                }
+            });
+         }
+    }
+
+     function validateSave() {
+        var valid = true;
+        jQuery.each(request_item, function(i, field) {
+            if(field) {
+                jQuery.each(field.detail, function(key, val) {
+                  if(val.asset_imei === "") {
                     notify({
                         type: 'warning',
-                        message: result.message
+                        message: 'No Mesin / IMEI pada asset ' + field.name + ' page ' + (key+1) + ' tidak boleh kosong!'
+                    });
+
+                    valid = false;
+                    return false;
+                }
+                
+                if(val.asset_serie_no === "") {
+                    notify({
+                        type: 'warning',
+                        message: 'No Seri / Rangka pada asset ' + field.name + ' page ' + (key+1) + ' tidak boleh kosong!'
+                    });
+
+                    valid = false;
+                    return false
+                }
+            
+                if(val.asset_year === "") {
+                  
+                    notify({
+                        type: 'warning',
+                        message: 'Tahun pada asset  ' + field.name + ' page ' + (key+1) + ' tidak boleh kosong!'
+                    });
+                    valid = false;
+                    return false;
+                }
+                
+                if(val.asset_location === "") {
+                    notify({
+                        type: 'warning',
+                        message: 'Lokasi pada asset ' + field.name + ' page ' + (key+1) + ' tidak boleh kosong!'
                     });
                 }
-            },
-            complete: function() {
-                jQuery('.loading-event').fadeOut();
+                
+                if(val.asset_condition === "") {
+                    notify({
+                        type: 'warning',
+                        message: 'Kondisi pada  asset ' + field.name + ' page ' + (key+1) + ' tidak boleh kosong!'
+                    });
+                    valid = false;
+                    return false;
+                }
+
+            });
             }
         });
+
+        return valid;
     }
 
 
@@ -850,7 +898,7 @@
                 asset_type: '',
                 asset_group: '',
                 asset_sub_group: '',
-                asset_name: '',
+                 asset_name: item.name + ' - ' + (i+1),
                 asset_brand: '',
                 asset_imei: '',
                 asset_police_no: '',
@@ -1133,22 +1181,28 @@
         }
     }
 
-    function prevPage() {
-        jQuery(".loading-event").fadeIn();
-        if (current_page > 1) {
-            current_page--;
-            changePage(current_page);
+       function prevPage() {
+        var id = (current_page-1);
+        if(validatePage(id)) {
+            jQuery(".loading-event").fadeIn(); 
+            if (current_page > 1) {
+                current_page--;
+                changePage(current_page);
+            }
+            jQuery(".loading-event").fadeOut();
         }
-        jQuery(".loading-event").fadeOut();
     }
 
     function nextPage() {
-        jQuery(".loading-event").fadeIn();
-        if (current_page < numPages()) {
-            current_page++;
-            changePage(current_page);
-        }
-        jQuery(".loading-event").fadeOut();
+        var id = (current_page-1);
+        if(validatePage(id)) {
+            jQuery(".loading-event").fadeIn();
+            if (current_page < numPages()) {
+                current_page++;
+                changePage(current_page);
+            }
+            jQuery(".loading-event").fadeOut();
+        } 
     }
 
     function changePage(page) {
@@ -1174,6 +1228,64 @@
         }
 
         assetInfo(current_page);
+    }
+
+    function validatePage(id) {
+        var obj = id;
+        var key = jQuery('#detail_item_selected').val();
+        var request = request_item[key];
+        var item = request.detail[obj];
+        var valid = true;
+
+        if(item.asset_imei === "") {
+            valid = false;
+            jQuery('#asset_imei').focus();
+              notify({
+                type: 'warning',
+                message: 'No Mesin / IMEI tidak boleh kosong!'
+            });
+        }
+        
+        if(item.asset_serie_no === "") {
+            valid = false;
+            jQuery('#asset_serie_no').parent().closest('div').addClass('has-warning');
+              notify({
+                type: 'warning',
+                message: 'No Seri / Rangka tidak boleh kosong!'
+            });
+        } else {
+             jQuery('#asset_serie_no').parent().closest('div').removeClass('has-warning');
+        }
+       
+        if(item.asset_year === "") {
+            valid = false;
+            jQuery('#asset_year').parent().closest('div').addClass('has-warning');
+              notify({
+                type: 'warning',
+                message: 'Tahun Asset tidak boleh kosong!'
+            });
+        } else {
+             jQuery('#asset_year').parent().closest('div').removeClass('has-warning');
+        }
+        
+        if(item.asset_location === "") {
+            valid = false;
+            jQuery('#asset_location').focus();
+              notify({
+                type: 'warning',
+                message: 'Lokasi Asset tidak boleh kosong!'
+            });
+        }
+        
+        if(item.asset_condition === "") {
+            valid = false;
+            notify({
+                type: 'warning',
+                message: 'Kondisi Asset tidak boleh kosong!'
+            });
+        }
+
+        return valid;
     }
 
     function numPages() {

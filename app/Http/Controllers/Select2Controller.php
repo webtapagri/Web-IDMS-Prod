@@ -44,4 +44,21 @@ class Select2Controller extends Controller
 
         return response()->json(array('data' => $arr));
     }
+
+    public function generaldataplant(Request $request) {
+        $data = DB::table('TM_GENERAL_DATA')
+        ->select('DESCRIPTION_CODE as id', 'DESCRIPTION as text')
+        ->where('GENERAL_CODE', 'plant')
+        ->get();
+
+        $arr = array();
+        foreach ($data as $row) {
+            $arr[] = array(
+                "id" => $row->id,
+                "text" => $row->id .'-' . $row->text
+            );
+        }
+
+        return response()->json(array('data' => $arr));
+    }
 }

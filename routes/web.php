@@ -139,3 +139,4 @@ Route::get( 'get-outstandingdetailitemfile', ['as' => 'get.outstandingdetailitem
 Route::get('get-select_module', ['as' => 'get.select_module', 'uses' => 'ModuleController@select2']);
 Route::get('get-select_menu', ['as' => 'get.select_menu', 'uses' => 'MenuController@select2']);
 Route::get('get-select_role', ['as' => 'get.select_role', 'uses' => 'RolesController@select2']);
+Route::get('get-generaldataplant', ['as' => 'get.generaldataplant', 'uses' => 'Select2Controller@generaldataplant']);
