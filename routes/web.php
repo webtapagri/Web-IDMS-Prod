@@ -27,8 +27,8 @@ Route::match(['get', 'post'], 'grid-outstanding', [
     'as' => 'get.outstanding',
     'uses' => 'OutstandingController@dataGrid'
 ]);
-Route::get('/asset/edit/', 'AssetController@show');
 
+Route::get('/asset/edit/', 'AssetController@show');
 Route::resource('/help', 'HelpController');
 
 /* PAGES */
@@ -50,6 +50,7 @@ Route::post('/request/active', 'RequestController@active');
 Route::get('grid-request', ['as' => 'get.request_grid', 'uses' => 'RequestController@dataGrid']);
 Route::get('get-no_po', ['as' => 'get.no_po', 'uses' => 'RequestController@getPO']);
 Route::get('requestpdf', ['as' => 'get.requestpdf', 'uses' => 'RequestController@pdfDoc']);
+Route::get('get-businessarea', ['as' => 'get.businessarea', 'uses' => 'RequestController@businessarea']);
 
 Route::resource('/approval', 'ApprovalController');
 Route::get('/approval/create/{type}', 'ApprovalController@create')->name('type');

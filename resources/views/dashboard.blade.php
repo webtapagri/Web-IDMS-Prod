@@ -33,8 +33,16 @@
                             </tr>
                             <tr class="filter">
                                 <th><input type="text" class="form-control input-xs form-filter" name="no_reg"></th>
-                                <th><input type="text" class="form-control input-xs form-filter" name="transaction_type" id="transaction_type"></th>
-                                <th><input type="text" class="form-control input-xs form-filter" name="po_type" id="po_type"></th>
+                                <th>
+                                    <select type="text" class="form-control input-xs form-filter" name="transaction_type" id="flt_transaction_type">
+                                        <option></option>
+                                    </select>
+                                </th>
+                                <th>
+                                    <select class="form-control input-xs form-filter" name="po_type" id="po_type">
+                                        <option></option>
+                                    </select>
+                                </th>
                                 <th><input type="text" class="form-control input-xs form-filter" name="no_po"></th>
                                 <th><input type="text" class="form-control input-xs form-filter datepicker" name="request_date" autocomplete="off"></th>
                                 <th><input type="text" class="form-control input-xs form-filter" name="requestor"></th>
@@ -488,7 +496,7 @@
             }
         });
 
-        jQuery("#data-table").on('shown.bs.collapse', function () {
+        jQuery("#data-table").on('shown.bs.collapse', function() {
             jQuery($.fn.dataTable.tables(true)).DataTable()
                 .columns.adjust();
         });
@@ -502,7 +510,7 @@
             autoclose: true
         });
 
-        jQuery("input[name='transaction_type']").select2({
+        jQuery("#flt_transaction_type").select2({
             data: [{
                     id: '1',
                     text: 'Barang'
@@ -521,7 +529,7 @@
             placeholder: ' '
         });
 
-        jQuery("input[name='po_type']").select2({
+        jQuery("#po_type").select2({
             data: [{
                     id: '0',
                     text: 'SAP'
@@ -560,8 +568,13 @@
         });
 
         jQuery(".btn-refresh-data-table").on("click", function() {
-            jQuery("#transaction_type").val('');
-            jQuery("#transaction_type").trigger("change");
+            jQuery("#flt_transaction_type").val('');
+            jQuery("#flt_transaction_type").trigger("change");
+
+            jQuery("#po_type").val('');
+            jQuery("#po_type").trigger("change");
+
+            /* jQuery('#data-table').dataTable().fnSortNeutral(); */
         });
     });
 

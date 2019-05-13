@@ -67,6 +67,9 @@ class OutstandingController extends Controller
 
         if ($request->no_po)
             $sql .= " AND asset.NO_PO  like '%" . $request->no_po . "%'";
+       
+            if ($request->no_reg)
+            $sql .= " AND asset.NO_REG  like '%" . $request->no_reg . "%'";
 
         if ($request->requestor)
             $sql .= " AND requestor.name  like '%" . $request->requestor . "%'";

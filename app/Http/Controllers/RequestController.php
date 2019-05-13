@@ -284,9 +284,29 @@ class RequestController extends Controller
        }
     }
 
+    public function businessarea() {
+        $user_id = Session::get('user_id');
+        $sql = "
+            SELECT DESCRIPTION_CODE as id, DESCRIPTION as text
+            FROM TM_GENERAL_DATA
+            WHERE GENERAL_CODE = 'plant'
+            AND FIND_IN_SET(DESCRIPTION_CODE, (select  area_code from TBM_USER where id = ".$user_id."))
+        ";
+
+        $data = DB::select(DB::raw($sql));
+        $arr = array();
+        foreach ($data as $row) {
+            $arr[] = array(
+                "id" => $row->id,
+                "text" => $row->id . '-' . $row->text
+            );
+        }
+
+        return response()->json(array('data' => $arr));
+    }
+
     public function pdfDoc()
     {
-
         $html2pdf = new Html2Pdf('P', 'A4', 'en');
         $html2pdf->writeHTML(view('request.pdf', [
             'name' => 'dadang kurniawan',

@@ -24,7 +24,7 @@
                         <div class="form-group">
                             <label for="plant" class="col-md-3">Tipe Transaksi</label>
                             <div class="col-md-6">
-                                <input type="text" class="form-control input-sm" name="transaction_type" id="transaction_type" required>
+                                <select class="form-control input-sm" name="transaction_type" id="transaction_type" required></select>
                             </div>
                         </div>
                         <div class="form-group">
@@ -36,7 +36,7 @@
                         <div class="form-group">
                             <label for="plant" class="col-md-3">Business Area</label>
                             <div class="col-md-4">
-                                <input type="text" class="form-control input-sm" name="business_area" id="business_area" required>
+                                <select class="form-control input-sm" name="business_area" id="business_area" required readonly></select>
                             </div>
                         </div>
                         <div class="form-group">
@@ -54,13 +54,13 @@
                         <div class="form-group">
                             <label for="plant" class="col-md-3">Kode vendor</label>
                             <div class="col-md-6">
-                                <input type="text" class="form-control input-sm" name="vendor_code" id="vendor_code" autocomplete="off" required>
+                                <input type="text" class="form-control input-sm" name="vendor_code" id="vendor_code" autocomplete="off">
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="plant" class="col-md-3">Nama vendor</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control input-sm" name="vendor_name" id="vendor_name" autocomplete="off" required>
+                                <input type="text" class="form-control input-sm" name="vendor_name" id="vendor_name" autocomplete="off">
                             </div>
                         </div>
                         <div class="form-group">
@@ -111,7 +111,7 @@
                                         <!-- <th>Qty Outstanding</th> -->
                                     </tr>
                                     <tr>
-                                        <td colspan="6" style="text-align:center">No item selected</td>
+                                        <td colspan="6" style="text-align:center;font-size: 9px;color: #808484;height: 45px;"><br>Silahkan input Nomor Purchase Order di atas untuk memilih item dan click tombol "select item"</td>
                                     </tr>
                                 </table>
                             </div>
@@ -402,7 +402,7 @@
                     </div>
                     <div class="box-footer clearfix">
                         @if($data['access']->create == 1)
-                        <button type="button" class="btn btn-danger btn-flat pull-right" OnClick="save(0)" style="margin-right: 5px;">Draft</button>
+                        <button type="button" class="btn btn-danger btn-flat pull-right hide" OnClick="save(0)" style="margin-right: 5px;">Draft</button>
                         <button type="button" class="btn btn-danger btn-flat pull-right" onClick="save(1)" style="margin-right: 5px;">Submit</button>
                         @endif
                         <button type="button" class="btn btn-default btn-flat btn-back-request-form pull-right hide" style="margin-right: 5px;"><i class="fa fa-arrow-circle-left"></i> Back</button>
@@ -449,16 +449,21 @@
 
         jQuery('#request-detail-page').addClass('sub-loader');
         jQuery(".btn-cancel").on('click', function() {
-            var conf = confirm("Are you sure you want to cancel this request?");
-            document.getElementById("request-form").reset();
-            if (conf == true) {
+            if (confirm("Are you sure you want to cancel this request?")) {
                 request_item = [];
                 request_item_page = [];
                 createItemRequestTable();
+
+                jQuery('#transaction_type').val('');
+                jQuery('#transaction_type').trigger('change');
+
+                /* jQuery('#business_area').val('');
+                jQuery('#business_area').trigger('change'); */
                 notify({
                     type: 'error',
                     message: 'form has been cleared!'
                 });
+                document.getElementById("request-form").reset();
             }
         });
 
@@ -486,13 +491,17 @@
             placeholder: ' '
         });
 
-         var plant = jQuery.parseJSON(JSON.stringify(dataJson('{!! route("get.generaldataplant") !!}')));
+        var plant = jQuery.parseJSON(JSON.stringify(dataJson('{!! route("get.generaldataplant") !!}')));
         jQuery("#business_area,  #asset_location").select2({
             data: plant,
             width: "100%",
             allowClear: true,
             placeholder: ' '
         });
+
+        jQuery('#business_area').val('1211');
+        jQuery('#business_area').trigger('change');
+        jQuery('#business_area').attr('disabled', 'disabled');;
 
         jQuery("#request-form").on("submit", function(e) {
             e.preventDefault();
@@ -720,7 +729,7 @@
             }
         });
 
-         if(validateSave()) {
+        if (validateSave()) {
             var param = {
                 transaction_type: transaction_type.val(),
                 request_date: request_date.val(),
@@ -767,61 +776,61 @@
                     jQuery('.loading-event').fadeOut();
                 }
             });
-         }
+        }
     }
 
-     function validateSave() {
+    function validateSave() {
         var valid = true;
         jQuery.each(request_item, function(i, field) {
-            if(field) {
+            if (field) {
                 jQuery.each(field.detail, function(key, val) {
-                  if(val.asset_imei === "") {
-                    notify({
-                        type: 'warning',
-                        message: 'No Mesin / IMEI pada asset ' + field.name + ' page ' + (key+1) + ' tidak boleh kosong!'
-                    });
+                    if (val.asset_imei === "") {
+                        notify({
+                            type: 'warning',
+                            message: 'No Mesin / IMEI pada asset ' + field.name + ' page ' + (key + 1) + ' tidak boleh kosong!'
+                        });
 
-                    valid = false;
-                    return false;
-                }
-                
-                if(val.asset_serie_no === "") {
-                    notify({
-                        type: 'warning',
-                        message: 'No Seri / Rangka pada asset ' + field.name + ' page ' + (key+1) + ' tidak boleh kosong!'
-                    });
+                        valid = false;
+                        return false;
+                    }
 
-                    valid = false;
-                    return false
-                }
-            
-                if(val.asset_year === "") {
-                  
-                    notify({
-                        type: 'warning',
-                        message: 'Tahun pada asset  ' + field.name + ' page ' + (key+1) + ' tidak boleh kosong!'
-                    });
-                    valid = false;
-                    return false;
-                }
-                
-                if(val.asset_location === "") {
-                    notify({
-                        type: 'warning',
-                        message: 'Lokasi pada asset ' + field.name + ' page ' + (key+1) + ' tidak boleh kosong!'
-                    });
-                }
-                
-                if(val.asset_condition === "") {
-                    notify({
-                        type: 'warning',
-                        message: 'Kondisi pada  asset ' + field.name + ' page ' + (key+1) + ' tidak boleh kosong!'
-                    });
-                    valid = false;
-                    return false;
-                }
+                    if (val.asset_serie_no === "") {
+                        notify({
+                            type: 'warning',
+                            message: 'No Seri / Rangka pada asset ' + field.name + ' page ' + (key + 1) + ' tidak boleh kosong!'
+                        });
 
-            });
+                        valid = false;
+                        return false
+                    }
+
+                    if (val.asset_year === "") {
+
+                        notify({
+                            type: 'warning',
+                            message: 'Tahun pada asset  ' + field.name + ' page ' + (key + 1) + ' tidak boleh kosong!'
+                        });
+                        valid = false;
+                        return false;
+                    }
+
+                    if (val.asset_location === "") {
+                        notify({
+                            type: 'warning',
+                            message: 'Lokasi pada asset ' + field.name + ' page ' + (key + 1) + ' tidak boleh kosong!'
+                        });
+                    }
+
+                    if (val.asset_condition === "") {
+                        notify({
+                            type: 'warning',
+                            message: 'Kondisi pada  asset ' + field.name + ' page ' + (key + 1) + ' tidak boleh kosong!'
+                        });
+                        valid = false;
+                        return false;
+                    }
+
+                });
             }
         });
 
@@ -898,7 +907,7 @@
                 asset_type: '',
                 asset_group: '',
                 asset_sub_group: '',
-                 asset_name: item.name + ' - ' + (i+1),
+                asset_name: item.name + ' - ' + (i + 1),
                 asset_brand: '',
                 asset_imei: '',
                 asset_police_no: '',
@@ -999,7 +1008,7 @@
             });
         } else {
             item += '<tr>';
-            item += ' <td colspan="5" style="text-align:center">No item selected</td>';
+            item += '<td colspan="5" style="text-align:center;font-size: 9px;color: #808484;height: 45px;"><br>Silahkan input Nomor Purchase Order di atas untuk memilih item dan click tombol "select item"</td>';
             item += '</tr>';
         }
         item += "</table>";
@@ -1164,6 +1173,7 @@
             item.foto_asset.size = '';
             jQuery("#foto_asset_thumb_1").prop('src', "{{URL::asset('img/add-img.png')}}");
             jQuery(".btn-foto-asset-remove").addClass('hide');
+            jQuery("#foto_asset_1").val("");
         } else if (code == 'seri') {
             item.foto_asset_seri.file = "";
             item.foto_asset_seri.name = "";
@@ -1171,6 +1181,7 @@
             item.foto_asset_seri.size = "";
             jQuery("#foto_no_seri_thumb_1").prop('src', "{{URL::asset('img/add-img.png')}}");
             jQuery(".btn-foto-seri-remove").addClass('hide');
+            jQuery("#foto_no_seri_1").val("");
         } else if (code == 'mesin') {
             item.foto_asset_mesin.file = "";
             item.foto_asset_mesin.name = "";
@@ -1178,13 +1189,14 @@
             item.foto_asset_mesin.size = "";
             jQuery("#foto_mesin_thumb_1").prop('src', "{{URL::asset('img/add-img.png')}}");
             jQuery(".btn-foto-mesin-remove").addClass('hide');
+            jQuery("#foto_mesin_1").val("");
         }
     }
 
-       function prevPage() {
-        var id = (current_page-1);
-        if(validatePage(id)) {
-            jQuery(".loading-event").fadeIn(); 
+    function prevPage() {
+        var id = (current_page - 1);
+        if (validatePage(id)) {
+            jQuery(".loading-event").fadeIn();
             if (current_page > 1) {
                 current_page--;
                 changePage(current_page);
@@ -1194,15 +1206,15 @@
     }
 
     function nextPage() {
-        var id = (current_page-1);
-        if(validatePage(id)) {
+        var id = (current_page - 1);
+        if (validatePage(id)) {
             jQuery(".loading-event").fadeIn();
             if (current_page < numPages()) {
                 current_page++;
                 changePage(current_page);
             }
             jQuery(".loading-event").fadeOut();
-        } 
+        }
     }
 
     function changePage(page) {
@@ -1228,6 +1240,9 @@
         }
 
         assetInfo(current_page);
+        jQuery("#foto_asset_1").val("");
+        jQuery("#foto_no_seri_1").val("");
+        jQuery("#foto_mesin_1").val("");
     }
 
     function validatePage(id) {
@@ -1237,47 +1252,47 @@
         var item = request.detail[obj];
         var valid = true;
 
-        if(item.asset_imei === "") {
+        if (item.asset_imei === "") {
             valid = false;
             jQuery('#asset_imei').focus();
-              notify({
+            notify({
                 type: 'warning',
                 message: 'No Mesin / IMEI tidak boleh kosong!'
             });
         }
-        
-        if(item.asset_serie_no === "") {
+
+        if (item.asset_serie_no === "") {
             valid = false;
             jQuery('#asset_serie_no').parent().closest('div').addClass('has-warning');
-              notify({
+            notify({
                 type: 'warning',
                 message: 'No Seri / Rangka tidak boleh kosong!'
             });
         } else {
-             jQuery('#asset_serie_no').parent().closest('div').removeClass('has-warning');
+            jQuery('#asset_serie_no').parent().closest('div').removeClass('has-warning');
         }
-       
-        if(item.asset_year === "") {
+
+        if (item.asset_year === "") {
             valid = false;
             jQuery('#asset_year').parent().closest('div').addClass('has-warning');
-              notify({
+            notify({
                 type: 'warning',
                 message: 'Tahun Asset tidak boleh kosong!'
             });
         } else {
-             jQuery('#asset_year').parent().closest('div').removeClass('has-warning');
+            jQuery('#asset_year').parent().closest('div').removeClass('has-warning');
         }
-        
-        if(item.asset_location === "") {
+
+        if (item.asset_location === "") {
             valid = false;
             jQuery('#asset_location').focus();
-              notify({
+            notify({
                 type: 'warning',
                 message: 'Lokasi Asset tidak boleh kosong!'
             });
         }
-        
-        if(item.asset_condition === "") {
+
+        if (item.asset_condition === "") {
             valid = false;
             notify({
                 type: 'warning',

@@ -112,7 +112,7 @@
             <!-- Sidebar Menu -->
             <ul class="sidebar-menu" data-widget="tree">
                 <!-- @each('adminlte::partials.menu-item', $adminlte->menu(), 'item') -->
-                <li class="{{ (url('/') == url()->current() ? 'active':'') }}"><a style="border-top:1px solid #182225" href="{{ url('/') }}"><i class="fa fa-bar-chart"></i> <span>Dashbord</span></a></li>
+                <li class="{{ (url('/') == url()->current() ? 'active':'') }}"><a style="border-top:1px solid #182225" href="{{ url('/') }}"><i class="fa fa-bar-chart"></i> <span>Dashboard</span></a></li>
                 <li class="treeview menu-open {{ AccessRight::menu() ? '':'hide'}}">
                     <a href="#">
                         <i class="fa fa-th"></i> <span>Main Menu</span>

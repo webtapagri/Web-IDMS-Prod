@@ -15,6 +15,7 @@
         background-color: #eee !important;
     }
 </style>
+
 <div class="row">
     <div class="col-md-10 col-md-offset-1">
         <div class="box">
@@ -24,7 +25,9 @@
                         <div class="form-group">
                             <label for="plant" class="col-md-3">Tipe Transaksi</label>
                             <div class="col-md-6">
-                                <input type="text" class="form-control input-sm" name="transaction_type" id="transaction_type" required>
+                                <select class="form-control input-sm" name="transaction_type" id="transaction_type" required>
+                                    <option></option>
+                                </select>
                             </div>
                         </div>
                         <div class="form-group">
@@ -36,11 +39,11 @@
                         <div class="form-group">
                             <label for="plant" class="col-md-3">Business Area</label>
                             <div class="col-md-4">
-                                <input type="text" class="form-control input-sm" name="business_area" id="business_area" required>
+                                <select type="text" class="form-control input-sm" name="business_area" id="business_area" required></select>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="plant" class="col-md-3">No. Purchare Order</label>
+                            <label for="plant" class="col-md-3">No. Purchase Order</label>
                             <div class="col-md-9">
                                 <input type="text" class="form-control input-sm" name="po_no" id="po_no" value="" autocomplete="off" maxlength="10" required>
                             </div>
@@ -89,7 +92,7 @@
                                         <th>Qty Outstanding</th>
                                     </tr>
                                     <tr>
-                                        <td colspan="6" style="text-align:center">No item selected</td>
+                                        <td colspan="6" style="text-align:center;font-size: 9px;color: #808484;height: 45px;"><br>Silahkan input Nomor Purchase Order di atas untuk memilih item dan click tombol "select item"</td>
                                     </tr>
                                 </table>
                             </div>
@@ -266,7 +269,7 @@
                                             <div class="form-group material-group-input" id="input-specification">
                                                 <label for="part_no" class="col-md-2 col-md-offset-1 col-form-label">Lokasi Asset <sup style="color:red">*</sup></label>
                                                 <div class="col-md-8">
-                                                   <!--  <input type="text" class="form-control input-sm attr-material-group" name="asset_location" id="asset_location"> -->
+                                                    <!--  <input type="text" class="form-control input-sm attr-material-group" name="asset_location" id="asset_location"> -->
                                                     <select type="text" class="form-control input-sm attr-material-group" name="asset_location" id="asset_location"></select>
                                                 </div>
                                             </div>
@@ -379,7 +382,7 @@
                     </div>
                     <div class="box-footer clearfix">
                         @if($data['access']->create == 1)
-                        <button type="submit" class="btn btn-danger btn-flat pull-right" OnClick="save(0)" style="margin-right: 5px;">Draft</button>
+                        <button type="submit" class="btn btn-danger btn-flat pull-right hide" OnClick="save(0)" style="margin-right: 5px;">Draft</button>
                         <button type="submit" class="btn btn-danger btn-flat pull-right" onClick="save(1)" style="margin-right: 5px;">Submit</button>
                         @endif
                         <button type="button" class="btn btn-default btn-flat btn-back-request-form pull-right hide" style="margin-right: 5px;"><i class="fa fa-arrow-circle-left"></i> Back</button>
@@ -450,16 +453,21 @@
 
         jQuery('#request-detail-page').addClass('sub-loader');
         jQuery(".btn-cancel").on('click', function() {
-            var conf = confirm("Are you sure you want to cancel this request?");
-            document.getElementById("request-form").reset();
-            if (conf == true) {
+            if (confirm("Apakah anda yakin akan menghapus data ini?")) {
                 request_item = [];
                 request_item_page = [];
                 createItemRequestTable();
+
+                jQuery('#transaction_type').val('');
+                jQuery('#transaction_type').trigger('change');
+
+                jQuery('#business_area').val('');
+                jQuery('#business_area').trigger('change');
                 notify({
                     type: 'error',
                     message: 'form has been cleared!'
                 });
+                document.getElementById("request-form").reset();
             }
         });
 
@@ -487,9 +495,17 @@
             placeholder: ' '
         });
 
-        var plant = jQuery.parseJSON(JSON.stringify(dataJson('{!! route("get.generaldataplant") !!}')));
-        jQuery("#business_area, #asset_location").select2({
+        var plant = jQuery.parseJSON(JSON.stringify(dataJson('{!! route("get.businessarea") !!}')));
+        jQuery("#business_area").select2({
             data: plant,
+            width: "100%",
+            allowClear: true,
+            placeholder: ' '
+        });
+
+        var plant_all = jQuery.parseJSON(JSON.stringify(dataJson('{!! route("get.generaldataplant") !!}')));
+        jQuery("#asset_location").select2({
+            data: plant_all,
             width: "100%",
             allowClear: true,
             placeholder: ' '
@@ -738,108 +754,110 @@
             }
         });
 
-        if(validateSave()) {
-            var param = {
-                transaction_type: transaction_type.val(),
-                request_date: request_date.val(),
-                business_area: business_area.val(),
-                po_no: po_no.val(),
-                po_type: 0,
-                po_date: po_date.val(),
-                vendor_code: vendor_code.val(),
-                vendor_name: vendor_name.val(),
-                docs: request_docs,
-                asset: request_item,
-                status: status
-            };
+        if (validateSave()) {
+            if (confirm("Apakah anda yakin akan melakukan submit data ini?")) {
+                var param = {
+                    transaction_type: transaction_type.val(),
+                    request_date: request_date.val(),
+                    business_area: business_area.val(),
+                    po_no: po_no.val(),
+                    po_type: 0,
+                    po_date: po_date.val(),
+                    vendor_code: vendor_code.val(),
+                    vendor_name: vendor_name.val(),
+                    docs: request_docs,
+                    asset: request_item,
+                    status: status
+                };
 
-            jQuery.ajax({
-                url: "{{ url('request/post') }}",
-                type: "POST",
-                data: param,
-                /*  contentType: false,
-                processData: false,
-                cache: false, */
-                beforeSend: function() {
-                    jQuery('.loading-event').fadeIn();
-                },
-                success: function(result) {
-                    if (result.status) {
-                        notify({
-                            type: 'success',
-                            message: result.message
-                        });
-                        notify({
-                            type: 'error',
-                            message: 'reqeust has been submited!'
-                        });
-                        window.location.href = "{{ url('/') }}";
-                    } else {
-                        notify({
-                            type: 'warning',
-                            message: result.message
-                        });
+                jQuery.ajax({
+                    url: "{{ url('request/post') }}",
+                    type: "POST",
+                    data: param,
+                    /*  contentType: false,
+                    processData: false,
+                    cache: false, */
+                    beforeSend: function() {
+                        jQuery('.loading-event').fadeIn();
+                    },
+                    success: function(result) {
+                        if (result.status) {
+                            notify({
+                                type: 'success',
+                                message: result.message
+                            });
+                            notify({
+                                type: 'error',
+                                message: 'reqeust has been submited!'
+                            });
+                            window.location.href = "{{ url('/') }}";
+                        } else {
+                            notify({
+                                type: 'warning',
+                                message: result.message
+                            });
+                        }
+                    },
+                    complete: function() {
+                        jQuery('.loading-event').fadeOut();
                     }
-                },
-                complete: function() {
-                    jQuery('.loading-event').fadeOut();
-                }
-            });
+                });
+            }
         }
     }
 
     function validateSave() {
         var valid = true;
         jQuery.each(request_item, function(i, field) {
-            if(field) {
+            if (field) {
                 jQuery.each(field.detail, function(key, val) {
-                  if(val.asset_imei === "") {
-                    notify({
-                        type: 'warning',
-                        message: 'No Mesin / IMEI pada asset ' + field.name + ' page ' + (key+1) + ' tidak boleh kosong!'
-                    });
+                    if (val.asset_imei === "") {
+                        notify({
+                            type: 'warning',
+                            message: 'No Mesin / IMEI pada asset ' + field.name + ' page ' + (key + 1) + ' tidak boleh kosong!'
+                        });
 
-                    valid = false;
-                    return false;
-                }
-                
-                if(val.asset_serie_no === "") {
-                    notify({
-                        type: 'warning',
-                        message: 'No Seri / Rangka pada asset ' + field.name + ' page ' + (key+1) + ' tidak boleh kosong!'
-                    });
+                        valid = false;
+                        return false;
+                    }
 
-                    valid = false;
-                    return false
-                }
-            
-                if(val.asset_year === "") {
-                  
-                    notify({
-                        type: 'warning',
-                        message: 'Tahun pada asset  ' + field.name + ' page ' + (key+1) + ' tidak boleh kosong!'
-                    });
-                    valid = false;
-                    return false;
-                }
-                
-                if(val.asset_location === "") {
-                    notify({
-                        type: 'warning',
-                        message: 'Lokasi pada asset ' + field.name + ' page ' + (key+1) + ' tidak boleh kosong!'
-                    });
-                }
-                
-                if(val.asset_condition === "") {
-                    notify({
-                        type: 'warning',
-                        message: 'Kondisi pada  asset ' + field.name + ' page ' + (key+1) + ' tidak boleh kosong!'
-                    });
-                    valid = false;
-                    return false;
-                }
+                    if (val.asset_serie_no === "") {
+                        notify({
+                            type: 'warning',
+                            message: 'No Seri / Rangka pada asset ' + field.name + ' page ' + (key + 1) + ' tidak boleh kosong!'
+                        });
 
-            });
+                        valid = false;
+                        return false
+                    }
+
+                    if (val.asset_year === "") {
+
+                        notify({
+                            type: 'warning',
+                            message: 'Tahun pada asset  ' + field.name + ' page ' + (key + 1) + ' tidak boleh kosong!'
+                        });
+                        valid = false;
+                        return false;
+                    }
+
+                    if (val.asset_location === "") {
+                        notify({
+                            type: 'warning',
+                            message: 'Lokasi pada asset ' + field.name + ' page ' + (key + 1) + ' tidak boleh kosong!'
+                        });
+                    }
+
+                    if (val.asset_condition === "") {
+                        notify({
+                            type: 'warning',
+                            message: 'Kondisi pada  asset ' + field.name + ' page ' + (key + 1) + ' tidak boleh kosong!'
+                        });
+                        valid = false;
+                        return false;
+                    }
+
+                });
             }
         });
 
@@ -933,7 +951,7 @@
                 asset_type: '',
                 asset_group: '',
                 asset_sub_group: '',
-                asset_name: item.name + ' - ' + (i+1),
+                asset_name: item.name + ' - ' + (i + 1),
                 asset_brand: '',
                 asset_imei: '',
                 asset_police_no: '',
@@ -1034,7 +1052,7 @@
             });
         } else {
             item += '<tr>';
-            item += ' <td colspan="7" style="text-align:center">No item selected</td>';
+            item += '<td colspan="7" style="text-align:center;font-size: 9px;color: #808484;height: 45px;"><br>Silahkan input Nomor Purchase Order di atas untuk memilih item dan click tombol "select item"</td>';
             item += '</tr>';
         }
 
@@ -1210,6 +1228,7 @@
             item.foto_asset.size = '';
             jQuery("#foto_asset_thumb_1").prop('src', "{{URL::asset('img/add-img.png')}}");
             jQuery(".btn-foto-asset-remove").addClass('hide');
+            jQuery("#foto_asset_1").val("");
         } else if (code == 'seri') {
             item.foto_asset_seri.file = "";
             item.foto_asset_seri.name = "";
@@ -1217,6 +1236,7 @@
             item.foto_asset_seri.size = "";
             jQuery("#foto_no_seri_thumb_1").prop('src', "{{URL::asset('img/add-img.png')}}");
             jQuery(".btn-foto-seri-remove").addClass('hide');
+            jQuery("#foto_no_seri_1").val("");
         } else if (code == 'mesin') {
             item.foto_asset_mesin.file = "";
             item.foto_asset_mesin.name = "";
@@ -1224,13 +1244,14 @@
             item.foto_asset_mesin.size = "";
             jQuery("#foto_mesin_thumb_1").prop('src', "{{URL::asset('img/add-img.png')}}");
             jQuery(".btn-foto-mesin-remove").addClass('hide');
+            jQuery("#foto_mesin_1").val("");
         }
     }
 
     function prevPage() {
-        var id = (current_page-1);
-        if(validatePage(id)) {
-            jQuery(".loading-event").fadeIn(); 
+        var id = (current_page - 1);
+        if (validatePage(id)) {
+            jQuery(".loading-event").fadeIn();
             if (current_page > 1) {
                 current_page--;
                 changePage(current_page);
@@ -1240,15 +1261,15 @@
     }
 
     function nextPage() {
-        var id = (current_page-1);
-        if(validatePage(id)) {
+        var id = (current_page - 1);
+        if (validatePage(id)) {
             jQuery(".loading-event").fadeIn();
             if (current_page < numPages()) {
                 current_page++;
                 changePage(current_page);
             }
             jQuery(".loading-event").fadeOut();
-        } 
+        }
     }
 
 
@@ -1274,6 +1295,9 @@
         }
 
         assetInfo(page);
+        jQuery("#foto_asset_1").val("");
+        jQuery("#foto_no_seri_1").val("");
+        jQuery("#foto_mesin_1").val("");
     }
 
     function validatePage(id) {
@@ -1283,47 +1307,47 @@
         var item = request.detail[obj];
         var valid = true;
 
-        if(item.asset_imei === "") {
+        if (item.asset_imei === "") {
             valid = false;
             jQuery('#asset_imei').focus();
-              notify({
+            notify({
                 type: 'warning',
                 message: 'No Mesin / IMEI tidak boleh kosong!'
             });
         }
-        
-        if(item.asset_serie_no === "") {
+
+        if (item.asset_serie_no === "") {
             valid = false;
             jQuery('#asset_serie_no').parent().closest('div').addClass('has-warning');
-              notify({
+            notify({
                 type: 'warning',
                 message: 'No Seri / Rangka tidak boleh kosong!'
             });
         } else {
-             jQuery('#asset_serie_no').parent().closest('div').removeClass('has-warning');
+            jQuery('#asset_serie_no').parent().closest('div').removeClass('has-warning');
         }
-       
-        if(item.asset_year === "") {
+
+        if (item.asset_year === "") {
             valid = false;
             jQuery('#asset_year').parent().closest('div').addClass('has-warning');
-              notify({
+            notify({
                 type: 'warning',
                 message: 'Tahun Asset tidak boleh kosong!'
             });
         } else {
-             jQuery('#asset_year').parent().closest('div').removeClass('has-warning');
+            jQuery('#asset_year').parent().closest('div').removeClass('has-warning');
         }
-        
-        if(item.asset_location === "") {
+
+        if (item.asset_location === "") {
             valid = false;
             jQuery('#asset_location').focus();
-              notify({
+            notify({
                 type: 'warning',
                 message: 'Lokasi Asset tidak boleh kosong!'
             });
         }
-        
-        if(item.asset_condition === "") {
+
+        if (item.asset_condition === "") {
             valid = false;
             notify({
                 type: 'warning',

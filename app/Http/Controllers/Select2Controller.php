@@ -48,7 +48,9 @@ class Select2Controller extends Controller
     public function generaldataplant(Request $request) {
         $data = DB::table('TM_GENERAL_DATA')
         ->select('DESCRIPTION_CODE as id', 'DESCRIPTION as text')
-        ->where('GENERAL_CODE', 'plant')
+        ->where([
+            [ 'GENERAL_CODE',"=" ,'plant'],
+        ])
         ->get();
 
         $arr = array();

@@ -73,7 +73,6 @@ class LDAPController extends Controller
            
             AccessRight::grantAccess();
             return redirect('/');
-
         }else{
             $errors = new MessageBag([
                 'password' => ['Email and/or password invalid.']

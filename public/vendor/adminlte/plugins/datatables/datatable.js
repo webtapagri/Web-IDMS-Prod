@@ -223,6 +223,11 @@ var Datatable = function() {
               e.preventDefault();
               the.submitFilter();
             });
+          
+            jQuery('select.form-filter').on("change", function(e) {
+              e.preventDefault();
+              the.submitFilter();
+            });
 
 
             // handle filter cancel button click

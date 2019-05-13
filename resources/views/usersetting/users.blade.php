@@ -246,28 +246,9 @@
             allowClear: true
         });
 
+        var busines_area = jQuery.parseJSON(JSON.stringify(dataJson('{!! route("get.generaldataplant") !!}')));
         jQuery("#area_code").select2({
-            data: [{
-                    id: '2111',
-                    text: '2111'
-                },
-                {
-                    id: '2112',
-                    text: '2112'
-                },
-                {
-                    id: '2113',
-                    text: '2113'
-                },
-                {
-                    id: '2114',
-                    text: '2114'
-                },
-                {
-                    id: '2115',
-                    text: '2115'
-                },
-            ],
+            data: busines_area,
             width: '100%',
             placeholder: ' ',
             allowClear: true
