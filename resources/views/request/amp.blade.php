@@ -227,19 +227,19 @@
                                             <div class="form-group">
                                                 <label for="plant" class="col-md-2 text-right">Jenis asset</label>
                                                 <div class="col-md-10">
-                                                    <input type="text" class="form-control input-sm" name="asset_type" value="" id="asset_type" autocomplete="off">
+                                                    <select class="form-control input-sm" name="asset_type" value="" id="asset_type"></select>
                                                 </div>
                                             </div>
                                             <div class="form-group">
                                                 <label for="plant" class="col-md-2 text-right">Group</label>
                                                 <div class="col-md-10">
-                                                    <input type="text" class="form-control input-sm" name="asset_group" value="" id="asset_group" autocomplete="off">
+                                                    <select class="form-control input-sm" name="asset_group" value="" id="asset_group"></select>
                                                 </div>
                                             </div>
                                             <div class="form-group">
                                                 <label for="plant" class="col-md-2 text-right">Sub Group</label>
                                                 <div class="col-md-10">
-                                                    <input type="text" class="form-control input-sm" name="asset_sub_group" value="" id="asset_sub_group" autocomplete="off">
+                                                    <select class="form-control input-sm" name="asset_sub_group" value="" id="asset_sub_group"></select>
                                                 </div>
                                             </div>
                                             <div class="form-group">
@@ -550,6 +550,33 @@
             }
         });
 
+        var jenisasset = jQuery.parseJSON(JSON.stringify(dataJson('{!! route("get.jenisasset") !!}')));
+        jQuery("#asset_type").select2({
+            data: jenisasset,
+            width: "100%",
+            allowClear: true,
+            placeholder: ' '
+        });
+
+        jQuery("#asset_sub_group").select2();
+
+        var assetgroup = jQuery.parseJSON(JSON.stringify(dataJson('{!! route("get.assetgroup") !!}')));
+        jQuery("#asset_group").select2({
+            data: assetgroup,
+            width: "100%",
+            allowClear: true,
+            placeholder: ' '
+        }).on('change', function() {
+            var assetsubgroup = jQuery.parseJSON(JSON.stringify(dataJson('{!! route("get.assetsubgroup") !!}?group=' + jQuery(this).val())));
+            jQuery("#asset_sub_group").empty().select2({
+                data: assetsubgroup,
+                width: "100%",
+                allowClear: true,
+                placeholder: ' '
+            })
+        });
+
+
         jQuery(".btn-back-request-form").on("click", function(e) {
             jQuery('.code-asset-form').addClass('hide');
             jQuery('.request-form').removeClass('hide');
@@ -630,19 +657,19 @@
             request_item[obj].detail[id].asset_name = jQuery(this).val();
         });
 
-        jQuery("#asset_type").on('keyup', function() {
+        jQuery("#asset_type").on('change', function() {
             var id = current_page - 1;
             var obj = jQuery('#detail_item_selected').val();
             request_item[obj].detail[id].asset_type = jQuery(this).val();
         });
 
-        jQuery("#asset_group").on('keyup', function() {
+        jQuery("#asset_group").on('change', function() {
             var id = current_page - 1;
             var obj = jQuery('#detail_item_selected').val();
             request_item[obj].detail[id].asset_group = jQuery(this).val();
         });
 
-        jQuery("#asset_sub_group").on('keyup', function() {
+        jQuery("#asset_sub_group").on('change', function() {
             var id = current_page - 1;
             var obj = jQuery('#detail_item_selected').val();
             request_item[obj].detail[id].asset_sub_group = jQuery(this).val();
@@ -1042,9 +1069,6 @@
         var item = request.detail[obj];
 
         jQuery('#asset_name').val(item.asset_name);
-        jQuery('#asset_type').val(item.asset_type);
-        jQuery('#asset_group').val(item.asset_group);
-        jQuery('#asset_sub_group').val(item.asset_sub_group);
         jQuery('#asset_brand').val(item.asset_brand);
         jQuery('#asset_imei').val(item.asset_imei);
         jQuery('#asset_police_no').val(item.asset_police_no);
@@ -1071,6 +1095,14 @@
 
         jQuery('#asset_location').val(item.asset_location);
         jQuery('#asset_location').trigger('change');
+        jQuery('#asset_location').val(item.asset_location);
+        jQuery('#asset_location').trigger('change');
+        jQuery('#asset_type').val(item.asset_type);
+        jQuery('#asset_type').trigger("change");
+        jQuery('#asset_group').val(item.asset_group);
+        jQuery('#asset_group').trigger('change');
+        jQuery('#asset_sub_group').val(item.asset_sub_group);
+        jQuery('#asset_sub_group').trigger('change');
 
         if (item.foto_asset.file) {
             jQuery("#foto_asset_thumb_1").prop('src', item.foto_asset.file);

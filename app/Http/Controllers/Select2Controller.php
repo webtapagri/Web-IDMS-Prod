@@ -63,4 +63,53 @@ class Select2Controller extends Controller
 
         return response()->json(array('data' => $arr));
     }
+    
+    public function jenisasset(Request $request) {
+        $data = DB::table( 'TM_JENIS_ASSET')
+        ->select( 'JENIS_ASSET_CODE as id', 'JENIS_ASSET_DESCRIPTION as text')
+        ->get();
+
+        $arr = array();
+        foreach ($data as $row) {
+            $arr[] = array(
+                "id" => $row->id,
+                "text" => $row->id .'-' . $row->text
+            );
+        }
+
+        return response()->json(array('data' => $arr));
+    }
+    
+    public function assetgroup(Request $request) {
+        $data = DB::table( 'TM_GROUP_ASSET')
+        ->select('GROUP_CODE as id', 'GROUP_DESCRIPTION as text')
+        ->get();
+
+        $arr = array();
+        foreach ($data as $row) {
+            $arr[] = array(
+                "id" => $row->id,
+                "text" => $row->id .'-' . $row->text
+            );
+        }
+
+        return response()->json(array('data' => $arr));
+    }
+
+    public function assetsubgroup(Request $request) {
+        $data = DB::table( 'TM_SUBGROUP_ASSET')
+        ->select('SUBGROUP_CODE as id', 'SUBGROUP_DESCRIPTION as text')
+        ->where( "GROUP_CODE", $request->group)
+        ->get();
+
+        $arr = array();
+        foreach ($data as $row) {
+            $arr[] = array(
+                "id" => $row->id,
+                "text" => $row->id .'-' . $row->text
+            );
+        }
+
+        return response()->json(array('data' => $arr));
+    }
 }

@@ -141,3 +141,6 @@ Route::get('get-select_module', ['as' => 'get.select_module', 'uses' => 'ModuleC
 Route::get('get-select_menu', ['as' => 'get.select_menu', 'uses' => 'MenuController@select2']);
 Route::get('get-select_role', ['as' => 'get.select_role', 'uses' => 'RolesController@select2']);
 Route::get('get-generaldataplant', ['as' => 'get.generaldataplant', 'uses' => 'Select2Controller@generaldataplant']);
+Route::get('get-assetgroup', ['as' => 'get.assetgroup', 'uses' => 'Select2Controller@assetgroup']);
+Route::get('get-assetsubgroup', ['as' => 'get.assetsubgroup', 'uses' => 'Select2Controller@assetsubgroup']);
+Route::get( 'get-jenisasset', ['as' => 'get.jenisasset', 'uses' => 'Select2Controller@jenisasset']);
