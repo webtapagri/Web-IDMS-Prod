@@ -511,23 +511,26 @@
             placeholder: ' '
         });
 
+        jQuery("#asset_group").select2();
+        jQuery("#asset_sub_group").select2();
+
         var jenisasset = jQuery.parseJSON(JSON.stringify(dataJson('{!! route("get.jenisasset") !!}')));
         jQuery("#asset_type").select2({
             data: jenisasset,
             width: "100%",
             allowClear: true,
             placeholder: ' '
+        }).on('change', function() {
+            var assetgroup = jQuery.parseJSON(JSON.stringify(dataJson('{!! route("get.assetgroup") !!}?type=' + jQuery(this).val())));
+            jQuery("#asset_group").empty().select2({
+                data: assetgroup,
+                width: "100%",
+                allowClear: true,
+                placeholder: ' '
+            })
         });
 
-        jQuery("#asset_sub_group").select2();
-
-        var assetgroup = jQuery.parseJSON(JSON.stringify(dataJson('{!! route("get.assetgroup") !!}')));
-        jQuery("#asset_group").select2({
-            data: assetgroup,
-            width: "100%",
-            allowClear: true,
-            placeholder: ' '
-        }).on('change', function() {
+        jQuery("#asset_group").on('change', function() {
             var assetsubgroup = jQuery.parseJSON(JSON.stringify(dataJson('{!! route("get.assetsubgroup") !!}?group=' + jQuery(this).val())));
             jQuery("#asset_sub_group").empty().select2({
                 data: assetsubgroup,

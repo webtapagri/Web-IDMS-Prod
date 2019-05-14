@@ -83,6 +83,7 @@ class Select2Controller extends Controller
     public function assetgroup(Request $request) {
         $data = DB::table( 'TM_GROUP_ASSET')
         ->select('GROUP_CODE as id', 'GROUP_DESCRIPTION as text')
+        ->where( "JENIS_ASSET_CODE", $request->type)
         ->get();
 
         $arr = array();

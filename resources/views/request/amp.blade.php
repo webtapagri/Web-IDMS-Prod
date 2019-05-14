@@ -290,7 +290,7 @@
                                             <div class="form-group material-group-input" id="input-specification">
                                                 <label for="part_no" class="col-md-2 col-md-offset-1 col-form-label">Lokasi Asset <sup style="color:red">*</sup></label>
                                                 <div class="col-md-8">
-                                                    <input type="text" class="form-control input-sm attr-material-group" name="asset_location" id="asset_location">
+                                                    <select class="form-control input-sm attr-material-group" name="asset_location" id="asset_location"></select>
                                                 </div>
                                             </div>
                                             <div class="form-group material-group-input" id="input-specification">
@@ -550,23 +550,26 @@
             }
         });
 
+        jQuery("#asset_group").select2();
+        jQuery("#asset_sub_group").select2();
+
         var jenisasset = jQuery.parseJSON(JSON.stringify(dataJson('{!! route("get.jenisasset") !!}')));
         jQuery("#asset_type").select2({
             data: jenisasset,
             width: "100%",
             allowClear: true,
             placeholder: ' '
+        }).on('change', function() {
+            var assetgroup = jQuery.parseJSON(JSON.stringify(dataJson('{!! route("get.assetgroup") !!}?type=' + jQuery(this).val())));
+            jQuery("#asset_group").empty().select2({
+                data: assetgroup,
+                width: "100%",
+                allowClear: true,
+                placeholder: ' '
+            })
         });
 
-        jQuery("#asset_sub_group").select2();
-
-        var assetgroup = jQuery.parseJSON(JSON.stringify(dataJson('{!! route("get.assetgroup") !!}')));
-        jQuery("#asset_group").select2({
-            data: assetgroup,
-            width: "100%",
-            allowClear: true,
-            placeholder: ' '
-        }).on('change', function() {
+        jQuery("#asset_group").on('change', function() {
             var assetsubgroup = jQuery.parseJSON(JSON.stringify(dataJson('{!! route("get.assetsubgroup") !!}?group=' + jQuery(this).val())));
             jQuery("#asset_sub_group").empty().select2({
                 data: assetsubgroup,
