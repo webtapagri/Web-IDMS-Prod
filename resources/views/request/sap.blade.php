@@ -23,7 +23,7 @@
                 <div class="box-body">
                     <div class="box-body">
                         <div class="form-group">
-                            <label for="plant" class="col-md-3">Tipe Transaksi</label>
+                            <label for="plant" class="col-md-3">Tipe Transaksi <sup style="color:red">*</sup></label>
                             <div class="col-md-6">
                                 <select class="form-control input-sm" name="transaction_type" id="transaction_type" required>
                                     <option></option>
@@ -31,37 +31,37 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="plant" class="col-md-3">Tanggal</label>
+                            <label for="plant" class="col-md-3">Tanggal <sup style="color:red">*</sup></label>
                             <div class="col-md-4">
                                 <input type="text" class="form-control input-sm" name="request_date" id="request_date" value="{{ date('d M Y') }}" autocomplete="off" required readonly>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="plant" class="col-md-3">Business Area</label>
+                            <label for="plant" class="col-md-3">Business Area <sup style="color:red">*</sup></label>
                             <div class="col-md-4">
                                 <select type="text" class="form-control input-sm" name="business_area" id="business_area" required></select>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="plant" class="col-md-3">No. Purchase Order</label>
+                            <label for="plant" class="col-md-3">No. Purchase Order <sup style="color:red">*</sup></label>
                             <div class="col-md-9">
                                 <input type="text" class="form-control input-sm" name="po_no" id="po_no" value="" autocomplete="off" maxlength="10" required>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="plant" class="col-md-3">Tgl PO</label>
+                            <label for="plant" class="col-md-3">Tgl PO <sup style="color:red">*</sup></label>
                             <div class="col-md-4">
                                 <input type="text" class="form-control input-sm" name="po_date" id="po_date" autocomplete="off" required readonly>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="plant" class="col-md-3">Kode vendor</label>
+                            <label for="plant" class="col-md-3">Kode vendor <sup style="color:red">*</sup></label>
                             <div class="col-md-6">
                                 <input type="text" class="form-control input-sm" name="vendor_code" id="vendor_code" autocomplete="off" required readonly>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="plant" class="col-md-3">Nama vendor</label>
+                            <label for="plant" class="col-md-3">Nama vendor <sup style="color:red">*</sup></label>
                             <div class="col-md-9">
                                 <input type="text" class="form-control input-sm" name="vendor_name" id="vendor_name" autocomplete="off" required readonly>
                             </div>
@@ -180,9 +180,9 @@
                         <div class="form-group">
                             <div class="col-md-12">
                                 <ul class="nav nav-tabs">
-                                    <li class="active" style="border-bottom:none !important;"><a href="#panel-initial" data-toggle="tab" class="panel-initial" style="background-color:#f3f3f3;border-bottom:none;font-weight:800">Rincian Informasi Asset | page: <span id="page"></span></a></li>
-                                    <li class="pull-right"><a href="javascript:nextPage()" class="text-muted" id="btn_next">Next <i class="fa fa-arrow-right"></i></a></li>
-                                    <li class="pull-right"><a href="javascript:prevPage()" class="text-muted" id="btn_prev"><i class="fa fa-arrow-left"></i> Prev</a></li>
+                                    <li class="active" style="border-bottom:none !important;"><a href="#panel-initial" data-toggle="tab" class="panel-initial" style="background-color:#f3f3f3;border-bottom:none;font-weight:800">Rincian Informasi Asset | page: <span class="total-page"></span></a></li>
+                                    <li class="pull-right"><a href="javascript:nextPage()" class="text-muted btn_next">Next <i class="fa fa-arrow-right"></i></a></li>
+                                    <li class="pull-right"><a href="javascript:prevPage()" class="text-muted btn_prev"><i class="fa fa-arrow-left"></i> Prev</a></li>
                                 </ul>
                                 <div class="tab-content" style="border-left: 1px solid #e0dcdc;border-right: 1px solid #e0dcdc;border-bottom: 1px solid #e0dcdc;border-top:none;background-color:#f3f3f3;">
                                     <!-- Font Awesome Icons -->
@@ -377,6 +377,11 @@
                                         </div>
                                     </div>
                                 </div>
+                                <ul class="nav nav-tabs">
+                                    <li class="active" style="border-bottom:none !important;"><a href="#panel-initial" data-toggle="tab" class="panel-initial" style="background-color:#f3f3f3;border-bottom:none;font-weight:800">Rincian Informasi Asset | page: <span class="total-page"></span></a></li>
+                                    <li class="pull-right"><a href="javascript:nextPage()" class="text-muted btn_next">Next <i class="fa fa-arrow-right"></i></a></li>
+                                    <li class="pull-right"><a href="javascript:prevPage()" class="text-muted btn_prev"><i class="fa fa-arrow-left"></i> Prev</a></li>
+                                </ul>
                             </div>
                         </div>
                     </div>
@@ -505,7 +510,7 @@
 
         var plant_all = jQuery.parseJSON(JSON.stringify(dataJson('{!! route("get.generaldataplant") !!}')));
         jQuery("#asset_location").select2({
-            data: plant_all,
+            data: plant,
             width: "100%",
             allowClear: true,
             placeholder: ' '
@@ -982,7 +987,7 @@
                 asset_type: '',
                 asset_group: '',
                 asset_sub_group: '',
-                asset_name: item.name + ' - ' + (i + 1),
+                asset_name: item.name + (item.request_qty > 1 ? ' - ' + (i + 1) : ''),
                 asset_brand: '',
                 asset_imei: '',
                 asset_police_no: '',
@@ -1311,9 +1316,9 @@
 
 
     function changePage(page) {
-        var btn_next = document.getElementById("btn_next");
-        var btn_prev = document.getElementById("btn_prev");
-        var page_span = document.getElementById("page");
+        var btn_next = document.getElementsByClassName("btn_next");
+        var btn_prev = document.getElementsByClassName("btn_prev");
+        var page_span = document.getElementsByClassName("total-page");
 
         if (page < 1) page = 1;
         if (page > numPages()) page = numPages();

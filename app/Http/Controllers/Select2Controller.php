@@ -9,7 +9,6 @@ use Session;
 
 class Select2Controller extends Controller
 {
-
     public function get(Request $request){
          $table = $request->get('table');
          $id = $request->get('id');

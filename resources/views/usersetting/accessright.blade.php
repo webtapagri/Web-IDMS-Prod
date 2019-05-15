@@ -10,7 +10,7 @@
                         <span></span>
                         <button class="btn btn-sm btn-flat btn-danger btn-refresh-data-table" title="refresh"><i class="glyphicon glyphicon-refresh"></i></button>
                         @if($data['access']->create == 1)
-                        <button class="btn btn-sm btn-flat btn-danger btn-save" OnClick="save()" title="refresh"><i class="fa fa-save"></i></button>
+                        <button class="btn btn-sm btn-flat btn-danger btn-save" OnClick="save()" title="save"><i class="fa fa-save"></i></button>
                         @endif
                     </div>
                     <table id="data-table" class="table table-condensed" width="100%">

@@ -22,33 +22,33 @@
                 <div class="box-body">
                     <div class="box-body">
                         <div class="form-group">
-                            <label for="plant" class="col-md-3">Tipe Transaksi</label>
+                            <label for="plant" class="col-md-3">Tipe Transaksi <sup style="color:red">*</sup></label>
                             <div class="col-md-6">
                                 <select class="form-control input-sm" name="transaction_type" id="transaction_type" required></select>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="plant" class="col-md-3">Tanggal</label>
+                            <label for="plant" class="col-md-3">Tanggal <sup style="color:red">*</sup></label>
                             <div class="col-md-4">
                                 <input type="text" class="form-control input-sm" name="request_date" id="request_date" value="{{ date('d M Y') }}" autocomplete="off" required readonly>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="plant" class="col-md-3">Business Area</label>
+                            <label for="plant" class="col-md-3">Business Area <sup style="color:red">*</sup></label>
                             <div class="col-md-4">
                                 <select class="form-control input-sm" name="business_area" id="business_area" required readonly></select>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="plant" class="col-md-3">No. Purchare Order</label>
+                            <label for="plant" class="col-md-3">No. Purchase Order <sup style="color:red">*</sup></label>
                             <div class="col-md-9">
                                 <input type="text" class="form-control input-sm" name="po_no" id="po_no" value="" autocomplete="off" required>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="plant" class="col-md-3">Tgl PO</label>
+                            <label for="plant" class="col-md-3">Tgl PO <sup style="color:red">*</sup></label>
                             <div class="col-md-4">
-                                <input type="text" class="form-control input-sm datepicker" name="po_date" id="po_date" autocomplete="off" required>
+                                <input type="text" class="form-control input-sm" name="po_date" id="po_date" autocomplete="off" required>
                             </div>
                         </div>
                         <div class="form-group">
@@ -58,22 +58,22 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="plant" class="col-md-3">Nama vendor</label>
+                            <label for="plant" class="col-md-3">Nama vendor <sup style="color:red">*</sup></label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control input-sm" name="vendor_name" id="vendor_name" autocomplete="off">
+                                <input type="text" class="form-control input-sm" name="vendor_name" id="vendor_name" autocomplete="off" required>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="plant" class="col-md-3">Berita acara serah terima</label>
+                            <label for="plant" class="col-md-3">Berita acara serah terima <sup style="color:red">*</sup></label>
                             <div class="col-md-4">
-                                <input type="file" class="form-control input-sm" name="docs" multiple id="docs">
+                                <input type="file" class="form-control input-sm" name="docs" multiple id="docs" required>
                             </div>
                         </div>
                         <hr>
                         <h4>Detail item</h4>
                         <div class="row">
                             <div class="col-md-2">
-                                <label>Item PO</label>
+                                <label>Item PO <sup style="color:red">*</sup></label>
                                 <input type="text" class="form-control input-sm" name="detail_item_po" id="detail_item_po">
                             </div>
                             <div class="col-md-3">
@@ -81,11 +81,11 @@
                                 <input type="text" class="form-control input-sm" name="detail_item_code" id="detail_item_code">
                             </div>
                             <div class="col-md-4">
-                                <label>Name</label>
+                                <label>Name <sup style="color:red">*</sup></label>
                                 <input type="text" class="form-control input-sm" name="detail_item_name" id="detail_item_name">
                             </div>
                             <div class="col-md-2">
-                                <label class="control-label">Qty</label>
+                                <label class="control-label">Qty <sup style="color:red">*</sup></label>
                                 <div class="input-group">
                                     <div style="cursor:pointer" class="input-group-addon bg-gray" OnClick="min('detail_item_qty');">-</div>
                                     <input type="text" class="form-control input-sm text-center" value='1' id="detail_item_qty" maxlength="6">
@@ -198,12 +198,12 @@
                                 <input type="text" class="form-control input-sm" name="item_name" value="" id="item_name" autocomplete="off" readonly>
                             </div>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group" id="detail-item-request-panel">
                             <div class="col-md-12">
                                 <ul class="nav nav-tabs">
-                                    <li class="active" style="border-bottom:none !important;"><a href="#panel-initial" data-toggle="tab" class="panel-initial" style="background-color:#f3f3f3;border-bottom:none;font-weight:800">Rincian Informasi Asset | page: <span id="page"></span></a></li>
-                                    <li class="pull-right"><a href="javascript:nextPage()" class="text-muted" id="btn_next">Next <i class="fa fa-arrow-right"></i></a></li>
-                                    <li class="pull-right"><a href="javascript:prevPage()" class="text-muted" id="btn_prev"><i class="fa fa-arrow-left"></i> Prev</a></li>
+                                    <li class="active" style="border-bottom:none !important;"><a href="#panel-initial" data-toggle="tab" class="panel-initial" style="background-color:#f3f3f3;border-bottom:none;font-weight:800">Rincian Informasi Asset | page: <span class="total-page"></span></a></li>
+                                    <li class="pull-right"><a href="javascript:nextPage()" class="text-muted btn_next" id="">Next <i class="fa fa-arrow-right"></i></a></li>
+                                    <li class="pull-right"><a href="javascript:prevPage()" class="text-muted btn_prev" id=""><i class="fa fa-arrow-left"></i> Prev</a></li>
                                 </ul>
                                 <div class="tab-content" style="border-left: 1px solid #e0dcdc;border-right: 1px solid #e0dcdc;border-bottom: 1px solid #e0dcdc;border-top:none;background-color:#f3f3f3;">
                                     <!-- Font Awesome Icons -->
@@ -397,6 +397,11 @@
                                         </div>
                                     </div>
                                 </div>
+                                <ul class="nav nav-tabs">
+                                    <li class="active" style="border-bottom:none !important;"><a href="#panel-initial" data-toggle="tab" class="panel-initial" style="background-color:#f3f3f3;border-bottom:none;font-weight:800">Rincian Informasi Asset | page: <span class="total-page"></span></a></li>
+                                    <li class="pull-right"><a href="javascript:nextPage()" class="text-muted btn_next" id="">Next <i class="fa fa-arrow-right"></i></a></li>
+                                    <li class="pull-right"><a href="javascript:prevPage()" class="text-muted btn_prev" id=""><i class="fa fa-arrow-left"></i> Prev</a></li>
+                                </ul>
                             </div>
                         </div>
                     </div>
@@ -469,7 +474,9 @@
 
         jQuery("#po_date").datepicker({
             format: "mm/dd/yyyy",
-            autoclose: true
+            autoclose: true,
+            endDate: "today",
+            maxDate: 'today'
         });
 
         jQuery("#transaction_type").select2({
@@ -880,10 +887,6 @@
             valid = false;
         }
 
-        if (code.val() == "") {
-            code.focus();
-            valid = false;
-        }
 
         if (name.val() == "") {
             name.focus();
@@ -937,7 +940,7 @@
                 asset_type: '',
                 asset_group: '',
                 asset_sub_group: '',
-                asset_name: item.name + ' - ' + (i + 1),
+                asset_name: item.name + (item.request_qty > 1 ? ' - ' + (i + 1) : ''),
                 asset_brand: '',
                 asset_imei: '',
                 asset_police_no: '',
@@ -1253,31 +1256,46 @@
     }
 
     function changePage(page) {
-        var btn_next = document.getElementById("btn_next");
+        /* var btn_next = document.getElementById("btn_next");
         var btn_prev = document.getElementById("btn_prev");
-        var page_span = document.getElementById("page");
+        var page_span = document.getElementById("page"); */
+
+        var btn_next = document.getElementsByClassName("btn_next");
+        var btn_prev = document.getElementsByClassName("btn_prev");
+        var page_span = document.getElementsByClassName("total-page");
 
         if (page < 1) page = 1;
         if (page > numPages()) page = numPages();
-        page_span.innerHTML = page + '/' + request_item_page.length;
+        /*  page_span.innerHTML = page + '/' + request_item_page.length; */
+        jQuery('.total-page').text(page + '/' + request_item_page.length);
 
         if (page == 1) {
-            btn_prev.style.visibility = "hidden";
+            /* btn_prev.style.visibility = "hidden"; */
+            jQuery('.btn_prev').addClass('hide');
         } else {
-            btn_prev.style.visibility = "visible";
+            /* btn_prev.style.visibility = "visible"; */
+            jQuery('.btn_prev').removeClass('hide');
         }
 
         if (page == numPages()) {
-            btn_next.style.visibility = "hidden";
+            /* btn_next.style.visibility = "hidden"; */
+            jQuery('.btn_next').addClass('hide');
         } else {
-            btn_next.style.visibility = "visible";
-
+            /* btn_next.style.visibility = "visible"; */
+            jQuery('.btn_next').removeClass('hide');
         }
 
         assetInfo(current_page);
         jQuery("#foto_asset_1").val("");
         jQuery("#foto_no_seri_1").val("");
         jQuery("#foto_mesin_1").val("");
+
+        jQuery("#detail-item-request-panel").stop().animate({
+            scrollTop: 0
+        }, 500, 'swing', function() {
+
+        });
+
     }
 
     function validatePage(id) {

@@ -574,6 +574,13 @@
             jQuery("#po_type").val('');
             jQuery("#po_type").trigger("change");
 
+            var oTable = $('#data-table').dataTable();
+
+            $('.sorting, .sorting_asc, .sorting_desc').dblclick(function() {
+                oTable.fnSort([]);
+                return false;
+            });
+
             /* jQuery('#data-table').dataTable().fnSortNeutral(); */
         });
     });
