@@ -9,6 +9,13 @@
 @stop
 
 @section('content')
+<style>
+    @media screen and (max-width: 600px) {
+        .filter {
+            display: none !important;
+        }
+    }
+</style>
 <div class="row">
     <div class="col-xs-12">
         <div class="box">
@@ -18,7 +25,7 @@
                         <span></span>
                         <button class="btn btn-sm btn-flat btn-danger btn-refresh-data-table" title="refresh"><i class="glyphicon glyphicon-refresh"></i></button>
                     </div>
-                    <table id="data-table" class="table table-bordered table-condensed" width="100%" cellspacing="0">
+                    <table id="data-table" class="table table-bordered table-condensed dt-responsive" style="width:100%" cellspacing="0">
                         <thead>
                             <tr class="heading">
                                 <th>No Reg</th>
@@ -404,6 +411,7 @@
                 "dom": "<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'<'table-group-actions pull-right'>>r>t<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'>>",
                 "bStateSave": true, // save datatable state(pagination, sort, etc) in cookie.
                 "autoWidth": true,
+                "responsive": true,
                 "lengthMenu": [
                     [10, 20, 50, 100, 150],
                     [10, 20, 50, 100, 150]

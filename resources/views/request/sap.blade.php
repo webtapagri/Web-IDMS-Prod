@@ -14,6 +14,10 @@
     .fmdb-input-default {
         background-color: #eee !important;
     }
+
+    .filters input {
+        width: 100%;
+    }
 </style>
 
 <div class="row">
@@ -532,7 +536,8 @@
                 width: "100%",
                 allowClear: true,
                 placeholder: ' '
-            })
+            });
+            jQuery("#asset_group").trigger('change');
         });
 
         jQuery("#asset_group").on('change', function() {
@@ -542,8 +547,13 @@
                 width: "100%",
                 allowClear: true,
                 placeholder: ' '
-            })
+            });
+            jQuery("#asset_sub_group").trigger('change');
         });
+
+        jQuery("#asset_type").trigger('change');
+        jQuery("#asset_group").trigger('change');
+        jQuery("#asset_sub_group").trigger('change');
 
         jQuery("#request-form").on("submit", function(e) {
             e.preventDefault();

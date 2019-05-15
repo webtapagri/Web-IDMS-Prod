@@ -34,7 +34,7 @@
 
     @if(config('adminlte.plugins.datatables'))
     <!-- DataTables with bootstrap 3 style -->
-        <link rel="stylesheet" href="//cdn.datatables.net/v/bs/dt-1.10.18/datatables.min.css">
+    <link rel="stylesheet" href="//cdn.datatables.net/v/bs/dt-1.10.18/datatables.min.css">
     @endif
 
     <link rel="stylesheet" href="{{ asset('vendor/adminlte/plugins/datepicker/datepicker3.css') }}">
@@ -42,6 +42,8 @@
 
     <link rel="stylesheet" href="{{ asset('vendor/adminlte/plugins/datatables/datatables.min.css') }}">
     <link rel="stylesheet" href="{{ asset('vendor/adminlte/plugins/datatables/plugins/bootstrap/datatables.bootstrap.css') }}">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.3/css/responsive.bootstrap.min.css">
+
 
     @yield('adminlte_css')
     <!--[if lt IE 9]>
@@ -128,4 +130,4 @@
 
 </body>
 
-</html> 
+</html>
