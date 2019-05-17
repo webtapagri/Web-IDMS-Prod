@@ -69,13 +69,15 @@ class Select2Controller extends Controller
         ->get();
 
         $arr = array();
-        foreach ($data as $row) {
+        $arr[] = array("id"=>"","text"=>"");
+        foreach ($data as $row) 
+        {
             $arr[] = array(
                 "id" => $row->id,
                 "text" => $row->id .'-' . $row->text
             );
         }
-
+        //echo "<pre>"; print_r($arr); die();
         return response()->json(array('data' => $arr));
     }
     
