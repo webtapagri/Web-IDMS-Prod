@@ -295,6 +295,7 @@ class RequestController extends Controller
 
         $data = DB::select(DB::raw($sql));
         $arr = array();
+        $arr[] = array("id"=>"","text"=>"");
         foreach ($data as $row) {
             $arr[] = array(
                 "id" => $row->id,

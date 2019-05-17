@@ -16,7 +16,7 @@
     }
 </style>
 <div class="row">
-    <div class="col-md-10 col-md-offset-1">
+    <div class="col-md-12 xcol-md-offset-1">
         <div class="box">
             <form class="form-horizontal request-form" id="request-form" enctype="multipart/form-data">
                 <div class="box-body">
@@ -301,7 +301,7 @@
                                             </div>
                                             <div class="form-group material-group-input" id="input-specification">
                                                 <label for="part_no" class="col-md-2 col-md-offset-1 col-form-label">Kondisi Asset <sup style="color:red">*</sup></label>
-                                                <div class="col-md-8">
+                                                <div class="col-md-8" style="margin-left:15px">
                                                     <div class="form-group">
                                                         <div class="radio-inline">
                                                             <label>
@@ -940,7 +940,8 @@
                 asset_type: '',
                 asset_group: '',
                 asset_sub_group: '',
-                asset_name: item.name + (item.request_qty > 1 ? ' - ' + (i + 1) : ''),
+                //asset_name: item.name + (item.request_qty > 1 ? ' - ' + (i + 1) : ''),
+                asset_name: item.name,
                 asset_brand: '',
                 asset_imei: '',
                 asset_police_no: '',

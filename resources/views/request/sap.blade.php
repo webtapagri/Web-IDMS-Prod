@@ -20,8 +20,8 @@
     }
 </style>
 
-<div class="row">
-    <div class="col-md-10 col-md-offset-1">
+<div class="row" >
+    <div class="col-md-12 xcol-md-offset-1">
         <div class="box">
             <form class="form-horizontal request-form" id="request-form" enctype="multipart/form-data">
                 <div class="box-body">
@@ -285,11 +285,11 @@
                                             </div>
                                             <div class="form-group material-group-input" id="input-specification">
                                                 <label for="part_no" class="col-md-2 col-md-offset-1 col-form-label">Kondisi Asset <sup style="color:red">*</sup></label>
-                                                <div class="col-md-8">
+                                                <div class="col-md-8" style="margin-left:15px">
                                                     <div class="form-group">
                                                         <div class="radio-inline">
                                                             <label>
-                                                                <input type="radio" name="asset_condition" id="condition1" value="B" checked>
+                                                                <input type="radio" name="asset_condition" id="condition1" value="B">
                                                                 Baik
                                                             </label>
                                                         </div>
@@ -800,8 +800,10 @@
             }
         });
 
-        if (validateSave()) {
-            if (confirm("Apakah anda yakin akan melakukan submit data ini?")) {
+        if (validateSave()) 
+        {
+            if (confirm("Apakah anda yakin akan melakukan submit data ini?")) 
+            {
                 var param = {
                     transaction_type: transaction_type.val(),
                     request_date: request_date.val(),
@@ -852,11 +854,15 @@
         }
     }
 
-    function validateSave() {
+    function validateSave() 
+    {
         var valid = true;
-        jQuery.each(request_item, function(i, field) {
-            if (field) {
-                jQuery.each(field.detail, function(key, val) {
+        jQuery.each(request_item, function(i, field) 
+        {
+            if (field) 
+            {
+                jQuery.each(field.detail, function(key, val) 
+                {
                     if (val.asset_imei === "") {
                         notify({
                             type: 'warning',
@@ -1325,31 +1331,48 @@
     }
 
 
-    function changePage(page) {
+    function changePage(page) 
+    {
+        /* var btn_next = document.getElementById("btn_next");
+        var btn_prev = document.getElementById("btn_prev");
+        var page_span = document.getElementById("page"); */
+
         var btn_next = document.getElementsByClassName("btn_next");
         var btn_prev = document.getElementsByClassName("btn_prev");
         var page_span = document.getElementsByClassName("total-page");
 
         if (page < 1) page = 1;
         if (page > numPages()) page = numPages();
-        page_span.innerHTML = page + '/' + request_item_page.length;
+        /*  page_span.innerHTML = page + '/' + request_item_page.length; */
+        $('.total-page').text(page + '/' + request_item_page.length);
 
         if (page == 1) {
-            btn_prev.style.visibility = "hidden";
+            /* btn_prev.style.visibility = "hidden"; */
+            jQuery('.btn_prev').addClass('hide');
         } else {
-            btn_prev.style.visibility = "visible";
+            /* btn_prev.style.visibility = "visible"; */
+            jQuery('.btn_prev').removeClass('hide');
         }
 
         if (page == numPages()) {
-            btn_next.style.visibility = "hidden";
+            /* btn_next.style.visibility = "hidden"; */
+            $('.btn_next').addClass('hide');
         } else {
-            btn_next.style.visibility = "visible";
+            /* btn_next.style.visibility = "visible"; */
+            $('.btn_next').removeClass('hide');
         }
 
-        assetInfo(page);
-        jQuery("#foto_asset_1").val("");
-        jQuery("#foto_no_seri_1").val("");
-        jQuery("#foto_mesin_1").val("");
+        assetInfo(current_page);
+        $("#foto_asset_1").val("");
+        $("#foto_no_seri_1").val("");
+        $("#foto_mesin_1").val("");
+
+        $("#detail-item-request-panel").stop().animate({
+            scrollTop: 0
+        }, 500, 'swing', function() {
+
+        });
+
     }
 
     function validatePage(id) {
