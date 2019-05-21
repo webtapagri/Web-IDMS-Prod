@@ -25,6 +25,8 @@ class RolesController extends Controller
 
         $access = AccessRight::access();    
         $data["page_title"] = "Role";
+        $data['ctree_mod'] = 'Setting';
+        $data['ctree'] = 'roles';
         $data["access"] = (object)$access;
         return view('usersetting.roles')->with(compact('data'));
     }

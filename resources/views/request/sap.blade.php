@@ -27,7 +27,7 @@
                 <div class="box-body">
                     <div class="box-body">
                         <div class="form-group">
-                            <label for="plant" class="col-md-3">Tipe Transaksi <sup style="color:red">*</sup></label>
+                            <label for="plant" class="col-md-3">TIPE TRANSAKSI <sup style="color:red">*</sup></label>
                             <div class="col-md-6">
                                 <select class="form-control input-sm" name="transaction_type" id="transaction_type" required>
                                     <option></option>
@@ -35,50 +35,50 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="plant" class="col-md-3">Tanggal <sup style="color:red">*</sup></label>
+                            <label for="plant" class="col-md-3">TANGGAL <sup style="color:red">*</sup></label>
                             <div class="col-md-4">
                                 <input type="text" class="form-control input-sm" name="request_date" id="request_date" value="{{ date('d M Y') }}" autocomplete="off" required readonly>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="plant" class="col-md-3">Business Area <sup style="color:red">*</sup></label>
+                            <label for="plant" class="col-md-3">BUSINESS AREA <sup style="color:red">*</sup></label>
                             <div class="col-md-4">
                                 <select type="text" class="form-control input-sm" name="business_area" id="business_area" required></select>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="plant" class="col-md-3">No. Purchase Order <sup style="color:red">*</sup></label>
+                            <label for="plant" class="col-md-3">NO. PURCHASE ORDER <sup style="color:red">*</sup></label>
                             <div class="col-md-9">
                                 <input type="text" class="form-control input-sm" name="po_no" id="po_no" value="" autocomplete="off" maxlength="10" required>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="plant" class="col-md-3">Tgl PO <sup style="color:red">*</sup></label>
+                            <label for="plant" class="col-md-3">TGL PO <sup style="color:red">*</sup></label>
                             <div class="col-md-4">
                                 <input type="text" class="form-control input-sm" name="po_date" id="po_date" autocomplete="off" required readonly>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="plant" class="col-md-3">Kode vendor <sup style="color:red">*</sup></label>
+                            <label for="plant" class="col-md-3">KODE VENDOR <sup style="color:red">*</sup></label>
                             <div class="col-md-6">
                                 <input type="text" class="form-control input-sm" name="vendor_code" id="vendor_code" autocomplete="off" required readonly>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="plant" class="col-md-3">Nama vendor <sup style="color:red">*</sup></label>
+                            <label for="plant" class="col-md-3">NAMA VENDOR <sup style="color:red">*</sup></label>
                             <div class="col-md-9">
                                 <input type="text" class="form-control input-sm" name="vendor_name" id="vendor_name" autocomplete="off" required readonly>
                             </div>
                         </div>
                         <div class="form-group {{ $data['type'] == 'amp' ? '':'hide' }}">
-                            <label for="plant" class="col-md-3">Berita acara serah terima</label>
+                            <label for="plant" class="col-md-3">BERITA ACARA SERAH TERIMA</label>
                             <div class="col-md-4">
                                 <input type="file" class="form-control input-sm" name="docs" multiple id="docs">
                             </div>
                         </div>
                         <div class="form-group select-item-panel hide">
                             <label for="plant" class="col-md-3">
-                                <button type="button" class="btn btn-flat btn-danger btn-add-items">Select Item</button>
+                                <button type="button" class="btn btn-flat btn-danger btn-add-items">SELECT ITEM</button>
                             </label>
                             <div class="col-md-9">
 
@@ -88,15 +88,15 @@
                             <div class="col-md-12">
                                 <table class="table table-bordered table-condensed" id="request-item-table">
                                     <tr>
-                                        <th>Item PO</th>
-                                        <th>Kode</th>
-                                        <th>Name</th>
-                                        <th>Qty</th>
-                                        <th>Qty diajukan</th>
-                                        <th>Qty Outstanding</th>
+                                        <th>ITEM PO</th>
+                                        <th>KODE</th>
+                                        <th>NAME</th>
+                                        <th>QTY</th>
+                                        <th>QTY DIAJUKAN</th>
+                                        <th>QTY OUTSTANDING</th>
                                     </tr>
                                     <tr>
-                                        <td colspan="6" style="text-align:center;font-size: 9px;color: #808484;height: 45px;"><br>Silahkan input Nomor Purchase Order di atas untuk memilih item dan click tombol "select item"</td>
+                                        <td colspan="6" align="center"><span class="text-red">Silahkan input Nomor Purchase Order di atas untuk memilih item dan click tombol "select item" </span></td>
                                     </tr>
                                 </table>
                             </div>
@@ -104,8 +104,8 @@
 
                     </div>
                     <div class="box-footer clearfix">
-                        <button type="submit" class="btn btn-danger btn-flat pull-right" style="margin-right: 5px;">Submit</button>
-                        <button type="button" class="btn btn-default btn-flat btn-cancel pull-right" style="margin-right: 5px;">Clear</button>
+                        <button type="submit" class="btn btn-danger btn-flat pull-right" style="margin-right: 5px;">SUBMIT</button>
+                        <button type="button" class="btn btn-default btn-flat btn-cancel pull-right" style="margin-right: 5px;">CLEAR</button>
                     </div>
                 </div>
             </form>

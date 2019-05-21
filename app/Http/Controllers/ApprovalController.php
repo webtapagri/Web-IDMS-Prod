@@ -23,6 +23,9 @@ class ApprovalController extends Controller
 
         $access = AccessRight::access(); */
         $data['page_title'] = "Approval";
+        $data['ctree_mod'] = 'Approval';
+        $data['ctree'] = 'approval';
+
         return view('approval.index')->with(compact('data'));
     }
 

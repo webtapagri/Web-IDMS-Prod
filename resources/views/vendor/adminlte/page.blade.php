@@ -95,6 +95,7 @@
 
     @if(config('adminlte.layout') != 'top-nav')
     <!-- Left side column. contains the logo and sidebar -->
+
     <aside class="main-sidebar">
 
         <!-- sidebar: style can be found in sidebar.less -->
@@ -122,7 +123,8 @@
                     </a>
                     <ul class="treeview-menu" style="display:block">
                         @foreach(AccessRight::menu() as $row)
-                        <li class="treeview">
+
+                        <li class="treeview {{ (@$data['ctree_mod'] == $row['module'] ? 'active':'') }}">
                             <a href="#">
                                 <i class="{{ $row['module_icon'] }}"></i> <span>{{ $row['module'] }}</span>
                                 <span class="pull-right-container">
@@ -131,7 +133,7 @@
                             </a>
                             <ul class="treeview-menu">
                                 @foreach($row["menu"] as $menu)
-                                <li><a href="{{ url($menu->url) }}"><i class="fa fa-fw fa-caret-right"></i> {{ $menu->name }}</a></li>
+                                <li class="{{ ( @$data['ctree'] == $menu->url ? 'active':'' ) }}"><a href="{{ url($menu->url) }}"><i class="fa fa-fw fa-caret-right"></i> {{ $menu->name }}</a></li>
                                 @endforeach
                             </ul>
                         </li>

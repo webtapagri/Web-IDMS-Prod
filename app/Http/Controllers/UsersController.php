@@ -24,6 +24,8 @@ class UsersController extends Controller
 
         $access = AccessRight::access();
         $data["page_title"] = "User";
+        $data['ctree_mod'] = 'Setting';
+        $data['ctree'] = 'users';
         $data["access"] = (object)$access;
         return view('usersetting.users')->with(compact('data'));
     }

@@ -27,6 +27,8 @@ class AccessRightController extends Controller
 
         $access = AccessRight::access();
         $data["page_title"] = "Access Right";
+        $data['ctree_mod'] = 'Setting';
+        $data['ctree'] = 'accessright';
         $data["access"] = (object)$access;
         return view('usersetting.accessright')->with(compact('data'));
     }

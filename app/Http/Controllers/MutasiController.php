@@ -24,6 +24,9 @@ class MutasiController extends Controller
         $access = AccessRight::access(); */
 
         $data['page_title'] = "Mutasi";
+        $data['ctree_mod'] = 'Approval';
+        $data['ctree'] = 'mutasi';
+
         return view('mutasi.index')->with(compact('data'));
     }
 

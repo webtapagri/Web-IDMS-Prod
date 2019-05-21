@@ -25,6 +25,8 @@ class ModuleController extends Controller
         
         $access = AccessRight::access();    
         $data['page_title'] = 'Module';
+        $data['ctree_mod'] = 'Setting';
+        $data['ctree'] = 'modules';
         $data["access"] = (object)$access;
         return view('usersetting.modules')->with(compact('data'));
     }

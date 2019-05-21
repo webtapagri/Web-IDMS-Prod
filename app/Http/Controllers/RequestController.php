@@ -36,37 +36,44 @@ class RequestController extends Controller
         return view('request.index')->with(compact('data'));
     }
 
-    public function create(Request $request) {
+    public function create(Request $request) 
+    {
         if (empty(Session::get('authenticated')))
             return redirect('/login');
 
-
+        $data['ctree_mod'] = 'Pendaftaran';
+        
         $data['page_title'] = 'Request '.($request->type == "amp" ? 'Melalui PO AMP':'Melalui PO Sendiri');
         $data['type'] = ($request->type == "amp" ? 'Melalui PO AMP':'Melalui PO Sendiri');
         $access = AccessRight::access();
         $data["access"] = (object)$access;
         
         if($request->type == "amp") {
+            $data['ctree'] = 'request/create/amp';
             return view('request.amp')->with(compact('data'));
         }else {
+            $data['ctree'] = 'request/create/po';
             return view('request.sap')->with(compact('data'));
         }
         
     }
     
-    public function getPO(Request $request) {
+    public function getPO(Request $request) 
+    {
         $param = $_REQUEST;
         $service = API::exec(array(
             'request' => 'GET',
             'host' => 'ldap',
             'method' => "select_po/" . $param["no_po"]
         ));
+        
         $data = $service;
-       if(isset( $data->EBELN)) {
+        
+        if(isset( $data->EBELN)) {
             return response()->json(array('data' => $data));
-       } else {
+        } else {
             return response()->json(array('data' => array())); 
-       }
+        }
     }
 
     public function dataGrid() {
