@@ -808,7 +808,7 @@
         jQuery('#asset_brand').val(item.asset_brand);
         jQuery('#asset_imei').val(item.asset_imei);
         jQuery('#asset_police_no').val(item.asset_police_no);
-        jQuery('#asset_serie_no').val(item.asset_police_no);
+        jQuery('#asset_serie_no').val(item.asset_serie_no);
         jQuery('#asset_specification').val(item.asset_specification);
         jQuery('#asset_year').val(item.asset_year);
         jQuery('#asset_pic_name').val(item.asset_pic_name);
