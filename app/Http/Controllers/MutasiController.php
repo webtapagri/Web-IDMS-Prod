@@ -24,7 +24,7 @@ class MutasiController extends Controller
         $access = AccessRight::access(); */
 
         $data['page_title'] = "Mutasi";
-        $data['ctree_mod'] = 'Approval';
+        $data['ctree_mod'] = 'Mutasi';
         $data['ctree'] = 'mutasi';
 
         return view('mutasi.index')->with(compact('data'));
@@ -35,54 +35,14 @@ class MutasiController extends Controller
         $data = array(
             array(
                 "id" => '1',
-                "request_no" => '572120171023001',
-                "request_date" => '2019-01-02',
-                "request_category" => 'Penambahan',
-                "request_type" => 'Melalui PO',
-                "business_area" => '4141 - Gawi Mill',
-                "business_area_location" => '4141 - Gawi Mill',
-                "requestor" => 'dadang.kurniawan'
+                "mutasi_no" => '572120171023001',
+                "mutasi_date" => '2019-01-02'
             ),
             array(
                 "id" => '1',
-                "request_no" => '572120171023002',
-                "request_date" => '2019-01-02',
-                "request_category" => 'Disposal',
-                "request_type" => 'rusak',
-                "business_area" => '4141 - Gawi Mill',
-                "business_area_location" => '4141 - Gawi Mill',
-                "requestor" => 'dadang.kurniawan'
-            ),
-            array(
-                "id" => '1',
-                "request_no" => '572120171023003',
-                "request_date" => '2019-01-02',
-                "request_category" => 'Penambahan',
-                "request_type" => 'Reklasifikasi',
-                "business_area" => '4141 - Gawi Mill',
-                "business_area_location" => '4141 - Gawi Mill',
-                "requestor" => 'dadang.kurniawan'
-            ),
-            array(
-                "id" => '1',
-                "request_no" => '572120171023004',
-                "request_date" => '2019-01-02',
-                "request_category" => 'Disposal',
-                "request_type" => 'Hilang',
-                "business_area" => '4141 - Gawi Mill',
-                "business_area_location" => '4141 - Gawi Mill',
-                "requestor" => 'dadang.kurniawan'
-            ),
-            array(
-                "id" => '1',
-                "request_no" => '572120171023005',
-                "request_date" => '2019-01-02',
-                "request_category" => 'Penambahan',
-                "request_type" => 'Sewa',
-                "business_area" => '4141 - Gawi Mill',
-                "business_area_location" => '4141 - Gawi Mill',
-                "requestor" => 'dadang.kurniawan'
-            ),
+                "mutasi_no" => '572120171023002',
+                "mutasi_date" => '2019-01-02'
+            )
            
         );
 
@@ -115,9 +75,14 @@ class MutasiController extends Controller
         return response()->json($records);
     }
 
-    public function create(Request $request) {
-        $type = ($request->type == "amp" ? 'Melalui PO AMP':'Melalui PO Sendiri');
-        return view('assets.add')->with(compact('type'));
+    public function create(Request $request) 
+    {
+        $data["page_title"] = "Create Mutasi";
+        $data['ctree_mod'] = 'Mutasi';
+        $data['ctree'] = 'mutasi/create/1';
+
+        $data['type'] = ($request->type == "amp" ? 'Melalui PO AMP':'Melalui PO Sendiri');
+        return view('mutasi.add')->with(compact('data'));
     }
 
     public function convertToPdf() {

@@ -1,5 +1,5 @@
 @extends('adminlte::page')
-@section('title', 'FAMS - approval')
+@section('title', 'Mutasi - FAMS')
 @section('content')
 <div class="row">
     <div class="col-xs-12">
@@ -8,26 +8,19 @@
                 <div class="table-container">
                     <div class="table-actions-wrapper">
                         <button class="btn btn-flat btn-sm btn-flat label-danger btn-refresh"><i class="glyphicon glyphicon-refresh" title="Refresh"></i></button>
+                        <a href="{{ url('mutasi/create/1') }}"><button class="btn btn-flat btn-sm btn-flat label-info btn-plus"><i class="glyphicon glyphicon-plus" title="+ MUTASI"></i> ADD MUTASI</button></a>
                     </div>
                     <table id="data-table" class="table table-bordered table-condensed">
                         <thead>
                             <tr role="row" class="heading">
-                                <th width="">No Registrasi</th>
-                                <th width="">Kategori Pengajuan</th>
-                                <th width="">Jenis Pengajuan</th>
-                                <th width="">BA Pemilik Aset</th>
-                                <th width="">BA Lokasi Aset</th>
-                                <th width="">Requestor</th>
-                                <th width="">Tgl pengajuan</th>
+                                <th width="">NO. REGISTRASI</th>
+                                <th width="">TGL. PENGAJUAN</th>
+                                <th width="">ACTION</th>
                             </tr>
                             <tr role="row" class="filter">
-                                <th><input type="text" class="form-control input-sm form-filter" name="name"></th>
-                                <th><input type="text" class="form-control input-sm form-filter" name="name"></th>
-                                <th><input type="text" class="form-control input-sm form-filter" name="email"></th>
-                                <th><input type="text" class="form-control input-sm form-filter" name="job_code"></th>
-                                <th><input type="text" class="form-control input-sm form-filter" name="nik"></th>
-                                <th><input type="text" class="form-control input-sm form-filter" name="active"></th>
-                                <th><input type="text" class="form-control input-sm form-filter" name="active"></th>
+                                <th><input type="text" class="form-control input-sm form-filter" name="no_reg"></th>
+                                <th><input type="text" class="form-control input-sm form-filter" name="tanggal_reg"></th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody></tbody>
@@ -38,6 +31,7 @@
         </div>
     </div>
 </div>
+
 <div id="approve-modal" class="modal fade" role="dialog">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -373,6 +367,7 @@
         </div>
     </div>
 </div>
+
 @stop
 @section('js')
 <script>
@@ -394,33 +389,22 @@
                     [10, 20, 50, 100, 150]
                 ],
                 "pageLength": 10,
-                ajax: "{!! route('get.approval_grid') !!}",
+                ajax: "{!! route('get.mutasi_grid') !!}",
                 columns: [{
                         "render": function(data, type, row) {
-                            return '<a href="javascript:;" style="font-weight:bold" OnClick="approval(' + row.request_no + ')">' + row.request_no + '</a>';
+                            return '<a href="javascript:;" style="font-weight:bold" OnClick="approval(' + row.mutasi_no + ')">' + row.mutasi_no + '</a>';
                         }
                     },
                     {
-                        data: 'request_category',
+                        data: 'mutasi_date'
                     },
                     {
-                        data: 'request_type',
-                    },
-                    {
-                        data: 'business_area',
-                    },
-                    {
-                        data: 'business_area_location',
-                    },
-                    {
-                        data: 'requestor',
-                        username: 'username'
-                    },
-                    {
-                        "render": function(data, type, row) {
-                            var date = new Date(row.request_date);
-                            var month = date.getMonth();
-                            return date.getDate() + ' ' + bulan[month] + ' ' + date.getFullYear();
+                        "render": function(data, type, row) 
+                        {
+                            return '<i class="fa fa-file-text"></i> <i class="fa fa-send"></i>';
+                            //var date = new Date(row.mutasi_date);
+                            //var month = date.getMonth();
+                            //return date.getDate() + ' ' + bulan[month] + ' ' + date.getFullYear();
                         }
                     },
                 ],
