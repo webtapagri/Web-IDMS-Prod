@@ -566,14 +566,16 @@
             width: "100%",
             allowClear: true,
             placeholder: ' '
-        }).on('change', function() {
+        }).on('change', function() 
+        {
             var assetgroup = jQuery.parseJSON(JSON.stringify(dataJson('{!! route("get.assetgroup") !!}?type=' + jQuery(this).val())));
-            jQuery("#asset_group").empty().select2({
+            $("#asset_group").empty().select2({
                 data: assetgroup,
                 width: "100%",
                 allowClear: true,
                 placeholder: ' '
-            })
+            });
+            $("#asset_sub_group").empty();
         });
 
         jQuery("#asset_group").on('change', function() {
