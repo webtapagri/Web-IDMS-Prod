@@ -403,6 +403,7 @@
     </div>
     <!-- /.col -->
 </div>
+
 <div id="item-detail-modal" class="modal fade" role="dialog">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -413,10 +414,10 @@
                 <table class="table table-hover table-condensed" width="100%" id="table-detail-item">
                     <thead>
                         <tr>
-                            <th>Item PO</th>
-                            <th>Kode</th>
-                            <th>Name</th>
-                            <th>Qty</th>
+                            <th>ITEM PO</th>
+                            <th>KODE</th>
+                            <th>NAME</th>
+                            <th>QTY</th>
                         </tr>
                     </thead>
                     <tbody></tbody>
@@ -429,6 +430,7 @@
         </div>
     </div>
 </div>
+
 @stop
 @section('js')
 <script>
@@ -968,21 +970,27 @@
         }
     }
 
-    function addItem() {
+    function addItem() 
+    {
         request_item = [];
-        $('#table-detail-item').find('input[type="checkbox"]:checked').each(function() {
-            var index = jQuery(this).val();
+        
+        $('#table-detail-item').find('input[type="checkbox"]:checked').each(function() 
+        {
+            var index = $(this).val();
             var item = selected_detail_item[index];
-
             var id = makeInt(5);
-            request_item[index] = {
+            
+            request_item[index] = 
+            {
                 id: index,
                 item_po: item.EBELP,
                 code: item.MATNR,
                 name: item.MAKTX,
                 qty: item.MENGE,
-                request_qty: 1,
-                outstanding_qty: (item.MENGE - 1),
+                //request_qty: 1,
+                //outstanding_qty: (item.MENGE - 1),
+                request_qty: 0,
+                outstanding_qty: item.MENGE,
                 detail: []
             };
 
@@ -1071,21 +1079,25 @@
         }
     }
 
-    function createItemRequestTable() {
+    function createItemRequestTable() 
+    {
         var item = '<table class="table table-bordered table-condensed" id="request-item-table">';
         item += '<tr>';
-        item += '<th>Item PO</th>';
-        item += '<th>Kode</th>';
-        item += ' <th>Name</th>';
-        item += '<th>Qty</th>';
-        item += '<th width="115px">Qty diajukan</th></th>';
-        item += '<th>Qty Outstanding</th>';
+        item += '<th>ITEM PO</th>';
+        item += '<th>KODE</th>';
+        item += ' <th>NAME</th>';
+        item += '<th>QTY</th>';
+        item += '<th width="115px">QTY DIAJUKAN</th></th>';
+        item += '<th>QTY OUTSTANDING</th>';
         item += '<th style="width: 40px;display:none"></th>';
         item += '</tr>';
 
-        if (requestItemData() > 0) {
-            jQuery.each(request_item, function(key, val) {
-                if (val) {
+        if (requestItemData() > 0) 
+        {
+            $.each(request_item, function(key, val) 
+            {
+                if (val) 
+                {
                     item += "<tr>";
                     item += "<td>" + val.item_po + "</td>";
                     item += "<td>" + val.code + "</td>";
@@ -1102,7 +1114,9 @@
                     item += "</tr>";
                 }
             });
-        } else {
+        } 
+        else 
+        {
             item += '<tr>';
             item += '<td colspan="7" style="text-align:center;font-size: 9px;color: #808484;height: 45px;"><br>Silahkan input Nomor Purchase Order di atas untuk memilih item dan click tombol "select item"</td>';
             item += '</tr>';

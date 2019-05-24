@@ -82,7 +82,7 @@
                             </div>
                             <div class="col-md-4">
                                 <label>NAME <sup style="color:red">*</sup></label>
-                                <input type="text" class="form-control input-sm" name="detail_item_name" id="detail_item_name" required>
+                                <input type="text" class="form-control input-sm" name="detail_item_name" id="detail_item_name">
                             </div>
                             <div class="col-md-3">
                                 <label class="control-label">QTY <sup style="color:red">*</sup></label>
@@ -103,7 +103,7 @@
                             <div class="col-md-12">
                                 <table class="table table-bordered table-condensed" id="request-item-table">
                                     <tr>
-                                        <th>ITEM PO</th>
+                                        <!--th>ITEM PO</th-->
                                         <th>KODE</th>
                                         <th>NAME</th>
                                         <!-- <th>Qty</th> -->
@@ -111,7 +111,7 @@
                                         <!-- <th>Qty Outstanding</th> -->
                                     </tr>
                                     <tr>
-                                        <td colspan="6" style="text-align:center;font-size: 12px;color: #B00020;height: 45px;"><br>Silahkan input Nomor Purchase Order di atas untuk memilih item dan click tombol "select item"</td>
+                                        <td colspan="6" style="text-align:center;font-size: 12px;color: #B00020;height: 45px;"><br>Silahkan input "DETAIL ITEM" dan tekan button "+" untuk menambahkan item </td>
                                     </tr>
                                 </table>
                             </div>
@@ -1049,7 +1049,7 @@
             });
         } else {
             item += '<tr>';
-            item += '<td colspan="5" style="text-align:center;font-size: 9px;color: #808484;height: 45px;"><br>Silahkan input Nomor Purchase Order di atas untuk memilih item dan click tombol "select item"</td>';
+            item += '<td colspan="5" style="text-align:center;font-size: 9px;color: #808484;height: 45px;"><br>Silahkan input "DETAIL ITEM" dan tekan button "+" untuk menambahkan item</td>';
             item += '</tr>';
         }
         item += "</table>";

@@ -192,8 +192,11 @@ class RequestController extends Controller
             }
 
             $no = 0;
-            if( $request->asset) {
-                foreach ($request->asset as $row) {
+            $item_po = 1;
+            if( $request->asset) 
+            {
+                foreach ($request->asset as $row) 
+                {
                     //if ($row["item_po"]) {
                     if ($row["name"]) {
                         $reg_asset_po_id = DB::table( 'TR_REG_ASSET_DETAIL_PO')-> insertGetId([
@@ -201,6 +204,7 @@ class RequestController extends Controller
                             "NO_REG" =>  $reg_no,
                             "NO_PO" =>  $request->po_no,
                             //"ITEM_PO" =>  $row["item_po"],
+                            "ITEM_PO" =>  $item_po,
                             "KODE_MATERIAL" =>  $row["code"],
                             "NAMA_MATERIAL" =>  $row["name"],
                             "QUANTITY_PO" =>  $row["qty"],
@@ -281,6 +285,7 @@ class RequestController extends Controller
                             }
                         }
                         $no++;
+                        $item_po++;
                     }
                 }
             }
