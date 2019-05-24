@@ -79,7 +79,7 @@ class MutasiController extends Controller
     {
         $data["page_title"] = "Create Mutasi";
         $data['ctree_mod'] = 'Mutasi';
-        $data['ctree'] = 'mutasi/create/1';
+        $data['ctree'] = 'mutasi';
 
         $data['type'] = ($request->type == "amp" ? 'Melalui PO AMP':'Melalui PO Sendiri');
         return view('mutasi.add')->with(compact('data'));
@@ -101,5 +101,69 @@ class MutasiController extends Controller
         ));
         $data = $service;
         return response()->json(array('data' => $data->data));
+    }
+
+    public function store(Request $request)
+    {
+        //echo "<pre>"; print_r($_POST); die();
+        $request_date = $request->input('request_date');
+        $kode_aset = $request->input('kode_aset');
+        echo "$request_date <br/> <pre>"; print_r($kode_aset); die(); 
+        /*
+        23 May 2019
+        Array
+        (
+            [0] => 121140300120_1_2
+            [1] => 121140300120_3_4
+        )
+
+        */
+
+        /*
+            [request_date] => 23 May 2019
+            [detail_kode_aset] => 121140300120
+            [detail_milik_company] => 12
+            [detail_milik_area] => 1211
+            [detail_lokasi_company] => 52
+            [detail_lokasi_area] => 5221
+            [detail_tujuan_company] => 
+            [detail_tujuan_area] => 
+            [kode_aset] => Array
+                (
+                    [0] => 121140300120_2_3
+                    [1] => 121140300120_1_2
+                )
+        */
+
+        try {
+            foreach($request as $k => $row) 
+            {
+                //echo "<pre>"; print_r($k);
+                /*
+                if($row["access_id"]) {
+                    $data = RoleAccess::find( $row["access_id"]);
+                    $data->updated_by = Session::get('user_id');
+                } else {
+                    $data = new RoleAccess();
+                    $data->created_by = Session::get('user_id');
+                }
+
+                $data->role_id = $row["role_id"];
+                $data->module_id = $row["module_id"];
+                $data->menu_id = $row["menu_id"];
+                $data->create = $row["create"];
+                $data->read = $row["read"];
+                $data->update = $row["update"];
+                $data->delete = $row["remove"];
+                $data->save();
+                */
+
+            }
+            die();
+
+            return response()->json(['status' => true, "message" => 'Data is successfully ' . ($request->edit_id ? 'updated' : 'added')]);
+        } catch (\Exception $e) {
+            return response()->json(['status' => false, "message" => $e->getMessage()]);
+        }
     }
 }

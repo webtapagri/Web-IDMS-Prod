@@ -22,70 +22,70 @@
                 <div class="box-body">
                     <div class="box-body">
                         <div class="form-group">
-                            <label for="plant" class="col-md-3">Tipe Transaksi <sup style="color:red">*</sup></label>
+                            <label for="plant" class="col-md-3">TIPE TRANSAKSI <sup style="color:red">*</sup></label>
                             <div class="col-md-6">
                                 <select class="form-control input-sm" name="transaction_type" id="transaction_type" required></select>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="plant" class="col-md-3">Tanggal <sup style="color:red">*</sup></label>
+                            <label for="plant" class="col-md-3">TANGGAL <sup style="color:red">*</sup></label>
                             <div class="col-md-4">
                                 <input type="text" class="form-control input-sm" name="request_date" id="request_date" value="{{ date('d M Y') }}" autocomplete="off" required readonly>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="plant" class="col-md-3">Business Area <sup style="color:red">*</sup></label>
+                            <label for="plant" class="col-md-3">BUSINESS AREA <sup style="color:red">*</sup></label>
                             <div class="col-md-4">
                                 <select class="form-control input-sm" name="business_area" id="business_area" required readonly></select>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="plant" class="col-md-3">No. Purchase Order <sup style="color:red">*</sup></label>
+                            <label for="plant" class="col-md-3">NO. PURCHASE ORDER <sup style="color:red">*</sup></label>
                             <div class="col-md-9">
                                 <input type="text" class="form-control input-sm" name="po_no" id="po_no" value="" autocomplete="off" required>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="plant" class="col-md-3">Tgl PO <sup style="color:red">*</sup></label>
+                            <label for="plant" class="col-md-3">TANGGAL PO <sup style="color:red">*</sup></label>
                             <div class="col-md-4">
                                 <input type="text" class="form-control input-sm" name="po_date" id="po_date" autocomplete="off" required>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="plant" class="col-md-3">Kode vendor</label>
+                            <label for="plant" class="col-md-3">KODE VENDOR</label>
                             <div class="col-md-6">
                                 <input type="text" class="form-control input-sm" name="vendor_code" id="vendor_code" autocomplete="off">
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="plant" class="col-md-3">Nama vendor <sup style="color:red">*</sup></label>
+                            <label for="plant" class="col-md-3">NAMA VENDOR <sup style="color:red">*</sup></label>
                             <div class="col-md-9">
                                 <input type="text" class="form-control input-sm" name="vendor_name" id="vendor_name" autocomplete="off" required>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="plant" class="col-md-3">Berita acara serah terima <sup style="color:red">*</sup></label>
+                            <label for="plant" class="col-md-3">BERITA ACARA SERAH TERIMA <sup style="color:red">*</sup></label>
                             <div class="col-md-4">
                                 <input type="file" class="form-control input-sm" name="docs" multiple id="docs" required>
                             </div>
                         </div>
                         <hr>
-                        <h4>Detail item</h4>
+                        <h4><b><u>DETAIL ITEM</u></b></h4>
                         <div class="row">
-                            <div class="col-md-2">
-                                <label>Item PO <sup style="color:red">*</sup></label>
+                            <!--div class="col-md-2">
+                                <label>ITEM PO</label>
                                 <input type="text" class="form-control input-sm" name="detail_item_po" id="detail_item_po">
-                            </div>
-                            <div class="col-md-3">
-                                <label>Kode</label>
+                            </div-->
+                            <div class="col-md-4">
+                                <label>KODE</label>
                                 <input type="text" class="form-control input-sm" name="detail_item_code" id="detail_item_code">
                             </div>
                             <div class="col-md-4">
-                                <label>Name <sup style="color:red">*</sup></label>
-                                <input type="text" class="form-control input-sm" name="detail_item_name" id="detail_item_name">
+                                <label>NAME <sup style="color:red">*</sup></label>
+                                <input type="text" class="form-control input-sm" name="detail_item_name" id="detail_item_name" required>
                             </div>
-                            <div class="col-md-2">
-                                <label class="control-label">Qty <sup style="color:red">*</sup></label>
+                            <div class="col-md-3">
+                                <label class="control-label">QTY <sup style="color:red">*</sup></label>
                                 <div class="input-group">
                                     <div style="cursor:pointer" class="input-group-addon bg-gray" OnClick="min('detail_item_qty');">-</div>
                                     <input type="text" class="form-control input-sm text-center" value='1' id="detail_item_qty" maxlength="6">
@@ -94,7 +94,7 @@
                             </div>
                             <div class="col-md-1">
                                 <label>&nbsp;</label>
-                                <button type="button" class="btn btn-flat btn-danger btn-add-items" OnClick="addItem();"><i class="fa fa-plus"></i></button>
+                                <button type="button" class="btn btn-flat btn-danger btn-add-items" OnClick="addItem();" style="margin-top:25px"><i class="fa fa-plus"></i></button>
                             </div>
                         </div>
 
@@ -103,15 +103,15 @@
                             <div class="col-md-12">
                                 <table class="table table-bordered table-condensed" id="request-item-table">
                                     <tr>
-                                        <th>Item PO</th>
-                                        <th>Kode</th>
-                                        <th>Name</th>
+                                        <th>ITEM PO</th>
+                                        <th>KODE</th>
+                                        <th>NAME</th>
                                         <!-- <th>Qty</th> -->
-                                        <th>Qty diajukan</th>
+                                        <th>QTY DIAJUKAN</th>
                                         <!-- <th>Qty Outstanding</th> -->
                                     </tr>
                                     <tr>
-                                        <td colspan="6" style="text-align:center;font-size: 9px;color: #808484;height: 45px;"><br>Silahkan input Nomor Purchase Order di atas untuk memilih item dan click tombol "select item"</td>
+                                        <td colspan="6" style="text-align:center;font-size: 12px;color: #B00020;height: 45px;"><br>Silahkan input Nomor Purchase Order di atas untuk memilih item dan click tombol "select item"</td>
                                     </tr>
                                 </table>
                             </div>
@@ -126,6 +126,7 @@
                     </div>
                 </div>
             </form>
+
             <form class="form-horizontal code-asset-form hide" id="code-asset-form">
                 <div class="box-body">
                     <div class="box-body">
@@ -174,26 +175,26 @@
                                 <span class="help-block">Please select the item to show the detail</span>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label for="plant" class="col-md-2">Item PO</label>
+                        <!--div class="form-group">
+                            <label for="plant" class="col-md-2">ITEM PO</label>
                             <div class="col-md-2">
                                 <input type="text" class="form-control input-sm text-right" name="item_po" value="" id="item_po" autocomplete="off" readonly>
                             </div>
-                        </div>
+                        </div-->
                         <div class="form-group">
-                            <label for="plant" class="col-md-2">Qty Index</label>
+                            <label for="plant" class="col-md-2">QTY INDEX</label>
                             <div class="col-md-2">
                                 <input type="text" class="form-control input-sm text-right" name="item_qty_index" id="item_qty_index" autocomplete="off" readonly>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="plant" class="col-md-2">Kode material</label>
+                            <label for="plant" class="col-md-2">KODE MATERIAL</label>
                             <div class="col-md-10">
                                 <input type="text" class="form-control input-sm" name="item_code" id="item_code" autocomplete="off" readonly>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="plant" class="col-md-2">Nama material</label>
+                            <label for="plant" class="col-md-2">NAMA MATERIAL</label>
                             <div class="col-md-10">
                                 <input type="text" class="form-control input-sm" name="item_name" value="" id="item_name" autocomplete="off" readonly>
                             </div>
@@ -414,6 +415,7 @@
                     </div>
                 </div>
             </form>
+
         </div>
         <!-- /.nav-tabs-custom -->
     </div>
@@ -877,18 +879,20 @@
     }
 
 
-    function validateItem() {
+    function validateItem() 
+    {
         var valid = true;
-        var item_po = jQuery("#detail_item_po");
+        //var item_po = jQuery("#detail_item_po");
         var code = jQuery("#detail_item_code");
         var name = jQuery("#detail_item_name");
         var qty = jQuery("#detail_item_qty");
 
+        /*
         if (item_po.val() == "") {
             item_po.focus();
             valid = false;
         }
-
+        */
 
         if (name.val() == "") {
             name.focus();
@@ -904,16 +908,17 @@
 
     }
 
-    function addItem() {
+    function addItem() 
+    {
         if (validateItem()) {
             var id = makeInt(5);
-            var item_po = jQuery("#detail_item_po");
+            //var item_po = jQuery("#detail_item_po");
             var code = jQuery("#detail_item_code");
             var name = jQuery("#detail_item_name");
             var qty = jQuery("#detail_item_qty");
             request_item[id] = {
                 id: id,
-                item_po: item_po.val(),
+                //item_po: item_po.val(),
                 code: code.val(),
                 name: name.val(),
                 qty: 0,
@@ -925,7 +930,7 @@
             createPage(id);
             createItemRequestTable();
 
-            item_po.val("");
+            //item_po.val("");
             code.val("");
             name.val("");
             qty.val(1);
@@ -1014,11 +1019,11 @@
     function createItemRequestTable() {
         var item = '<table class="table table-bordered table-condensed" id="request-item-table">';
         item += '<tr>';
-        item += '<th>Item PO</th>';
-        item += '<th>Kode</th>';
-        item += ' <th>Name</th>';
+        /* item += '<th>ITEM PO</th>'; */
+        item += '<th>KODE</th>';
+        item += ' <th>NAME</th>';
         /*  item += '<th>Qty</th>'; */
-        item += '<th width="115px">Qty diajukan</th></th>';
+        item += '<th width="115px">QTY DIAJUKAN</th></th>';
         /* item += '<th>Qty Outstanding</th>'; */
         item += '<th style="width: 40px"></th>';
         item += '</tr>';
@@ -1027,7 +1032,7 @@
             jQuery.each(request_item, function(key, val) {
                 if (val.name) {
                     item += "<tr>";
-                    item += "<td>" + val.item_po + "</td>";
+                    /* item += "<td>" + val.item_po + "</td>"; */
                     item += "<td>" + val.code + "</td>";
                     item += "<td>" + val.name + "</td>";
                     /* item += "<td style='text-align:right'>" + val.qty + "</td>"; */
@@ -1062,7 +1067,7 @@
     function getProp(id) {
         var item = request_item[id];
         request_item_page = item.detail;
-        jQuery('#item_po').val(item.item_po);
+        //jQuery('#item_po').val(item.item_po);
         jQuery('#item_code').val(item.code);
         jQuery('#item_name').val(item.name);
         jQuery('#item_qty_index').val(item.request_qty);
