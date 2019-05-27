@@ -160,7 +160,9 @@ class RequestController extends Controller
 
        try {
            
-            $reg_no = rand(0, 1000000);
+            //$reg_no = rand(0, 1000000);
+            $reg_no = $this->get_reg_no();
+
             $asset_id = DB::table('TR_REG_ASSET')->insertGetId([
                 "CREATED_BY" => Session::get('user_id'),
                 "NO_REG" => $reg_no,
@@ -197,6 +199,16 @@ class RequestController extends Controller
             {
                 foreach ($request->asset as $row) 
                 {
+
+                    if( !empty($row["item_po"]) )
+                    {
+                        $item_po_data = $row["item_po"];  
+                    }
+                    else
+                    {
+                        $item_po_data = $item_po;
+                    }
+
                     //if ($row["item_po"]) {
                     if ($row["name"]) {
                         $reg_asset_po_id = DB::table( 'TR_REG_ASSET_DETAIL_PO')-> insertGetId([
@@ -204,7 +216,7 @@ class RequestController extends Controller
                             "NO_REG" =>  $reg_no,
                             "NO_PO" =>  $request->po_no,
                             //"ITEM_PO" =>  $row["item_po"],
-                            "ITEM_PO" =>  $item_po,
+                            "ITEM_PO" =>  $item_po_data,
                             "KODE_MATERIAL" =>  $row["code"],
                             "NAMA_MATERIAL" =>  $row["name"],
                             "QUANTITY_PO" =>  $row["qty"],
@@ -219,6 +231,7 @@ class RequestController extends Controller
                                 "NO_REG_ITEM" =>  $i + 1,
                                 "NO_REG" =>  $reg_no,
                                 //"ITEM_PO" =>  $row["item_po"],
+                                "ITEM_PO" =>  $item_po_data,
                                 "KODE_MATERIAL" =>  $row["code"],
                                 "NAMA_MATERIAL" =>  $row["name"],
                                 "NO_PO" =>  $request->po_no,
@@ -331,5 +344,22 @@ class RequestController extends Controller
             ->header('Content-Type', 'application/pdf')
             ->header('Content-Length', strlen($pdf))
             ->header('Content-Disposition', 'inline; filename="request.pdf"');
+    }
+
+    public function get_reg_no()
+    {
+        $sql = "SELECT count(*) AS total FROM TR_REG_ASSET WHERE YEAR(tanggal_reg) = YEAR(CURDATE()) AND MONTH(tanggal_reg) = MONTH(curdate())";
+        $data = DB::select($sql);
+        $maxno = $data[0]->total+1;
+        //echo "<pre>"; print_r($maxno); die();
+        
+        $year= date('y');
+        $month = date('m');
+        $year=$year.'.';
+        $n=$maxno;
+        $n = str_pad($n + 1, 5, 0, STR_PAD_LEFT);
+        $number=$year.$month.'/AMS/PDFA/'.$n;
+        //echo $number; die();
+        return $number;
     }
 }
