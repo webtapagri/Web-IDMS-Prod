@@ -96,6 +96,10 @@ class OutstandingController extends Controller
         if ($orderColumn != "") {
             $sql .= " ORDER BY " . $field[$orderColumn]['field'] . " " . $dirColumn;
         }
+        else
+        {
+            $sql .= " ORDER BY asset.ID DESC ";
+        }
 
         $data = DB::select(DB::raw($sql));
         $iTotalRecords = count($data);

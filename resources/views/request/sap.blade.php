@@ -109,6 +109,7 @@
                     </div>
                 </div>
             </form>
+            
             <form class="form-horizontal code-asset-form hide" id="code-asset-form">
                 <div class="box-body">
                     <div class="box-body">
@@ -557,50 +558,63 @@
         jQuery("#asset_group").trigger('change');
         jQuery("#asset_sub_group").trigger('change');
 
-        jQuery("#request-form").on("submit", function(e) {
+        jQuery("#request-form").on("submit", function(e) 
+        {
             e.preventDefault();
 
-            if (requestItemData() > 0) {
-                jQuery('.request-form').addClass('hide');
-                jQuery('.code-asset-form').removeClass('hide');
+            //alert(JSON.stringify(request_item)); return false;
+            //alert("submit gaes"); return false;
 
-                jQuery("#asset_request_date").val(request_date.val());
-                jQuery("#asset_business_area").val(business_area.val());
-                jQuery("#asset_po_no").val(po_no.val());
-                jQuery("#asset_po_date").val(po_date.val());
-                jQuery("#asset_vendor_code").val(vendor_code.val());
-                jQuery("#asset_vendor_name").val(vendor_name.val());
+            if(validateQty())
+            {
+                if (requestItemData() > 0) 
+                {
+                    jQuery('.request-form').addClass('hide');
+                    jQuery('.code-asset-form').removeClass('hide');
 
-                topFunction();
-                var items = [];
-                jQuery.each(request_item, function(key, val) {
-                    if (val) {
-                        items.push({
-                            id: val.id,
-                            text: val.code + ' - ' + val.name
-                        })
-                    }
-                });
+                    jQuery("#asset_request_date").val(request_date.val());
+                    jQuery("#asset_business_area").val(business_area.val());
+                    jQuery("#asset_po_no").val(po_no.val());
+                    jQuery("#asset_po_date").val(po_date.val());
+                    jQuery("#asset_vendor_code").val(vendor_code.val());
+                    jQuery("#asset_vendor_name").val(vendor_name.val());
+
+                    topFunction();
+                    var items = [];
+                    $.each(request_item, function(key, val) 
+                    {
+                        if (val) 
+                        {
+                            items.push({
+                                id: val.id,
+                                text: val.code + ' - ' + val.name
+                            })
+                        }
+                    });
 
 
-                jQuery("#detail_item_selected").select2({
-                    data: items,
-                    width: "100%",
-                    allowClear: true,
-                    placeholder: ' '
-                }).on("change", function() {
-                    getProp(jQuery(this).val());
-                });
+                    jQuery("#detail_item_selected").select2({
+                        data: items,
+                        width: "100%",
+                        allowClear: true,
+                        placeholder: ' '
+                    }).on("change", function() {
+                        getProp(jQuery(this).val());
+                    });
 
-                jQuery("#detail_item_selected").val(items[0].id);
-                jQuery("#detail_item_selected").trigger("change");
+                    $("#detail_item_selected").val(items[0].id);
+                    $("#detail_item_selected").trigger("change");
 
-            } else {
-                notify({
-                    type: 'warning',
-                    message: 'please, add an item'
-                });
+                } 
+                else 
+                {
+                    notify({
+                        type: 'warning',
+                        message: 'please, add an item'
+                    });
+                }
             }
+                
         });
 
         jQuery("#code-asset-form").on("submit", function(e) {
@@ -795,7 +809,8 @@
         });
     });
 
-    function save(status) {
+    function save(status) 
+    {
         jQuery.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -856,14 +871,34 @@
         }
     }
 
+    function validateQty()
+    {
+        var valid = true;
+        $.each(request_item, function(i, field) 
+        {
+            if (field.request_qty === 0) 
+            {
+                notify({
+                    type: 'warning',
+                    message: 'QTY DIAJUKAN Tidak boleh kosong'
+                });
+
+                valid = false;
+                return false;
+            }
+            
+        });
+        return valid;
+    }
+
     function validateSave() 
     {
         var valid = true;
-        jQuery.each(request_item, function(i, field) 
+        $.each(request_item, function(i, field) 
         {
             if (field) 
             {
-                jQuery.each(field.detail, function(key, val) 
+                $.each(field.detail, function(key, val) 
                 {
                     if (val.asset_imei === "") {
                         notify({
@@ -918,12 +953,14 @@
         return valid;
     }
 
-    function showPO() {
+    function showPO() 
+    {
         jQuery('.loading-event').fadeIn();
         var no_po = jQuery("#po_no").val();
         var data = jQuery.parseJSON(JSON.stringify(dataJson('{!! route("get.no_po") !!}?no_po=' + no_po)));
 
-        if (data.AEDAT) {
+        if (data.AEDAT) 
+        {
             jQuery("#po_date").val(data.AEDAT);
             jQuery("#vendor_code").val(data.LIFNR);
             jQuery("#vendor_name").val(data.NAME1);
@@ -998,15 +1035,18 @@
         });
 
         createItemRequestTable();
-        jQuery("#item-detail-modal").modal('hide');
+        $("#item-detail-modal").modal('hide');
     }
 
-    function createPage(id) {
+    function createPage(id) 
+    {
         request_item_page = [];
         data_page = [];
         var item_detail = [];
         var item = request_item[id];
-        for (var i = 0; i < item.request_qty; i++) {
+        
+        for (var i = 0; i < item.request_qty; i++) 
+        {
             item_detail.push({
                 asset_type: '',
                 asset_group: '',
@@ -1049,7 +1089,8 @@
         request_item[id].detail = item_detail;
     }
 
-    function makeid(length) {
+    function makeid(length) 
+    {
         var text = "";
         var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
