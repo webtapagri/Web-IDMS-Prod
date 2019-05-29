@@ -64,6 +64,7 @@
         </div>
     </div>
 </div>
+
 <div id="approve-modal" class="modal fade" role="dialog" aria-labelledby="largeModal" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -116,269 +117,30 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
-
-                        
+                        </div>                        
                         
                         <br>
+                        <span class="label bg-blue"><i class="fa fa-bars"></i> ITEM DETAIL</span> <br/><br/>
                         <div class="form-group">
-                            <div class="col-md-12">
-                                <table class="table table-condensed" id="request-item-table">
+                            <div class="col-md-12" id="box-item-detail">
+                                <!--table class="table table-condensed table-responsive" id="request-item-table">
                                     <tr>
-                                        <th>No</th>
-                                        <th>Item</th>
-                                        <th>Qty index</th>
-                                        <th>Kode material</th>
-                                        <th>nama material</th>
+                                        <th>NO</th>
+                                        <th>ITEM</th>
+                                        <th>QTY</th>
+                                        <th>KODE MATERIAL</th>
+                                        <th>NAMA MATERIAL</th>
                                         <th>MRP</th>
-                                        <th>BA Pemilik Asset</th>
-                                        <th>BA Lokasi Asset</th>
-                                        <th>REquestor</th>
                                     </tr>
                                     <tr>
                                         <td colspan="6" style="text-align:center">No item selected</td>
                                     </tr>
-                                </table>
+                                </table-->
                             </div>
                         </div>
-                        <hr>
-                        <h4>Rincian Informasi Asset</h4>
-                        <div class="form-group">
-                            <div class="col-md-12">
-                                <ul class="nav nav-tabs">
-                                    <li class="active"><a href="#panel-initial" data-toggle="tab" class="panel-initial">Page 1</a></li>
-                                    <li><a href="#panel-basic-data" class="panel-basic-data" data-toggle="tab">Page 2</a></li>
-                                </ul>
-                                <div class="tab-content" style="border: 1px solid #e0dcdc;border-top:none; font-size:12px !important">
-                                    <!-- Font Awesome Icons -->
-                                    <div class="tab-pane active" id="panel-initial">
-                                        <div class="box-body">
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label for="plant" class="col-md-4">No PO</label>
-                                                    <div class="col-md-8">
-                                                        <input type="text" class="form-control input-sm" name="description" value="" id="description" autocomplete="off" readonly>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="plant" class="col-md-4">Tanggal PO</label>
-                                                    <div class="col-md-8">
-                                                        <input type="text" class="form-control input-sm" name="description" value="" id="description" autocomplete="off" readonly>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="plant" class="col-md-4">Kode vendor</label>
-                                                    <div class="col-md-8">
-                                                        <input type="text" class="form-control input-sm" name="description" id="description" value="XXXXX" autocomplete="off" readonly>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="plant" class="col-md-4">Nama vendor</label>
-                                                    <div class="col-md-8">
-                                                        <input type="text" class="form-control input-sm" name="description" value="DAYA ANUGERAH MANDIRI" id="description" autocomplete="off" readonly>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="plant" class="col-md-4">Item PO</label>
-                                                    <div class="col-md-8">
-                                                        <input type="text" class="form-control input-sm text-right" name="description" value="1" id="description" autocomplete="off" readonly>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="plant" class="col-md-4">Qty Index</label>
-                                                    <div class="col-md-8">
-                                                        <input type="text" class="form-control input-sm text-right" name="description" value="1" id="description" autocomplete="off" readonly>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="plant" class="col-md-4">Kode material</label>
-                                                    <div class="col-md-8">
-                                                        <input type="text" class="form-control input-sm" name="description" value="XXXX-1" id="description" autocomplete="off" readonly>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="plant" class="col-md-4">Nama material</label>
-                                                    <div class="col-md-8">
-                                                        <input type="text" class="form-control input-sm" name="description" value="SEPEDA MOTOR 150 HONDA VERZA" id="description" autocomplete="off" readonly>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group material-group-input" id="input-specification">
-                                                    <label for="part_no" class="col-md-4">Kondisi </label>
-                                                    <div class="col-md-6 col-md-offset-1">
-                                                        <div class="form-group">
-                                                            <div class="">
-                                                                <label>
-                                                                    <input type="radio" name="optionsRadios" id="optionsRadios1" value="option1" checked>
-                                                                    Baik
-                                                                </label>
-                                                            </div>
-                                                            <div class="">
-                                                                <label>
-                                                                    <input type="radio" name="optionsRadios" id="optionsRadios2" value="option2">
-                                                                    Butuh Perbaikan
-                                                                </label>
-                                                            </div>
-                                                            <div class="">
-                                                                <label>
-                                                                    <input type="radio" name="optionsRadios" id="optionsRadios3" value="option3">
-                                                                    Tidak baik
-                                                                </label>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <h4>Penanggung jawab Aset:</h4>
-                                                <div class="form-group material-group-input" id="input-specification">
-                                                    <label for="part_no" class="col-md-3 col-md-offset-1">Nama</label>
-                                                    <div class="col-md-8">
-                                                        <input type="text" class="form-control input-sm attr-material-group" name="specification" id="specification" readonly>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group material-group-input" id="input-specification">
-                                                    <label for="part_no" class="col-md-3 col-md-offset-1">Jabatan</label>
-                                                    <div class="col-md-8">
-                                                        <input type="text" class="form-control input-sm attr-material-group" name="specification" id="specification" readonly>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="plant" class="col-md-4">Foto Fisik</label>
-                                                    <div class="col-md-8">
-                                                        <input type="text" class="form-control input-sm" name="description" value="SEPEDA MOTOR 150 HONDA VERZA" id="description" autocomplete="off" readonly>
-                                                    </div>
-                                                </div>
+                        
+                        <div id="box-detail-item"></div>
 
-                                                <div class="form-group">
-                                                    <label for="plant" class="col-md-4">Foto no seri</label>
-                                                    <div class="col-md-8">
-                                                        <input type="text" class="form-control input-sm" name="description" value="SEPEDA MOTOR 150 HONDA VERZA" id="description" autocomplete="off" readonly>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="plant" class="col-md-4">Foto no mesin</label>
-                                                    <div class="col-md-8">
-                                                        <input type="text" class="form-control input-sm" name="description" value="SEPEDA MOTOR 150 HONDA VERZA" id="description" autocomplete="off" readonly>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label for="plant" class="col-md-4">Jenis Asset</label>
-                                                    <div class="col-md-8">
-                                                        <input type="text" class="form-control input-sm" name="description" value="" id="description" autocomplete="off" readonly>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="plant" class="col-md-4">Group</label>
-                                                    <div class="col-md-8">
-                                                        <input type="text" class="form-control input-sm" name="description" value="" id="description" autocomplete="off" readonly>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="plant" class="col-md-4">Sub Group</label>
-                                                    <div class="col-md-8">
-                                                        <input type="text" class="form-control input-sm" name="description" value="" id="description" autocomplete="off" readonly>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="plant" class="col-md-4">Asset Class</label>
-                                                    <div class="col-md-8">
-                                                        <input type="text" class="form-control input-sm" name="description" value="" id="description" autocomplete="off" readonly>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="plant" class="col-md-4">Kode asset Fams</label>
-                                                    <div class="col-md-8">
-                                                        <input type="text" class="form-control input-sm" name="description" value="" id="description" autocomplete="off" readonly>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="plant" class="col-md-4">Kode asset SAP</label>
-                                                    <div class="col-md-8">
-                                                        <input type="text" class="form-control input-sm" name="description" value="" id="description" autocomplete="off" readonly>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="plant" class="col-md-4">Nama aset</label>
-                                                    <div class="col-md-8">
-                                                        <input type="text" class="form-control input-sm" name="description" value="" id="description" autocomplete="off" readonly>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="plant" class="col-md-4">merk</label>
-                                                    <div class="col-md-8">
-                                                        <input type="text" class="form-control input-sm" name="description" value="" id="description" autocomplete="off" readonly>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group material-group-input" id="input-specification">
-                                                    <label for="part_no" class="col-md-4">Spesifikasi / Warna</label>
-                                                    <div class="col-md-8">
-                                                        <input type="text" class="form-control input-sm attr-material-group" name="specification" id="specification" disabled>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group material-group-input" id="input-specification">
-                                                    <label for="part_no" class="col-md-4">No Seri / No Rangka</label>
-                                                    <div class="col-md-8">
-                                                        <input type="text" class="form-control input-sm attr-material-group" name="specification" id="specification" disabled>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group material-group-input" id="input-specification">
-                                                    <label for="part_no" class="col-md-4">No Mesin / IMEI</label>
-                                                    <div class="col-md-8">
-                                                        <input type="text" class="form-control input-sm attr-material-group" name="specification" id="specification" disabled>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group material-group-input" id="input-specification">
-                                                    <label for="part_no" class="col-md-4">No Polisi</label>
-                                                    <div class="col-md-8">
-                                                        <input type="text" class="form-control input-sm attr-material-group" name="specification" id="specification" disabled>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group material-group-input" id="input-specification">
-                                                    <label for="part_no" class="col-md-4">Tahun Asset</label>
-                                                    <div class="col-md-8">
-                                                        <input type="text" class="form-control input-sm attr-material-group" name="specification" id="specification" disabled>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group material-group-input" id="input-specification">
-                                                    <label for="part_no" class="col-md-4">BA Lokasi Asset</label>
-                                                    <div class="col-md-8">
-                                                        <input type="text" class="form-control input-sm attr-material-group" name="specification" id="specification" disabled>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group material-group-input" id="input-specification">
-                                                    <label for="part_no" class="col-md-4">BA Pemilik Asset</label>
-                                                    <div class="col-md-8">
-                                                        <input type="text" class="form-control input-sm attr-material-group" name="specification" id="specification" disabled>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group material-group-input" id="input-specification">
-                                                    <label for="part_no" class="col-md-4">Informasi</label>
-                                                    <div class="col-md-8">
-                                                        <textarea type="text" class="form-control input-sm attr-material-group" row="3" name="specification" id="specification" disabled></textarea>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label class="col-md-4">Kode asset</label>
-                                                    <div class="col-md-8">
-                                                        <input type="text" class="form-control input-sm" name="description" value="" id="description" autocomplete="off">
-                                                    </div>
-                                                </div>
-
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- /#fa-icons -->
-
-                                    <!-- glyphicons-->
-                                    <div class="tab-pane" id="panel-basic-data">
-                                        page 2
-                                    </div>
-                                    <!-- /#ion-icons -->
-                                </div>
-                            </div>
-                        </div>
                         <div class="form-group">
                             <label class="col-md-2">Note</label>
                             <div class="col-md-8">
@@ -503,20 +265,41 @@
                 $("#request-form #business-area").val(data.business_area);
                 $("#request-form #requestor").val(data.requestor);
                 $("#request-form #tanggal-reg").val(data.tanggal_reg);
-                /*                              
-                //alert(data.foto);
-                $("#form-detil #gender").val(data.gender);
-                $("#form-detil #message_view").val(data.message);
-                $("#form-detil #ipaddress").val(data.ipaddress);
-                $("#form-detil #browser").val(data.browser);
-                $("#form-detil #created").val(data.created);
-                if( data.foto != null )
+
+                var item = '<table class="table xtable-condensed table-responsive table-striped" id="request-item-table" style="font-size:13px">';
+                item += '<th>NO.</th>';
+                item += '<th>NO PO</th>';
+                item += '<th>ITEM</th>';
+                item += '<th>QTY</th>';
+                item += '<th>KODE MATERIAL</th>';
+                item += '<th>NAMA MATERIAL</th>';
+                item += '<th>VIEW DETAIL</th>';
+                if (data.item_detail.length > 0) 
                 {
-                    var folder = '';
-                    if(data.category=="TESTIMONI"){folder="testimonial";}else{folder="contact";}
-                    $(".image").html("<a href='<?php //echo site_url("userfiles"); ?>/"+folder+"/"+data.foto+"' target='_blank'><img src='<?php //echo base_url("userfiles"); ?>/"+folder+"/"+data.foto+"' alt='' width=80></a>");
+                    var no = 1;
+                    $.each(data.item_detail, function(key, val) 
+                    {
+                        item += "<tr style='height: 30px !important;font-size:11px !important;'>";
+                        item += "<td>" + no + "</td>";
+                        item += "<td>" + val.no_po + "</td>";
+                        item += "<td>" + val.item + "</td>";
+                        item += "<td><label class='label bg-red'>" + val.qty + "</label></td>";
+                        item += "<td>" + val.kode + "</td>";
+                        item += "<td>" + val.nama + "</td>";
+                        item += "<td><i class='fa fa-eye' OnClick='getDetailItem(\"" + noreg + "\","+val.id+")'></i></td>";
+                        item += "</tr>";
+                        no++;
+                    });
                 }
-                */
+                else
+                {
+                    item += '<tr>';
+                    item += ' <td colspan="7" style="text-align:center">No item selected</td>';
+                    item += '</tr>';
+                }
+                item += '</table>';
+
+                $("#box-item-detail").html(item);
 
                 $("#approve-modal .modal-title").html("<i class='fa fa-edit'></i>  Approval Pendaftaran - <span style='color:#dd4b39'>" + data.no_reg + "</span>");
 
@@ -617,5 +400,105 @@
         item += "</table>";
         jQuery("#request-item-table").html(item);
     }
+
+    function getDetailItem(noreg,id)
+    {
+        //alert(JSON.stringify(id));
+        //alert(kode);
+        
+        $.ajax({
+            type: 'GET',
+            url: "{{ url('approval/view_detail') }}/"+noreg+"/"+id,
+            data: "",
+            //async: false,
+            dataType: 'json',
+            success: function(data) 
+            {
+                //alert(data.length);
+                var total_tab = data.length;
+                var i;
+                var j;
+                var no=1;
+                var num=1;
+
+                var item = "<span class='label bg-blue'><i class='fa fa-bars'></i> RINCIAN INFORMASI ASSET</span><br/><br/>";
+                item += "<div class='form-group'>";
+                item += "<div class='col-md-12 xnav-tabs-custom'>";
+
+                item += "<ul class='nav nav-tabs'>";
+                for(i=0;i<total_tab;i++)
+                {
+                    var active = '';
+                    if(i==0){ active = 'active'; }
+
+                    item += "<li class='"+active+"'><a href='#panel-"+no+"' data-toggle='tab' class='panel-"+no+"'>Asset "+no+"</a></li> ";
+                    no++;
+                }
+                item += "</ul>";
+
+                item += "<div class='tab-content' style='border: 1px solid #e0dcdc;border-top:none; font-size:12px !important'>";
+                /*for(j=0;j<total_tab;j++)
+                {
+                    //var aktif = '';
+                    //if(j==0){ aktif = 'active'; }
+                    //item += "<div class='tab-pane "+aktif+" ' id='panel-"+num+"'>Content "+num+"</div> ";
+                    //num++;
+                }*/
+
+                $.each(data, function(key, val) 
+                {
+                    var aktif = '';
+                    if(key==0){ aktif = 'active'; }
+                    item += "<div class='tab-pane "+aktif+" ' id='panel-"+num+"'>";
+                    
+                    item += "<div class='box-body'>";
+                    
+                    item += "<div class='col-md-6'>";
+                    item += "<div class='form-group'><label for='plant' class='col-md-4'>NO PO</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='' value='"+val.no_po+"' id='' autocomplete='off' readonly></div></div>";
+                    item += "<div class='form-group'><label for='plant' class='col-md-4'>TGL PO</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='' value='"+val.tgl_po+"' id='' autocomplete='off' readonly></div></div>";
+                    item += "<div class='form-group'><label for='plant' class='col-md-4'>KONDISI ASSET</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='' value='"+val.kondisi_asset+"' id='' autocomplete='off' readonly></div></div>";
+                    item += "<div class='form-group'><label for='plant' class='col-md-4'>NAMA ASSET</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='' value='"+val.nama_asset+"' id='' autocomplete='off' readonly></div></div>";
+                    item += "<div class='form-group'><label for='plant' class='col-md-4'>NO RANGKA/SERI</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='' value='"+val.no_rangka_or_no_seri+"' id='' autocomplete='off' readonly></div></div>";
+                    item += "<div class='form-group'><label for='plant' class='col-md-4'>NO MESIN / IMEI</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='' value='"+val.no_mesin_or_imei+"' id='' autocomplete='off' readonly></div></div>";
+                    item += "<div class='form-group'><label for='plant' class='col-md-4'>LOKASI</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='' value='"+val.lokasi+"' id='' autocomplete='off' readonly></div></div>";
+                    item += "<div class='form-group'><label for='plant' class='col-md-4'>INFORMASI</label><div class='col-md-8'><textarea class='form-control' readonly>"+val.info+"</textarea></div></div>";
+                    item += "</div>";
+
+                    item += "<div class='col-md-6'>";
+                    item += " <div class='form-group'><label for='plant' class='col-md-4'>JENIS ASSET</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='' value='"+val.jenis_asset+"' id='' autocomplete='off' readonly></div></div>";
+                    item += " <div class='form-group'><label for='plant' class='col-md-4'>GROUP</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='' value='"+val.group+"' id='' autocomplete='off' readonly></div></div>";
+                    item += " <div class='form-group'><label for='plant' class='col-md-4'>SUB GROUP</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='' value='"+val.sub_group+"' id='' autocomplete='off' readonly></div></div>";
+                    item += " <div class='form-group'><label for='plant' class='col-md-4'>MERK</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='' value='"+val.merk+"' id='' autocomplete='off' readonly></div></div>";
+                    item += " <div class='form-group'><label for='plant' class='col-md-4'>SPESIFIKASI/WARNA</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='' value='"+val.spesifikasi_or_warna+"' id='' autocomplete='off' readonly></div></div>";
+                    item += " <div class='form-group'><label for='plant' class='col-md-4'>TAHUN</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='' value='"+val.tahun+"' id='' autocomplete='off' readonly></div></div>";
+                    item += "<div class='form-group' align='right'><input type='button' style='margin-right:10px' class='btn btn-warning btn-sm' value='Delete'></div>";
+
+                    item += "</div>";
+
+
+                    
+                    item += "</div>";
+
+                    item += "</div>";
+                    num++;
+                });
+
+                item += "<div>";
+
+                item += "</div>";
+                item += "</div>";
+
+                $("#box-detail-item").html(item);
+                //alert(noreg);
+            },
+            error: function(x) 
+            {                           
+                alert("Error: "+ "\r\n\r\n" + x.responseText);
+            }
+        });  
+
+        
+    }
+
 </script>
 @stop

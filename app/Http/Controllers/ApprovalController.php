@@ -193,7 +193,8 @@ class ApprovalController extends Controller
                     'po_type' => $po_type[$v->PO_TYPE],
                     'business_area' => $v->CODE_AREA.' - '.$v->NAME_AREA,
                     'requestor' => $v->REQUESTOR,
-                    'tanggal_reg' => $v->TANGGAL_REG
+                    'tanggal_reg' => $v->TANGGAL_REG,
+                    'item_detail' => $this->get_item_detail($noreg)
                 );
 
             }
@@ -205,5 +206,84 @@ class ApprovalController extends Controller
         //$records = array('id'=>$id);
         //echo response()->json($records);
         echo json_encode($records[0]);
+    }
+
+    function get_item_detail($noreg)
+    {
+        $request = array();
+        $sql = " SELECT a.* FROM TR_REG_ASSET_DETAIL_PO a WHERE a.no_reg = '{$noreg}' ";
+        $data = DB::SELECT($sql);
+        //echo "<pre>"; print_r($data); die();
+
+        if($data)
+        {
+            foreach( $data as $k => $v )
+            {
+                $request[] = array
+                (
+                    'id' => $v->ID,
+                    'no_po' => $v->NO_PO,
+                    'item' => $v->ITEM_PO,
+                    'qty' => $v->QUANTITY_SUBMIT,
+                    'kode' => $v->KODE_MATERIAL,
+                    'nama' => $v->NAMA_MATERIAL,
+                    //'asset' => $this->get_asset_detail($noreg,$v->KODE_MATERIAL) 
+                );
+            }
+        }
+
+        return $request;
+    }
+
+    function get_asset_detail($noreg,$id)
+    {
+        //echo $noreg.'/'.$id; die();
+
+        $kondisi = array(
+            'B' => 'Baik',
+            'BP' => 'Butuh Perbaikan',
+            'TB' => 'Tidak Baik'
+        );
+
+        $noreg = str_replace("-", "/", $noreg);
+
+        $records = array();
+        $sql = " SELECT a.*, b.jenis_asset_description AS JENIS_ASSET_NAME, c.group_description AS GROUP_NAME, d.subgroup_description AS SUB_GROUP_NAME
+                    FROM TR_REG_ASSET_DETAIL a 
+                        LEFT JOIN TM_JENIS_ASSET b ON a.jenis_asset = b.jenis_asset_code 
+                        LEFT JOIN TM_GROUP_ASSET c ON a.group = c.group_code AND a.jenis_asset = c.jenis_asset_code
+                        LEFT JOIN TM_SUBGROUP_ASSET d ON a.sub_group = d.subgroup_code AND a.group = d.group_code
+                    WHERE a.no_reg = '{$noreg}' AND a.asset_po_id = '{$id}' 
+                        ORDER BY a.kode_material ";
+        //echo $sql; die();
+        $data = DB::SELECT($sql);
+        //echo "<pre>"; print_r($data); die();
+
+        if($data)
+        {
+            foreach( $data as $k => $v )
+            {
+                $records[] = array
+                (
+                    'no_po' => $v->NO_PO,
+                    'tgl_po' => $v->CREATED_AT,
+                    'kondisi_asset' => $kondisi[$v->KONDISI_ASSET],
+                    'jenis_asset' => $v->JENIS_ASSET.'-'.$v->JENIS_ASSET_NAME,
+                    'group' => $v->GROUP.'-'.$v->GROUP_NAME,
+                    'sub_group' => $v->SUB_GROUP.'-'.$v->SUB_GROUP_NAME,
+                    'nama_asset' => $v->NAMA_ASSET,
+                    'merk' => $v->MERK,
+                    'spesifikasi_or_warna' => $v->SPESIFIKASI_OR_WARNA,
+                    'no_rangka_or_no_seri' => $v->NO_RANGKA_OR_NO_SERI,
+                    'no_mesin_or_imei' => $v->NO_MESIN_OR_IMEI,
+                    'lokasi' => $v->LOKASI_BA_DESCRIPTION,
+                    'tahun' => $v->TAHUN_ASSET,
+                    'info' => $v->INFORMASI,
+
+                );
+            }
+        }
+
+        echo json_encode($records);
     }
 }

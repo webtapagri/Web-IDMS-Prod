@@ -61,7 +61,7 @@ Route::post('/approval/active', 'ApprovalController@active');
 Route::get('grid-approval', ['as' => 'get.approval_grid', 'uses' => 'ApprovalController@dataGrid']);
 //Route::get('view-data-approval/{no_reg}', ['as' => 'get.approval_view', 'uses' => 'ApprovalController@dataView']);
 Route::get('/approval/view/{no_reg}', 'ApprovalController@view')->name('no_reg');
-
+Route::get('/approval/view_detail/{no_reg}/{id}', 'ApprovalController@get_asset_detail');
 
 Route::resource('/mutasi', 'MutasiController');
 Route::get('/mutasi/create/{type}', 'MutasiController@create')->name('type');
