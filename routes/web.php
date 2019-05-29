@@ -59,6 +59,9 @@ Route::get('/approval/edit/', 'ApprovalController@show');
 Route::post('/approval/inactive', 'ApprovalController@inactive');
 Route::post('/approval/active', 'ApprovalController@active');
 Route::get('grid-approval', ['as' => 'get.approval_grid', 'uses' => 'ApprovalController@dataGrid']);
+//Route::get('view-data-approval/{no_reg}', ['as' => 'get.approval_view', 'uses' => 'ApprovalController@dataView']);
+Route::get('/approval/view/{no_reg}', 'ApprovalController@view')->name('no_reg');
+
 
 Route::resource('/mutasi', 'MutasiController');
 Route::get('/mutasi/create/{type}', 'MutasiController@create')->name('type');

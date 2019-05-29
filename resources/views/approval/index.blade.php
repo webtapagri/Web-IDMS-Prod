@@ -1,7 +1,21 @@
 @extends('adminlte::page')
 @section('title', 'FAMS - approval')
+
 @section('content')
-<div class="row">
+<div class="row" style="margin-top:-3%">
+
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1>
+            Outstanding
+            <small>Approval</small>
+        </h1>
+        <ol class="breadcrumb">
+            <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li class="active">Outstanding</li>
+        </ol>
+    </section>
+
     <div class="col-xs-12">
         <div class="box">
             <div class="box-body">
@@ -12,22 +26,34 @@
                     <table id="data-table" class="table table-bordered table-condensed">
                         <thead>
                             <tr role="row" class="heading">
-                                <th width="">No Registrasi</th>
-                                <th width="">Kategori Pengajuan</th>
-                                <th width="">Jenis Pengajuan</th>
-                                <th width="">BA Pemilik Aset</th>
-                                <th width="">BA Lokasi Aset</th>
-                                <th width="">Requestor</th>
-                                <th width="">Tgl pengajuan</th>
+                                <th>No Reg</th>
+                                <th>Tipe</th>
+                                <th>PO</th>
+                                <th>No PO</th>
+                                <th>Tgl.Pengajuan</th>
+                                <th>Requestor</th>
+                                <th>Tgl. PO</th>
+                                <th>Kode Vendor</th>
+                                <th>Nama Vendor</th>
                             </tr>
                             <tr role="row" class="filter">
-                                <th><input type="text" class="form-control input-sm form-filter" name="name"></th>
-                                <th><input type="text" class="form-control input-sm form-filter" name="name"></th>
-                                <th><input type="text" class="form-control input-sm form-filter" name="email"></th>
-                                <th><input type="text" class="form-control input-sm form-filter" name="job_code"></th>
-                                <th><input type="text" class="form-control input-sm form-filter" name="nik"></th>
-                                <th><input type="text" class="form-control input-sm form-filter" name="active"></th>
-                                <th><input type="text" class="form-control input-sm form-filter" name="active"></th>
+                                <th><input type="text" class="form-control input-xs form-filter" name="no_reg"></th>
+                                <th>
+                                    <select type="text" class="form-control input-xs form-filter" name="transaction_type" id="flt_transaction_type">
+                                        <option></option>
+                                    </select>
+                                </th>
+                                <th>
+                                    <select class="form-control input-xs form-filter" name="po_type" id="po_type">
+                                        <option></option>
+                                    </select>
+                                </th>
+                                <th><input type="text" class="form-control input-xs form-filter" name="no_po"></th>
+                                <th><input type="text" class="form-control input-xs form-filter datepicker" name="request_date" autocomplete="off"></th>
+                                <th><input type="text" class="form-control input-xs form-filter" name="requestor"></th>
+                                <th><input type="text" class="form-control input-xs form-filter datepicker" name="po_date" autocomplete="off"></th>
+                                <th><input type="text" class="form-control input-xs form-filter" name="vendor_code"></th>
+                                <th><input type="text" class="form-control input-xs form-filter" name="vendor_name"></th>
                             </tr>
                         </thead>
                         <tbody></tbody>
@@ -38,63 +64,62 @@
         </div>
     </div>
 </div>
-<div id="approve-modal" class="modal fade" role="dialog">
+<div id="approve-modal" class="modal fade" role="dialog" aria-labelledby="largeModal" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
                 <h4 class="modal-title"></h4>
             </div>
             <div class="modal-body">
                 <div class="box-body">
                     <form id="request-form" class="form-horizontal" style="font-size:13px !important">
-                        <div class="form-group">
-                            <label for="plant" class="col-md-3">No registrasi</label>
-                            <div class="col-md-3">
-                                <input type="text" class="form-control input-sm" value="572120171023001" readonly>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="plant" class="col-md-4">NO REGISTRASI</label>
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-control xinput-sm" value="" id="no-reg" name="no-reg" readonly>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="plant" class="col-md-4">TYPE TRANSAKSI</label>
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-control input-sm" value="" id="type-transaksi" name="type-transaksi" readonly>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="plant" class="col-md-4">JENIS PENGAJUAN</label>
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-control input-sm" value="" id="po-type" name="po-type" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="plant" class="col-md-4">BUSINESS AREA</label>
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-control input-sm" value="" id="business-area" name="business-area" readonly>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="plant" class="col-md-4">REQUESTOR</label>
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-control input-sm" value="" id="requestor" name="requestor" readonly>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="plant" class="col-md-4">TANGGAL PENGAJUAN</label>
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-control input-sm" value="" id="tanggal-reg" name="tanggal-reg" readonly>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label for="plant" class="col-md-3">Kategori pengajuan</label>
-                            <div class="col-md-3">
-                                <input type="text" class="form-control input-sm" value="Penambahan" readonly>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="plant" class="col-md-3">jenis pengajuan</label>
-                            <div class="col-md-3">
-                                <input type="text" class="form-control input-sm" value=" melalui PO" readonly>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="plant" class="col-md-3">Tipe Transaksi</label>
-                            <div class="col-md-3">
-                                <input type="text" class="form-control input-sm" value="Barang" readonly>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="plant" class="col-md-3">Business Area pemilik aset</label>
-                            <div class="col-md-3">
-                                <input type="text" class="form-control input-sm" value="4141 - Gawi Mill" readonly>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="plant" class="col-md-3">Business Area lokasi aset</label>
-                            <div class="col-md-3">
-                                <input type="text" class="form-control input-sm" value="4141 - Gawi Mill" readonly>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="plant" class="col-md-3">requestor</label>
-                            <div class="col-md-3">
-                                <input type="text" class="form-control input-sm" value="dadang kurniawan" readonly>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="plant" class="col-md-3">Tanggal pengajuan</label>
-                            <div class="col-md-3">
-                                <input type="text" class="form-control input-sm" value="2 Januari 2019" readonly>
-                            </div>
-                        </div>
+
+                        
+                        
                         <br>
                         <div class="form-group">
                             <div class="col-md-12">
@@ -378,7 +403,8 @@
 <script>
     var request_item = [];
     var bulan = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
-    jQuery(document).ready(function() {
+    $(document).ready(function() 
+    {
         var grid = new Datatable();
         grid.init({
             src: jQuery("#data-table"),
@@ -395,41 +421,116 @@
                 ],
                 "pageLength": 10,
                 ajax: "{!! route('get.approval_grid') !!}",
-                columns: [{
+                columns: [
+                    {
+                        "render": function(data, type, row) 
+                        {
+                            var no_registrasi= row.no_reg.replace(/\//g, '-');
+                            return '<a href="javascript:;" style="font-weight:bold" OnClick="approval(\'' + no_registrasi + '\')">' + row.no_reg + '</a>';
+                        }
+                    }, {
                         "render": function(data, type, row) {
-                            return '<a href="javascript:;" style="font-weight:bold" OnClick="approval(' + row.request_no + ')">' + row.request_no + '</a>';
+                            if (row.type == 1) {
+                                var content = 'Barang'
+                            } else if (row.type == 2) {
+                                var content = 'Jasa'
+                            } else if (row.type == 3) {
+                                var content = 'lain-lain'
+                            }
+
+                            return content;
+                        }
+                    }, {
+                        "render": function(data, type, row) {
+                            if (row.po_type == 0) {
+                                var content = '<span class="label label-primary">SAP</span>';
+                            } else if (row.po_type == 1) {
+                                var content = '<span class="label label-danger">AMP</span>';
+                            }
+
+                            return content;
                         }
                     },
                     {
-                        data: 'request_category',
+                        data: 'no_po',
+                        name: 'no_po'
                     },
                     {
-                        data: 'request_type',
-                    },
-                    {
-                        data: 'business_area',
-                    },
-                    {
-                        data: 'business_area_location',
+                        data: 'request_date',
+                        name: 'request_date'
                     },
                     {
                         data: 'requestor',
-                        username: 'username'
+                        name: 'requestor'
                     },
                     {
-                        "render": function(data, type, row) {
-                            var date = new Date(row.request_date);
-                            var month = date.getMonth();
-                            return date.getDate() + ' ' + bulan[month] + ' ' + date.getFullYear();
-                        }
+                        data: 'po_date',
+                        name: 'po_date'
                     },
+                    {
+                        data: 'vendor_code',
+                        name: 'vendor_code'
+                    },
+                    {
+                        data: 'vendor_name',
+                        name: 'vendor_name'
+                    }
                 ],
                 columnDefs: []
             }
         });
     });
 
-    function approval(id) {
+    function approval(id)
+    {
+        //alert(id);
+        var kata = id;
+        var noreg= kata.replace(/\//g, '-');
+        //alert(noreg); return false;
+
+        $.ajax({
+            type: 'GET',
+            url: "{{ url('approval/view') }}/"+noreg,
+            data: "",
+            //async: false,
+            dataType: 'json',
+            success: function(data) 
+            { 
+                //alert(data.no_reg);
+                $("#request-form #no-reg").val(data.no_reg);
+                $("#request-form #type-transaksi").val(data.type_transaksi);
+                $("#request-form #po-type").val(data.po_type);
+                $("#request-form #business-area").val(data.business_area);
+                $("#request-form #requestor").val(data.requestor);
+                $("#request-form #tanggal-reg").val(data.tanggal_reg);
+                /*                              
+                //alert(data.foto);
+                $("#form-detil #gender").val(data.gender);
+                $("#form-detil #message_view").val(data.message);
+                $("#form-detil #ipaddress").val(data.ipaddress);
+                $("#form-detil #browser").val(data.browser);
+                $("#form-detil #created").val(data.created);
+                if( data.foto != null )
+                {
+                    var folder = '';
+                    if(data.category=="TESTIMONI"){folder="testimonial";}else{folder="contact";}
+                    $(".image").html("<a href='<?php //echo site_url("userfiles"); ?>/"+folder+"/"+data.foto+"' target='_blank'><img src='<?php //echo base_url("userfiles"); ?>/"+folder+"/"+data.foto+"' alt='' width=80></a>");
+                }
+                */
+
+                $("#approve-modal .modal-title").html("<i class='fa fa-edit'></i>  Approval Pendaftaran - <span style='color:#dd4b39'>" + data.no_reg + "</span>");
+
+                $('#approve-modal').modal('show');
+            },
+            error: function(x) 
+            {                           
+                alert("Error: "+ "\r\n\r\n" + x.responseText);
+            }
+        }); 
+    }
+
+    function ___approval(id) 
+    {
         request_item = [];
         jQuery("#edit_id").val(id);
 

@@ -907,6 +907,16 @@
                     //IF JENIS ASSET TYPE = 4030-KENDARAAN & ALAT BERAT
                     if( val.asset_type == 4030 || val.asset_type == 4010 )
                     {
+                        if (val.asset_serie_no === "") {
+                            notify({
+                                type: 'warning',
+                                message: 'No Seri / Rangka pada asset ' + field.name + ' page ' + (key + 1) + ' tidak boleh kosong!'
+                            });
+
+                            valid = false;
+                            return false
+                        }
+                        
                         if (val.asset_imei === "") {
                             notify({
                                 type: 'warning',
@@ -917,15 +927,7 @@
                             return false;
                         }
 
-                        if (val.asset_serie_no === "") {
-                            notify({
-                                type: 'warning',
-                                message: 'No Seri / Rangka pada asset ' + field.name + ' page ' + (key + 1) + ' tidak boleh kosong!'
-                            });
-
-                            valid = false;
-                            return false
-                        }
+                        
                     }
 
                     if (val.asset_year === "") {
@@ -1448,15 +1450,6 @@
 
         if( item.asset_type == 4030 || item.asset_type == 4010 )
         {
-            if (item.asset_imei === "") {
-                valid = false;
-                jQuery('#asset_imei').focus();
-                notify({
-                    type: 'warning',
-                    message: 'No Mesin / IMEI tidak boleh kosong!'
-                });
-            }
-
             if (item.asset_serie_no === "") {
                 valid = false;
                 jQuery('#asset_serie_no').parent().closest('div').addClass('has-warning');
@@ -1467,6 +1460,16 @@
             } else {
                 jQuery('#asset_serie_no').parent().closest('div').removeClass('has-warning');
             }
+
+            if (item.asset_imei === "") {
+                valid = false;
+                jQuery('#asset_imei').focus();
+                notify({
+                    type: 'warning',
+                    message: 'No Mesin / IMEI tidak boleh kosong!'
+                });
+            }
+            
         }
 
         if (item.asset_year === "") {

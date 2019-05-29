@@ -29,75 +29,92 @@ class ApprovalController extends Controller
         return view('approval.index')->with(compact('data'));
     }
 
-    public function dataGrid()
+    public function dataGrid(Request $request)
     {
-        $data = array(
-            array(
-                "id" => '1',
-                "request_no" => '572120171023001',
-                "request_date" => '2019-01-02',
-                "request_category" => 'Penambahan',
-                "request_type" => 'Melalui PO',
-                "business_area" => '4141 - Gawi Mill',
-                "business_area_location" => '4141 - Gawi Mill',
-                "requestor" => 'dadang.kurniawan'
-            ),
-            array(
-                "id" => '1',
-                "request_no" => '572120171023002',
-                "request_date" => '2019-01-02',
-                "request_category" => 'Disposal',
-                "request_type" => 'rusak',
-                "business_area" => '4141 - Gawi Mill',
-                "business_area_location" => '4141 - Gawi Mill',
-                "requestor" => 'dadang.kurniawan'
-            ),
-            array(
-                "id" => '1',
-                "request_no" => '572120171023003',
-                "request_date" => '2019-01-02',
-                "request_category" => 'Penambahan',
-                "request_type" => 'Reklasifikasi',
-                "business_area" => '4141 - Gawi Mill',
-                "business_area_location" => '4141 - Gawi Mill',
-                "requestor" => 'dadang.kurniawan'
-            ),
-            array(
-                "id" => '1',
-                "request_no" => '572120171023004',
-                "request_date" => '2019-01-02',
-                "request_category" => 'Disposal',
-                "request_type" => 'Hilang',
-                "business_area" => '4141 - Gawi Mill',
-                "business_area_location" => '4141 - Gawi Mill',
-                "requestor" => 'dadang.kurniawan'
-            ),
-            array(
-                "id" => '1',
-                "request_no" => '572120171023005',
-                "request_date" => '2019-01-02',
-                "request_category" => 'Penambahan',
-                "request_type" => 'Sewa',
-                "business_area" => '4141 - Gawi Mill',
-                "business_area_location" => '4141 - Gawi Mill',
-                "requestor" => 'dadang.kurniawan'
-            ),
-           
+        $orderColumn = $request->order[0]["column"];
+        $dirColumn = $request->order[0]["dir"];
+        $sortColumn = "";
+        $selectedColumn[] = "";
+        $field = array(
+            array("index" => "0", "field" => "asset.NO_REG", "alias" => "no_reg"),
+            array("index" => "1", "field" => "asset.TYPE_TRANSAKSI ", "alias" => "type"),
+            array("index" => "2", "field" => "asset.PO_TYPE", "alias" => "po_type"),
+            array("index" => "3", "field" => "asset.NO_PO", "alias" => "no_po"),
+            array("index" => "4", "field" => "DATE_FORMAT(asset.TANGGAL_REG, '%d %b %Y')", "alias" => "request_date"),
+            array("index" => "5", "field" => "requestor.name", "alias" => "requestor"),
+            array("index" => "6", "field" => "DATE_FORMAT(asset.TANGGAL_PO, '%d %b %Y')", "alias" => "po_date"),
+            array("index" => "7", "field" => "asset.KODE_VENDOR", "alias" => "vendor_code"),
+            array("index" => "8", "field" => "asset.NAMA_VENDOR", "alias" => "vendor_name"),
         );
 
+        foreach ($field as $row) {
+            if ($row["alias"]) {
+                $selectedColumn[] = $row["field"] . " as " . $row["alias"];
+            } else {
+                $selectedColumn[] = $row["field"];
+            }
+
+            if ($row["index"] == $orderColumn) {
+                $orderColumnName = $row["field"];
+            }
+        }
+
+        $sql = '
+            SELECT asset.ID as id ' . implode(", ", $selectedColumn) . '
+            FROM TR_REG_ASSET as asset
+            INNER JOIN TBM_USER as requestor ON (requestor.id=asset.CREATED_BY)
+            WHERE asset.NO_REG > 0
+        ';
+
+        $total_data = DB::select(DB::raw($sql));
+
+        if ($request->no_po)
+            $sql .= " AND asset.NO_PO  like '%" . $request->no_po . "%'";
+       
+            if ($request->no_reg)
+            $sql .= " AND asset.NO_REG  like '%" . $request->no_reg . "%'";
+
+        if ($request->requestor)
+            $sql .= " AND requestor.name  like '%" . $request->requestor . "%'";
+
+        if ($request->vendor_code)
+            $sql .= " AND asset.KODE_VENDOR  like '%" . $request->vendor_code . "%'";
+
+        if ($request->vendor_name)
+            $sql .= " AND asset.NAMA_VENDOR  like '%" . $request->vendor_name . "%'";
+
+        if ($request->transaction_type)
+            $sql .= " AND asset.TYPE_TRANSAKSI  = " . $request->transaction_type;
+     
+        if($request->po_type !='')
+            $sql .= " AND asset.PO_TYPE  = " . $request->po_type;
+
+        if ($request->request_date)
+            $sql .= " AND DATE_FORMAT(asset.TANGGAL_REG, '%Y-%m-%d') = '" . DATE_FORMAT(date_create($request->request_date), 'Y-m-d'). "'";
+
+
+        if ($request->po_date)
+            $sql .= " AND DATE_FORMAT(asset.TANGGAL_PO, '%Y-%m-%d') = '" . DATE_FORMAT(date_create($request->po_date), 'Y-m-d') ."'";
+
+        if ($orderColumn != "") {
+            $sql .= " ORDER BY " . $field[$orderColumn]['field'] . " " . $dirColumn;
+        }
+        else
+        {
+            $sql .= " ORDER BY asset.ID DESC ";
+        }
+
+        $data = DB::select(DB::raw($sql));
         $iTotalRecords = count($data);
-        //$iDisplayLength = intval($_REQUEST['length']);
-        $iDisplayLength = intval(10);
-        $iDisplayLength = $iDisplayLength < 0 ?$iTotalRecords : $iDisplayLength;
-        //$iDisplayStart = intval($_REQUEST['start']);
-        $iDisplayStart = intval(0);
-        //$sEcho = intval($_REQUEST['draw']);
-        $sEcho = intval(2);
+        $iDisplayLength = intval($request->length);
+        $iDisplayLength = $iDisplayLength < 0 ? $iTotalRecords : $iDisplayLength;
+        $iDisplayStart = intval($request->start);
+        $sEcho = intval($request->draw);
         $records = array();
         $records["data"] = array();
 
         $end = $iDisplayStart + $iDisplayLength;
-        $end = $end > $iTotalRecords ?$iTotalRecords : $end;
+        $end = $end > $iTotalRecords ? $iTotalRecords : $end;
 
         for ($i = $iDisplayStart; $i < $end; $i++) {
             $records["data"][] =  $data[$i];
@@ -135,5 +152,58 @@ class ApprovalController extends Controller
         ));
         $data = $service;
         return response()->json(array('data' => $data->data));
+    }
+
+    function view($id)
+    {
+        $noreg = str_replace("-", "/", $id);
+
+        $records = array();
+
+        $sql = " SELECT a.*, date_format(a.tanggal_reg,'%d-%m-%Y') AS TANGGAL_REG, b.description_code AS CODE_AREA, b.description AS NAME_AREA, c.name AS REQUESTOR 
+                    FROM TR_REG_ASSET a 
+                        LEFT JOIN TM_GENERAL_DATA b ON a.business_area = b.description_code AND b.general_code = 'plant'
+                        LEFT JOIN TBM_USER c ON a.created_by = c.id 
+                    WHERE a.no_reg = '$noreg' ";
+        $data = DB::SELECT($sql);
+
+        //echo "<pre>"; print_r($data); die();
+        
+        if($data)
+        {
+            $type_transaksi = array(
+                1 => 'Barang',
+                2 => 'Jasa',
+                3 => 'Lain-lain',
+            );
+
+            $po_type = array(
+                0 => 'SAP',
+                1 => 'AMP'
+            );
+
+            foreach ($data as $k => $v) 
+            {
+                //echo "<pre>"; print_r($v->NO_REG);
+                # code...
+
+                $records[] = array(
+                    'no_reg' => $v->NO_REG,
+                    'type_transaksi' => $type_transaksi[$v->TYPE_TRANSAKSI],
+                    'po_type' => $po_type[$v->PO_TYPE],
+                    'business_area' => $v->CODE_AREA.' - '.$v->NAME_AREA,
+                    'requestor' => $v->REQUESTOR,
+                    'tanggal_reg' => $v->TANGGAL_REG
+                );
+
+            }
+        }
+        
+        //echo "<pre>"; print_r($records[0]); die();
+
+        //echo $id; die();
+        //$records = array('id'=>$id);
+        //echo response()->json($records);
+        echo json_encode($records[0]);
     }
 }
