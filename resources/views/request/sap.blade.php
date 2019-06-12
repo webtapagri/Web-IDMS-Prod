@@ -1208,7 +1208,8 @@
         changePage(1);
     }
 
-    function assetInfo(index) {
+    function assetInfo(index) 
+    {
         var obj = index - 1;
         var key = jQuery('#detail_item_selected').val();
         var request = request_item[key];
@@ -1235,7 +1236,8 @@
             jQuery("input[name='asset_condition']").prop("checked", false);
         }
 
-        jQuery('#asset_location').val(item.asset_location);
+        //jQuery('#asset_location').val(item.asset_location);
+        $('#asset_location').val(business_area.val());
         jQuery('#asset_location').trigger('change');
         jQuery('#asset_type').val(item.asset_type);
         jQuery('#asset_type').trigger("change");

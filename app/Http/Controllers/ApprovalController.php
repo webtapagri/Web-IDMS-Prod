@@ -253,7 +253,7 @@ class ApprovalController extends Controller
                         LEFT JOIN TM_JENIS_ASSET b ON a.jenis_asset = b.jenis_asset_code 
                         LEFT JOIN TM_GROUP_ASSET c ON a.group = c.group_code AND a.jenis_asset = c.jenis_asset_code
                         LEFT JOIN TM_SUBGROUP_ASSET d ON a.sub_group = d.subgroup_code AND a.group = d.group_code
-                    WHERE a.no_reg = '{$noreg}' AND a.asset_po_id = '{$id}' 
+                    WHERE a.no_reg = '{$noreg}' AND a.asset_po_id = '{$id}' AND a.DELETED is null
                         ORDER BY a.kode_material ";
         //echo $sql; die();
         $data = DB::SELECT($sql);
@@ -265,9 +265,11 @@ class ApprovalController extends Controller
             {
                 $records[] = array
                 (
+                    'id' => $v->ID,
                     'no_po' => $v->NO_PO,
+                    'asset_po_id' => $v->ASSET_PO_ID,
                     'tgl_po' => $v->CREATED_AT,
-                    'kondisi_asset' => $kondisi[$v->KONDISI_ASSET],
+                    'kondisi_asset' => @$kondisi[$v->KONDISI_ASSET],
                     'jenis_asset' => $v->JENIS_ASSET.'-'.$v->JENIS_ASSET_NAME,
                     'group' => $v->GROUP.'-'.$v->GROUP_NAME,
                     'sub_group' => $v->SUB_GROUP.'-'.$v->SUB_GROUP_NAME,
@@ -279,11 +281,55 @@ class ApprovalController extends Controller
                     'lokasi' => $v->LOKASI_BA_DESCRIPTION,
                     'tahun' => $v->TAHUN_ASSET,
                     'info' => $v->INFORMASI,
+                    'file' => $this->get_asset_file($v->ID,$noreg),
 
                 );
             }
         }
 
         echo json_encode($records);
+    }
+
+    function get_asset_file($id,$noreg)
+    {
+        $records = array();
+        $sql = " SELECT a.* FROM TR_REG_ASSET_DETAIL_FILE a WHERE a.no_reg = '{$noreg}' AND a.asset_po_detail_id = '{$id}' ";
+        $data = DB::SELECT($sql);//echo $sql; die();
+        //echo "<pre>"; print_r($data); die();
+
+        if($data)
+        {
+            foreach( $data as $k => $v )
+            {
+                $records[] = array
+                (
+                    'id' => $v->ID,
+                    'file_category' => $v->FILE_CATEGORY,
+                    'filename' => $v->FILENAME,
+                    'jenis_foto' => $v->JENIS_FOTO,
+                    'file_thumb' => $v->FILE_UPLOAD
+                );
+            }
+        }
+
+        return $records;
+    }
+
+    function delete_asset(Request $request, $id)
+    {
+        //echo $id; die();
+        DB::beginTransaction();
+
+        try 
+        {
+            $sql = " UPDATE TR_REG_ASSET_DETAIL SET DELETED = 'X' WHERE ID = $id ";
+            DB::UPDATE($sql);    
+
+            DB::commit();
+            return response()->json(['status' => true, "message" => 'Data is successfully ' . ($id ? 'updated' : 'update')]);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json(['status' => false, "message" => $e->getMessage()]);
+        }
     }
 }

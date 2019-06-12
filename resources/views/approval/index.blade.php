@@ -167,6 +167,8 @@
     var bulan = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
     $(document).ready(function() 
     {
+        $("#box-detail-item").fadeIn();
+
         var grid = new Datatable();
         grid.init({
             src: jQuery("#data-table"),
@@ -250,6 +252,8 @@
         var noreg= kata.replace(/\//g, '-');
         //alert(noreg); return false;
 
+         $("#box-detail-item").hide();
+
         $.ajax({
             type: 'GET',
             url: "{{ url('approval/view') }}/"+noreg,
@@ -269,7 +273,7 @@
                 var item = '<table class="table xtable-condensed table-responsive table-striped" id="request-item-table" style="font-size:13px">';
                 item += '<th>NO.</th>';
                 item += '<th>NO PO</th>';
-                item += '<th>ITEM</th>';
+                item += '<th>ITEM PO</th>';
                 item += '<th>QTY</th>';
                 item += '<th>KODE MATERIAL</th>';
                 item += '<th>NAMA MATERIAL</th>';
@@ -425,6 +429,11 @@
                 item += "<div class='form-group'>";
                 item += "<div class='col-md-12 xnav-tabs-custom'>";
 
+                if(total_tab == 0)
+                {
+                    item += "<div class='callout callout-danger'><h4>Warning!</h4><p>Belum ada Informasi asset</p></div>";
+                }
+
                 item += "<ul class='nav nav-tabs'>";
                 for(i=0;i<total_tab;i++)
                 {
@@ -434,6 +443,7 @@
                     item += "<li class='"+active+"'><a href='#panel-"+no+"' data-toggle='tab' class='panel-"+no+"'>Asset "+no+"</a></li> ";
                     no++;
                 }
+                //item += "<li class='"+active+"'><a href='#panel-file' data-toggle='tab' class='panel-"+no+"'>Asset "+no+"</a></li> ";
                 item += "</ul>";
 
                 item += "<div class='tab-content' style='border: 1px solid #e0dcdc;border-top:none; font-size:12px !important'>";
@@ -471,11 +481,66 @@
                     item += " <div class='form-group'><label for='plant' class='col-md-4'>MERK</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='' value='"+val.merk+"' id='' autocomplete='off' readonly></div></div>";
                     item += " <div class='form-group'><label for='plant' class='col-md-4'>SPESIFIKASI/WARNA</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='' value='"+val.spesifikasi_or_warna+"' id='' autocomplete='off' readonly></div></div>";
                     item += " <div class='form-group'><label for='plant' class='col-md-4'>TAHUN</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='' value='"+val.tahun+"' id='' autocomplete='off' readonly></div></div>";
-                    item += "<div class='form-group' align='right'><input type='button' style='margin-right:10px' class='btn btn-warning btn-sm' value='Delete'></div>";
-
+                    item += "<div class='form-group' align='right'><div class='btn btn-warning btn-sm' value='Delete' OnClick='delAsset("+val.id+")' style='margin-right:15px'><i class='fa fa-trash'></i> DELETE</div></div>";
+                    //item += "<div class='form-group' align='right'><button type='button' class='btn btn-flat label-danger' OnClick='delAsset("+val.id+")' style='margin-right: 5px'>Delete</button></div>";
                     item += "</div>";
 
+                    /* FILE UPLOAD */
+                    item += "<div class='col-md-12'><div class='row'>";
+                    item += "<span class='label bg-blue'><i class='fa fa-bars'></i> RINCIAN FILE ASSET</span><br/><br/>";
+                    
+                    var file_foto_asset = [];
+                    var file_foto_seri = [];
+                    var file_foto_mesin = [];
 
+                    if (val.file === undefined || val.file.length == 0) 
+                    {
+                        item += "<div class='callout callout-danger'><h4>Warning!</h4><p>Belum ada file asset</p></div>";
+                    }
+                    else
+                    {
+                        $.each(val.file, function(k, v) 
+                        {
+
+                            if (v.category === "asset") {
+                                file_foto_asset = {
+                                    name: v.file_name,
+                                    size: v.size,
+                                    type: v.type,
+                                    file: v.file
+                                };
+                            } 
+                            else if (v.category === "no seri") 
+                            {
+                                file_foto_seri = {
+                                    name: v.file_name,
+                                    size: v.size,
+                                    type: v.type,
+                                    file: v.file
+                                };
+                            } 
+                            else if (v.category === "imei") 
+                            {
+                                file_foto_mesin = {
+                                    name: v.file_name,
+                                    size: v.size,
+                                    type: v.type,
+                                    file: v.file
+                                };
+                            }
+
+                            //alert(v.file_thumb); 
+                            //$("#foto_thumb").prop('src', v.file_thumb);
+
+                            //item += "<div class='col-md-4'><b>"+v.file_category+"</b><br/>"+v.filename+"</div>";
+                            
+                            item += "<div class='col-md-4'><b>"+v.file_category+"</b><br/> <img id='foto_thumb' name='foto_thumb' data-status='0' title='' class='img-responsive' src='"+v.file_thumb+"'></div>";
+                        
+                        });
+                    }
+                    
+                    item += "</div></div>";
+                    /* END FILE UPLOAD */
                     
                     item += "</div>";
 
@@ -488,6 +553,7 @@
                 item += "</div>";
                 item += "</div>";
 
+                $("#box-detail-item").fadeIn();
                 $("#box-detail-item").html(item);
                 //alert(noreg);
             },
@@ -496,8 +562,52 @@
                 alert("Error: "+ "\r\n\r\n" + x.responseText);
             }
         });  
-
         
+    }
+
+    function delAsset(id)
+    {
+        if(confirm('are you sure?'))
+        {
+            
+            //e.preventDefault();
+            var param = $(this).serialize();
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                url: "{{ url('approval/delete_asset') }}/"+id,
+                method: "POST",
+                data: param,
+                beforeSend: function() {
+                    jQuery('.loading-event').fadeIn();
+                },
+                success: function(result) 
+                {
+                    //alert(result.status);
+                    if (result.status) 
+                    {
+                        $("#approve-modal").modal("hide");
+                        $("#data-table").DataTable().ajax.reload();
+                        notify({
+                            type: 'success',
+                            message: result.message
+                        });
+                    } else {
+                        notify({
+                            type: 'warning',
+                            message: result.message
+                        });
+                    }
+                    
+                },
+                complete: function() {
+                    jQuery('.loading-event').fadeOut();
+                }
+            });
+        }
     }
 
 </script>
