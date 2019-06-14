@@ -1105,9 +1105,8 @@
             jQuery("input[name='asset_condition']").prop("checked", false);
         }
 
-
-
-        jQuery('#asset_location').val(item.asset_location);
+        //jQuery('#asset_location').val(item.asset_location);
+        $('#asset_location').val(business_area.val());
         jQuery('#asset_location').trigger('change');
         jQuery('#asset_location').val(item.asset_location);
         jQuery('#asset_location').trigger('change');

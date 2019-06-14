@@ -163,6 +163,13 @@ class RequestController extends Controller
             //$reg_no = rand(0, 1000000);
             $reg_no = $this->get_reg_no();
 
+            // INSERT TO PROCEDURE
+            //DB::SELECT('call create_approval(?,?,?,?)',array(6, $request->business_area,'',$reg_no));
+            $po_type = $request->po_type;
+            if($po_type == 0){ $menu_code = 'P1'; }else{ $menu_code = 'P2'; }
+            DB::SELECT('call create_approval("'.$menu_code.'", "'.$request->business_area.'","","'.$reg_no.'")');
+            //die();
+
             $asset_id = DB::table('TR_REG_ASSET')->insertGetId([
                 "CREATED_BY" => Session::get('user_id'),
                 "NO_REG" => $reg_no,

@@ -35,7 +35,12 @@ class ApprovalController extends Controller
         $dirColumn = $request->order[0]["dir"];
         $sortColumn = "";
         $selectedColumn[] = "";
-        $field = array(
+        $addwhere = "";
+        $role_id = Session::get('role_id');
+        $user_id = Session::get('user_id');
+        
+        $field = array
+        (
             array("index" => "0", "field" => "asset.NO_REG", "alias" => "no_reg"),
             array("index" => "1", "field" => "asset.TYPE_TRANSAKSI ", "alias" => "type"),
             array("index" => "2", "field" => "asset.PO_TYPE", "alias" => "po_type"),
@@ -47,7 +52,8 @@ class ApprovalController extends Controller
             array("index" => "8", "field" => "asset.NAMA_VENDOR", "alias" => "vendor_name"),
         );
 
-        foreach ($field as $row) {
+        foreach ($field as $row) 
+        {
             if ($row["alias"]) {
                 $selectedColumn[] = $row["field"] . " as " . $row["alias"];
             } else {
@@ -59,12 +65,24 @@ class ApprovalController extends Controller
             }
         }
 
+        // it@140619 JOIN W v_outstanding
+        if($role_id!=4){ $addwhere .= " AND approval.user_id = '{$user_id}' "; }
+        $sql = '
+            SELECT distinct(asset.id) as id '.implode(", ", $selectedColumn).'
+            FROM v_outstanding as approval 
+                LEFT JOIN TR_REG_ASSET as asset ON ( approval.document_code = asset.no_reg)
+                INNER JOIN TBM_USER as requestor ON (requestor.id=asset.CREATED_BY)
+            WHERE asset.NO_REG > 0 '.$addwhere.'
+        ';
+
+        /*
         $sql = '
             SELECT asset.ID as id ' . implode(", ", $selectedColumn) . '
             FROM TR_REG_ASSET as asset
             INNER JOIN TBM_USER as requestor ON (requestor.id=asset.CREATED_BY)
             WHERE asset.NO_REG > 0
         ';
+        */
 
         $total_data = DB::select(DB::raw($sql));
 
@@ -104,7 +122,10 @@ class ApprovalController extends Controller
             $sql .= " ORDER BY asset.ID DESC ";
         }
 
+        //echo $sql; die();
+
         $data = DB::select(DB::raw($sql));
+
         $iTotalRecords = count($data);
         $iDisplayLength = intval($request->length);
         $iDisplayLength = $iDisplayLength < 0 ? $iTotalRecords : $iDisplayLength;
@@ -331,5 +352,126 @@ class ApprovalController extends Controller
             DB::rollback();
             return response()->json(['status' => false, "message" => $e->getMessage()]);
         }
+    }
+
+    public function dataGridHistory(Request $request)
+    {
+        $orderColumn = $request->order[0]["column"];
+        $dirColumn = $request->order[0]["dir"];
+        $sortColumn = "";
+        $selectedColumn[] = "";
+        $addwhere = "";
+        $role_id = Session::get('role_id');
+        $user_id = Session::get('user_id');
+        
+        $field = array
+        (
+            array("index" => "0", "field" => "asset.NO_REG", "alias" => "no_reg"),
+            array("index" => "1", "field" => "asset.TYPE_TRANSAKSI ", "alias" => "type"),
+            array("index" => "2", "field" => "asset.PO_TYPE", "alias" => "po_type"),
+            array("index" => "3", "field" => "asset.NO_PO", "alias" => "no_po"),
+            array("index" => "4", "field" => "DATE_FORMAT(asset.TANGGAL_REG, '%d %b %Y')", "alias" => "request_date"),
+            array("index" => "5", "field" => "requestor.name", "alias" => "requestor"),
+            array("index" => "6", "field" => "DATE_FORMAT(asset.TANGGAL_PO, '%d %b %Y')", "alias" => "po_date"),
+            array("index" => "7", "field" => "asset.KODE_VENDOR", "alias" => "vendor_code"),
+            array("index" => "8", "field" => "asset.NAMA_VENDOR", "alias" => "vendor_name"),
+        );
+
+        foreach ($field as $row) 
+        {
+            if ($row["alias"]) {
+                $selectedColumn[] = $row["field"] . " as " . $row["alias"];
+            } else {
+                $selectedColumn[] = $row["field"];
+            }
+
+            if ($row["index"] == $orderColumn) {
+                $orderColumnName = $row["field"];
+            }
+        }
+
+        // it@140619 JOIN W v_outstanding
+        //if($role_id!=4){ $addwhere .= " AND approval.user_id = '{$user_id}' "; }
+        /*$sql = '
+            SELECT distinct(asset.id) as id '.implode(", ", $selectedColumn).'
+            FROM v_outstanding as approval 
+                LEFT JOIN TR_REG_ASSET as asset ON ( approval.document_code = asset.no_reg)
+                INNER JOIN TBM_USER as requestor ON (requestor.id=asset.CREATED_BY)
+            WHERE asset.NO_REG > 0 '.$addwhere.'
+        ';*/
+
+        $sql = '
+            SELECT asset.ID as id ' . implode(", ", $selectedColumn) . '
+            FROM TR_REG_ASSET as asset
+            INNER JOIN TBM_USER as requestor ON (requestor.id=asset.CREATED_BY)
+            WHERE asset.NO_REG > 0
+        ';
+
+        $total_data = DB::select(DB::raw($sql));
+
+        if ($request->no_po)
+            $sql .= " AND asset.NO_PO  like '%" . $request->no_po . "%'";
+       
+            if ($request->no_reg)
+            $sql .= " AND asset.NO_REG  like '%" . $request->no_reg . "%'";
+
+        if ($request->requestor)
+            $sql .= " AND requestor.name  like '%" . $request->requestor . "%'";
+
+        if ($request->vendor_code)
+            $sql .= " AND asset.KODE_VENDOR  like '%" . $request->vendor_code . "%'";
+
+        if ($request->vendor_name)
+            $sql .= " AND asset.NAMA_VENDOR  like '%" . $request->vendor_name . "%'";
+
+        if ($request->transaction_type)
+            $sql .= " AND asset.TYPE_TRANSAKSI  = " . $request->transaction_type;
+     
+        if($request->po_type !='')
+            $sql .= " AND asset.PO_TYPE  = " . $request->po_type;
+
+        if ($request->request_date)
+            $sql .= " AND DATE_FORMAT(asset.TANGGAL_REG, '%Y-%m-%d') = '" . DATE_FORMAT(date_create($request->request_date), 'Y-m-d'). "'";
+
+
+        if ($request->po_date)
+            $sql .= " AND DATE_FORMAT(asset.TANGGAL_PO, '%Y-%m-%d') = '" . DATE_FORMAT(date_create($request->po_date), 'Y-m-d') ."'";
+
+        if ($orderColumn != "") {
+            $sql .= " ORDER BY " . $field[$orderColumn]['field'] . " " . $dirColumn;
+        }
+        else
+        {
+            $sql .= " ORDER BY asset.ID DESC ";
+        }
+
+        //echo $sql; die();
+
+        $data = DB::select(DB::raw($sql));
+
+        $iTotalRecords = count($data);
+        $iDisplayLength = intval($request->length);
+        $iDisplayLength = $iDisplayLength < 0 ? $iTotalRecords : $iDisplayLength;
+        $iDisplayStart = intval($request->start);
+        $sEcho = intval($request->draw);
+        $records = array();
+        $records["data"] = array();
+
+        $end = $iDisplayStart + $iDisplayLength;
+        $end = $end > $iTotalRecords ? $iTotalRecords : $end;
+
+        for ($i = $iDisplayStart; $i < $end; $i++) {
+            $records["data"][] =  $data[$i];
+        }
+
+        if (isset($_REQUEST["customActionType"]) && $_REQUEST["customActionType"] == "group_action") {
+            $records["customActionStatus"] = "OK"; // pass custom message(useful for getting status of group actions)
+            $records["customActionMessage"] = "Group action successfully has been completed. Well done!"; // pass custom message(useful for getting status of group actions)
+        }
+
+        $records["draw"] = $sEcho;
+        $records["recordsTotal"] = $iTotalRecords;
+        $records["recordsFiltered"] = $iTotalRecords;
+        return response()->json($records);
     }
 }

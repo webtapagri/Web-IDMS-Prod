@@ -1,14 +1,138 @@
+<?php 
+    //echo Session::get('role_id').'<br/>';
+    //echo "<pre>"; print_r(session()->all()); 
+    //die();
+?>
+
 @extends('adminlte::page')
 @section('title', 'FAMS - approval')
 
 @section('content')
+
+<div class="row" style="margin-top:-3%">
+
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1>
+            TASK
+            <small>Approval</small>
+        </h1>
+        <ol class="breadcrumb">
+            <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li class="active">Task Approval</li>
+        </ol>
+    </section><br/>
+
+<div class="col-md-12">
+  <!-- Custom Tabs -->
+  <div class="nav-tabs-custom">
+    <ul class="nav nav-tabs">
+      <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="true">OUTSTANDING</a></li>
+      <li class=""><a href="#tab_2" data-toggle="tab" aria-expanded="false">HISTORY</a></li>
+    </ul>
+    <div class="tab-content">
+      <div class="tab-pane active" id="tab_1">
+            <div class="small table-container">
+                    <div class="table-actions-wrapper">
+                        <button class="btn btn-flat btn-sm btn-flat label-danger btn-refresh"><i class="glyphicon glyphicon-refresh" title="Refresh"></i></button>
+                    </div>
+                    <table id="data-table" class="table table-bordered table-condensed">
+                        <thead>
+                            <tr role="row" class="heading">
+                                <th>NO REG</th>
+                                <th>TIPE</th>
+                                <th>PO</th>
+                                <th>NO PO</th>
+                                <th>TGL PENGAJUAN</th>
+                                <th>REQUESTOR</th>
+                                <th>TGL PO</th>
+                                <th>KODE VENDOR</th>
+                                <th>NAMA VENDOR</th>
+                            </tr>
+                            <tr role="row" class="filter">
+                                <th><input type="text" class="form-control input-xs form-filter" name="no_reg"></th>
+                                <th>
+                                    <select type="text" class="form-control input-xs form-filter" name="transaction_type" id="flt_transaction_type">
+                                        <option></option>
+                                    </select>
+                                </th>
+                                <th>
+                                    <select class="form-control input-xs form-filter" name="po_type" id="po_type">
+                                        <option></option>
+                                    </select>
+                                </th>
+                                <th><input type="text" class="form-control input-xs form-filter" name="no_po"></th>
+                                <th><input type="text" class="form-control input-xs form-filter datepicker" name="request_date" autocomplete="off"></th>
+                                <th><input type="text" class="form-control input-xs form-filter" name="requestor"></th>
+                                <th><input type="text" class="form-control input-xs form-filter datepicker" name="po_date" autocomplete="off"></th>
+                                <th><input type="text" class="form-control input-xs form-filter" name="vendor_code"></th>
+                                <th><input type="text" class="form-control input-xs form-filter" name="vendor_name"></th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+            </div>
+      </div>
+      <!-- /.tab-pane -->
+      <div class="tab-pane" id="tab_2">
+        <div class="small table-container">
+                    <div class="table-actions-wrapper">
+                        <button class="btn btn-flat btn-sm btn-flat label-danger btn-refresh"><i class="glyphicon glyphicon-refresh" title="Refresh"></i></button>
+                    </div>
+                    <table id="data-table-history" class="table table-bordered table-condensed">
+                        <thead>
+                            <tr role="row" class="heading">
+                                <th>NO REG</th>
+                                <th>TIPE</th>
+                                <th>PO</th>
+                                <th>NO PO</th>
+                                <th>TGL PENGAJUAN</th>
+                                <th>REQUESTOR</th>
+                                <th>TGL PO</th>
+                                <th>KODE VENDOR</th>
+                                <th>NAMA VENDOR</th>
+                            </tr>
+                            <tr role="row" class="filter">
+                                <th><input type="text" class="form-control input-xs form-filter" name="no_reg"></th>
+                                <th>
+                                    <select type="text" class="form-control input-xs form-filter" name="transaction_type" id="flt_transaction_type">
+                                        <option></option>
+                                    </select>
+                                </th>
+                                <th>
+                                    <select class="form-control input-xs form-filter" name="po_type" id="po_type">
+                                        <option></option>
+                                    </select>
+                                </th>
+                                <th><input type="text" class="form-control input-xs form-filter" name="no_po"></th>
+                                <th><input type="text" class="form-control input-xs form-filter datepicker" name="request_date" autocomplete="off"></th>
+                                <th><input type="text" class="form-control input-xs form-filter" name="requestor"></th>
+                                <th><input type="text" class="form-control input-xs form-filter datepicker" name="po_date" autocomplete="off"></th>
+                                <th><input type="text" class="form-control input-xs form-filter" name="vendor_code"></th>
+                                <th><input type="text" class="form-control input-xs form-filter" name="vendor_name"></th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+            </div>
+      </div>
+      <!-- /.tab-pane -->
+    </div>
+    <!-- /.tab-content -->
+  </div>
+  <!-- nav-tabs-custom -->
+</div>
+<!-- /.col -->
+</div>
+
+<?php /*
 <div class="row" style="margin-top:-3%">
 
     <!-- Content Header (Page header) -->
     <section class="content-header">
         <h1>
             Outstanding
-            <small>Approval</small>
+            <small>Task</small>
         </h1>
         <ol class="breadcrumb">
             <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
@@ -26,15 +150,15 @@
                     <table id="data-table" class="table table-bordered table-condensed">
                         <thead>
                             <tr role="row" class="heading">
-                                <th>No Reg</th>
-                                <th>Tipe</th>
+                                <th>NO REG</th>
+                                <th>TIPE</th>
                                 <th>PO</th>
-                                <th>No PO</th>
-                                <th>Tgl.Pengajuan</th>
-                                <th>Requestor</th>
-                                <th>Tgl. PO</th>
-                                <th>Kode Vendor</th>
-                                <th>Nama Vendor</th>
+                                <th>NO PO</th>
+                                <th>TGL PENGAJUAN</th>
+                                <th>REQUESTOR</th>
+                                <th>TGL PO</th>
+                                <th>KODE VENDOR</th>
+                                <th>NAMA VENDOR</th>
                             </tr>
                             <tr role="row" class="filter">
                                 <th><input type="text" class="form-control input-xs form-filter" name="no_reg"></th>
@@ -64,6 +188,7 @@
         </div>
     </div>
 </div>
+*/ ?>
 
 <div id="approve-modal" class="modal fade" role="dialog" aria-labelledby="largeModal" aria-hidden="true">
     <div class="modal-dialog modal-lg">
@@ -243,6 +368,82 @@
                 columnDefs: []
             }
         });
+
+        var grid_history = new Datatable();
+        grid_history.init({
+            src: jQuery("#data-table-history"),
+            onSuccess: function(grid) {},
+            onError: function(grid) {},
+            onDataLoad: function(grid) {},
+            loadingMessage: 'Loading...',
+            dataTable: {
+                "dom": "<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'<'table-group-actions pull-right'>>r>t<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'>>",
+                "bStateSave": true, // save datatable state(pagination, sort, etc) in cookie.
+                "lengthMenu": [
+                    [10, 20, 50, 100, 150],
+                    [10, 20, 50, 100, 150]
+                ],
+                "pageLength": 10,
+                ajax: "{!! route('get.approval_grid_history') !!}",
+                columns: [
+                    {
+                        "render": function(data, type, row) 
+                        {
+                            var no_registrasi= row.no_reg.replace(/\//g, '-');
+                            return '<a href="javascript:;" style="font-weight:bold" OnClick="approval(\'' + no_registrasi + '\')">' + row.no_reg + '</a>';
+                        }
+                    }, {
+                        "render": function(data, type, row) {
+                            if (row.type == 1) {
+                                var content = 'Barang'
+                            } else if (row.type == 2) {
+                                var content = 'Jasa'
+                            } else if (row.type == 3) {
+                                var content = 'lain-lain'
+                            }
+
+                            return content;
+                        }
+                    }, {
+                        "render": function(data, type, row) {
+                            if (row.po_type == 0) {
+                                var content = '<span class="label label-primary">SAP</span>';
+                            } else if (row.po_type == 1) {
+                                var content = '<span class="label label-danger">AMP</span>';
+                            }
+
+                            return content;
+                        }
+                    },
+                    {
+                        data: 'no_po',
+                        name: 'no_po'
+                    },
+                    {
+                        data: 'request_date',
+                        name: 'request_date'
+                    },
+                    {
+                        data: 'requestor',
+                        name: 'requestor'
+                    },
+                    {
+                        data: 'po_date',
+                        name: 'po_date'
+                    },
+                    {
+                        data: 'vendor_code',
+                        name: 'vendor_code'
+                    },
+                    {
+                        data: 'vendor_name',
+                        name: 'vendor_name'
+                    }
+                ],
+                columnDefs: []
+            }
+        });
+
     });
 
     function approval(id)
