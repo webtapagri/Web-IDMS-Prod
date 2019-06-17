@@ -474,4 +474,30 @@ class ApprovalController extends Controller
         $records["recordsFiltered"] = $iTotalRecords;
         return response()->json($records);
     }
+
+    function update_status(Request $request, $status, $noreg)
+    {
+        //echo $status.'===='.$noreg; die();
+        //A====19.06-AMS-PDFA-00009
+
+        //echo "<pre>"; print_r($_REQUEST); die();
+
+        $no_registrasi = str_replace("-", "/", $noreg);
+        $user_id = Session::get('user_id');
+        $note = $request->parNote;
+        //echo $note;die();
+
+        DB::beginTransaction();
+
+        try 
+        {
+            DB::SELECT('call update_approval("'.$no_registrasi.'", "'.$user_id.'","'.$status.'", "'.$note.'")');
+
+            DB::commit();
+            return response()->json(['status' => true, "message" => 'Data is successfully ' . ($no_registrasi ? 'updated' : 'update')]);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json(['status' => false, "message" => $e->getMessage()]);
+        }
+    }
 }

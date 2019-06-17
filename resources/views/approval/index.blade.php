@@ -276,7 +276,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-flat btn-default" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-flat label-danger" OnClick="saveRequest()" style="margin-right: 5px;">Submit</button>
+                <button type="button" class="btn btn-flat label-danger" OnClick="changeStatus('A')" style="margin-right: 5px;">Approve</button>
                 <button type="button" class="btn btn-flat label-danger" OnClick="saveRequest()" style="margin-right: 5px;">Reject</button>
                 <button type="button" class="btn btn-flat label-danger" OnClick="saveRequest()" style="margin-right: 5px;">Revise</button>
                 <button type="button" class="btn btn-flat label-danger" OnClick="saveRequest()" style="margin-right: 5px;">Simpan</button>
@@ -506,7 +506,7 @@
 
                 $("#box-item-detail").html(item);
 
-                $("#approve-modal .modal-title").html("<i class='fa fa-edit'></i>  Approval Pendaftaran - <span style='color:#dd4b39'>" + data.no_reg + "</span>");
+                $("#approve-modal .modal-title").html("<i class='fa fa-edit'></i>  Approval Pendaftaran - <span style='color:#dd4b39'>" + data.no_reg + "</span><input type='hidden' id='getnoreg' name='getnoreg' value='"+data.no_reg+"' >");
 
                 $('#approve-modal').modal('show');
             },
@@ -782,6 +782,57 @@
                 url: "{{ url('approval/delete_asset') }}/"+id,
                 method: "POST",
                 data: param,
+                beforeSend: function() {
+                    jQuery('.loading-event').fadeIn();
+                },
+                success: function(result) 
+                {
+                    //alert(result.status);
+                    if (result.status) 
+                    {
+                        $("#approve-modal").modal("hide");
+                        $("#data-table").DataTable().ajax.reload();
+                        notify({
+                            type: 'success',
+                            message: result.message
+                        });
+                    } else {
+                        notify({
+                            type: 'warning',
+                            message: result.message
+                        });
+                    }
+                    
+                },
+                complete: function() {
+                    jQuery('.loading-event').fadeOut();
+                }
+            });
+        }
+    }
+
+    function changeStatus(status)
+    {
+        var getnoreg = $("#getnoreg").val();
+        var no_registrasi= getnoreg.replace(/\//g, '-');
+        var specification = $("#specification").val();
+        //alert(no_registrasi);
+        if(confirm('confirm approve data ?'))
+        {
+            
+            //e.preventDefault();
+            var param = $(this).serialize();
+            //console.log(param); //return false;
+
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                url: "{{ url('approval/update_status') }}/"+status+"/"+no_registrasi,
+                method: "POST",
+                data: param+"&parNote="+specification+"",
                 beforeSend: function() {
                     jQuery('.loading-event').fadeIn();
                 },
