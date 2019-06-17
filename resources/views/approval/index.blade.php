@@ -275,11 +275,13 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-flat btn-default" data-dismiss="modal">Close</button>
+                <?php /* <button type="button" class="btn btn-flat btn-default" data-dismiss="modal">Close</button> */ ?>
                 <button type="button" class="btn btn-flat label-danger" OnClick="changeStatus('A')" style="margin-right: 5px;">Approve</button>
-                <button type="button" class="btn btn-flat label-danger" OnClick="saveRequest()" style="margin-right: 5px;">Reject</button>
+                <button type="button" class="btn btn-flat label-danger" OnClick="changeStatus('R')" style="margin-right: 5px;">Reject</button>
+                <?php /*
                 <button type="button" class="btn btn-flat label-danger" OnClick="saveRequest()" style="margin-right: 5px;">Revise</button>
                 <button type="button" class="btn btn-flat label-danger" OnClick="saveRequest()" style="margin-right: 5px;">Simpan</button>
+                */ ?>
             </div>
             </form>
         </div>
@@ -816,19 +818,21 @@
         var getnoreg = $("#getnoreg").val();
         var no_registrasi= getnoreg.replace(/\//g, '-');
         var specification = $("#specification").val();
-        //alert(no_registrasi);
-        if(confirm('confirm approve data ?'))
+        if( status == 'A' ){ status_desc = 'approve'; }else
+        if( status == 'R' ){ status_desc = 'reject' }else{ status_desc = 'cancel'; }
+
+        if(confirm('confirm '+status_desc+' data ?'))
         {
             
             //e.preventDefault();
             var param = $(this).serialize();
-            //console.log(param); //return false;
 
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
+            
             $.ajax({
                 url: "{{ url('approval/update_status') }}/"+status+"/"+no_registrasi,
                 method: "POST",

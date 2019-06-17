@@ -926,8 +926,6 @@
                             valid = false;
                             return false;
                         }
-
-                        
                     }
 
                     if (val.asset_year === "") {

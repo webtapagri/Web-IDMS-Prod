@@ -273,13 +273,13 @@
                                             <div class="form-group material-group-input" id="input-specification">
                                                 <label for="part_no" class="col-md-2 col-md-offset-1 col-form-label">No Seri / No Rangka <sup style="color:red">*</sup></label>
                                                 <div class="col-md-8">
-                                                    <input type="text" class="form-control input-sm attr-material-group" name="asset_serie_no" id="asset_serie_no">
+                                                    <input type="text" class="form-control input-sm attr-material-group" name="asset_serie_no" id="asset_serie_no" placeholder="Khusus untuk kendaraan & alat berat">
                                                 </div>
                                             </div>
                                             <div class="form-group material-group-input" id="input-specification">
                                                 <label for="part_no" class="col-md-2 col-md-offset-1 col-form-label">No Mesin / IMEI <sup style="color:red">*</sup></label>
                                                 <div class="col-md-8">
-                                                    <input type="text" class="form-control input-sm attr-material-group" name="asset_imei" id="asset_imei">
+                                                    <input type="text" class="form-control input-sm attr-material-group" name="asset_imei" id="asset_imei" placeholder="Khusus untuk kendaraan & alat berat">
                                                 </div>
                                             </div>
                                             <div class="form-group material-group-input" id="input-specification">
@@ -577,7 +577,8 @@
                 allowClear: true,
                 placeholder: ' '
             });
-            $("#asset_sub_group").empty();
+            //$("#asset_sub_group").empty();
+            $("#asset_group").trigger('change');
         });
 
         jQuery("#asset_group").on('change', function() {
@@ -824,25 +825,30 @@
         var valid = true;
         jQuery.each(request_item, function(i, field) {
             if (field) {
-                jQuery.each(field.detail, function(key, val) {
-                    if (val.asset_imei === "") {
-                        notify({
-                            type: 'warning',
-                            message: 'No Mesin / IMEI pada asset ' + field.name + ' page ' + (key + 1) + ' tidak boleh kosong!'
-                        });
+                jQuery.each(field.detail, function(key, val) 
+                {
+                    //IF JENIS ASSET TYPE = 4030-KENDARAAN & ALAT BERAT
+                    if( val.asset_type == 4030 || val.asset_type == 4010 )
+                    {
+                        if (val.asset_imei === "") {
+                            notify({
+                                type: 'warning',
+                                message: 'No Mesin / IMEI pada asset ' + field.name + ' page ' + (key + 1) + ' tidak boleh kosong!'
+                            });
 
-                        valid = false;
-                        return false;
-                    }
+                            valid = false;
+                            return false;
+                        }
 
-                    if (val.asset_serie_no === "") {
-                        notify({
-                            type: 'warning',
-                            message: 'No Seri / Rangka pada asset ' + field.name + ' page ' + (key + 1) + ' tidak boleh kosong!'
-                        });
+                        if (val.asset_serie_no === "") {
+                            notify({
+                                type: 'warning',
+                                message: 'No Seri / Rangka pada asset ' + field.name + ' page ' + (key + 1) + ' tidak boleh kosong!'
+                            });
 
-                        valid = false;
-                        return false
+                            valid = false;
+                            return false
+                        }
                     }
 
                     if (val.asset_year === "") {
@@ -1305,31 +1311,35 @@
 
     }
 
-    function validatePage(id) {
+    function validatePage(id) 
+    {
         var obj = id;
         var key = jQuery('#detail_item_selected').val();
         var request = request_item[key];
         var item = request.detail[obj];
         var valid = true;
 
-        if (item.asset_imei === "") {
-            valid = false;
-            jQuery('#asset_imei').focus();
-            notify({
-                type: 'warning',
-                message: 'No Mesin / IMEI tidak boleh kosong!'
-            });
-        }
+        if( item.asset_type == 4030 || item.asset_type == 4010 )
+        {
+            if (item.asset_imei === "") {
+                valid = false;
+                jQuery('#asset_imei').focus();
+                notify({
+                    type: 'warning',
+                    message: 'No Mesin / IMEI tidak boleh kosong!'
+                });
+            }
 
-        if (item.asset_serie_no === "") {
-            valid = false;
-            jQuery('#asset_serie_no').parent().closest('div').addClass('has-warning');
-            notify({
-                type: 'warning',
-                message: 'No Seri / Rangka tidak boleh kosong!'
-            });
-        } else {
-            jQuery('#asset_serie_no').parent().closest('div').removeClass('has-warning');
+            if (item.asset_serie_no === "") {
+                valid = false;
+                jQuery('#asset_serie_no').parent().closest('div').addClass('has-warning');
+                notify({
+                    type: 'warning',
+                    message: 'No Seri / Rangka tidak boleh kosong!'
+                });
+            } else {
+                jQuery('#asset_serie_no').parent().closest('div').removeClass('has-warning');
+            }
         }
 
         if (item.asset_year === "") {
