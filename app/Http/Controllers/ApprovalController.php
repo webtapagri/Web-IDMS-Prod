@@ -366,15 +366,13 @@ class ApprovalController extends Controller
         
         $field = array
         (
-            array("index" => "0", "field" => "asset.NO_REG", "alias" => "no_reg"),
-            array("index" => "1", "field" => "asset.TYPE_TRANSAKSI ", "alias" => "type"),
-            array("index" => "2", "field" => "asset.PO_TYPE", "alias" => "po_type"),
-            array("index" => "3", "field" => "asset.NO_PO", "alias" => "no_po"),
-            array("index" => "4", "field" => "DATE_FORMAT(asset.TANGGAL_REG, '%d %b %Y')", "alias" => "request_date"),
-            array("index" => "5", "field" => "requestor.name", "alias" => "requestor"),
-            array("index" => "6", "field" => "DATE_FORMAT(asset.TANGGAL_PO, '%d %b %Y')", "alias" => "po_date"),
-            array("index" => "7", "field" => "asset.KODE_VENDOR", "alias" => "vendor_code"),
-            array("index" => "8", "field" => "asset.NAMA_VENDOR", "alias" => "vendor_name"),
+            array("index" => "0", "field" => "document_code ", "alias" => "document_code"),
+            array("index" => "1", "field" => "area_code ", "alias" => "area_code"),
+            array("index" => "2", "field" => "name", "alias" => "name"),
+            array("index" => "3", "field" => "status_dokumen", "alias" => "status_dokumen"),
+            array("index" => "4", "field" => "status_approval", "alias" => "status_approval"),
+            array("index" => "5", "field" => "notes", "alias" => "po_notes"),
+            array("index" => "6", "field" => "DATE_FORMAT(date, '%d %b %Y')", "alias" => "po_date"),
         );
 
         foreach ($field as $row) 
@@ -401,14 +399,14 @@ class ApprovalController extends Controller
         ';*/
 
         $sql = '
-            SELECT asset.ID as id ' . implode(", ", $selectedColumn) . '
-            FROM TR_REG_ASSET as asset
-            INNER JOIN TBM_USER as requestor ON (requestor.id=asset.CREATED_BY)
-            WHERE asset.NO_REG > 0
+            SELECT user_id as user_id '.implode(", ", $selectedColumn).'
+                FROM V_HISTORY
+            WHERE user_id = '.$user_id.'
         ';
 
         $total_data = DB::select(DB::raw($sql));
 
+        /*
         if ($request->no_po)
             $sql .= " AND asset.NO_PO  like '%" . $request->no_po . "%'";
        
@@ -433,16 +431,16 @@ class ApprovalController extends Controller
         if ($request->request_date)
             $sql .= " AND DATE_FORMAT(asset.TANGGAL_REG, '%Y-%m-%d') = '" . DATE_FORMAT(date_create($request->request_date), 'Y-m-d'). "'";
 
-
         if ($request->po_date)
             $sql .= " AND DATE_FORMAT(asset.TANGGAL_PO, '%Y-%m-%d') = '" . DATE_FORMAT(date_create($request->po_date), 'Y-m-d') ."'";
-
+        */
+    
         if ($orderColumn != "") {
             $sql .= " ORDER BY " . $field[$orderColumn]['field'] . " " . $dirColumn;
         }
         else
         {
-            $sql .= " ORDER BY asset.ID DESC ";
+            $sql .= " ORDER BY po_date DESC ";
         }
 
         //echo $sql; die();

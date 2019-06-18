@@ -82,34 +82,32 @@
                     <table id="data-table-history" class="table table-bordered table-condensed">
                         <thead>
                             <tr role="row" class="heading">
-                                <th>NO REG</th>
-                                <th>TIPE</th>
-                                <th>PO</th>
-                                <th>NO PO</th>
-                                <th>TGL PENGAJUAN</th>
-                                <th>REQUESTOR</th>
-                                <th>TGL PO</th>
-                                <th>KODE VENDOR</th>
-                                <th>NAMA VENDOR</th>
+                                <th>DOC. CODE</th>
+                                <th>AREA CODE</th>
+                                <th>DOC. NAME</th>
+                                <th>STATUS</th>
+                                <th>STATUS APPROVAL</th>
+                                <th>NOTES</th>
+                                <th>DATE</th>
                             </tr>
                             <tr role="row" class="filter">
-                                <th><input type="text" class="form-control input-xs form-filter" name="no_reg"></th>
+                                <th><input type="text" class="form-control input-xs form-filter" name="document_code"></th>
                                 <th>
-                                    <select type="text" class="form-control input-xs form-filter" name="transaction_type" id="flt_transaction_type">
+                                    <select type="text" class="form-control input-xs form-filter" name="area_code" id="area_code">
                                         <option></option>
                                     </select>
                                 </th>
-                                <th>
-                                    <select class="form-control input-xs form-filter" name="po_type" id="po_type">
+                                <!--th>
+                                    <select class="form-control input-xs form-filter" name="user_id" id="user_id">
                                         <option></option>
                                     </select>
-                                </th>
-                                <th><input type="text" class="form-control input-xs form-filter" name="no_po"></th>
-                                <th><input type="text" class="form-control input-xs form-filter datepicker" name="request_date" autocomplete="off"></th>
-                                <th><input type="text" class="form-control input-xs form-filter" name="requestor"></th>
-                                <th><input type="text" class="form-control input-xs form-filter datepicker" name="po_date" autocomplete="off"></th>
-                                <th><input type="text" class="form-control input-xs form-filter" name="vendor_code"></th>
-                                <th><input type="text" class="form-control input-xs form-filter" name="vendor_name"></th>
+                                </th-->
+                                <th><input type="text" class="form-control input-xs form-filter" name="name"></th>
+                                <th><input type="text" class="form-control input-xs form-filter" name="status_dokumen"></th>
+                                <th><input type="text" class="form-control input-xs form-filter" name="status_approval"></th>
+                                <th><input type="text" class="form-control input-xs form-filter" name="notes"></th>
+                                <th><input type="text" class="form-control input-xs form-filter datepicker" name="date" autocomplete="off"></th>
+                                
                             </tr>
                         </thead>
                         <tbody></tbody>
@@ -391,10 +389,11 @@
                     {
                         "render": function(data, type, row) 
                         {
-                            var no_registrasi= row.no_reg.replace(/\//g, '-');
-                            return '<a href="javascript:;" style="font-weight:bold" OnClick="approval(\'' + no_registrasi + '\')">' + row.no_reg + '</a>';
+                            var no_registrasi= row.document_code.replace(/\//g, '-');
+                            return '<a href="javascript:;" style="font-weight:bold" OnClick="approval(\'' + no_registrasi + '\')">' + row.document_code + '</a>';
                         }
-                    }, {
+                    }, 
+                    /*{
                         "render": function(data, type, row) {
                             if (row.type == 1) {
                                 var content = 'Barang'
@@ -417,6 +416,7 @@
                             return content;
                         }
                     },
+                    */
                     {
                         data: 'no_po',
                         name: 'no_po'
@@ -430,16 +430,16 @@
                         name: 'requestor'
                     },
                     {
-                        data: 'po_date',
-                        name: 'po_date'
-                    },
-                    {
                         data: 'vendor_code',
                         name: 'vendor_code'
                     },
                     {
                         data: 'vendor_name',
                         name: 'vendor_name'
+                    },
+                    {
+                        data: 'po_date',
+                        name: 'po_date'
                     }
                 ],
                 columnDefs: []

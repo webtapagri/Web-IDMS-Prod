@@ -68,6 +68,8 @@ class RequestController extends Controller
         ));
         
         $data = $service;
+
+        echo "<pre>"; var_dump($data); die();
         
         if(isset( $data->EBELN)) {
             return response()->json(array('data' => $data));
@@ -158,16 +160,17 @@ class RequestController extends Controller
     {
         DB::beginTransaction();
 
-       try {
-           
+       try 
+       {
             //$reg_no = rand(0, 1000000);
             $reg_no = $this->get_reg_no();
+            $user_id = Session::get('user_id');
 
             // INSERT TO PROCEDURE
             //DB::SELECT('call create_approval(?,?,?,?)',array(6, $request->business_area,'',$reg_no));
             $po_type = $request->po_type;
             if($po_type == 0){ $menu_code = 'P1'; }else{ $menu_code = 'P2'; }
-            DB::SELECT('call create_approval("'.$menu_code.'", "'.$request->business_area.'","","'.$reg_no.'")');
+            DB::SELECT('call create_approval("'.$menu_code.'", "'.$request->business_area.'","","'.$reg_no.'","'.$user_id.'")');
             //die();
 
             $asset_id = DB::table('TR_REG_ASSET')->insertGetId([
