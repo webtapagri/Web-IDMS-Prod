@@ -970,6 +970,7 @@
         //var ba_user = [<?php //echo $data['ba_user']; ?>];
         var ba_user = new Array(<?php echo $data['ba_user']; ?>);
         //alert(ba_user); 
+        var count = 0;
 
         if (data.AEDAT) 
         {
@@ -1000,13 +1001,32 @@
                     item += "<td>" + val.MAKTX + "</td>";
                     item += "<td class='text-right'>" + val.MENGE + "</td>";
                     item += "</tr>";
+                    count++;
                 }
 
             });
             
             item += "</table>";
-            jQuery("#table-detail-item").html(item);
-        } else {
+            
+            if(count>0)
+            {
+                jQuery("#table-detail-item").html(item);
+            }
+            else
+            {
+                $("#po_date").val("");
+                $("#vendor_code").val("");
+                $("#vendor_name").val("");
+                $('.select-item-panel').addClass("hide");
+                notify({
+                    type: 'warning',
+                    message: "PO number is not your Business Area!"
+                }); 
+            }
+                 
+        } 
+        else 
+        {
             jQuery("#po_date").val("");
             jQuery("#vendor_code").val("");
             jQuery("#vendor_name").val("");

@@ -418,24 +418,24 @@
                     },
                     */
                     {
-                        data: 'no_po',
-                        name: 'no_po'
+                        data: 'area_code',
+                        name: 'area_code'
                     },
                     {
-                        data: 'request_date',
-                        name: 'request_date'
+                        data: 'name',
+                        name: 'name'
                     },
                     {
-                        data: 'requestor',
-                        name: 'requestor'
+                        data: 'status_dokumen',
+                        name: 'status_dokumen'
                     },
                     {
-                        data: 'vendor_code',
-                        name: 'vendor_code'
+                        data: 'status_approval',
+                        name: 'status_approval'
                     },
                     {
-                        data: 'vendor_name',
-                        name: 'vendor_name'
+                        data: 'po_notes',
+                        name: 'po_notes'
                     },
                     {
                         data: 'po_date',

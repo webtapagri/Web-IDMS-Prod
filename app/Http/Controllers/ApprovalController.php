@@ -400,7 +400,7 @@ class ApprovalController extends Controller
 
         $sql = '
             SELECT user_id as user_id '.implode(", ", $selectedColumn).'
-                FROM V_HISTORY
+                FROM v_history
             WHERE user_id = '.$user_id.'
         ';
 
