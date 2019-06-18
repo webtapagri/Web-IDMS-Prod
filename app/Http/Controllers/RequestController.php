@@ -48,6 +48,24 @@ class RequestController extends Controller
         $access = AccessRight::access();
         $data["access"] = (object)$access;
         
+        //$data["ba_user"] = '"1211","2141","5121","3433"';
+        $data["ba_user"] = '';
+        $profile = AccessRight::profile();
+        
+        if($profile[0]->area_code)
+        {
+            $areacode = explode(',',$profile[0]->area_code); 
+            if($areacode)
+            {
+                $ba_user = '';
+                foreach( $areacode as $k => $v )
+                {
+                    $ba_user .= '"'.$v.'",' ;
+                }
+                $data["ba_user"] .= ''.$ba_user.'';
+            }
+        }
+
         if($request->type == "amp") {
             $data['ctree'] = 'request/create/amp';
             return view('request.amp')->with(compact('data'));
@@ -69,11 +87,54 @@ class RequestController extends Controller
         
         $data = $service;
 
-        echo "<pre>"; var_dump($data); die();
+        //echo "<pre>"; print_r($data); die();
+        /*
+            stdClass Object
+            (
+                [EBELN] => 2013009721
+                [AEDAT] => 2018-12-17
+                [LIFNR] => 2300000058
+                [NAME1] => CITRA KENCANA
+                [DETAIL_ITEM] => Array
+                    (
+                        [0] => stdClass Object
+                            (
+                                [EBELP] => 00001
+                                [MATNR] => 000000000405010019
+                                [MAKTX] => LEMARI ARSIP 86CM X 40CM X 176CM
+                                [MENGE] => 1
+                                [MEINS] => UN
+                                [NETPR] => 2600000.00
+                                [WERKS] => 2121
+                            )
+
+                        [1] => stdClass Object
+                            (
+                                [EBELP] => 00002
+                                [MATNR] => 000000000405010020
+                                [MAKTX] => MEJA MAKAN + 6 KURSI (SET)
+                                [MENGE] => 4
+                                [MEINS] => UN
+                                [NETPR] => 1400000.00
+                                [WERKS] => 2121
+                            )
+                    )
+            )
+        */
+
+        $datax = array();
         
-        if(isset( $data->EBELN)) {
+        if(isset( $data->EBELN)) 
+        {
+            /*foreach($data as $k => $v)
+            {
+                echo "<pre>"; print_r($v);
+            }
+            die();*/
             return response()->json(array('data' => $data));
-        } else {
+        } 
+        else 
+        {
             return response()->json(array('data' => array())); 
         }
     }

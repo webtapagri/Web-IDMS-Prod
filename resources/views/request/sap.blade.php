@@ -967,6 +967,10 @@
         var no_po = jQuery("#po_no").val();
         var data = jQuery.parseJSON(JSON.stringify(dataJson('{!! route("get.no_po") !!}?no_po=' + no_po)));
 
+        //var ba_user = [<?php //echo $data['ba_user']; ?>];
+        var ba_user = new Array(<?php echo $data['ba_user']; ?>);
+        //alert(ba_user); 
+
         if (data.AEDAT) 
         {
             jQuery("#po_date").val(data.AEDAT);
@@ -981,17 +985,25 @@
             item += ' <th>Name</th>';
             item += '<th class="text-right">Qty</th>';
             item += '</tr>';
+            
             selected_detail_item = [];
-            jQuery.each(data.DETAIL_ITEM, function(key, val) {
-                selected_detail_item.push(val);
-                item += "<tr>";
-                item += "<td><input type='checkbox' onClick='selectPOItem(this)' value='" + key + "' ></td>";
-                item += "<td>" + val.EBELP + "</td>";
-                item += "<td>" + val.MATNR + "</td>";
-                item += "<td>" + val.MAKTX + "</td>";
-                item += "<td class='text-right'>" + val.MENGE + "</td>";
-                item += "</tr>";
+
+            jQuery.each(data.DETAIL_ITEM, function(key, val) 
+            {
+                if( $.inArray(val.WERKS, ba_user) !== -1 )
+                {
+                    selected_detail_item.push(val);
+                    item += "<tr>";
+                    item += "<td><input type='checkbox' onClick='selectPOItem(this)' value='" + key + "' ></td>";
+                    item += "<td>" + val.EBELP + "</td>";
+                    item += "<td>" + val.MATNR + "</td>";
+                    item += "<td>" + val.MAKTX + "</td>";
+                    item += "<td class='text-right'>" + val.MENGE + "</td>";
+                    item += "</tr>";
+                }
+
             });
+            
             item += "</table>";
             jQuery("#table-detail-item").html(item);
         } else {
