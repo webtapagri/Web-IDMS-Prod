@@ -9,6 +9,7 @@ use Session;
 use API;
 use AccessRight;
 use App\Workflow;
+use App\TR_WORKFLOW_DETAIL;
 
 class WorkflowController extends Controller
 {
@@ -167,5 +168,71 @@ class WorkflowController extends Controller
         ->get();
 
         return response()->json(array("data"=>$data));
+    }
+
+    public function dataGridDetail(Request $request)
+    {
+        //echo "<pre>"; print_r($request->id); die();
+        $req_id = $request->id;
+        $orderColumn = $request->order[0]["column"];
+        $dirColumn = $request->order[0]["dir"];
+        $sortColumn = "";
+        $selectedColumn[] = "";
+
+        $selectedColumn = ['workflow_detail_code','workflow_code', 'workflow_group_name', 'seq', 'description'];
+
+        if ($orderColumn) {
+            $order = explode("as", $selectedColumn[$orderColumn]);
+            if (count($order) > 1) {
+                $orderBy = $order[0];
+            } else {
+                $orderBy = $selectedColumn[$orderColumn];
+            }
+        }
+
+        $sql = '
+            SELECT ' . implode(", ", $selectedColumn) . '
+                FROM TR_WORKFLOW_DETAIL
+                WHERE workflow_code = '.$req_id.'
+        ';
+
+
+        if ($request->workflow_group_name)
+        $sql .= " AND workflow_group_name like'%" . $request->workflow_group_name . "%'";
+
+
+        if ($request->description)
+        $sql .= " AND description like'%" . $request->description . "%'";
+
+        if ($orderColumn != "") {
+            $sql .= " ORDER BY " . $orderBy . " " . $dirColumn;
+        }
+
+        $data = DB::select(DB::raw($sql));
+
+        $iTotalRecords = count($data);
+        $iDisplayLength = intval($request->length);
+        $iDisplayLength = $iDisplayLength < 0 ? $iTotalRecords : $iDisplayLength;
+        $iDisplayStart = intval($request->start);
+        $sEcho = intval($request->draw);
+        $records = array();
+        $records["data"] = array();
+
+        $end = $iDisplayStart + $iDisplayLength;
+        $end = $end > $iTotalRecords ? $iTotalRecords : $end;
+
+        for ($i = $iDisplayStart; $i < $end; $i++) {
+            $records["data"][] =  $data[$i];
+        }
+
+        if (isset($_REQUEST["customActionType"]) && $_REQUEST["customActionType"] == "group_action") {
+            $records["customActionStatus"] = "OK"; // pass custom message(useful for getting status of group actions)
+            $records["customActionMessage"] = "Group action successfully has been completed. Well done!"; // pass custom message(useful for getting status of group actions)
+        }
+
+        $records["draw"] = $sEcho;
+        $records["recordsTotal"] = $iTotalRecords;
+        $records["recordsFiltered"] = $iTotalRecords;
+        return response()->json($records); # = 1
     }
 }

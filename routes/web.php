@@ -159,4 +159,12 @@ Route::match(['get', 'post'], 'grid-workflow', [
     'as' => 'get.grid_workflow',
     'uses' => 'WorkflowController@dataGrid'
 ]);
+/*
+Route::match(['get', 'post'], 'grid-workflow-detail', [
+    'as' => 'get.grid_workflow_detail',
+    'uses' => 'WorkflowController@dataGrid'
+]);
+*/
+
+Route::post('grid-workflow-detail/{id}', 'WorkflowController@dataGridDetail')->name('grid-workflow-detail/{id}');
 

@@ -31,11 +31,53 @@
                         <tbody></tbody>
                     </table>
                 </div>
+            
+            <div id="row-detail" style="margin-top:10px;display:none">
+                <div class="callout callout-info">
+                    <h4>DETAIL WORKFLOW</h4>
+                    <p>WORKFLOW CODE : <span id="workflow-code-detail"></p>
+                </div>
+                <div class="table-container">
+                    <div class="table-actions-wrapper">
+                        <span></span>
+                        <button class="btn btn-sm btn-flat btn-danger btn-refresh-data-table" title="refresh"><i class="glyphicon glyphicon-refresh"></i></button>
+                        @if($data['access']->create == 1)
+                        <button class="btn btn-sm btn-flat btn-danger btn-add"><i class="glyphicon glyphicon-plus" title="Add new data detail"></i></button>
+                        @endif
+                    </div>
+                    <table id="data-table-detail" class="table table-condensed" width="100%">
+                        <thead>
+                            <tr role="row" class="heading">
+                                <th>ID</th>
+                                <th>WORKFLOW CODE</th>
+                                <th>GROUP NAME</th>
+                                <th>SEQUENCE</th>
+                                <th>DESCRIPTION</th>
+                                <th width="8%">ACTION</th>
+                            </tr>
+                            <tr role="row" class="filter">
+                                <th></th>
+                                <th><input type="text" class="form-control input-xs form-filter" name="workflow_code" autocomplete="off"></th>
+                                <th><input type="text" class="form-control input-xs form-filter" name="workflow_group_name" autocomplete="off"></th>
+                                <th><input type="text" class="form-control input-xs form-filter" name="seq" autocomplete="off"></th>
+                                <th><input type="text" class="form-control input-xs form-filter" name="description" autocomplete="off"></th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="row-detail-job" style="margin-top:10px;display:none">
+            </div>
+
             </div>
             <!-- /.box-body -->
         </div>
     </div>
 </div>
+
 
 <div id="add-data-modal" class="modal fade" role="dialog">
     <div class="modal-dialog" width="900px">
@@ -70,7 +112,10 @@
 @section('js')
 <script>
     var attribute = [];
-    jQuery(document).ready(function() {
+    jQuery(document).ready(function() 
+    {
+        $("#row-detail").hide();
+
         jQuery.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -78,10 +123,11 @@
         });
         var grid = new Datatable();
         grid.init({
-            src: jQuery("#data-table"),
+            src: $("#data-table"),
             onSuccess: function(grid) {},
             onError: function(grid) {},
             onDataLoad: function(grid) {},
+            destroy: true,
             loadingMessage: 'Loading...',
             dataTable: {
                 "dom": "<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'<'table-group-actions pull-right'>>r>t<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'>>",
@@ -115,6 +161,7 @@
                             if (update == 1) 
                             {
                                 content += '<button class="btn btn-flat btn-xs btn-danger btn-action btn-edit" title="edit data ' + row.workflow_code + '" onClick="edit(' + row.workflow_code + ')"><i class="fa fa-pencil"></i></button>';
+                                content += '<button class="btn btn-flat btn-xs btn-danger btn-action btn-view" title="detail data ' + row.workflow_code + '" onClick="detail(' + row.workflow_code + ')"><i class="fa fa-clone"></i></button>';
                             }
                             
                             /*
@@ -202,44 +249,46 @@
             jQuery("#add-data-modal").modal("show");
         });
 
-        jQuery('#data-form').on('submit', function(e) {
-            e.preventDefault();
-            var param = jQuery(this).serialize();
-            jQuery.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-
-            jQuery.ajax({
-                url: "{{ url('workflow/post') }}",
-                method: "POST",
-                data: param,
-                beforeSend: function() {
-                    jQuery('.loading-event').fadeIn();
-                },
-                success: function(result) 
-                {
-                    if (result.status) {
-                        jQuery("#add-data-modal").modal("hide");
-                        jQuery("#data-table").DataTable().ajax.reload();
-                        notify({
-                            type: 'success',
-                            message: result.message
-                        });
-                    } else {
-                        notify({
-                            type: 'warning',
-                            message: result.message
-                        });
+        jQuery('#data-form').on('submit', function(e) 
+        {
+            if(confirm('confirm submit data?'))
+            {
+                e.preventDefault();
+                var param = jQuery(this).serialize();
+                jQuery.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     }
-                },
-                complete: function() {
-                    jQuery('.loading-event').fadeOut();
-                }
-            });
+                });
 
-
+                jQuery.ajax({
+                    url: "{{ url('workflow/post') }}",
+                    method: "POST",
+                    data: param,
+                    beforeSend: function() {
+                        jQuery('.loading-event').fadeIn();
+                    },
+                    success: function(result) 
+                    {
+                        if (result.status) {
+                            jQuery("#add-data-modal").modal("hide");
+                            jQuery("#data-table").DataTable().ajax.reload();
+                            notify({
+                                type: 'success',
+                                message: result.message
+                            });
+                        } else {
+                            notify({
+                                type: 'warning',
+                                message: result.message
+                            });
+                        }
+                    },
+                    complete: function() {
+                        jQuery('.loading-event').fadeOut();
+                    }
+                });
+            }
         })
     });
 
@@ -329,5 +378,130 @@
             }
         });
     }
+
+    function detail(id)
+    {
+        $("#data-table-detail").DataTable().destroy()
+
+        //alert(id);
+        $("#row-detail").fadeOut();
+        $("#workflow-code-detail").html(id);
+        $("#row-detail").fadeIn();
+
+        if ( ! $.fn.DataTable.isDataTable( '#data-table-detail' ) ) 
+        {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            var grid_detail = new Datatable();
+            grid_detail.init({
+                src: $("#data-table-detail"),
+                onSuccess: function(grid_detail) {},
+                onError: function(grid_detail) {},
+                onDataLoad: function(grid_detail) {},
+                destroy: true,
+                loadingMessage: 'Loading...',
+                dataTable: {
+                    "dom": "<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'<'table-group-actions pull-right'>>r>t<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'>>",
+                    "bStateSave": true, // save datatable state(pagination, sort, etc) in cookie.
+                    "lengthMenu": [
+                        [10, 20, 50, 100, 150],
+                        [10, 20, 50, 100, 150]
+                    ],
+                    "pageLength": 10,
+                    "ajax": {
+                        url: '{{ url("grid-workflow-detail/") }}'+'/'+id
+                    },
+                    columns: [
+                        {
+                            data: 'workflow_detail_code',
+                            name: 'workflow_detail_code'
+                        },
+                        {
+                            data: 'workflow_code',
+                            name: 'workflow_code'
+                        },
+                        {
+                            data: 'workflow_group_name',
+                            name: 'workflow_group_name'
+                        },
+                        {
+                            data: 'seq',
+                            name: 'seq'
+                        },
+                        {
+                            data: 'description',
+                            name: 'description'
+                        },
+                        {
+                            "render": function(data, type, row) {
+                                var update = "{{ $data['access']->update }}";
+                                var remove = "{{ $data['access']->delete }}";
+                                var content = '';
+                                if (update == 1) 
+                                {
+                                    content += '<button class="btn btn-flat btn-xs btn-danger btn-action btn-edit" title="edit data ' + row.workflow_code + '" onClick="edit_detail(' + row.workflow_detail_code + ')"><i class="fa fa-pencil"></i></button>';
+                                    content += '<button class="btn btn-flat btn-xs btn-danger btn-action btn-view" title="detail data ' + row.workflow_code + '" onClick="detail_job(' + row.workflow_detail_code + ')"><i class="fa fa-clone"></i></button>';
+                                }
+                                
+                                /*
+                                if (remove == 1) 
+                                {
+                                    content += '<button class="btn btn-flat btn-xs btn-danger btn-action btn-activated  {{ ($data["access"]->delete == 1 ? "":"hide") }}  ' + (row.deleted == 0 ? '' : 'hide') + '" style="margin-left:5px"  onClick="inactive(' + row.id + ')"><i class="fa fa-trash"></i></button>';
+                                    content += '<button class="btn btn-flat btn-xs btn-danger btn-action btn-inactivated {{ ($data["access"]->delete == 1 ? "":"hide") }}  ' + (row.deleted == 1 ? '' : 'hide') + '" style="margin-left:5px"  onClick="active(' + row.id + ')"><i class="fa fa-check"></i></button>';
+                                }
+                                */
+
+                                return content;
+                            }
+                        }
+                    ],
+                    columnDefs: [
+                        /*{
+                            targets: [0],
+                            className: 'text-center',
+                            orderable: false
+                        },
+                        {
+                            targets: [2],
+                            className: 'text-center',
+                            orderable: false,
+                            width: '10%'
+                        }*/
+                    ],
+                    oLanguage: {
+                        sProcessing: "<div id='datatable-loader'></div>",
+                        sEmptyTable: "Data tidak di temukan",
+                        sLoadingRecords: ""
+                    },
+                    "order": [],
+                }
+            });
+        }
+       
+    }
+
+    function edit_detail(id) 
+    {
+        alert(id); return false;
+        document.getElementById("data-form").reset();
+        jQuery("#edit_workflow_code").val(id);
+        var result = jQuery.parseJSON(JSON.stringify(dataJson("{{ url('workflow/edit/?workflow_code=') }}" + id)));
+        jQuery("#edit_workflow_code").val(result.workflow_code);
+        jQuery("#workflow_name").val(result.workflow_name);
+        $("#menu_code").val(result.menu_code);
+        $("#menu_code").trigger("change");
+
+        jQuery("#add-data-modal .modal-title").html("<i class='fa fa-edit'></i> Update data " + result.workflow_name);
+        jQuery("#add-data-modal").modal("show");
+    }
+
+    function detail_job(id)
+    {
+        alert(id); return false;
+    }
+
 </script>
 @stop
