@@ -53,7 +53,7 @@ class WorkflowController extends Controller
 
         $sql = '
             SELECT ' . implode(", ", $selectedColumn) . '
-                FROM tr_workflow
+                FROM TR_WORKFLOW
                 WHERE 1=1
         ';
 
