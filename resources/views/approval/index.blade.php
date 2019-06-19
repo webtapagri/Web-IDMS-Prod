@@ -82,10 +82,10 @@
                     <table id="data-table-history" class="table table-bordered table-condensed">
                         <thead>
                             <tr role="row" class="heading">
-                                <th>DOC. CODE</th>
+                                <th>DOCUMENT CODE</th>
                                 <th>AREA CODE</th>
-                                <th>DOC. NAME</th>
-                                <th>STATUS</th>
+                                <th>ROLE NAME</th>
+                                <th>STATUS DOCUMENT</th>
                                 <th>STATUS APPROVAL</th>
                                 <th>NOTES</th>
                                 <th>DATE</th>
@@ -285,6 +285,7 @@
         </div>
     </div>
 </div>
+
 @stop
 @section('js')
 <script>

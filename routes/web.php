@@ -150,3 +150,13 @@ Route::get('get-generaldataplant', ['as' => 'get.generaldataplant', 'uses' => 'S
 Route::get('get-assetgroup', ['as' => 'get.assetgroup', 'uses' => 'Select2Controller@assetgroup']);
 Route::get('get-assetsubgroup', ['as' => 'get.assetsubgroup', 'uses' => 'Select2Controller@assetsubgroup']);
 Route::get( 'get-jenisasset', ['as' => 'get.jenisasset', 'uses' => 'Select2Controller@jenisasset']);
+
+/* WORKFLOW SETTING */
+Route::resource('/setting/workflow', 'WorkflowController');
+Route::post('/workflow/post', 'WorkflowController@store');
+Route::get('/workflow/edit/', 'WorkflowController@show');
+Route::match(['get', 'post'], 'grid-workflow', [
+    'as' => 'get.grid_workflow',
+    'uses' => 'WorkflowController@dataGrid'
+]);
+
