@@ -1589,7 +1589,7 @@
 
         var qty_po = qty-datax.nilai;
 
-        return datax.nilai;
+        return qty_po;
     }
 
 </script>
