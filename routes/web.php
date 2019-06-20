@@ -150,11 +150,18 @@ Route::get('get-generaldataplant', ['as' => 'get.generaldataplant', 'uses' => 'S
 Route::get('get-assetgroup', ['as' => 'get.assetgroup', 'uses' => 'Select2Controller@assetgroup']);
 Route::get('get-assetsubgroup', ['as' => 'get.assetsubgroup', 'uses' => 'Select2Controller@assetsubgroup']);
 Route::get( 'get-jenisasset', ['as' => 'get.jenisasset', 'uses' => 'Select2Controller@jenisasset']);
+Route::get('get-select_workflow_code', ['as' => 'get.select_workflow_code', 'uses' => 'WorkflowController@workflowcode']);
+Route::get('get-select_workflow_detail_code', ['as' => 'get.select_workflow_detail_code', 'uses' => 'WorkflowController@workflowcodedetail']);
+Route::get('get-select_workflow_detail_role', ['as' => 'get.select_workflow_detail_role', 'uses' => 'WorkflowController@workflowcoderole']);
 
 /* WORKFLOW SETTING */
 Route::resource('/setting/workflow', 'WorkflowController');
 Route::post('/workflow/post', 'WorkflowController@store');
+Route::post('/workflow/post-detail', 'WorkflowController@store_detail');
+Route::post('/workflow/post-detail-job', 'WorkflowController@store_detail_job');
 Route::get('/workflow/edit/', 'WorkflowController@show');
+Route::get('/workflow/edit-detail/', 'WorkflowController@show_detail');
+Route::get('/workflow/edit-detail-job/', 'WorkflowController@show_detail_job');
 Route::match(['get', 'post'], 'grid-workflow', [
     'as' => 'get.grid_workflow',
     'uses' => 'WorkflowController@dataGrid'
@@ -167,4 +174,5 @@ Route::match(['get', 'post'], 'grid-workflow-detail', [
 */
 
 Route::post('grid-workflow-detail/{id}', 'WorkflowController@dataGridDetail')->name('grid-workflow-detail/{id}');
+Route::post('grid-workflow-detail-job/{id}', 'WorkflowController@dataGridDetailJob')->name('grid-workflow-detail-job/{id}');
 
