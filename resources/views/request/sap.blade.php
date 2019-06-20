@@ -1049,6 +1049,7 @@
 
     function addItem() 
     {
+        //alert("add item");
         request_item = [];
         
         $('#table-detail-item').find('input[type="checkbox"]:checked').each(function() 
@@ -1063,11 +1064,11 @@
                 item_po: item.EBELP,
                 code: item.MATNR,
                 name: item.MAKTX,
-                qty: item.MENGE,
+                qty: get_qty_po(item.EBELP,item.MENGE,item.MATNR),
                 //request_qty: 1,
                 //outstanding_qty: (item.MENGE - 1),
                 request_qty: 0,
-                outstanding_qty: item.MENGE,
+                outstanding_qty: get_qty_po(item.EBELP,item.MENGE,item.MATNR),
                 detail: []
             };
 
@@ -1580,6 +1581,17 @@
             console.log('Error: ', error);
         };
     }
+
+    function get_qty_po(item_po, qty, kode_material)
+    {
+        var po_no = $("#po_no").val();
+        var datax = jQuery.parseJSON(JSON.stringify(dataJson('{!! route("get.qty_po") !!}?po_no='+po_no+'&item_po='+item_po+'&kode_material='+kode_material)));
+
+        var qty_po = qty-datax.nilai;
+
+        return datax.nilai;
+    }
+
 </script>
 
 @stop

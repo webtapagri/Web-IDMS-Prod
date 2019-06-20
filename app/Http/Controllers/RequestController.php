@@ -433,4 +433,33 @@ class RequestController extends Controller
         //echo $number; die();
         return $number;
     }
+
+    public function qty_po(Request $request) 
+    {
+        $param = $_REQUEST;
+        
+        $sql = " 
+            SELECT qty_po_submit FROM v_qty_po_submit WHERE NO_PO = ".$param['po_no']." 
+                AND ITEM_PO = ".$param['item_po']." 
+                AND KODE_MATERIAL = '".$param['kode_material']."'
+        ";
+        
+        $datax = DB::SELECT($sql);
+        
+        if(!empty($datax))
+        {
+            $data = array("nilai" => $datax[0]->qty_po_submit);    
+        }
+        else
+        {
+            $data = array("nilai" => 0);
+        }
+
+        //echo "<pre>"; print_r($data); die();
+
+        //echo "<pre>"; print_r(response()->json(array('data' => $data))); die();
+        
+        return response()->json(array('data' => $data));
+        
+    }
 }
