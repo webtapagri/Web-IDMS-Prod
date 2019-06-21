@@ -505,7 +505,8 @@ class ApprovalController extends Controller
 
         $records = array();
 
-        $sql = "SELECT a.*, date_format(a.date,'%d-%m-%Y %h:%i:%s') AS date2 FROM v_history a WHERE a.document_code = '{$noreg}' ORDER BY a.date";
+        /*$sql = "SELECT a.*, date_format(a.date,'%d-%m-%Y %h:%i:%s') AS date2 FROM v_history a WHERE a.document_code = '{$noreg}' ORDER BY a.date";*/
+        $sql = "SELECT a.* FROM v_history a WHERE a.document_code = '{$noreg}' ORDER BY a.date";
 
         $data = DB::SELECT($sql);
         
@@ -525,7 +526,7 @@ class ApprovalController extends Controller
                     'status_dokumen' => $v->status_dokumen,
                     'status_approval' => $v->status_approval,
                     'notes' => $v->notes,
-                    'date' => $v->date2,
+                    'date' => $v->date,
                     //'item_detail' => $this->get_item_detail($noreg)
                 );
 
