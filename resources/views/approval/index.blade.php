@@ -1049,7 +1049,7 @@
         dataType: 'json',
         success: function(data) 
         {
-            alert(data.length); 
+            //alert(data.length); 
             var item = '<br/><span class="label bg-blue"><i class="fa fa-bars"></i> LOG HISTORY</span> <br/><br/>';
             item += '<table class="table xtable-condensed table-responsive table-striped" id="request-item-table" style="font-size:13px">';
             item += '<th>NO.</th>';
