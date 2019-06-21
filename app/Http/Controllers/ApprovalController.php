@@ -506,7 +506,7 @@ class ApprovalController extends Controller
         $records = array();
 
         /*$sql = "SELECT a.*, date_format(a.date,'%d-%m-%Y %h:%i:%s') AS date2 FROM v_history a WHERE a.document_code = '{$noreg}' ORDER BY a.date";*/
-        $sql = "SELECT a.* FROM v_history a WHERE a.document_code = '{$noreg}' ORDER BY a.date";
+        $sql = "SELECT a.* FROM v_history a WHERE a.document_code = '{$noreg}'";
 
         $data = DB::SELECT($sql);
         
