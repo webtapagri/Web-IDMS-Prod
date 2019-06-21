@@ -66,6 +66,7 @@ Route::get('/approval/view_detail/{no_reg}/{id}', 'ApprovalController@get_asset_
 Route::post('/approval/delete_asset/{id}','ApprovalController@delete_asset');
 Route::get('grid-approval-history', ['as' => 'get.approval_grid_history', 'uses' => 'ApprovalController@dataGridHistory']);
 Route::post('/approval/update_status/{status}/{no_reg}','ApprovalController@update_status');
+Route::get('/approval/log_history/{no_reg}', 'ApprovalController@log_history')->name('no_reg');
 
 Route::resource('/mutasi', 'MutasiController');
 Route::get('/mutasi/create/{type}', 'MutasiController@create')->name('type');

@@ -286,6 +286,88 @@
     </div>
 </div>
 
+<div id="history-modal" class="modal fade" role="dialog" aria-labelledby="largeModal" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+                <h4 class="modal-title"></h4>
+            </div>
+            <div class="modal-body">
+                <div class="box-body">
+                    <form id="request-form-history" class="form-horizontal" style="font-size:13px !important">
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="plant" class="col-md-4">NO REGISTRASI</label>
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-control xinput-sm" value="" id="no-reg" name="no-reg" readonly>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="plant" class="col-md-4">TYPE TRANSAKSI</label>
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-control input-sm" value="" id="type-transaksi" name="type-transaksi" readonly>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="plant" class="col-md-4">JENIS PENGAJUAN</label>
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-control input-sm" value="" id="po-type" name="po-type" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="plant" class="col-md-4">BUSINESS AREA</label>
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-control input-sm" value="" id="business-area" name="business-area" readonly>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="plant" class="col-md-4">REQUESTOR</label>
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-control input-sm" value="" id="requestor" name="requestor" readonly>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="plant" class="col-md-4">TANGGAL PENGAJUAN</label>
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-control input-sm" value="" id="tanggal-reg" name="tanggal-reg" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                        
+                            <br>
+                            <span class="label bg-blue"><i class="fa fa-bars"></i> ITEM DETAIL</span> <br/><br/>
+                            <div class="form-group">
+                                <div class="col-md-12" id="box-item-detail-history"></div>
+                            </div>
+                            
+                            <div id="box-detail-item-history"></div>
+
+                            <div class="form-group">
+                                <label class="col-md-2"><span class="label bg-blue"><i class="fa fa-bars"></i> NOTE</span></label>
+                                <div class="col-md-8">
+                                    <textarea type="text" class="form-control input-sm attr-material-group" row="3" name="specification" id="specification" readonly></textarea>
+                                </div>
+                            </div>
+
+                            <div id="log-history-box"></div>
+                        
+                        </div><!-- ROW -->                        
+                        
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-flat btn-default" data-dismiss="modal">Close</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 @stop
 @section('js')
 <script>
@@ -391,7 +473,7 @@
                         "render": function(data, type, row) 
                         {
                             var no_registrasi= row.document_code.replace(/\//g, '-');
-                            return '<a href="javascript:;" style="font-weight:bold" OnClick="approval(\'' + no_registrasi + '\')">' + row.document_code + '</a>';
+                            return '<a href="javascript:;" style="font-weight:bold" OnClick="history(\'' + no_registrasi + '\')">' + row.document_code + '</a>';
                         }
                     }, 
                     /*{
@@ -494,7 +576,7 @@
                         item += "<td><label class='label bg-red'>" + val.qty + "</label></td>";
                         item += "<td>" + val.kode + "</td>";
                         item += "<td>" + val.nama + "</td>";
-                        item += "<td><i class='fa fa-eye' OnClick='getDetailItem(\"" + noreg + "\","+val.id+")'></i></td>";
+                        item += "<td><i class='fa fa-eye' OnClick='getDetailItem(\"" + noreg + "\","+val.id+",1)'></i></td>";
                         item += "</tr>";
                         no++;
                     });
@@ -609,7 +691,7 @@
         jQuery("#request-item-table").html(item);
     }
 
-    function getDetailItem(noreg,id)
+    function getDetailItem(noreg,id,tipe)
     {
         //alert(JSON.stringify(id));
         //alert(kode);
@@ -685,8 +767,13 @@
                     item += " <div class='form-group'><label for='plant' class='col-md-4'>MERK</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='' value='"+val.merk+"' id='' autocomplete='off' readonly></div></div>";
                     item += " <div class='form-group'><label for='plant' class='col-md-4'>SPESIFIKASI/WARNA</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='' value='"+val.spesifikasi_or_warna+"' id='' autocomplete='off' readonly></div></div>";
                     item += " <div class='form-group'><label for='plant' class='col-md-4'>TAHUN</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='' value='"+val.tahun+"' id='' autocomplete='off' readonly></div></div>";
-                    item += "<div class='form-group' align='right'><div class='btn btn-warning btn-sm' value='Delete' OnClick='delAsset("+val.id+")' style='margin-right:15px'><i class='fa fa-trash'></i> DELETE</div></div>";
-                    //item += "<div class='form-group' align='right'><button type='button' class='btn btn-flat label-danger' OnClick='delAsset("+val.id+")' style='margin-right: 5px'>Delete</button></div>";
+
+                    if(tipe==1)
+                    {
+                        item += "<div class='form-group' align='right'><div class='btn btn-warning btn-sm' value='Delete' OnClick='delAsset("+val.id+")' style='margin-right:15px'><i class='fa fa-trash'></i> DELETE</div></div>";
+                        //item += "<div class='form-group' align='right'><button type='button' class='btn btn-flat label-danger' OnClick='delAsset("+val.id+")' style='margin-right: 5px'>Delete</button></div>";
+                    }
+
                     item += "</div>";
 
                     /* FILE UPLOAD */
@@ -757,8 +844,16 @@
                 item += "</div>";
                 item += "</div>";
 
-                $("#box-detail-item").fadeIn();
-                $("#box-detail-item").html(item);
+                if(tipe==1)
+                {
+                    $("#box-detail-item").fadeIn();
+                    $("#box-detail-item").html(item);
+                }
+                else
+                {
+                    $("#box-detail-item-history").fadeIn();
+                    $("#box-detail-item-history").html(item);
+                }
                 //alert(noreg);
             },
             error: function(x) 
@@ -865,6 +960,139 @@
                 }
             });
         }
+    }
+
+    function history(id)
+    {
+        //alert(id); return false;
+        var kata = id;
+        var noreg= kata.replace(/\//g, '-');
+        //alert(noreg); return false;
+
+        $("#box-detail-item-history").hide();
+
+        $.ajax({
+            type: 'GET',
+            url: "{{ url('approval/view') }}/"+noreg,
+            data: "",
+            //async: false,
+            dataType: 'json',
+            success: function(data) 
+            { 
+                //alert(data.no_reg);
+                $("#request-form-history #no-reg").val(data.no_reg);
+                $("#request-form-history #type-transaksi").val(data.type_transaksi);
+                $("#request-form-history #po-type").val(data.po_type);
+                $("#request-form-history #business-area").val(data.business_area);
+                $("#request-form-history #requestor").val(data.requestor);
+                $("#request-form-history #tanggal-reg").val(data.tanggal_reg);
+
+                var item = '<table class="table xtable-condensed table-responsive table-striped" id="request-item-table" style="font-size:13px">';
+                item += '<th>NO.</th>';
+                item += '<th>NO PO</th>';
+                item += '<th>ITEM PO</th>';
+                item += '<th>QTY</th>';
+                item += '<th>KODE MATERIAL</th>';
+                item += '<th>NAMA MATERIAL</th>';
+                item += '<th>VIEW DETAIL</th>';
+                if (data.item_detail.length > 0) 
+                {
+                    var no = 1;
+                    $.each(data.item_detail, function(key, val) 
+                    {
+                        item += "<tr style='height: 30px !important;font-size:11px !important;'>";
+                        item += "<td>" + no + "</td>";
+                        item += "<td>" + val.no_po + "</td>";
+                        item += "<td>" + val.item + "</td>";
+                        item += "<td><label class='label bg-red'>" + val.qty + "</label></td>";
+                        item += "<td>" + val.kode + "</td>";
+                        item += "<td>" + val.nama + "</td>";
+                        item += "<td><i class='fa fa-eye' OnClick='getDetailItem(\"" + noreg + "\","+val.id+",2)'></i></td>";
+                        item += "</tr>";
+                        no++;
+                    });
+                }
+                else
+                {
+                    item += '<tr>';
+                    item += ' <td colspan="7" style="text-align:center">No item selected</td>';
+                    item += '</tr>';
+                }
+                item += '</table>';
+
+                log_history(id);
+
+                $("#box-item-detail-history").html(item);
+
+                $("#history-modal .modal-title").html("<i class='fa fa-edit'></i>  History Approval Pendaftaran - <span style='color:#dd4b39'>" + data.no_reg + "</span><input type='hidden' id='getnoreg' name='getnoreg' value='"+data.no_reg+"' >");
+
+                $('#history-modal').modal('show');
+            },
+            error: function(x) 
+            {                           
+                alert("Error: "+ "\r\n\r\n" + x.responseText);
+            }
+        }); 
+    }
+
+    function log_history(id)
+    {
+        //alert(id);
+        var kata = id;
+        var noreg= kata.replace(/\//g, '-');
+        //alert(noreg); return false;
+
+        $.ajax({
+        type: 'GET',
+        url: "{{ url('approval/log_history') }}/"+noreg,
+        data: "",
+        dataType: 'json',
+        success: function(data) 
+        {
+            alert(data.length); 
+            var item = '<br/><span class="label bg-blue"><i class="fa fa-bars"></i> LOG HISTORY</span> <br/><br/>';
+            item += '<table class="table xtable-condensed table-responsive table-striped" id="request-item-table" style="font-size:13px">';
+            item += '<th>NO.</th>';
+            item += '<th>AREA CODE</th>';
+            item += '<th>USER ID</th>';
+            item += '<th>NAME</th>';
+            item += '<th>STATUS DOKUMEN</th>';
+            item += '<th>STATUS APPROVAL</th>';
+            item += '<th>NOTES</th>';
+            item += '<th>DATE</th>';
+            if (data.length > 0) 
+            {
+                no = 1;
+                $.each(data, function(key, val) 
+                {
+                    item += "<tr style='height: 30px !important;font-size:11px !important;'>";
+                    item += "<td>" + no + "</td>";
+                    item += "<td>" + val.area_code + "</td>";
+                    item += "<td>" + val.user_id + "</td>";
+                    item += "<td>" + val.name + "</td>";
+                    item += "<td>" + val.status_dokumen + "</td>";
+                    item += "<td>" + val.status_approval + "</td>";
+                    item += "<td>" + val.notes + "</td>";
+                    item += "<td>" + val.date + "</td>";
+                    item += "</tr>";
+                    no++;
+                });
+            }
+            else
+            {
+                item += '<tr>';
+                item += ' <td colspan="8" style="text-align:center">-</td>';
+                item += '</tr>';
+            }
+            item += '</table>';
+
+            $("#log-history-box").html(item);
+        },
+            error: function(x) 
+            {                           
+                alert("Error: "+ "\r\n\r\n" + x.responseText);
+            }
+        }); 
     }
 
 </script>

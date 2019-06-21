@@ -498,4 +498,40 @@ class ApprovalController extends Controller
             return response()->json(['status' => false, "message" => $e->getMessage()]);
         }
     }
+
+    function log_history($id)
+    {
+        $noreg = str_replace("-", "/", $id);
+
+        $records = array();
+
+        $sql = "SELECT a.*, date_format(a.date,'%d-%m-%Y %h:%i:%s') AS date2 FROM v_history a WHERE a.document_code = '{$noreg}' ORDER BY a.date";
+
+        $data = DB::SELECT($sql);
+        
+        if($data)
+        {
+
+            foreach ($data as $k => $v) 
+            {
+                //echo "<pre>"; print_r($v->NO_REG);
+                # code...
+
+                $records[] = array(
+                    'document_code' => $v->document_code,
+                    'area_code' => $v->area_code,
+                    'user_id' => $v->user_id,
+                    'name' => $v->name,
+                    'status_dokumen' => $v->status_dokumen,
+                    'status_approval' => $v->status_approval,
+                    'notes' => $v->notes,
+                    'date' => $v->date2,
+                    //'item_detail' => $this->get_item_detail($noreg)
+                );
+
+            }
+        }
+
+        echo json_encode($records);
+    }
 }
