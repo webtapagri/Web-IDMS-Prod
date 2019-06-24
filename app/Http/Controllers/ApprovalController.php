@@ -371,8 +371,8 @@ class ApprovalController extends Controller
             array("index" => "2", "field" => "name", "alias" => "name"),
             array("index" => "3", "field" => "status_dokumen", "alias" => "status_dokumen"),
             array("index" => "4", "field" => "status_approval", "alias" => "status_approval"),
-            array("index" => "5", "field" => "notes", "alias" => "po_notes"),
-            array("index" => "6", "field" => "DATE_FORMAT(date, '%d %b %Y')", "alias" => "po_date"),
+            //array("index" => "5", "field" => "notes", "alias" => "po_notes"),
+            array("index" => "5", "field" => "DATE_FORMAT(date, '%d %b %Y')", "alias" => "po_date"),
         );
 
         foreach ($field as $row) 
@@ -518,6 +518,8 @@ class ApprovalController extends Controller
                 //echo "<pre>"; print_r($v->NO_REG);
                 # code...
 
+                $notes = $v->notes == '' ? '' : $v->notes;
+
                 $records[] = array(
                     'document_code' => $v->document_code,
                     'area_code' => $v->area_code,
@@ -525,7 +527,7 @@ class ApprovalController extends Controller
                     'name' => $v->name,
                     'status_dokumen' => $v->status_dokumen,
                     'status_approval' => $v->status_approval,
-                    'notes' => $v->notes,
+                    'notes' => $notes,
                     'date' => $v->date,
                     //'item_detail' => $this->get_item_detail($noreg)
                 );

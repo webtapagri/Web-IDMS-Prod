@@ -77,7 +77,7 @@
       <div class="tab-pane" id="tab_2">
         <div class="small table-container">
                     <div class="table-actions-wrapper">
-                        <button class="btn btn-flat btn-sm btn-flat label-danger btn-refresh"><i class="glyphicon glyphicon-refresh" title="Refresh"></i></button>
+                        <button class="btn btn-flat btn-sm btn-flat label-danger btn-refresh"><i class="glyphicon glyphicon-refresh" title="Refresh"></i></button><div OnClick="history('19.06/AMS/PDFA/00009')">test</div>
                     </div>
                     <table id="data-table-history" class="table table-bordered table-condensed">
                         <thead>
@@ -87,7 +87,7 @@
                                 <th>ROLE NAME</th>
                                 <th>STATUS DOCUMENT</th>
                                 <th>STATUS APPROVAL</th>
-                                <th>NOTES</th>
+                                <?php /* <th>NOTES</th> */ ?>
                                 <th>DATE</th>
                             </tr>
                             <tr role="row" class="filter">
@@ -105,7 +105,7 @@
                                 <th><input type="text" class="form-control input-xs form-filter" name="name"></th>
                                 <th><input type="text" class="form-control input-xs form-filter" name="status_dokumen"></th>
                                 <th><input type="text" class="form-control input-xs form-filter" name="status_approval"></th>
-                                <th><input type="text" class="form-control input-xs form-filter" name="notes"></th>
+                                <?php /*<th><input type="text" class="form-control input-xs form-filter" name="notes"></th>*/ ?>
                                 <th><input type="text" class="form-control input-xs form-filter datepicker" name="date" autocomplete="off"></th>
                                 
                             </tr>
@@ -262,18 +262,18 @@
                             </div>
                         </div>
                         
+                        <!-- ITEM DETAIL OUTSTANDING -->
                         <div id="box-detail-item"></div>
 
-                        <div id="box-detail-item-history"></div>
+                        <!-- LOG HISTORY OUTSTANDING --> 
+                        <div id="log-history-box-outstanding"></div>
 
                         <div class="form-group">
-                            <label class="col-md-2">Note</label>
+                            <label class="col-md-2">NOTE</label>
                             <div class="col-md-8">
                                 <textarea type="text" class="form-control input-sm attr-material-group" row="3" name="specification" id="specification"></textarea>
                             </div>
                         </div>
-
-                        <div id="log-history-box"></div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -349,15 +349,17 @@
                                 <div class="col-md-12" id="box-item-detail-history"></div>
                             </div>
                             
+                            <!-- ITEM DETAIL HISTORY -->
                             <div id="box-detail-item-history"></div>
 
-                            <div class="form-group">
+                            <div class="form-group" id="history-notes">
                                 <label class="col-md-2"><span class="label bg-blue"><i class="fa fa-bars"></i> NOTE</span></label>
                                 <div class="col-md-8">
                                     <textarea type="text" class="form-control input-sm attr-material-group" row="3" name="specification" id="specification" readonly></textarea>
                                 </div>
                             </div>
 
+                            <!-- LOG HISTORY -->
                             <div id="log-history-box"></div>
                         
                         </div><!-- ROW -->                        
@@ -520,10 +522,10 @@
                         data: 'status_approval',
                         name: 'status_approval'
                     },
-                    {
+                    /*{
                         data: 'po_notes',
                         name: 'po_notes'
-                    },
+                    },*/
                     {
                         data: 'po_date',
                         name: 'po_date'
@@ -577,7 +579,7 @@
                         item += "<td>" + no + "</td>";
                         item += "<td>" + val.no_po + "</td>";
                         item += "<td>" + val.item + "</td>";
-                        item += "<td><label class='label bg-red'>" + val.qty + "</label></td>";
+                        item += "<td>" + val.qty + "</td>";
                         item += "<td>" + val.kode + "</td>";
                         item += "<td>" + val.nama + "</td>";
                         item += "<td><i class='fa fa-eye' OnClick='getDetailItem(\"" + noreg + "\","+val.id+",1)'></i></td>";
@@ -596,7 +598,7 @@
                 $("#box-item-detail").html(item);
 
                 //alert(id);
-                log_history(id);
+                log_history(id,1);
                 $("#box-item-detail-history").html(item);
 
                 $("#approve-modal .modal-title").html("<i class='fa fa-edit'></i>  Approval Pendaftaran - <span style='color:#dd4b39'>" + data.no_reg + "</span><input type='hidden' id='getnoreg' name='getnoreg' value='"+data.no_reg+"' >");
@@ -704,7 +706,6 @@
     function getDetailItem(noreg,id,tipe)
     {
         //alert(JSON.stringify(id));
-        //alert(kode);
         
         $.ajax({
             type: 'GET',
@@ -861,6 +862,7 @@
                 }
                 else
                 {
+                    //alert(tipe);
                     $("#box-detail-item-history").fadeIn();
                     $("#box-detail-item-history").html(item);
                 }
@@ -974,12 +976,13 @@
 
     function history(id)
     {
-        //alert(id); return false;
+        //alert(id); //return false;
         var kata = id;
         var noreg= kata.replace(/\//g, '-');
         //alert(noreg); return false;
 
         $("#box-detail-item-history").hide();
+        $("#history-notes").hide();
 
         $.ajax({
             type: 'GET',
@@ -1014,7 +1017,7 @@
                         item += "<td>" + no + "</td>";
                         item += "<td>" + val.no_po + "</td>";
                         item += "<td>" + val.item + "</td>";
-                        item += "<td><label class='label bg-red'>" + val.qty + "</label></td>";
+                        item += "<td>" + val.qty + "</td>";
                         item += "<td>" + val.kode + "</td>";
                         item += "<td>" + val.nama + "</td>";
                         item += "<td><i class='fa fa-eye' OnClick='getDetailItem(\"" + noreg + "\","+val.id+",2)'></i></td>";
@@ -1030,7 +1033,7 @@
                 }
                 item += '</table>';
 
-                log_history(id);
+                log_history(id,2);
 
                 $("#box-item-detail-history").html(item);
 
@@ -1045,9 +1048,9 @@
         }); 
     }
 
-    function log_history(id)
+    function log_history(id,tipe)
     {
-        //alert(id);
+        //alert(tipe);
         var kata = id;
         var noreg= kata.replace(/\//g, '-');
         //alert(noreg); return false;
@@ -1096,7 +1099,16 @@
             }
             item += '</table>';
 
-            $("#log-history-box").html(item);
+            
+            if(tipe==2)
+            {
+                $("#log-history-box").html(item);
+            }
+            else
+            {
+                $("#log-history-box-outstanding").html(item);
+            }
+
         },
             error: function(x) 
             {                           
