@@ -264,12 +264,16 @@
                         
                         <div id="box-detail-item"></div>
 
+                        <div id="box-detail-item-history"></div>
+
                         <div class="form-group">
                             <label class="col-md-2">Note</label>
                             <div class="col-md-8">
                                 <textarea type="text" class="form-control input-sm attr-material-group" row="3" name="specification" id="specification"></textarea>
                             </div>
                         </div>
+
+                        <div id="log-history-box"></div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -591,6 +595,10 @@
 
                 $("#box-item-detail").html(item);
 
+                //alert(id);
+                log_history(id);
+                $("#box-item-detail-history").html(item);
+
                 $("#approve-modal .modal-title").html("<i class='fa fa-edit'></i>  Approval Pendaftaran - <span style='color:#dd4b39'>" + data.no_reg + "</span><input type='hidden' id='getnoreg' name='getnoreg' value='"+data.no_reg+"' >");
 
                 $('#approve-modal').modal('show');
@@ -602,6 +610,7 @@
         }); 
     }
 
+    /*
     function ___approval(id) 
     {
         request_item = [];
@@ -653,6 +662,7 @@
         jQuery("#approve-modal .modal-title").html("<i class='fa fa-edit'></i>  Approval Request - Penambahan <span style='color:#dd4b39'>" + id + "</span>");
         jQuery("#approve-modal").modal("show");
     }
+    */
 
     function createItemRequestTable() {
         var item = '<table class="table table-condensed" id="request-item-table" style="font-size:13px">';
