@@ -174,7 +174,15 @@ Route::match(['get', 'post'], 'grid-workflow-detail', [
     'uses' => 'WorkflowController@dataGrid'
 ]);
 */
-
 Route::post('grid-workflow-detail/{id}', 'WorkflowController@dataGridDetail')->name('grid-workflow-detail/{id}');
 Route::post('grid-workflow-detail-job/{id}', 'WorkflowController@dataGridDetailJob')->name('grid-workflow-detail-job/{id}');
+
+/* MASTER GENERAL DATA SETTING */
+Route::resource('/setting/general-data', 'GeneralDataController');
+Route::match(['get', 'post'], 'grid-general-data', [
+    'as' => 'get.grid_general_data',
+    'uses' => 'GeneralDataController@dataGrid'
+]);
+Route::post('/general-data/post', 'GeneralDataController@store');
+Route::get('/general-data/edit/', 'GeneralDataController@show');
 
