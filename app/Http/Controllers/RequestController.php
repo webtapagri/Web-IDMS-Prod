@@ -296,7 +296,8 @@ class RequestController extends Controller
                         ]);
                         $detail = $row["detail"];
 
-                        for ($i = 0; $i < count($detail); $i++) {
+                        for ($i = 0; $i < count($detail); $i++) 
+                        {
                             $reg_asset_detail_id = DB::table( 'TR_REG_ASSET_DETAIL')->insertGetId([
                                 "ASSET_PO_ID" =>   $reg_asset_po_id,
                                 "NO_REG_ITEM" =>  $i + 1,
@@ -368,6 +369,7 @@ class RequestController extends Controller
                                 ]);
                             }
                         }
+                        
                         $no++;
                         $item_po++;
                     }
@@ -440,7 +442,7 @@ class RequestController extends Controller
         
         $sql = " 
             SELECT qty_po_submit FROM v_qty_po_submit WHERE NO_PO = ".$param['po_no']." 
-                AND ITEM_PO = ".$param['item_po']." 
+                AND ITEM_PO = '".$param['item_po']."' 
                 AND KODE_MATERIAL = '".$param['kode_material']."'
         ";
         

@@ -186,3 +186,13 @@ Route::match(['get', 'post'], 'grid-general-data', [
 Route::post('/general-data/post', 'GeneralDataController@store');
 Route::get('/general-data/edit/', 'GeneralDataController@show');
 
+/* ASSET CLASS - SETTING */
+Route::resource('/setting/asset-class', 'AssetClassController');
+Route::match(['get', 'post'], 'grid-asset-class', [
+    'as' => 'get.grid_asset_class',
+    'uses' => 'AssetClassController@dataGrid'
+]);
+Route::post('/asset-class/post', 'AssetClassController@store');
+Route::get('/asset-class/edit/', 'AssetClassController@show');
+Route::get('/asset-class/edit-group-asset/', 'AssetClassController@show_group_asset');
+Route::post('grid-ac-group-asset/{id}', 'AssetClassController@dataGridGroupAsset')->name('grid-ac-group-asset/{id}');

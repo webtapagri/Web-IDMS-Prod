@@ -185,7 +185,7 @@
                         <div class="form-group">
                             <div class="col-md-12">
                                 <ul class="nav nav-tabs">
-                                    <li class="active" style="border-bottom:none !important;"><a href="#panel-initial" data-toggle="tab" class="panel-initial" style="background-color:#f3f3f3;border-bottom:none;font-weight:800">Rincian Informasi Asset | page: <span class="total-page"></span></a></li>
+                                    <li class="active" style="border-bottom:none !important;"><a href="#panel-initial" data-toggle="tab" class="panel-initial" style="background-color:#f3f3f3;border-bottom:none;font-weight:800">RINCIAN INFORMASI ASSET | PAGE: <span class="total-page"></span></a></li>
                                     <li class="pull-right"><a href="javascript:nextPage()" class="text-muted btn_next">Next <i class="fa fa-arrow-right"></i></a></li>
                                     <li class="pull-right"><a href="javascript:prevPage()" class="text-muted btn_prev"><i class="fa fa-arrow-left"></i> Prev</a></li>
                                 </ul>
@@ -209,26 +209,35 @@
                                                 </div>
                                             </div>
                                             <div class="form-group">
-                                                <label for="plant" class="col-md-2 text-right">Jenis asset</label>
-                                                <div class="col-md-10">
+                                                <label for="plant" class="col-md-2 col-md-offset-1">Jenis asset</label>
+                                                <div class="col-md-8">
                                                     <select class="form-control input-sm" name="asset_type" value="" id="asset_type"></select>
                                                 </div>
                                             </div>
                                             <div class="form-group">
-                                                <label for="plant" class="col-md-2 text-right">Group</label>
-                                                <div class="col-md-10">
+                                                <label for="plant" class="col-md-2 col-md-offset-1">Group</label>
+                                                <div class="col-md-8">
                                                     <select class="form-control input-sm" name="asset_group" value="" id="asset_group"></select>
                                                 </div>
                                             </div>
+                                            
                                             <div class="form-group">
-                                                <label for="plant" class="col-md-2 text-right">Sub Group</label>
-                                                <div class="col-md-10">
+                                                <label for="plant" class="col-md-2 col-md-offset-1">Sub Group</label>
+                                                <div class="col-md-8">
                                                     <select class="form-control input-sm" name="asset_sub_group" value="" id="asset_sub_group"></select>
                                                 </div>
                                             </div>
+
+                                            <div class="form-group" id="asset-controller">
+                                                <label for="part_no" class="col-md-2 col-md-offset-1">Asset Controller</label>
+                                                <div class="col-md-8">
+                                                    <input type="text" class="form-control input-sm asset-controller" name="asset_controller" id="asset_controller" autocomplete="off" readonly="readonly">
+                                                </div>
+                                            </div>
+
                                             <div class="form-group">
                                                 <label for="plant" class="col-md-3">
-                                                    <h4>Asset Class</h4>
+                                                    <h4>ASSET CLASS :</h4>
                                                 </label>
                                                 <div class="col-md-9">
                                                     <h4></h4>
@@ -366,7 +375,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <h4>Penanggung jawab Aset:</h4>
+                                            <h4>PENANGGUNG JAWAB ASSET : </h4>
                                             <div class="form-group material-group-input" id="input-specification">
                                                 <label for="part_no" class="col-md-2 col-md-offset-1 col-form-label">Nama</label>
                                                 <div class="col-md-8">
@@ -383,7 +392,7 @@
                                     </div>
                                 </div>
                                 <ul class="nav nav-tabs">
-                                    <li class="active" style="border-bottom:none !important;"><a href="#panel-initial" data-toggle="tab" class="panel-initial" style="background-color:#f3f3f3;border-bottom:none;font-weight:800">Rincian Informasi Asset | page: <span class="total-page"></span></a></li>
+                                    <li class="active" style="border-bottom:none !important;"><a href="#panel-initial" data-toggle="tab" class="panel-initial" style="background-color:#f3f3f3;border-bottom:none;font-weight:800">RINCIAN INFORMASI ASSET | PAGE : <span class="total-page"></span></a></li>
                                     <li class="pull-right"><a href="javascript:nextPage()" class="text-muted btn_next">Next <i class="fa fa-arrow-right"></i></a></li>
                                     <li class="pull-right"><a href="javascript:prevPage()" class="text-muted btn_prev"><i class="fa fa-arrow-left"></i> Prev</a></li>
                                 </ul>
@@ -543,22 +552,31 @@
             jQuery("#asset_group").trigger('change');
         });
 
-        jQuery("#asset_group").on('change', function() {
+        $("#asset_group").on('change', function() 
+        {
             var assetsubgroup = jQuery.parseJSON(JSON.stringify(dataJson('{!! route("get.assetsubgroup") !!}?group=' + jQuery(this).val())));
-            jQuery("#asset_sub_group").empty().select2({
+            $("#asset_sub_group").empty().select2({
                 data: assetsubgroup,
                 width: "100%",
                 allowClear: true,
                 placeholder: ' '
             });
-            jQuery("#asset_sub_group").trigger('change');
+            $("#asset_sub_group").trigger('change');
+
+            var asset_type_val = $("#asset_type").val();
+            asset_group_val = $("#asset_group").val();
+            asset_sub_group_val = $("#asset_sub_group").val();
+            get_asset_controller(asset_type_val,asset_group_val,asset_sub_group_val);
+
         });
 
-        jQuery("#asset_type").trigger('change');
-        jQuery("#asset_group").trigger('change');
-        jQuery("#asset_sub_group").trigger('change');
+        $("#asset_type").trigger('change');
+        $("#asset_group").trigger('change');
+        $("#asset_sub_group").trigger('change');
 
-        jQuery("#request-form").on("submit", function(e) 
+
+
+        $("#request-form").on("submit", function(e) 
         {
             e.preventDefault();
 
@@ -792,7 +810,13 @@
             request_item[obj].detail[id].asset_group = jQuery(this).val();
         });
 
-        jQuery("#asset_sub_group").on('change', function() {
+        $("#asset_sub_group").on('change', function() 
+        {
+            var asset_type_val = $("#asset_type").val();
+            asset_group_val = $("#asset_group").val();
+            asset_sub_group_val = $("#asset_sub_group").val();
+            get_asset_controller(asset_type_val,asset_group_val,asset_sub_group_val);
+
             var id = current_page - 1;
             var obj = jQuery('#detail_item_selected').val();
             request_item[obj].detail[id].asset_sub_group = jQuery(this).val();
@@ -1590,6 +1614,14 @@
         var qty_po = qty-datax.nilai;
 
         return qty_po;
+    }
+
+    function get_asset_controller(asset_type,asset_group,asset_sub_group)
+    {
+        //alert(asset_sub_group);
+        //var asset_sub_group_val = $("#asset_sub_group").val();
+
+        $("#asset_controller").val(asset_type+"-"+asset_group+"-"+asset_sub_group);
     }
 
 </script>

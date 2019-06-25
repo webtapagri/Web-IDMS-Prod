@@ -483,13 +483,15 @@ class ApprovalController extends Controller
         $no_registrasi = str_replace("-", "/", $noreg);
         $user_id = Session::get('user_id');
         $note = $request->parNote;
+        $role_id = Session::get('role_id'); //get role id user
+        $asset_controller = ''; //get asset controller 
         //echo $note;die();
 
         DB::beginTransaction();
 
         try 
         {
-            DB::SELECT('call update_approval("'.$no_registrasi.'", "'.$user_id.'","'.$status.'", "'.$note.'")');
+            DB::SELECT('call update_approval("'.$no_registrasi.'", "'.$user_id.'","'.$status.'", "'.$note.'", "'.$role_id.'", "'.$asset_controller.'")');
 
             DB::commit();
             return response()->json(['status' => true, "message" => 'Data is successfully ' . ($no_registrasi ? 'updated' : 'update')]);

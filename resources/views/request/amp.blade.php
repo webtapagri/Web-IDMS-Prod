@@ -202,7 +202,7 @@
                         <div class="form-group" id="detail-item-request-panel">
                             <div class="col-md-12">
                                 <ul class="nav nav-tabs">
-                                    <li class="active" style="border-bottom:none !important;"><a href="#panel-initial" data-toggle="tab" class="panel-initial" style="background-color:#f3f3f3;border-bottom:none;font-weight:800">Rincian Informasi Asset | page: <span class="total-page"></span></a></li>
+                                    <li class="active" style="border-bottom:none !important;"><a href="#panel-initial" data-toggle="tab" class="panel-initial" style="background-color:#f3f3f3;border-bottom:none;font-weight:800">RINCIAN INFORMASI ASSET | PAGE: <span class="total-page"></span></a></li>
                                     <li class="pull-right"><a href="javascript:nextPage()" class="text-muted btn_next" id="">Next <i class="fa fa-arrow-right"></i></a></li>
                                     <li class="pull-right"><a href="javascript:prevPage()" class="text-muted btn_prev" id=""><i class="fa fa-arrow-left"></i> Prev</a></li>
                                 </ul>
@@ -226,26 +226,26 @@
                                                 </div>
                                             </div>
                                             <div class="form-group">
-                                                <label for="plant" class="col-md-2 text-right">Jenis asset</label>
-                                                <div class="col-md-10">
+                                                <label for="plant" class="col-md-2 text-right col-md-offset-1">Jenis asset</label>
+                                                <div class="col-md-8">
                                                     <select class="form-control input-sm" name="asset_type" value="" id="asset_type"></select>
                                                 </div>
                                             </div>
                                             <div class="form-group">
-                                                <label for="plant" class="col-md-2 text-right">Group</label>
-                                                <div class="col-md-10">
+                                                <label for="plant" class="col-md-2 text-right col-md-offset-1">Group</label>
+                                                <div class="col-md-8">
                                                     <select class="form-control input-sm" name="asset_group" value="" id="asset_group"></select>
                                                 </div>
                                             </div>
                                             <div class="form-group">
-                                                <label for="plant" class="col-md-2 text-right">Sub Group</label>
-                                                <div class="col-md-10">
+                                                <label for="plant" class="col-md-2 text-right col-md-offset-1">Sub Group</label>
+                                                <div class="col-md-8">
                                                     <select class="form-control input-sm" name="asset_sub_group" value="" id="asset_sub_group"></select>
                                                 </div>
                                             </div>
                                             <div class="form-group">
                                                 <label for="plant" class="col-md-3">
-                                                    <h4>Asset Class</h4>
+                                                    <h4>ASSET CLASS</h4>
                                                 </label>
                                                 <div class="col-md-9">
                                                     <h4>E4010</h4>
@@ -382,7 +382,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <h4>Penanggung jawab Aset:</h4>
+                                            <h4>PENANGGUNG JAWAB ASET :</h4>
                                             <div class="form-group material-group-input" id="input-specification">
                                                 <label for="part_no" class="col-md-2 col-md-offset-1 col-form-label">Nama</label>
                                                 <div class="col-md-8">
@@ -399,7 +399,7 @@
                                     </div>
                                 </div>
                                 <ul class="nav nav-tabs">
-                                    <li class="active" style="border-bottom:none !important;"><a href="#panel-initial" data-toggle="tab" class="panel-initial" style="background-color:#f3f3f3;border-bottom:none;font-weight:800">Rincian Informasi Asset | page: <span class="total-page"></span></a></li>
+                                    <li class="active" style="border-bottom:none !important;"><a href="#panel-initial" data-toggle="tab" class="panel-initial" style="background-color:#f3f3f3;border-bottom:none;font-weight:800">RINCIAN INFORMASI ASSET | PAGE : <span class="total-page"></span></a></li>
                                     <li class="pull-right"><a href="javascript:nextPage()" class="text-muted btn_next" id="">Next <i class="fa fa-arrow-right"></i></a></li>
                                     <li class="pull-right"><a href="javascript:prevPage()" class="text-muted btn_prev" id=""><i class="fa fa-arrow-left"></i> Prev</a></li>
                                 </ul>

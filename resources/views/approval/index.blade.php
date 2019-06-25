@@ -77,7 +77,7 @@
       <div class="tab-pane" id="tab_2">
         <div class="small table-container">
                     <div class="table-actions-wrapper">
-                        <button class="btn btn-flat btn-sm btn-flat label-danger btn-refresh"><i class="glyphicon glyphicon-refresh" title="Refresh"></i></button><div OnClick="history('19.06/AMS/PDFA/00009')">test</div>
+                        <button class="btn btn-flat btn-sm btn-flat label-danger btn-refresh"><i class="glyphicon glyphicon-refresh" title="Refresh"></i></button><?php /* <div OnClick="history('19.06/AMS/PDFA/00009')">test</div> */ ?>
                     </div>
                     <table id="data-table-history" class="table table-bordered table-condensed">
                         <thead>
