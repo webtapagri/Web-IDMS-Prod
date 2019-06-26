@@ -198,6 +198,7 @@ Route::match(['get', 'post'], 'grid-asset-class', [
     'uses' => 'AssetClassController@dataGrid'
 ]);
 Route::post('/asset-class/post', 'AssetClassController@store');
+Route::post('/asset-class/post-group-asset', 'AssetClassController@store_group_asset');
 Route::post('/asset-class/post-asset-map', 'AssetClassController@store_asset_map');
 Route::get('/asset-class/edit/', 'AssetClassController@show');
 Route::get('/asset-class/edit-group-asset/', 'AssetClassController@show_group_asset');

@@ -42,7 +42,7 @@
                      <div class="xtable-actions-wrapper pull-right">
                         <button class="btn btn-sm btn-flat btn-danger btn-refresh-data-table" title="refresh"><i class="glyphicon glyphicon-refresh"></i></button>
                         <!-- @if($data['access']->create == 1)-->
-                        <button class="btn btn-sm btn-flat btn-danger btn-add-detail"><i class="glyphicon glyphicon-plus" title="Add new data detail"></i></button>
+                        <button class="btn btn-sm btn-flat btn-danger btn-add-group-asset"><i class="glyphicon glyphicon-plus" title="Add New Data Group Asset"></i></button>
                         <!-- @endif -->
                     </div>
                     <table id="data-table-group-asset" class="table table-condensed" width="100%">
@@ -173,31 +173,25 @@
     </div>
 </div>
 
-<div id="add-data-modal-detail" class="modal fade" role="dialog">
+<div id="add-data-modal-group-asset" class="modal fade" role="dialog">
     <div class="modal-dialog" width="900px">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title"></h4>
             </div>
-            <form id="data-form-detail">
+            <form id="data-form-group-asset">
                 <div class="modal-body">
                     <div class="box-body">
                         <div class="col-xs-12">
-                            <label class="control-label" for="workflow-code">Workflow Code</label>
-                            <input class="form-control" name='workflow_code' id="workflow_code" requried>
+                            <label class="control-label" for="">Group Code</label>
+                            <input class="form-control" name='ga_group_code' id="ga_group_code" requried>
                         </div>
                         <div class="col-xs-12">
-                            <label class="control-label" for="group-name">Group Name</label>
-                            <input class="form-control" name='workflow_group_name' id="workflow_group_name" maxlength="400" requried>
-                            <input type="hidden" name='edit_workflow_code_detail' id="edit_workflow_code_detail">
-                        </div>
-                        <div class="col-xs-12">
-                            <label class="control-label" for="seq">Seq</label>
-                            <input class="form-control" name='seq' id="seq" maxlength="400" requried>
-                        </div>
-                        <div class="col-xs-12">
-                            <label class="control-label" for="description">Description</label>
-                            <input class="form-control" name='description' id="description" maxlength="400" requried>
+                            <label class="control-label" for="">Group Description</label>
+                            <input class="form-control" name='ga_group_description' id="ga_group_description" maxlength="400" requried>
+                            <input type="hidden" name='edit_ga_id' id="edit_ga_id">
+                            <input type="hidden" name='val_jenis_asset_code' id="val_jenis_asset_code" value="">
+                            <input type="hidden" name='edit_ga_jenis_asset_code' id="edit_ga_jenis_asset_code" value="">
                         </div>
                     </div>
                 </div>
@@ -505,18 +499,22 @@
             jQuery("#add-data-modal").modal("show");
         });
 
-        $('.btn-add-detail').on('click', function() 
+        $('.btn-add-group-asset').on('click', function() 
         {
-            document.getElementById("data-form-detail").reset();
+            document.getElementById("data-form-group-asset").reset();
+
+            //alert($("#val_jenis_asset_code").val());
+
             $('#role_id').prop('disabled', false);
-            $("#edit_workflow_code_detail").val("");
+            $("#edit_ga_id").val("");
+            $("#edit_ga_jenis_asset_code").val($("#val_jenis_asset_code").val());
             $("#font-awesome-result").removeClass();
-            $("#add-data-modal-detail").modal({
+            $("#add-data-modal-group-asset").modal({
                 backdrop: 'static',
                 keyboard: false
             });
-            $("#add-data-modal-detail .modal-title").html("<i class='fa fa-plus'></i> Create new data detail");
-            $("#add-data-modal-detail").modal("show");
+            $("#add-data-modal-group-asset .modal-title").html("<i class='fa fa-plus'></i> Create New Data Group Asset");
+            $("#add-data-modal-group-asset").modal("show");
         });
 
         $('.btn-add-detail-job').on('click', function() 
@@ -620,9 +618,9 @@
             $("#add-data-modal-detail").modal("show");
         });
 
-        $('#data-form-detail').on('submit', function(e) 
+        $('#data-form-group-asset').on('submit', function(e) 
         {
-            if(confirm('confirm submit data detail ?'))
+            if(confirm('confirm submit data Group Asset ?'))
             {
                 //alert("submit data detail cuk");
 
@@ -635,7 +633,7 @@
                 });
 
                 jQuery.ajax({
-                    url: "{{ url('workflow/post-detail') }}",
+                    url: "{{ url('asset-class/post-group-asset') }}",
                     method: "POST",
                     data: param,
                     beforeSend: function() {
@@ -644,7 +642,7 @@
                     success: function(result) 
                     {
                         if (result.status) {
-                            jQuery("#add-data-modal-detail").modal("hide");
+                            jQuery("#add-data-modal-group-asset").modal("hide");
                             jQuery("#data-table-group-asset").DataTable().ajax.reload();
                             notify({
                                 type: 'success',
@@ -855,6 +853,7 @@
         $("#row-subgroup-asset").hide();
         
         $("#jenis-asset-code").html(id);
+        $("#val_jenis_asset_code").val(id);
         //$("#workflow-code-name").html('('+name+')');
         $("#row-group-asset").fadeIn();
 
@@ -947,18 +946,16 @@
     function edit_group_asset(id) 
     {
         //alert(id); return false;
-        document.getElementById("data-form-detail").reset();
-        $("#edit_workflow_code_detail").val(id);
-        var result = jQuery.parseJSON(JSON.stringify(dataJson("{{ url('asset-class/edit-group-asset/?id=') }}" + id)));
-        $("#edit_workflow_code_detail").val(result.workflow_detail_code);
-        $("#workflow_group_name").val(result.workflow_group_name);
-        $("#workflow_code").val(result.workflow_code);
-        $("#workflow_code").trigger("change");
-        $("#seq").val(result.seq);
-        $("#description").val(result.description);
+        document.getElementById("data-form-group-asset").reset();
+        $("#edit_ga_id").val(id);
+        var result = $.parseJSON(JSON.stringify(dataJson("{{ url('asset-class/edit-group-asset/?id=') }}" + id)));
+        
+        $("#edit_ga_id").val(result.ID);
+        $("#ga_group_code").val(result.GROUP_CODE);
+        $("#ga_group_description").val(result.GROUP_DESCRIPTION);
 
-        $("#add-data-modal-detail .modal-title").html("<i class='fa fa-edit'></i> Update data detail "+result.workflow_detail_code+" : " + result.workflow_group_name);
-        $("#add-data-modal-detail").modal("show");
+        $("#add-data-modal-group-asset .modal-title").html("<i class='fa fa-edit'></i> UPDATE DATA - GROUP ASSET "+result.GROUP_CODE+" : " + result.GROUP_DESCRIPTION);
+        $("#add-data-modal-group-asset").modal("show");
     }
 
     function detail_subgroup_asset(id_jenis_asset_code,id_group_code)

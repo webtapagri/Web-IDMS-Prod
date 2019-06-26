@@ -13,6 +13,7 @@ use App\TR_WORKFLOW_DETAIL;
 use App\TR_WORKFLOW_JOB;
 use App\TM_JENIS_ASSET;
 use App\TM_ASSET_CONTROLLER_MAP;
+use App\TM_GROUP_ASSET;
 
 class AssetClassController extends Controller
 {
@@ -128,6 +129,36 @@ class AssetClassController extends Controller
         }
     }
 
+    public function store_group_asset(Request $request)
+    {
+        try 
+        {
+            //$asset_ctrl_description = $this->get_asset_ctrl_description($request->acm_asset_ctrl_code);
+            //$new_map_code = $request->acm_jenis_asset_code.$request->acm_group_code.$request->acm_subgroup_code.$request->acm_asset_ctrl_code;
+            //echo "====".$asset_ctrl_description; die();
+
+            if ( $request->edit_ga_id != "" ) 
+            {
+                //$data = TM_GROUP_ASSET::find($request->edit_ga_id);
+                $sql = "UPDATE TM_GROUP_ASSET SET group_description = '".$request->ga_group_description."' WHERE id = ".$request->edit_ga_id."";
+                DB::UPDATE($sql);
+            } 
+            else 
+            {
+
+                $data = new TM_GROUP_ASSET();
+                $data->group_code = $request->ga_group_code;
+                $data->group_description = $request->ga_group_description;
+                $data->jenis_asset_code = $request->edit_ga_jenis_asset_code;
+                $data->save();
+            }
+
+            return response()->json(['status' => true, "message" => 'Data is successfully ' . ($request->edit_ga_id ? 'updated' : 'added')]);
+        } catch (\Exception $e) {
+            return response()->json(['status' => false, "message" => $e->getMessage()]);
+        }
+    }
+
     public function store_asset_map(Request $request)
     {
         try 
@@ -189,6 +220,13 @@ class AssetClassController extends Controller
         $param = $_REQUEST;
         //echo "<pre>"; print_r($param);
         $data = TM_JENIS_ASSET::find($param["id"]);
+        return response()->json(array('data' => $data));
+    }
+
+    public function show_group_asset()
+    {
+        $param = $_REQUEST;
+        $data = TM_GROUP_ASSET::find($param["id"]);
         return response()->json(array('data' => $data));
     }
 
