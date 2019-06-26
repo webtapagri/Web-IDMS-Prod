@@ -12,6 +12,7 @@ use App\Workflow;
 use App\TR_WORKFLOW_DETAIL;
 use App\TR_WORKFLOW_JOB;
 use App\TM_JENIS_ASSET;
+use App\TM_ASSET_CONTROLLER_MAP;
 
 class AssetClassController extends Controller
 {
@@ -127,11 +128,75 @@ class AssetClassController extends Controller
         }
     }
 
+    public function store_asset_map(Request $request)
+    {
+        try 
+        {
+            $asset_ctrl_description = $this->get_asset_ctrl_description($request->acm_asset_ctrl_code);
+            $new_map_code = $request->acm_jenis_asset_code.$request->acm_group_code.$request->acm_subgroup_code.$request->acm_asset_ctrl_code;
+            //echo "====".$asset_ctrl_description; die();
+
+            if ( $request->edit_map_code_id != "" ) 
+            {
+                $data = TM_ASSET_CONTROLLER_MAP::find($request->edit_map_code_id);
+                $sql = "UPDATE TM_ASSET_CONTROLLER_MAP SET asset_ctrl_code = '".$request->acm_asset_ctrl_code."', asset_ctrl_description = '".$asset_ctrl_description."' WHERE id = ".$request->edit_map_code_id."";
+                DB::UPDATE($sql);
+            } 
+            else 
+            {
+
+                $data = new TM_ASSET_CONTROLLER_MAP();
+                $data->map_code = $new_map_code;
+                $data->jenis_asset_code = $request->acm_jenis_asset_code;
+                $data->group_code = $request->acm_group_code;
+                $data->subgroup_code = $request->acm_subgroup_code;
+                $data->asset_ctrl_code = $request->acm_asset_ctrl_code;
+                $data->asset_ctrl_description = $asset_ctrl_description;
+                $data->save();
+            }
+
+            return response()->json(['status' => true, "message" => 'Data is successfully ' . ($request->edit_map_code_id ? 'updated' : 'added')]);
+        } catch (\Exception $e) {
+            return response()->json(['status' => false, "message" => $e->getMessage()]);
+        }
+    }
+
+    public function get_asset_ctrl_description($id)
+    {
+        $dt = '';
+        $sql = " SELECT description FROM TM_GENERAL_DATA WHERE general_code = 'asset_controller' AND description_code = '".$id."' ";
+        $data = DB::SELECT($sql); 
+        //echo "<pre>"; print_r($data); die();
+
+        if(!empty($data))
+        {
+            $dt .= $data[0]->description;
+        }
+
+        /*
+        $data = DB::table('TM_GENERAL_DATA')
+        ->select('description')
+        ->where(array('general_code'=>'asset_controller','description_code'=>'$id'))
+        ->orderby('description_code', 'asc')
+        ->get();
+        */
+
+        return $dt;
+    }
+
     public function show()
     {
         $param = $_REQUEST;
         //echo "<pre>"; print_r($param);
         $data = TM_JENIS_ASSET::find($param["id"]);
+        return response()->json(array('data' => $data));
+    }
+
+    public function show_asset_map()
+    {
+        $param = $_REQUEST;
+        //echo "<pre>"; print_r($param);
+        $data = TM_ASSET_CONTROLLER_MAP::find($param["id"]);
         return response()->json(array('data' => $data));
     }
 
@@ -258,7 +323,7 @@ class AssetClassController extends Controller
         return response()->json($records); # = 1
     }
 
-    public function dataGridDetailJob(Request $request)
+    public function dataGridSubGroupAsset(Request $request)
     {
         //echo "<pre>"; print_r($request->id); die();
         $req_id = $request->id;
@@ -267,7 +332,7 @@ class AssetClassController extends Controller
         $sortColumn = "";
         $selectedColumn[] = "";
 
-        $selectedColumn = ['a.workflow_job_code','b.workflow_group_name', 'c.name', 'a.seq', 'a.operation', 'a.lintas'];
+        $selectedColumn = ['a.id','a.subgroup_code', 'a.subgroup_description', 'a.group_code'];
 
         if ($orderColumn) {
             $order = explode("as", $selectedColumn[$orderColumn]);
@@ -280,18 +345,92 @@ class AssetClassController extends Controller
 
         $sql = '
             SELECT ' . implode(", ", $selectedColumn) . '
-                FROM TR_WORKFLOW_JOB a 
-                    LEFT JOIN TR_WORKFLOW_DETAIL b ON a.workflow_detail_code = b.workflow_detail_code
-                    LEFT JOIN TBM_ROLE c ON a.id_role = c.id
-                WHERE a.workflow_detail_code = '.$req_id.'
+                FROM TM_SUBGROUP_ASSET a 
+                WHERE a.group_code = "'.$req_id.'"
         ';
 
-        if ($request->name)
-        $sql .= " AND c.name like'%" . $request->name . "%'";
+        if ($request->subgroup_code)
+        $sql .= " AND a.subgroup_code like'%" . $request->subgroup_code . "%'";
 
 
-        if ($request->operation)
-        $sql .= " AND a.operation like'%" . $request->operation . "%'";
+        if ($request->subgroup_description)
+        $sql .= " AND a.subgroup_description like'%" . $request->subgroup_description . "%'";
+
+        if ($orderColumn != "") {
+            $sql .= " ORDER BY " . $orderBy . " " . $dirColumn;
+        }
+
+        $data = DB::select(DB::raw($sql));
+
+        $iTotalRecords = count($data);
+        $iDisplayLength = intval($request->length);
+        $iDisplayLength = $iDisplayLength < 0 ? $iTotalRecords : $iDisplayLength;
+        $iDisplayStart = intval($request->start);
+        $sEcho = intval($request->draw);
+        $records = array();
+        $records["data"] = array();
+
+        $end = $iDisplayStart + $iDisplayLength;
+        $end = $end > $iTotalRecords ? $iTotalRecords : $end;
+
+        for ($i = $iDisplayStart; $i < $end; $i++) {
+            $records["data"][] =  $data[$i];
+        }
+
+        if (isset($_REQUEST["customActionType"]) && $_REQUEST["customActionType"] == "group_action") {
+            $records["customActionStatus"] = "OK"; // pass custom message(useful for getting status of group actions)
+            $records["customActionMessage"] = "Group action successfully has been completed. Well done!"; // pass custom message(useful for getting status of group actions)
+        }
+
+        $records["draw"] = $sEcho;
+        $records["recordsTotal"] = $iTotalRecords;
+        $records["recordsFiltered"] = $iTotalRecords;
+        return response()->json($records); # = 1
+    }
+
+    public function dataGridAssetMap(Request $request)
+    {
+        //echo "<pre>"; print_r($request->id); die();
+        $req_id = explode("__", $request->id);
+        //echo "<pre>"; print_r($req_id); die();
+
+        $orderColumn = $request->order[0]["column"];
+        $dirColumn = $request->order[0]["dir"];
+        $sortColumn = "";
+        $selectedColumn[] = "";
+
+        $selectedColumn = ['a.id','a.map_code', 'a.jenis_asset_code', 'a.group_code', 'a.subgroup_code', 'a.asset_ctrl_code', 'a.asset_ctrl_description'];
+
+        if ($orderColumn) {
+            $order = explode("as", $selectedColumn[$orderColumn]);
+            if (count($order) > 1) {
+                $orderBy = $order[0];
+            } else {
+                $orderBy = $selectedColumn[$orderColumn];
+            }
+        }
+
+        $sql = '
+            SELECT ' . implode(", ", $selectedColumn) . '
+                FROM TM_ASSET_CONTROLLER_MAP a 
+                WHERE a.jenis_asset_code = "'.$req_id[0].'" AND a.group_code = "'.$req_id[1].'" AND a.subgroup_code = "'.$req_id[2].'"
+        ';
+
+        if ($request->jenis_asset_code)
+        $sql .= " AND a.jenis_asset_code like'%" . $request->jenis_asset_code . "%'";
+
+
+        if ($request->group_code)
+        $sql .= " AND a.group_code like'%" . $request->group_code . "%'";
+
+        if ($request->subgroup_code)
+        $sql .= " AND a.subgroup_code like'%" . $request->subgroup_code . "%'";
+
+        if ($request->asset_ctrl_code)
+        $sql .= " AND a.asset_ctrl_code like'%" . $request->asset_ctrl_code . "%'";
+
+        if ($request->asset_ctrl_description)
+        $sql .= " AND a.asset_ctrl_description like'%" . $request->asset_ctrl_description . "%'";
 
         if ($orderColumn != "") {
             $sql .= " ORDER BY " . $orderBy . " " . $dirColumn;
@@ -401,5 +540,42 @@ class AssetClassController extends Controller
         } catch (\Exception $e) {
             return response()->json(['status' => false, "message" => $e->getMessage()]);
         }
+    }
+
+    public function select_jenis_asset_code()
+    {
+        $data = DB::table('TM_JENIS_ASSET')
+        ->select('jenis_asset_code as id', 'jenis_asset_description as text')
+        //->where('deleted', 0)
+        ->get();
+        return response()->json(array("data"=>$data));
+    }
+
+    public function select_group_code()
+    {
+        $data = DB::table('TM_GROUP_ASSET')
+        ->select('group_code as id', 'group_description as text')
+        //->where('deleted', 0)
+        ->get();
+        return response()->json(array("data"=>$data));
+    }
+
+    public function select_subgroup_code()
+    {
+        $data = DB::table('TM_SUBGROUP_ASSET')
+        ->select('subgroup_code as id', 'subgroup_description as text')
+        //->where('deleted', 0)
+        ->get();
+        return response()->json(array("data"=>$data));
+    }
+
+    public function select_asset_controller()
+    {
+        $data = DB::table('TM_GENERAL_DATA')
+        ->select('description_code as id', 'description as text')
+        ->where('general_code', 'asset_controller')
+        ->orderby('description_code', 'asc')
+        ->get();
+        return response()->json(array("data"=>$data));
     }
 }

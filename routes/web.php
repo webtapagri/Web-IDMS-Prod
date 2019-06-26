@@ -155,6 +155,11 @@ Route::get( 'get-jenisasset', ['as' => 'get.jenisasset', 'uses' => 'Select2Contr
 Route::get('get-select_workflow_code', ['as' => 'get.select_workflow_code', 'uses' => 'WorkflowController@workflowcode']);
 Route::get('get-select_workflow_detail_code', ['as' => 'get.select_workflow_detail_code', 'uses' => 'WorkflowController@workflowcodedetail']);
 Route::get('get-select_workflow_detail_role', ['as' => 'get.select_workflow_detail_role', 'uses' => 'WorkflowController@workflowcoderole']);
+Route::get('get-select_workflow_detail_code', ['as' => 'get.select_workflow_detail_code', 'uses' => 'WorkflowController@workflowcodedetail']);
+Route::get('get-select_jenis_asset_code', ['as' => 'get.select_jenis_asset_code', 'uses' => 'AssetClassController@select_jenis_asset_code']);
+Route::get('get-select_group_code', ['as' => 'get.select_group_code', 'uses' => 'AssetClassController@select_group_code']);
+Route::get('get-select_subgroup_code', ['as' => 'get.select_subgroup_code', 'uses' => 'AssetClassController@select_subgroup_code']);
+Route::get('get-select_asset_controller', ['as' => 'get.select_asset_controller', 'uses' => 'AssetClassController@select_asset_controller']);
 
 /* WORKFLOW SETTING */
 Route::resource('/setting/workflow', 'WorkflowController');
@@ -193,6 +198,11 @@ Route::match(['get', 'post'], 'grid-asset-class', [
     'uses' => 'AssetClassController@dataGrid'
 ]);
 Route::post('/asset-class/post', 'AssetClassController@store');
+Route::post('/asset-class/post-asset-map', 'AssetClassController@store_asset_map');
 Route::get('/asset-class/edit/', 'AssetClassController@show');
 Route::get('/asset-class/edit-group-asset/', 'AssetClassController@show_group_asset');
+Route::get('/asset-class/edit-asset-map/', 'AssetClassController@show_asset_map');
 Route::post('grid-ac-group-asset/{id}', 'AssetClassController@dataGridGroupAsset')->name('grid-ac-group-asset/{id}');
+Route::post('grid-ac-subgroup-asset/{id}', 'AssetClassController@dataGridSubGroupAsset')->name('grid-ac-subgroup-asset/{id}');
+Route::post('grid-ac-asset-map/{id}', 'AssetClassController@dataGridAssetMap')->name('grid-ac-asset-map/{id}');
+
