@@ -74,7 +74,7 @@
                      <div class="xtable-actions-wrapper pull-right">
                         <button class="btn btn-sm btn-flat btn-danger btn-refresh-data-table" title="refresh"><i class="glyphicon glyphicon-refresh"></i></button>
                         <!-- @if($data['access']->create == 1)-->
-                        <button class="btn btn-sm btn-flat btn-danger btn-add-detail-job"><i class="glyphicon glyphicon-plus" title="Add new data detail job"></i></button>
+                        <button class="btn btn-sm btn-flat btn-danger btn-add-subgroup-code"><i class="glyphicon glyphicon-plus" title="Add new data detail job"></i></button>
                         <!-- @endif -->
                     </div>
                     <table id="data-table-subgroup-asset" class="table table-condensed" width="100%">
@@ -204,35 +204,25 @@
     </div>
 </div>
 
-<div id="add-data-modal-detail-job" class="modal fade" role="dialog">
+<div id="add-data-modal-subgroup-code" class="modal fade" role="dialog">
     <div class="modal-dialog" width="900px">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title"></h4>
             </div>
-            <form id="data-form-detail-job">
+            <form id="data-form-subgroup-code">
                 <div class="modal-body">
                     <div class="box-body">
                         <div class="col-xs-12">
-                            <label class="control-label" for="workflow-detail-code">Workflow Detail Code</label>
-                            <input class="form-control" name='workflow_detail_code' id="workflow_detail_code" requried>
+                            <label class="control-label" for="">SUBGROUP CODE</label>
+                            <input class="form-control" name='sgc_subgroup_code' id="sgc_subgroup_code" requried>
                         </div>
                         <div class="col-xs-12">
-                            <label class="control-label" for="id-role">ID Role</label>
-                            <input class="form-control" name='id_role' id="id_role" maxlength="400" requried>
-                            <input type="hidden" name='edit_workflow_code_detail_job' id="edit_workflow_code_detail_job">
-                        </div>
-                        <div class="col-xs-12">
-                            <label class="control-label" for="seq">Seq</label>
-                            <input class="form-control" name='seq_job' id="seq_job" maxlength="400" requried>
-                        </div>
-                        <div class="col-xs-12">
-                            <label class="control-label" for="operation">Operation</label>
-                            <input class="form-control" name='operation' id="operation" maxlength="400" requried>
-                        </div>
-                         <div class="col-xs-12">
-                            <label class="control-label" for="lintas">Lintas</label>
-                            <input class="form-control" name='lintas' id="lintas" maxlength="400" requried>
+                            <label class="control-label" for="">SUBGROUP DESCRIPTION</label>
+                            <input class="form-control" name='sgc_subgroup_description' id="sgc_subgroup_description" maxlength="400" requried>
+                            <input type="hidden" name='edit_sgc_id' id="edit_sgc_id">
+                            <input type="hidden" name='val_group_code' id="val_group_code" value="">
+                            <input type="hidden" name='edit_sgc_group_code' id="edit_sgc_group_code" value="">
                         </div>
                     </div>
                 </div>
@@ -513,22 +503,22 @@
                 backdrop: 'static',
                 keyboard: false
             });
-            $("#add-data-modal-group-asset .modal-title").html("<i class='fa fa-plus'></i> Create New Data Group Asset");
+            $("#add-data-modal-group-asset .modal-title").html("<i class='fa fa-plus'></i> CREATE NEW DATA - GROUP ASSET");
             $("#add-data-modal-group-asset").modal("show");
         });
 
-        $('.btn-add-detail-job').on('click', function() 
+        $('.btn-add-subgroup-code').on('click', function() 
         {
-            document.getElementById("data-form-detail-job").reset();
-            $('#role_id').prop('disabled', false);
-            $("#edit_workflow_code_detail-job").val("");
+            document.getElementById("data-form-subgroup-code").reset();
+            $("#edit_sgc_id").val("");
+            $("#edit_sgc_group_code").val($("#val_group_code").val());
             $("#font-awesome-result").removeClass();
-            $("#add-data-modal-detail-job").modal({
+            $("#add-data-modal-subgroup-code").modal({
                 backdrop: 'static',
                 keyboard: false
             });
-            $("#add-data-modal-detail-job .modal-title").html("<i class='fa fa-plus'></i> Create new data detail job");
-            $("#add-data-modal-detail-job").modal("show");
+            $("#add-data-modal-subgroup-code .modal-title").html("<i class='fa fa-plus'></i> CREATE NEW DATA - SUBGROUP ASSET");
+            $("#add-data-modal-subgroup-code").modal("show");
         });
 
         $('.btn-add-asset-map').on('click', function() 
@@ -663,9 +653,9 @@
             }
         });
 
-        $('#data-form-detail-job').on('submit', function(e) 
+        $('#data-form-subgroup-code').on('submit', function(e) 
         {
-            if(confirm('confirm submit data detail job ?'))
+            if(confirm('Confirm Submit Data SubGroup Asset ?'))
             {
                 //alert("submit data detail cuk");
 
@@ -678,17 +668,17 @@
                 });
 
                 jQuery.ajax({
-                    url: "{{ url('workflow/post-detail-job') }}",
+                    url: "{{ url('asset-class/post-subgroup-asset') }}",
                     method: "POST",
                     data: param,
                     beforeSend: function() {
-                        jQuery('.loading-event').fadeIn();
+                        $('.loading-event').fadeIn();
                     },
                     success: function(result) 
                     {
                         if (result.status) {
-                            jQuery("#add-data-modal-detail-job").modal("hide");
-                            jQuery("#data-table-subgroup-asset").DataTable().ajax.reload();
+                            $("#add-data-modal-subgroup-code").modal("hide");
+                            $("#data-table-subgroup-asset").DataTable().ajax.reload();
                             notify({
                                 type: 'success',
                                 message: result.message
@@ -701,7 +691,7 @@
                         }
                     },
                     complete: function() {
-                        jQuery('.loading-event').fadeOut();
+                        $('.loading-event').fadeOut();
                     }
                 });
 
@@ -966,6 +956,7 @@
         //alert(id);
         $("#row-subgroup-asset").fadeOut();
         $("#id_group_code").html(id_group_code);
+        $("#val_group_code").val(id_group_code);
         //$("#workflow-code-name").html('('+name+')');
         $("#row-subgroup-asset").fadeIn();
 
@@ -1015,7 +1006,7 @@
                                 var content = '';
                                 if (update == 1) 
                                 {
-                                    content += '<button class="btn btn-flat btn-xs btn-danger btn-action btn-edit-detail-job" title="edit data detail job : ' + row.workflow_job_code + '" onClick="edit_detail_job(' + row.workflow_job_code + ')"><i class="fa fa-pencil"></i></button>';
+                                    content += '<button class="btn btn-flat btn-xs btn-danger btn-action btn-edit-detail-job" title="Edit Data - SubGroup Asset : ' + row.id + '" onClick="edit_subgroup_code(' + row.id + ')"><i class="fa fa-pencil"></i></button>';
                                     content += '<button class="btn btn-flat btn-xs btn-danger btn-action btn-view-detail" title="detail data ' + row.group_code + '" onClick="detail_asset_map(\''+id_jenis_asset_code+'\',\''+id_group_code+'\',\''+row.subgroup_code+'\')"><i class="fa fa-clone"></i></button>';
                                 }
 
@@ -1036,25 +1027,20 @@
         //}
     }
 
-    function edit_detail_job(id) 
+    function edit_subgroup_code(id) 
     {
         //alert(id); return false;
-        document.getElementById("data-form-detail-job").reset();
-        $("#edit_workflow_code_detail_job").val(id);
+        document.getElementById("data-form-subgroup-code").reset();
+        $("#edit_sgc_id").val(id);
         
-        var result = jQuery.parseJSON(JSON.stringify(dataJson("{{ url('workflow/edit-detail-job/?workflow_job_code=') }}" + id)));
+        var result = jQuery.parseJSON(JSON.stringify(dataJson("{{ url('asset-class/edit-subgroup-asset/?id=') }}" + id)));
         
-        $("#edit_workflow_code_detail_job").val(result.workflow_job_code);
-        $("#workflow_detail_code").val(result.workflow_detail_code);
-        $("#workflow_detail_code").trigger("change");
-        $("#id_role").val(result.id_role);
-        $("#id_role").trigger("change");
-        $("#seq_job").val(result.seq);
-        $("#operation").val(result.operation);
-        $("#lintas").val(result.lintas);
+        $("#edit_sgc_id").val(result.ID);
+        $("#sgc_subgroup_code").val(result.SUBGROUP_CODE);
+        $("#sgc_subgroup_description").val(result.SUBGROUP_DESCRIPTION);
 
-        $("#add-data-modal-detail-job .modal-title").html("<i class='fa fa-edit'></i> Update data detail job "+result.workflow_job_code);
-        $("#add-data-modal-detail-job").modal("show");
+        $("#add-data-modal-subgroup-code .modal-title").html("<i class='fa fa-edit'></i> EDIT DATA - SUBGROUP ASSET "+result.SUBGROUP_CODE);
+        $("#add-data-modal-subgroup-code").modal("show");
     }
 
     function edit_asset_map(id) 

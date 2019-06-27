@@ -14,6 +14,7 @@ use App\TR_WORKFLOW_JOB;
 use App\TM_JENIS_ASSET;
 use App\TM_ASSET_CONTROLLER_MAP;
 use App\TM_GROUP_ASSET;
+use App\TM_SUBGROUP_ASSET;
 
 class AssetClassController extends Controller
 {
@@ -159,6 +160,31 @@ class AssetClassController extends Controller
         }
     }
 
+    public function store_subgroup_asset(Request $request)
+    {
+        try 
+        {
+            if ( $request->edit_sgc_id != "" ) 
+            {
+                $sql = "UPDATE TM_SUBGROUP_ASSET SET subgroup_description = '".$request->sgc_subgroup_description."' WHERE id = ".$request->edit_sgc_id."";
+                DB::UPDATE($sql);
+            } 
+            else 
+            {
+
+                $data = new TM_SUBGROUP_ASSET();
+                $data->subgroup_code = $request->sgc_subgroup_code;
+                $data->subgroup_description = $request->sgc_subgroup_description;
+                $data->group_code = $request->edit_sgc_group_code;
+                $data->save();
+            }
+
+            return response()->json(['status' => true, "message" => 'Data is successfully ' . ($request->edit_sgc_id ? 'updated' : 'added')]);
+        } catch (\Exception $e) {
+            return response()->json(['status' => false, "message" => $e->getMessage()]);
+        }
+    }
+
     public function store_asset_map(Request $request)
     {
         try 
@@ -227,6 +253,13 @@ class AssetClassController extends Controller
     {
         $param = $_REQUEST;
         $data = TM_GROUP_ASSET::find($param["id"]);
+        return response()->json(array('data' => $data));
+    }
+
+    public function show_subgroup_asset()
+    {
+        $param = $_REQUEST;
+        $data = TM_SUBGROUP_ASSET::find($param["id"]);
         return response()->json(array('data' => $data));
     }
 

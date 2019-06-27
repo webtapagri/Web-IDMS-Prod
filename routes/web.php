@@ -199,9 +199,11 @@ Route::match(['get', 'post'], 'grid-asset-class', [
 ]);
 Route::post('/asset-class/post', 'AssetClassController@store');
 Route::post('/asset-class/post-group-asset', 'AssetClassController@store_group_asset');
+Route::post('/asset-class/post-subgroup-asset', 'AssetClassController@store_subgroup_asset');
 Route::post('/asset-class/post-asset-map', 'AssetClassController@store_asset_map');
 Route::get('/asset-class/edit/', 'AssetClassController@show');
 Route::get('/asset-class/edit-group-asset/', 'AssetClassController@show_group_asset');
+Route::get('/asset-class/edit-subgroup-asset/', 'AssetClassController@show_subgroup_asset');
 Route::get('/asset-class/edit-asset-map/', 'AssetClassController@show_asset_map');
 Route::post('grid-ac-group-asset/{id}', 'AssetClassController@dataGridGroupAsset')->name('grid-ac-group-asset/{id}');
 Route::post('grid-ac-subgroup-asset/{id}', 'AssetClassController@dataGridSubGroupAsset')->name('grid-ac-subgroup-asset/{id}');
