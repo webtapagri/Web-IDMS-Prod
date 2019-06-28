@@ -2,12 +2,19 @@
     //echo Session::get('role_id').'<br/>';
     //echo "<pre>"; print_r(session()->all()); 
     //die();
+
+    $user_role = Session::get('role');
+    //echo $user_role;die();
 ?>
 
 @extends('adminlte::page')
 @section('title', 'FAMS - approval')
 
 @section('content')
+
+<style>
+.fa-eye{cursor:pointer;}
+</style>
 
 <div class="row" style="margin-top:-3%">
 
@@ -34,7 +41,7 @@
       <div class="tab-pane active" id="tab_1">
             <div class="small table-container">
                     <div class="table-actions-wrapper">
-                        <button class="btn btn-flat btn-sm btn-flat label-danger btn-refresh"><i class="glyphicon glyphicon-refresh" title="Refresh"></i></button>
+                        <button class="btn btn-flat btn-sm btn-flat label-danger btn-refresh"><i class="glyphicon glyphicon-refresh" title="Refresh"></i></button><div OnClick="approval('19.06/AMS/PDFA/00027')">test</div>
                     </div>
                     <table id="data-table" class="table table-bordered table-condensed">
                         <thead>
@@ -278,8 +285,13 @@
             </div>
             <div class="modal-footer">
                 <?php /* <button type="button" class="btn btn-flat btn-default" data-dismiss="modal">Close</button> */ ?>
-                <button type="button" class="btn btn-flat label-danger" OnClick="changeStatus('A')" style="margin-right: 5px;">Approve</button>
-                <button type="button" class="btn btn-flat label-danger" OnClick="changeStatus('R')" style="margin-right: 5px;">Reject</button>
+                <?php if($user_role == 'AC' || $user_role == 'Super Administrator' ){ ?> 
+                   <span id="create-button-sync-sap"></span>
+                <?php }  ?>
+                <span id="button-approve">
+                    <button type="button" class="btn btn-flat label-danger" OnClick="changeStatus('A')" style="margin-right: 5px;">Approve</button>
+                </span>
+                <button type="button" class="btn btn-flat label-danger" OnClick="changeStatus('R')" style="margin-right: 5px;">REJECT</button>
                 <?php /*
                 <button type="button" class="btn btn-flat label-danger" OnClick="saveRequest()" style="margin-right: 5px;">Revise</button>
                 <button type="button" class="btn btn-flat label-danger" OnClick="saveRequest()" style="margin-right: 5px;">Simpan</button>
@@ -561,6 +573,16 @@
                 $("#request-form #business-area").val(data.business_area);
                 $("#request-form #requestor").val(data.requestor);
                 $("#request-form #tanggal-reg").val(data.tanggal_reg);
+
+                if(data.sync_sap != '')
+                {
+                    $("#create-button-sync-sap").html('<button type="button" class="btn btn-flat label-danger" OnClick="sinkronisasi()" style="margin-right: 5px;">SYNC SAP</button>');
+                    $("#button-approve").hide();
+                }
+                else
+                {
+                    $("#create-button-sync-sap").hide();
+                }
 
                 var item = '<table class="table xtable-condensed table-responsive table-striped" id="request-item-table" style="font-size:13px">';
                 item += '<th>NO.</th>';
@@ -1115,6 +1137,12 @@
                 alert("Error: "+ "\r\n\r\n" + x.responseText);
             }
         }); 
+    }
+
+    function sinkronisasi()
+    {
+        var noreg = $("#no-reg").val();
+        alert(noreg);
     }
 
 </script>

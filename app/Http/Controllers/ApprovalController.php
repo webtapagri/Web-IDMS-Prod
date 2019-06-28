@@ -215,7 +215,8 @@ class ApprovalController extends Controller
                     'business_area' => $v->CODE_AREA.' - '.$v->NAME_AREA,
                     'requestor' => $v->REQUESTOR,
                     'tanggal_reg' => $v->TANGGAL_REG,
-                    'item_detail' => $this->get_item_detail($noreg)
+                    'item_detail' => $this->get_item_detail($noreg),
+                    'sync_sap' => $this->get_sinkronisasi_sap($noreg)
                 );
 
             }
@@ -538,5 +539,34 @@ class ApprovalController extends Controller
         }
 
         echo json_encode($records);
+    }
+
+    function get_sinkronisasi_sap($noreg)
+    {
+        $request = array();
+        $datax = '';
+        $sql = " SELECT a.kode_material FROM v_kode_asset_sap a WHERE a.no_reg = '{$noreg}' ";
+        $data = DB::SELECT($sql);
+        //echo "<pre>"; print_r($data); die();
+        /*
+            [0] => stdClass Object
+            (
+                [KODE_MATERIAL] => 000000000208010037
+            )
+        */
+
+        if($data)
+        {
+            $datax .= $data[0]->KODE_MATERIAL;
+            foreach( $data as $k => $v )
+            {
+                $request[] = array
+                (
+                    'kode_material' => $v->KODE_MATERIAL,
+                );
+            }
+        }
+
+        return $datax;
     }
 }
