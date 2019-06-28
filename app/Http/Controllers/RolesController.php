@@ -171,4 +171,22 @@ class RolesController extends Controller
 
         return response()->json(array("data" => $data));
     }
+
+    public function select_role(Request $request) 
+    {
+        $data = DB::table('TBM_ROLE')
+        ->select('id as id', 'name as text')
+        //->where([[ '1',"=" ,'1'],])
+        ->get();
+
+        $arr = array();
+        foreach ($data as $row) {
+            $arr[] = array(
+                "id" => $row->id.'__'.$row->text,
+                "text" => $row->id .'-' . $row->text
+            );
+        }
+
+        return response()->json(array('data' => $arr));
+    }
 }

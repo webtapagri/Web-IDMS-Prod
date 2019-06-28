@@ -197,4 +197,22 @@ class UsersController extends Controller
             return response()->json(['status' => false, "message" => $e->getMessage()]);
         }
     }
+
+    public function select2(Request $request) 
+    {
+        $data = DB::table('TBM_USER')
+        ->select('id as id', 'username as text')
+        //->where([[ '1',"=" ,'1'],])
+        ->get();
+
+        $arr = array();
+        foreach ($data as $row) {
+            $arr[] = array(
+                "id" => $row->id.'__'.$row->text,
+                "text" => $row->id .'-' . $row->text
+            );
+        }
+
+        return response()->json(array('data' => $arr));
+    }
 }

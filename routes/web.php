@@ -160,6 +160,9 @@ Route::get('get-select_jenis_asset_code', ['as' => 'get.select_jenis_asset_code'
 Route::get('get-select_group_code', ['as' => 'get.select_group_code', 'uses' => 'AssetClassController@select_group_code']);
 Route::get('get-select_subgroup_code', ['as' => 'get.select_subgroup_code', 'uses' => 'AssetClassController@select_subgroup_code']);
 Route::get('get-select_asset_controller', ['as' => 'get.select_asset_controller', 'uses' => 'AssetClassController@select_asset_controller']);
+Route::get('get-generaldata-assetcontroller', ['as' => 'get.generaldata_assetcontroller', 'uses' => 'Select2Controller@generaldata_assetcontroller']);
+Route::get('get-select_role_idname', ['as' => 'get.select_role_idname', 'uses' => 'RolesController@select_role']);
+Route::get('get-select_user', ['as' => 'get.select_user', 'uses' => 'UsersController@select2']);
 
 /* WORKFLOW SETTING */
 Route::resource('/setting/workflow', 'WorkflowController');
@@ -208,4 +211,14 @@ Route::get('/asset-class/edit-asset-map/', 'AssetClassController@show_asset_map'
 Route::post('grid-ac-group-asset/{id}', 'AssetClassController@dataGridGroupAsset')->name('grid-ac-group-asset/{id}');
 Route::post('grid-ac-subgroup-asset/{id}', 'AssetClassController@dataGridSubGroupAsset')->name('grid-ac-subgroup-asset/{id}');
 Route::post('grid-ac-asset-map/{id}', 'AssetClassController@dataGridAssetMap')->name('grid-ac-asset-map/{id}');
+
+/* SETTING - ROLE MAP */
+Route::resource('/setting/role-map', 'RoleMapController');
+Route::match(['get', 'post'], 'grid-role-map', [
+    'as' => 'get.grid_role_map',
+    'uses' => 'RoleMapController@dataGrid'
+]);
+Route::get('/role-map/edit/', 'RoleMapController@show');
+Route::post('/role-map/post', 'RoleMapController@store');
+
 

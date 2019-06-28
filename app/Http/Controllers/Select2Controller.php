@@ -62,6 +62,26 @@ class Select2Controller extends Controller
 
         return response()->json(array('data' => $arr));
     }
+
+     public function generaldata_assetcontroller(Request $request) 
+     {
+        $data = DB::table('TM_GENERAL_DATA')
+        ->select('DESCRIPTION_CODE as id', 'DESCRIPTION as text')
+        ->where([
+            [ 'GENERAL_CODE',"=" ,'asset_controller'],
+        ])
+        ->get();
+
+        $arr = array();
+        foreach ($data as $row) {
+            $arr[] = array(
+                "id" => $row->id.'__'.$row->text,
+                "text" => $row->id .'-' . $row->text
+            );
+        }
+
+        return response()->json(array('data' => $arr));
+    }
     
     public function jenisasset(Request $request) {
         $data = DB::table( 'TM_JENIS_ASSET')
