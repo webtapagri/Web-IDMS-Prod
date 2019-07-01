@@ -130,71 +130,6 @@
 <!-- /.col -->
 </div>
 
-<?php /*
-<div class="row" style="margin-top:-3%">
-
-    <!-- Content Header (Page header) -->
-    <section class="content-header">
-        <h1>
-            Outstanding
-            <small>Task</small>
-        </h1>
-        <ol class="breadcrumb">
-            <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-            <li class="active">Outstanding</li>
-        </ol>
-    </section>
-
-    <div class="col-xs-12">
-        <div class="box">
-            <div class="box-body">
-                <div class="table-container">
-                    <div class="table-actions-wrapper">
-                        <button class="btn btn-flat btn-sm btn-flat label-danger btn-refresh"><i class="glyphicon glyphicon-refresh" title="Refresh"></i></button>
-                    </div>
-                    <table id="data-table" class="table table-bordered table-condensed">
-                        <thead>
-                            <tr role="row" class="heading">
-                                <th>NO REG</th>
-                                <th>TIPE</th>
-                                <th>PO</th>
-                                <th>NO PO</th>
-                                <th>TGL PENGAJUAN</th>
-                                <th>REQUESTOR</th>
-                                <th>TGL PO</th>
-                                <th>KODE VENDOR</th>
-                                <th>NAMA VENDOR</th>
-                            </tr>
-                            <tr role="row" class="filter">
-                                <th><input type="text" class="form-control input-xs form-filter" name="no_reg"></th>
-                                <th>
-                                    <select type="text" class="form-control input-xs form-filter" name="transaction_type" id="flt_transaction_type">
-                                        <option></option>
-                                    </select>
-                                </th>
-                                <th>
-                                    <select class="form-control input-xs form-filter" name="po_type" id="po_type">
-                                        <option></option>
-                                    </select>
-                                </th>
-                                <th><input type="text" class="form-control input-xs form-filter" name="no_po"></th>
-                                <th><input type="text" class="form-control input-xs form-filter datepicker" name="request_date" autocomplete="off"></th>
-                                <th><input type="text" class="form-control input-xs form-filter" name="requestor"></th>
-                                <th><input type="text" class="form-control input-xs form-filter datepicker" name="po_date" autocomplete="off"></th>
-                                <th><input type="text" class="form-control input-xs form-filter" name="vendor_code"></th>
-                                <th><input type="text" class="form-control input-xs form-filter" name="vendor_name"></th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-            </div>
-            <!-- /.box-body -->
-        </div>
-    </div>
-</div>
-*/ ?>
-
 <div id="approve-modal" class="modal fade" role="dialog" aria-labelledby="largeModal" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -291,7 +226,7 @@
                 <span id="button-approve">
                     <button type="button" class="btn btn-flat label-danger" OnClick="changeStatus('A')" style="margin-right: 5px;">Approve</button>
                 </span>
-                <button type="button" class="btn btn-flat label-danger" OnClick="changeStatus('R')" style="margin-right: 5px;">REJECT</button>
+                <button type="button" class="btn btn-flat label-danger button-reject" OnClick="changeStatus('R')" style="margin-right: 5px;">REJECT</button>
                 <?php /*
                 <button type="button" class="btn btn-flat label-danger" OnClick="saveRequest()" style="margin-right: 5px;">Revise</button>
                 <button type="button" class="btn btn-flat label-danger" OnClick="saveRequest()" style="margin-right: 5px;">Simpan</button>
@@ -547,6 +482,13 @@
             }
         });
 
+        jQuery(".capitalized_on_date").datepicker({
+            format: "mm/dd/yyyy",
+            autoclose: true,
+            endDate: "today",
+            maxDate: 'today'
+        });
+
     });
 
     function approval(id)
@@ -577,11 +519,16 @@
                 if(data.sync_sap != '')
                 {
                     $("#create-button-sync-sap").html('<button type="button" class="btn btn-flat label-danger" OnClick="sinkronisasi()" style="margin-right: 5px;">SYNC SAP</button>');
-                    $("#button-approve").hide();
+                    
+                    <?php if( $user_role == 'AC' ){ ?>
+                        $("#button-approve").hide();
+                        $(".button-reject").attr("disabled", true); 
+                    <?php } ?>
                 }
                 else
                 {
                     $("#create-button-sync-sap").hide();
+                    $("button-approve").show();
                 }
 
                 var item = '<table class="table xtable-condensed table-responsive table-striped" id="request-item-table" style="font-size:13px">';
@@ -865,10 +812,50 @@
                     
                     item += "</div></div>";
                     /* END FILE UPLOAD */
+
+                    item += "<div class='col-md-12'><div class='row'>";
+                    item += "<span class='label bg-blue'><i class='fa fa-bars'></i> DETAIL ASSET SAP</span><br/><br/>";
+                    
+                    item += "<form id='request-form-detail-asset-sap' class='form-horizontal' style=''>";
+                    item += "<div class='col-md-6'> ";
+
+                    item += "<div class='form-group'><label for='' class='col-md-4'>NAMA ASSET 1</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='nama_asset_1-"+val.no_reg_item+"' value='"+val.nama_asset_1+"' id='nama_asset_1-"+val.no_reg_item+"' autocomplete='off'></div></div>";
+                    item += "<div class='form-group'><label for='' class='col-md-4'>NAMA ASSET 2</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='nama_asset_2-"+val.no_reg_item+"' value='"+val.nama_asset_2+"' id='nama_asset_2-"+val.no_reg_item+"' autocomplete='off'></div></div>";
+                    item += "<div class='form-group'><label for='' class='col-md-4'>NAMA ASSET 3</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='nama_asset_3-"+val.no_reg_item+"' value='"+val.nama_asset_3+"' id='nama_asset_3-"+val.no_reg_item+"' autocomplete='off'></div></div>";
+                    item += "<div class='form-group'><label for='' class='col-md-4'>QUANTITY</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='quantity-"+val.no_reg_item+"' value='"+val.quantity_asset_sap+"' id='quantity-"+val.no_reg_item+"' autocomplete='off'></div></div>";
+                    item += "<div class='form-group'><label for='' class='col-md-4'>UOM</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='uom-"+val.no_reg_item+"' value='"+val.uom_asset_sap+"' id='uom-"+val.no_reg_item+"' autocomplete='off'></div></div>";
+                    item += "<div class='form-group'><label for='' class='col-md-4'>CAPITALIZED</label><div class='col-md-8'><input type='text' class='form-control input-sm capitalized_on_date' name='capitalized_on-"+val.no_reg_item+"' value='"+val.capitalized_on+"' id='capitalized_on-"+val.no_reg_item+"' autocomplete='off' placeholder='yyyy-mm-dd'></div></div>";
                     
                     item += "</div>";
+                    
+                    item += "<div class='col-md-6'> ";
+                    
+                    item += "<div class='form-group'><label for='' class='col-md-4'>DEACTIVATION</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='deactivation_on-"+val.no_reg_item+"' value='"+val.deactivation_on+"' id='deactivation_on-"+val.no_reg_item+"' autocomplete='off'  placeholder='yyyy-mm-dd'></div></div>";
+
+                    item += "<div class='form-group'><label for='' class='col-md-4'>COST CENTER</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='cost_center-"+val.no_reg_item+"' value='"+val.cost_center+"' id='cost_center-"+val.no_reg_item+"' autocomplete='off'></div></div>";
+
+                    item += "<div class='form-group'><label for='' class='col-md-4'>BOOK DEPREC 01</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='book_deprec_01-"+val.no_reg_item+"' value='"+val.book_deprec_01+"' id='book_deprec_01-"+val.no_reg_item+"' autocomplete='off'></div></div>";
+
+                    item += "<div class='form-group'><label for='' class='col-md-4'>FISCAL DEPREC 15</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='fiscal_deprec_15-"+val.no_reg_item+"' value='"+val.fiscal_deprec_15+"' id='fiscal_deprec_15-"+val.no_reg_item+"' autocomplete='off'></div></div>";
+                    
+                    item += "<div class='form-group'><label for='' class='col-md-4'>GROUP DEPREC 30</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='group_deprec_30-"+val.no_reg_item+"' value='"+val.group_deprec_30+"' id='group_deprec_30-"+val.no_reg_item+"' autocomplete='off' placeholder='yyyy'></div></div>";
+                    
+                    if(tipe==1)
+                    {
+                        <?php if( $user_role == 'AMS' ){ ?>
+                            item += "<div class='form-group' align='right'><div class='btn btn-warning btn-sm' value='Save' OnClick='saveAssetSap("+val.id+","+val.no_po+","+val.no_reg_item+")' style='margin-right:25px'><i class='fa fa-save'></i> SAVE</div></div>";
+                        <?php } ?>
+                    }
 
                     item += "</div>";
+
+                    item += "</form>";
+
+                    item += "</div></div>";
+                    
+                    item += "</div>";
+                    item += "</div>";
+
                     num++;
                 });
 
@@ -941,6 +928,68 @@
                 }
             });
         }
+    }
+
+    function saveAssetSap(id,no_po,no_reg_item)
+    {
+        if(confirm('Confirm Save Detail Asset SAP ?'))
+        {
+            var getnoreg = $("#getnoreg").val();
+            var no_registrasi= getnoreg.replace(/\//g, '-');
+
+            var nama_asset_1 = $("#nama_asset_1-"+no_reg_item+"").val();
+            var nama_asset_2 = $("#nama_asset_2-"+no_reg_item+"").val();
+            var nama_asset_3 = $("#nama_asset_3-"+no_reg_item+"").val();
+            var quantity = $("#quantity-"+no_reg_item+"").val();
+            var uom = $("#uom-"+no_reg_item+"").val();
+            var capitalized_on = $("#capitalized_on-"+no_reg_item+"").val();
+            var deactivation_on = $("#deactivation_on-"+no_reg_item+"").val();
+            var cost_center = $("#cost_center-"+no_reg_item+"").val();
+            var book_deprec_01 = $("#book_deprec_01-"+no_reg_item+"").val();
+            var fiscal_deprec_15 = $("#fiscal_deprec_15-"+no_reg_item+"").val();
+            var group_deprec_30 = $("#group_deprec_30-"+no_reg_item+"").val();
+
+            //alert(id+"_"+no_po+"_"+no_reg_item+"_"+no_registrasi);
+
+            var param = $("#request-form-detail-asset-sap").serialize();
+            //alert(capitalized_on);
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                url: "{{ url('approval/save_asset_sap') }}/"+id,
+                method: "POST",
+                data: param+"&nama_asset_1="+nama_asset_1+"&nama_asset_2="+nama_asset_2+"&nama_asset_3="+nama_asset_3+"&quantity="+quantity+"&uom="+uom+"&capitalized_on="+capitalized_on+"&deactivation_on="+deactivation_on+"&cost_center="+cost_center+"&book_deprec_01="+book_deprec_01+"&fiscal_deprec_15="+fiscal_deprec_15+"&group_deprec_30="+group_deprec_30+"&getnoreg="+getnoreg+"&no_po="+no_po+"&no_reg_item="+no_reg_item,
+                beforeSend: function() {
+                    $('.loading-event').fadeIn();
+                },
+                success: function(result) 
+                {
+                    //alert(result.status);
+                    if (result.status) 
+                    {
+                        //$("#approve-modal").modal("hide");
+                        //$("#data-table").DataTable().ajax.reload();
+                        notify({
+                            type: 'success',
+                            message: result.message
+                        });
+                    } else {
+                        notify({
+                            type: 'warning',
+                            message: result.message
+                        });
+                    }
+                    
+                },
+                complete: function() {
+                    jQuery('.loading-event').fadeOut();
+                }
+            }); 
+        }
+       
     }
 
     function changeStatus(status)

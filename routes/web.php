@@ -64,6 +64,7 @@ Route::get('grid-approval', ['as' => 'get.approval_grid', 'uses' => 'ApprovalCon
 Route::get('/approval/view/{no_reg}', 'ApprovalController@view')->name('no_reg');
 Route::get('/approval/view_detail/{no_reg}/{id}', 'ApprovalController@get_asset_detail');
 Route::post('/approval/delete_asset/{id}','ApprovalController@delete_asset');
+Route::post('/approval/save_asset_sap/{id}','ApprovalController@save_asset_sap');
 Route::get('grid-approval-history', ['as' => 'get.approval_grid_history', 'uses' => 'ApprovalController@dataGridHistory']);
 Route::post('/approval/update_status/{status}/{no_reg}','ApprovalController@update_status');
 Route::get('/approval/log_history/{no_reg}', 'ApprovalController@log_history')->name('no_reg');

@@ -304,7 +304,18 @@ class ApprovalController extends Controller
                     'tahun' => $v->TAHUN_ASSET,
                     'info' => $v->INFORMASI,
                     'file' => $this->get_asset_file($v->ID,$noreg),
-
+                    'nama_asset_1' => $v->NAMA_ASSET_1,
+                    'nama_asset_2' => $v->NAMA_ASSET_2,
+                    'nama_asset_3' => $v->NAMA_ASSET_3,
+                    'quantity_asset_sap' => $v->QUANTITY_ASSET_SAP,
+                    'uom_asset_sap' => $v->UOM_ASSET_SAP,
+                    'capitalized_on' => $v->CAPITALIZED_ON,
+                    'deactivation_on' => $v->DEACTIVATION_ON,
+                    'cost_center' => $v->COST_CENTER,
+                    'book_deprec_01' => $v->BOOK_DEPREC_01,
+                    'fiscal_deprec_15' => $v->FISCAL_DEPREC_15,
+                    'group_deprec_30' => $v->GROUP_DEPREC_30,
+                    'no_reg_item' => $v->NO_REG_ITEM,
                 );
             }
         }
@@ -349,6 +360,38 @@ class ApprovalController extends Controller
 
             DB::commit();
             return response()->json(['status' => true, "message" => 'Data is successfully ' . ($id ? 'updated' : 'update')]);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json(['status' => false, "message" => $e->getMessage()]);
+        }
+    }
+
+     function save_asset_sap(Request $request, $id)
+    {
+        //echo $request->no_po; die();
+
+        DB::beginTransaction();
+
+        try 
+        {
+            $sql = " UPDATE TR_REG_ASSET_DETAIL 
+                        SET 
+                            nama_asset_1 = '{$request->nama_asset_1}',
+                            nama_asset_2 = '{$request->nama_asset_2}',
+                            nama_asset_3 = '{$request->nama_asset_3}',
+                            quantity_asset_sap = '{$request->quantity}',
+                            uom_asset_sap = '{$request->uom}',
+                            capitalized_on = '{$request->capitalized_on}',
+                            deactivation_on = '{$request->deactivation_on}',
+                            cost_center = '{$request->cost_center}',
+                            book_deprec_01 = '{$request->book_deprec_01}',
+                            fiscal_deprec_15 = '{$request->fiscal_deprec_15}',
+                            group_deprec_30 = '{$request->group_deprec_30}'
+                    WHERE ID = $id AND NO_REG = '{$request->getnoreg}' AND NO_REG_ITEM = {$request->no_reg_item} ";
+            DB::UPDATE($sql);    
+
+            DB::commit();
+            return response()->json(['status' => true, "message" => 'Data Detail Asset SAP is successfully ' . ($id ? 'updated' : 'update')]);
         } catch (\Exception $e) {
             DB::rollback();
             return response()->json(['status' => false, "message" => $e->getMessage()]);
