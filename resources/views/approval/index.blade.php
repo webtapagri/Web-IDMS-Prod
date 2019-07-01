@@ -224,7 +224,7 @@
                    <span id="create-button-sync-sap"></span>
                 <?php }  ?>
                 <span id="button-approve">
-                    <button type="button" class="btn btn-flat label-danger" OnClick="changeStatus('A')" style="margin-right: 5px;">Approve</button>
+                    <button type="button" class="btn btn-flat label-danger" OnClick="changeStatus('A')" style="margin-right: 5px;">APPROVE</button>
                 </span>
                 <button type="button" class="btn btn-flat label-danger button-reject" OnClick="changeStatus('R')" style="margin-right: 5px;">REJECT</button>
                 <?php /*
@@ -551,7 +551,7 @@
                         item += "<td>" + val.qty + "</td>";
                         item += "<td>" + val.kode + "</td>";
                         item += "<td>" + val.nama + "</td>";
-                        item += "<td><i class='fa fa-eye' OnClick='getDetailItem(\"" + noreg + "\","+val.id+",1)'></i></td>";
+                        item += "<td><i class='fa fa-eye' OnClick='getDetailItem(\"" + noreg + "\","+val.id+",1,"+no+")'></i></td>";
                         item += "</tr>";
                         no++;
                     });
@@ -643,8 +643,8 @@
         item += '<th>Kode material</th>';
         item += '<th>nama material</th>';
         item += '<th>MRP</th>';
-        item += '<th>BA Pemilik Asset</th>';
-        item += '<th>BA Lokasi Asset</th>';
+        item += '<th>BA Pemilik Aset</th>';
+        item += '<th>BA Lokasi Aset</th>';
         item += '<th>Requestor</th>';
 
         if (request_item.length > 0) {
@@ -672,7 +672,7 @@
         jQuery("#request-item-table").html(item);
     }
 
-    function getDetailItem(noreg,id,tipe)
+    function getDetailItem(noreg,id,tipe,no_urut)
     {
         //alert(JSON.stringify(id));
         
@@ -691,13 +691,13 @@
                 var no=1;
                 var num=1;
 
-                var item = "<span class='label bg-blue'><i class='fa fa-bars'></i> RINCIAN INFORMASI ASSET</span><br/><br/>";
+                var item = "<span class='label bg-blue'><i class='fa fa-bars'></i> RINCIAN INFORMASI ASET</span><br/><br/>";
                 item += "<div class='form-group'>";
                 item += "<div class='col-md-12 xnav-tabs-custom'>";
 
                 if(total_tab == 0)
                 {
-                    item += "<div class='callout callout-danger'><h4>Warning!</h4><p>Belum ada Informasi asset</p></div>";
+                    item += "<div class='callout callout-danger'><h4>Warning!</h4><p>Belum ada Informasi aset</p></div>";
                 }
 
                 item += "<ul class='nav nav-tabs'>";
@@ -706,7 +706,7 @@
                     var active = '';
                     if(i==0){ active = 'active'; }
 
-                    item += "<li class='"+active+"'><a href='#panel-"+no+"' data-toggle='tab' class='panel-"+no+"'>Asset "+no+"</a></li> ";
+                    item += "<li class='"+active+"'><a href='#panel-"+no+"' data-toggle='tab' class='panel-"+i+"'>Aset "+no_urut+"."+no+"</a></li> ";
                     no++;
                 }
                 //item += "<li class='"+active+"'><a href='#panel-file' data-toggle='tab' class='panel-"+no+"'>Asset "+no+"</a></li> ";
@@ -732,7 +732,7 @@
                     item += "<div class='col-md-6'>";
                     item += "<div class='form-group'><label for='plant' class='col-md-4'>NO PO</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='' value='"+val.no_po+"' id='' autocomplete='off' readonly></div></div>";
                     item += "<div class='form-group'><label for='plant' class='col-md-4'>TGL PO</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='' value='"+val.tgl_po+"' id='' autocomplete='off' readonly></div></div>";
-                    item += "<div class='form-group'><label for='plant' class='col-md-4'>KONDISI ASSET</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='' value='"+val.kondisi_asset+"' id='' autocomplete='off' readonly></div></div>";
+                    item += "<div class='form-group'><label for='plant' class='col-md-4'>KONDISI ASET</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='' value='"+val.kondisi_asset+"' id='' autocomplete='off' readonly></div></div>";
                     item += "<div class='form-group'><label for='plant' class='col-md-4'>NAMA ASSET</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='' value='"+val.nama_asset+"' id='' autocomplete='off' readonly></div></div>";
                     item += "<div class='form-group'><label for='plant' class='col-md-4'>NO RANGKA/SERI</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='' value='"+val.no_rangka_or_no_seri+"' id='' autocomplete='off' readonly></div></div>";
                     item += "<div class='form-group'><label for='plant' class='col-md-4'>NO MESIN / IMEI</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='' value='"+val.no_mesin_or_imei+"' id='' autocomplete='off' readonly></div></div>";
@@ -741,7 +741,7 @@
                     item += "</div>";
 
                     item += "<div class='col-md-6'>";
-                    item += " <div class='form-group'><label for='plant' class='col-md-4'>JENIS ASSET</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='' value='"+val.jenis_asset+"' id='' autocomplete='off' readonly></div></div>";
+                    item += " <div class='form-group'><label for='plant' class='col-md-4'>JENIS ASET</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='' value='"+val.jenis_asset+"' id='' autocomplete='off' readonly></div></div>";
                     item += " <div class='form-group'><label for='plant' class='col-md-4'>GROUP</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='' value='"+val.group+"' id='' autocomplete='off' readonly></div></div>";
                     item += " <div class='form-group'><label for='plant' class='col-md-4'>SUB GROUP</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='' value='"+val.sub_group+"' id='' autocomplete='off' readonly></div></div>";
                     item += " <div class='form-group'><label for='plant' class='col-md-4'>MERK</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='' value='"+val.merk+"' id='' autocomplete='off' readonly></div></div>";
@@ -758,7 +758,7 @@
 
                     /* FILE UPLOAD */
                     item += "<div class='col-md-12'><div class='row'>";
-                    item += "<span class='label bg-blue'><i class='fa fa-bars'></i> RINCIAN FILE ASSET</span><br/><br/>";
+                    item += "<span class='label bg-blue'><i class='fa fa-bars'></i> RINCIAN FILE ASET</span><br/><br/>";
                     
                     var file_foto_asset = [];
                     var file_foto_seri = [];
@@ -766,7 +766,10 @@
 
                     if (val.file === undefined || val.file.length == 0) 
                     {
-                        item += "<div class='callout callout-danger'><h4>Warning!</h4><p>Belum ada file asset</p></div>";
+                        //item += "<div class='callout callout-danger'><h4>Warning!</h4><p>Belum ada file asset</p></div>";
+                        item += "<div class='col-md-4'><b>ASET</b><br/> <img id='foto_thumb' name='foto_thumb' data-status='0' title='' class='img-responsive' src='{{ url('img/default-img.png') }}' width='200'><br/></div>";
+                        item += "<div class='col-md-4'><b>NO. SERI</b><br/> <img id='foto_thumb' name='foto_thumb' data-status='0' title='' class='img-responsive' src='{{ url('img/default-img.png') }}' width='200'><br/></div>";
+                        item += "<div class='col-md-4'><b>IMEI</b><br/> <img id='foto_thumb' name='foto_thumb' data-status='0' title='' class='img-responsive' src='{{ url('img/default-img.png') }}' width='200'><br/></div>";
                     }
                     else
                     {
@@ -814,7 +817,7 @@
                     /* END FILE UPLOAD */
 
                     item += "<div class='col-md-12'><div class='row'>";
-                    item += "<span class='label bg-blue'><i class='fa fa-bars'></i> DETAIL ASSET SAP</span><br/><br/>";
+                    item += "<span class='label bg-blue'><i class='fa fa-bars'></i> DETAIL ASET SAP</span><br/><br/>";
                     
                     //item += "<form id='request-form-detail-asset-sap' class='form-horizontal' style=''>";
                     item += "<div class='col-md-6'> ";
@@ -823,7 +826,7 @@
                     
                     item += "<div class='form-group'><label for='' class='col-md-4'></label><div class='col-md-8'><input type='text' class='form-control input-sm' name='nama_asset_2-"+val.no_reg_item+"' value='"+val.nama_asset_2+"' id='nama_asset_2-"+val.no_reg_item+"' autocomplete='off' placeholder='Nama Asset 2'></div></div>";
                     
-                    item += "<div class='form-group'><label for='' class='col-md-4'>ASSET MAIN NO. TEXT</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='nama_asset_3-"+val.no_reg_item+"' value='"+val.nama_asset_3+"' id='nama_asset_3-"+val.no_reg_item+"' autocomplete='off' placeholder='Nama Asset 3'></div></div>";
+                    item += "<div class='form-group'><label for='' class='col-md-4'>ASET MAIN NO. TEXT</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='nama_asset_3-"+val.no_reg_item+"' value='"+val.nama_asset_3+"' id='nama_asset_3-"+val.no_reg_item+"' autocomplete='off' placeholder='Nama Asset 3'></div></div>";
 
                     item += "<div class='form-group'><label for='' class='col-md-4'>ACCT DETERMINATION</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='acct_determination-"+val.no_reg_item+"' value='"+val.jenis_asset+"' id='nama_asset_3-"+val.no_reg_item+"' autocomplete='off' placeholder='Acct Determination' readonly></div></div>";
 
@@ -861,7 +864,7 @@
 
                     item += "<div class='xform-group'><label for='' class='xcol-md-4'>DEPREC, AREAS</label><br/>";
                     item += "<table class='tabel table-bordered table-responsive table-condensed table-striped table-container'>";
-                    item += "<tr><th>Area Number</th><th>Depreciation Area</th><th>Okey</th><th>Use Life</th></tr>";
+                    item += "<tr><th>Area Number</th><th>Depreciation Area</th><th>Dkey</th><th>Use Life</th></tr>";
                     item += "<tr><td>01</td><td>Book</td><td>Z001</td><td><input type='text' class='form-control input-sm' name='book_deprec_01-"+val.no_reg_item+"' value='"+val.book_deprec_01+"' id='book_deprec_01-"+val.no_reg_item+"' autocomplete='off'></td></tr>";
                     item += "<tr><td>15</td><td>Fiscal</td><td>Z001</td><td><input type='text' class='form-control input-sm' name='fiscal_deprec_15-"+val.no_reg_item+"' value='"+val.fiscal_deprec_15+"' id='fiscal_deprec_15-"+val.no_reg_item+"' autocomplete='off'></td></tr>";
                     item += "<tr><td>30</td><td>Group</td><td>Z001</td><td><input type='text' class='form-control input-sm' name='group_deprec_30-"+val.no_reg_item+"' value='"+val.book_deprec_01+"' id='group_deprec_30-"+val.no_reg_item+"' autocomplete='off' placeholder='yyyy' readonly></td></tr>";
@@ -960,7 +963,7 @@
 
     function saveAssetSap(id,no_po,no_reg_item)
     {
-        if(confirm('Confirm Save Detail Asset SAP ?'))
+        if(confirm('Confirm Save Detail Aset SAP ?'))
         {
             var getnoreg = $("#getnoreg").val();
             var no_registrasi= getnoreg.replace(/\//g, '-');
@@ -1119,7 +1122,7 @@
                         item += "<td>" + val.qty + "</td>";
                         item += "<td>" + val.kode + "</td>";
                         item += "<td>" + val.nama + "</td>";
-                        item += "<td><i class='fa fa-eye' OnClick='getDetailItem(\"" + noreg + "\","+val.id+",2)'></i></td>";
+                        item += "<td><i class='fa fa-eye' OnClick='getDetailItem(\""+noreg+"\","+val.id+",2,"+no+")'></i></td>";
                         item += "</tr>";
                         no++;
                     });
