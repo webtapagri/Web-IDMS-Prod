@@ -270,11 +270,12 @@ class ApprovalController extends Controller
         $noreg = str_replace("-", "/", $noreg);
 
         $records = array();
-        $sql = " SELECT a.*, b.jenis_asset_description AS JENIS_ASSET_NAME, c.group_description AS GROUP_NAME, d.subgroup_description AS SUB_GROUP_NAME
+        $sql = " SELECT a.*, b.jenis_asset_description AS JENIS_ASSET_NAME, c.group_description AS GROUP_NAME, d.subgroup_description AS SUB_GROUP_NAME, e.KODE_VENDOR, e.NAMA_VENDOR, e.BUSINESS_AREA AS BUSINESS_AREA
                     FROM TR_REG_ASSET_DETAIL a 
                         LEFT JOIN TM_JENIS_ASSET b ON a.jenis_asset = b.jenis_asset_code 
                         LEFT JOIN TM_GROUP_ASSET c ON a.group = c.group_code AND a.jenis_asset = c.jenis_asset_code
                         LEFT JOIN TM_SUBGROUP_ASSET d ON a.sub_group = d.subgroup_code AND a.group = d.group_code
+                        LEFT JOIN TR_REG_ASSET e ON a.NO_REG = e.NO_REG
                     WHERE a.no_reg = '{$noreg}' AND a.asset_po_id = '{$id}' AND a.DELETED is null
                         ORDER BY a.kode_material ";
         //echo $sql; die();
@@ -316,6 +317,8 @@ class ApprovalController extends Controller
                     'fiscal_deprec_15' => $v->FISCAL_DEPREC_15,
                     'group_deprec_30' => $v->GROUP_DEPREC_30,
                     'no_reg_item' => $v->NO_REG_ITEM,
+                    'vendor' => $v->KODE_VENDOR.'-'.$v->NAMA_VENDOR,
+                    'business_area' => $v->BUSINESS_AREA
                 );
             }
         }
@@ -366,9 +369,9 @@ class ApprovalController extends Controller
         }
     }
 
-     function save_asset_sap(Request $request, $id)
+    function save_asset_sap(Request $request, $id)
     {
-        //echo $request->no_po; die();
+        $user_id = Session::get('user_id');
 
         DB::beginTransaction();
 
@@ -386,7 +389,9 @@ class ApprovalController extends Controller
                             cost_center = '{$request->cost_center}',
                             book_deprec_01 = '{$request->book_deprec_01}',
                             fiscal_deprec_15 = '{$request->fiscal_deprec_15}',
-                            group_deprec_30 = '{$request->group_deprec_30}'
+                            group_deprec_30 = '{$request->group_deprec_30}',
+                            updated_by = '{$user_id}',
+                            updated_at = current_timestamp()
                     WHERE ID = $id AND NO_REG = '{$request->getnoreg}' AND NO_REG_ITEM = {$request->no_reg_item} ";
             DB::UPDATE($sql);    
 

@@ -816,29 +816,57 @@
                     item += "<div class='col-md-12'><div class='row'>";
                     item += "<span class='label bg-blue'><i class='fa fa-bars'></i> DETAIL ASSET SAP</span><br/><br/>";
                     
-                    item += "<form id='request-form-detail-asset-sap' class='form-horizontal' style=''>";
+                    //item += "<form id='request-form-detail-asset-sap' class='form-horizontal' style=''>";
                     item += "<div class='col-md-6'> ";
 
-                    item += "<div class='form-group'><label for='' class='col-md-4'>NAMA ASSET 1</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='nama_asset_1-"+val.no_reg_item+"' value='"+val.nama_asset_1+"' id='nama_asset_1-"+val.no_reg_item+"' autocomplete='off'></div></div>";
-                    item += "<div class='form-group'><label for='' class='col-md-4'>NAMA ASSET 2</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='nama_asset_2-"+val.no_reg_item+"' value='"+val.nama_asset_2+"' id='nama_asset_2-"+val.no_reg_item+"' autocomplete='off'></div></div>";
-                    item += "<div class='form-group'><label for='' class='col-md-4'>NAMA ASSET 3</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='nama_asset_3-"+val.no_reg_item+"' value='"+val.nama_asset_3+"' id='nama_asset_3-"+val.no_reg_item+"' autocomplete='off'></div></div>";
+                    item += "<div class='form-group'><label for='' class='col-md-4'>DESCRIPTION</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='nama_asset_1-"+val.no_reg_item+"' value='"+val.nama_asset_1+"' id='nama_asset_1-"+val.no_reg_item+"' autocomplete='off' placeholder='Nama Asset 1'></div></div>";
+                    
+                    item += "<div class='form-group'><label for='' class='col-md-4'></label><div class='col-md-8'><input type='text' class='form-control input-sm' name='nama_asset_2-"+val.no_reg_item+"' value='"+val.nama_asset_2+"' id='nama_asset_2-"+val.no_reg_item+"' autocomplete='off' placeholder='Nama Asset 2'></div></div>";
+                    
+                    item += "<div class='form-group'><label for='' class='col-md-4'>ASSET MAIN NO. TEXT</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='nama_asset_3-"+val.no_reg_item+"' value='"+val.nama_asset_3+"' id='nama_asset_3-"+val.no_reg_item+"' autocomplete='off' placeholder='Nama Asset 3'></div></div>";
+
+                    item += "<div class='form-group'><label for='' class='col-md-4'>ACCT DETERMINATION</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='acct_determination-"+val.no_reg_item+"' value='"+val.jenis_asset+"' id='nama_asset_3-"+val.no_reg_item+"' autocomplete='off' placeholder='Acct Determination' readonly></div></div>";
+
+                    item += "<div class='form-group'><label for='' class='col-md-4'>SERIAL NUMBER</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='serial_number-"+val.no_reg_item+"' value='"+val.no_rangka_or_no_seri+"' id='serial_number-"+val.no_reg_item+"' autocomplete='off' placeholder='Serial Number' readonly></div></div>";
+
+                    item += "<div class='form-group'><label for='' class='col-md-4'>INVENTORY NUMBER</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='inventory_number-"+val.no_reg_item+"' value='"+val.no_mesin_or_imei+"' id='inventory_number-"+val.no_reg_item+"' autocomplete='off' placeholder='Inventory Number' readonly></div></div>";
+                    
                     item += "<div class='form-group'><label for='' class='col-md-4'>QUANTITY</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='quantity-"+val.no_reg_item+"' value='"+val.quantity_asset_sap+"' id='quantity-"+val.no_reg_item+"' autocomplete='off'></div></div>";
-                    item += "<div class='form-group'><label for='' class='col-md-4'>UOM</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='uom-"+val.no_reg_item+"' value='"+val.uom_asset_sap+"' id='uom-"+val.no_reg_item+"' autocomplete='off'></div></div>";
+                    
+                    item += "<div class='form-group'><label for='' class='col-md-4'>UOM (UNIT)</label><div class='col-md-3' style='display: inline-block'><input type='text' class='form-control input-sm' name='uom-"+val.no_reg_item+"' value='"+val.uom_asset_sap+"' id='uom-"+val.no_reg_item+"' autocomplete='off'></div></div>";
+
                     item += "<div class='form-group'><label for='' class='col-md-4'>CAPITALIZED</label><div class='col-md-8'><input type='text' class='form-control input-sm capitalized_on_date' name='capitalized_on-"+val.no_reg_item+"' value='"+val.capitalized_on+"' id='capitalized_on-"+val.no_reg_item+"' autocomplete='off' placeholder='yyyy-mm-dd'></div></div>";
+
+                    item += "<div class='form-group'><label for='' class='col-md-4'>DEACTIVATION</label><div class='col-md-8'><input type='text' class='form-control input-sm capitalized_on_date' name='deactivation_on-"+val.no_reg_item+"' value='"+val.deactivation_on+"' id='deactivation_on-"+val.no_reg_item+"' autocomplete='off' placeholder='yyyy-mm-dd'></div></div>";
                     
                     item += "</div>";
                     
                     item += "<div class='col-md-6'> ";
-                    
-                    item += "<div class='form-group'><label for='' class='col-md-4'>DEACTIVATION</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='deactivation_on-"+val.no_reg_item+"' value='"+val.deactivation_on+"' id='deactivation_on-"+val.no_reg_item+"' autocomplete='off'  placeholder='yyyy-mm-dd'></div></div>";
+
+                    item += "<div class='form-group'><label for='' class='col-md-4'>BUSINESS AREA</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='business_area-"+val.no_reg_item+"' value='"+val.business_area+"' id='business_area-"+val.no_reg_item+"' autocomplete='off' readonly></div></div>";
 
                     item += "<div class='form-group'><label for='' class='col-md-4'>COST CENTER</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='cost_center-"+val.no_reg_item+"' value='"+val.cost_center+"' id='cost_center-"+val.no_reg_item+"' autocomplete='off'></div></div>";
 
+                    item += "<div class='form-group'><label for='' class='col-md-4'>PLANT</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='plant-"+val.no_reg_item+"' value='"+val.business_area+"' id='plant-"+val.no_reg_item+"' autocomplete='off' readonly></div></div>";
+
+                    item += "<div class='form-group'><label for='' class='col-md-4'>VENDOR</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='vendor-"+val.no_reg_item+"' value='"+val.vendor+"' id='vendor-"+val.no_reg_item+"' autocomplete='off' readonly></div></div>";
+
+                    <?php /* 
                     item += "<div class='form-group'><label for='' class='col-md-4'>BOOK DEPREC 01</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='book_deprec_01-"+val.no_reg_item+"' value='"+val.book_deprec_01+"' id='book_deprec_01-"+val.no_reg_item+"' autocomplete='off'></div></div>";
 
                     item += "<div class='form-group'><label for='' class='col-md-4'>FISCAL DEPREC 15</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='fiscal_deprec_15-"+val.no_reg_item+"' value='"+val.fiscal_deprec_15+"' id='fiscal_deprec_15-"+val.no_reg_item+"' autocomplete='off'></div></div>";
                     
                     item += "<div class='form-group'><label for='' class='col-md-4'>GROUP DEPREC 30</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='group_deprec_30-"+val.no_reg_item+"' value='"+val.group_deprec_30+"' id='group_deprec_30-"+val.no_reg_item+"' autocomplete='off' placeholder='yyyy'></div></div>";
+                    */ ?>
+
+                    item += "<div class='xform-group'><label for='' class='xcol-md-4'>DEPREC, AREAS</label><br/>";
+                    item += "<table class='tabel table-bordered table-responsive table-condensed table-striped table-container'>";
+                    item += "<tr><th>Area Number</th><th>Depreciation Area</th><th>Okey</th><th>Use Life</th></tr>";
+                    item += "<tr><td>01</td><td>Book</td><td>Z001</td><td><input type='text' class='form-control input-sm' name='book_deprec_01-"+val.no_reg_item+"' value='"+val.book_deprec_01+"' id='book_deprec_01-"+val.no_reg_item+"' autocomplete='off'></td></tr>";
+                    item += "<tr><td>15</td><td>Fiscal</td><td>Z001</td><td><input type='text' class='form-control input-sm' name='fiscal_deprec_15-"+val.no_reg_item+"' value='"+val.fiscal_deprec_15+"' id='fiscal_deprec_15-"+val.no_reg_item+"' autocomplete='off'></td></tr>";
+                    item += "<tr><td>30</td><td>Group</td><td>Z001</td><td><input type='text' class='form-control input-sm' name='group_deprec_30-"+val.no_reg_item+"' value='"+val.book_deprec_01+"' id='group_deprec_30-"+val.no_reg_item+"' autocomplete='off' placeholder='yyyy' readonly></td></tr>";
+                    item += "</table>";
+                    item += "</div>";
                     
                     if(tipe==1)
                     {
@@ -849,7 +877,7 @@
 
                     item += "</div>";
 
-                    item += "</form>";
+                    //item += "</form>";
 
                     item += "</div></div>";
                     
@@ -951,7 +979,7 @@
 
             //alert(id+"_"+no_po+"_"+no_reg_item+"_"+no_registrasi);
 
-            var param = $("#request-form-detail-asset-sap").serialize();
+            var param = '';//$("#request-form-detail-asset-sap").serialize();
             //alert(capitalized_on);
             $.ajaxSetup({
                 headers: {

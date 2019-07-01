@@ -228,12 +228,14 @@
                                                 </div>
                                             </div>
 
+                                            <?php /*
                                             <div class="form-group" id="asset-controller">
                                                 <label for="part_no" class="col-md-2 col-md-offset-1">Asset Controller</label>
                                                 <div class="col-md-8">
                                                     <input type="text" class="form-control input-sm asset-controller" name="asset_controller" id="asset_controller" autocomplete="off" readonly="readonly">
                                                 </div>
                                             </div>
+                                            */ ?>
 
                                             <div class="form-group">
                                                 <label for="plant" class="col-md-3">
