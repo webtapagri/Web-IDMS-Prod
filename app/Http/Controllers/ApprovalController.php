@@ -557,7 +557,7 @@ class ApprovalController extends Controller
         $records = array();
 
         /*$sql = "SELECT a.*, date_format(a.date,'%d-%m-%Y %h:%i:%s') AS date2 FROM v_history a WHERE a.document_code = '{$noreg}' ORDER BY a.date";*/
-        $sql = "SELECT a.* FROM v_history a WHERE a.document_code = '{$noreg}'";
+        $sql = "SELECT a.* FROM v_history_approval a WHERE a.document_code = '{$noreg}'";
 
         $data = DB::SELECT($sql);
         
@@ -576,7 +576,7 @@ class ApprovalController extends Controller
                     'area_code' => $v->area_code,
                     'user_id' => $v->user_id,
                     'name' => $v->name,
-                    'status_dokumen' => $v->status_dokumen,
+                    //'status_dokumen' => $v->status_dokumen,
                     'status_approval' => $v->status_approval,
                     'notes' => $notes,
                     'date' => $v->date,
@@ -595,13 +595,6 @@ class ApprovalController extends Controller
         $datax = '';
         $sql = " SELECT a.kode_material FROM v_kode_asset_sap a WHERE a.no_reg = '{$noreg}' ";
         $data = DB::SELECT($sql);
-        //echo "<pre>"; print_r($data); die();
-        /*
-            [0] => stdClass Object
-            (
-                [KODE_MATERIAL] => 000000000208010037
-            )
-        */
 
         if($data)
         {
@@ -616,5 +609,200 @@ class ApprovalController extends Controller
         }
 
         return $datax;
+    }
+
+    function synchronize_sap(Request $request)
+    {
+        //echo "<pre>"; print_r($request->noreg); die();
+        $no_reg = @$request->noreg;
+
+        $sql = " SELECT * FROM TR_REG_ASSET_DETAIL WHERE NO_REG = '{$no_reg}' AND (KODE_ASSET_SAP = '' OR KODE_ASSET_SAP is null) ";
+
+        $data = DB::SELECT($sql); 
+        //echo "<pre>"; print_r($data); die();
+
+        $params = array();
+
+        if($data)
+        {
+            foreach( $data as $k => $v )
+            {
+                //$this->synchronize_sap_process($v);
+
+                $proses = $this->synchronize_sap_process($v);
+                //echo "<pre>"; print_r($proses['status']);die();
+                
+                if($proses['status']=='error')
+                {
+                    return response()->json(['status' => false, "message" => $proses['message']]);
+                    die();
+                }
+                
+            }
+
+            return response()->json(['status' => true, "message" => "Synchronize SAP berhasil"]);
+            //echo "<pre>"; print_r($params);
+
+            //die();
+        }
+        else
+        {
+            return response()->json(['status' => false, "message" => "Synchronize SAP Gagal, tidak ada data"]);
+        }
+    }
+
+    public function synchronize_sap_process($dt) 
+    {
+        $ANLA_BUKRS = substr($dt->LOKASI_BA_CODE,0,2);
+        $ANLA_LIFNR = $this->get_kode_vendor($dt->NO_REG);
+        $param = array(
+            'ANLA_ANLKL'    => $dt->JENIS_ASSET,
+            'ANLA_BUKRS'    => substr($dt->LOKASI_BA_CODE,0,2),
+            'RA02S_NASSETS' => 1,
+            'ANLA_TXT50'    => $dt->NAMA_ASSET_1,
+            'ANLA_TXA50'    => $dt->NAMA_ASSET_2,
+            'ANLH_ANLHTXT'  => $dt->NAMA_ASSET_3,
+            'ANLA_SERNR'    => $dt->NO_RANGKA_OR_NO_SERI,
+            'ANLA_INVNR'    => $dt->NO_MESIN_OR_IMEI,
+            'ANLA_MENGE'    => $dt->QUANTITY_ASSET_SAP,
+            'ANLA_MEINS'    => $dt->UOM_ASSET_SAP,
+            'ANLA_AKTIV'    => $dt->CAPITALIZED_ON,
+            'ANLA_DEAKT'    => $dt->DEACTIVATION_ON,
+            'ANLZ_GSBER'    => $dt->LOKASI_BA_CODE,
+            'ANLZ_KOSTL'    => $dt->COST_CENTER,
+            'ANLZ_WERKS'    => $dt->LOKASI_BA_CODE,
+            'ANLA_LIFNR'    => $this->get_kode_vendor($dt->NO_REG),
+            'ANLB_NDJAR_01' => $dt->BOOK_DEPREC_01,
+            'ANLB_NDJAR_02' => $dt->FISCAL_DEPREC_15
+        );
+
+        //echo "<pre>"; print_r($param); die();
+
+        $service = API::exec(array(
+            'request' => 'GET',
+            'host' => 'ldap',
+            'method' => "create_asset?ANLA_ANLKL={$dt->JENIS_ASSET}&ANLA_BUKRS={$ANLA_BUKRS}&RA02S_NASSETS=1&ANLA_TXT50={$dt->NAMA_ASSET_1}&ANLA_TXA50={$dt->NAMA_ASSET_2}&ANLH_ANLHTXT={$dt->NAMA_ASSET_3}&ANLA_SERNR={$dt->NO_RANGKA_OR_NO_SERI}&ANLA_INVNR={$dt->NO_MESIN_OR_IMEI}&ANLA_MENGE={$dt->QUANTITY_ASSET_SAP}&ANLA_MEINS={$dt->UOM_ASSET_SAP}&ANLA_AKTIV={$dt->CAPITALIZED_ON}&ANLA_DEAKT={$dt->DEACTIVATION_ON}&ANLZ_GSBER={$dt->LOKASI_BA_CODE}&ANLZ_KOSTL={$dt->COST_CENTER}&ANLZ_WERKS=$dt->LOKASI_BA_CODE&ANLA_LIFNR={$ANLA_LIFNR}&ANLB_NDJAR_01={$dt->BOOK_DEPREC_01}&ANLB_NDJAR_02={$dt->FISCAL_DEPREC_15}", 
+            // http://tap-ldapdev.tap-agri.com/data-sap/create_asset
+            //'param' => $param
+        ));
+        
+        $data = $service;
+
+        //echo "<pre>"; print_r($data); die();
+        /*
+        stdClass Object
+        (
+            [TYPE] => E
+            [ID] => AA
+            [NUMBER] => 108
+            [MESSAGE] => Asset class 3010 does not exist (Check your entry)
+            [LOG_NO] => 
+            [LOG_MSG_NO] => 000000
+            [MESSAGE_V1] => 3010
+            [MESSAGE_V2] => 
+            [MESSAGE_V3] => 
+            [MESSAGE_V4] => 
+        )
+        */
+
+        //echo $data->TYPE; die();
+
+        if(!empty($data))
+        {
+                //echo "<pre>"; print_r($v); die();
+                if( $data->TYPE == 'E' )
+                {
+                    /*
+                    $result = array('status'=>'error','message'=>$data->MESSAGE);
+                    return $result;
+                    die();
+                    */
+
+                    DB::beginTransaction();
+
+                    try 
+                    {    
+                        $sql = " INSERT INTO TR_LOG_SYNC_SAP(no_reg,no_reg_item,msgtyp,msgid,msgnr,message,msgv1,msgv2,msgv3,msgv4)VALUES('{$dt->NO_REG}','{$dt->NO_REG_ITEM}','{$data->TYPE}','{$data->ID}','{$data->NUMBER}','{$data->MESSAGE}','{$data->MESSAGE_V1}','{$data->MESSAGE_V2}','{$data->MESSAGE_V3}','{$data->MESSAGE_V4}') ";
+                        //echo $sql; die();
+                        DB::INSERT($sql); 
+                        DB::commit();
+                        
+                        $result = array('status'=>'error','message'=>$data->MESSAGE);
+                        return $result;
+                        //return false;
+                    }
+                    catch (\Exception $e) 
+                    {
+                        DB::rollback();
+                        $result = array('status'=>'error','message'=>$e->getMessage());
+                        return $result;
+                        //return false;
+                    }
+                }
+                else
+                {
+                    /*
+                    {
+                        "TYPE": "S",
+                        "ID": "AA",
+                        "NUMBER": "228",
+                        "MESSAGE": "The asset 20100439 0 is created",
+                        "LOG_NO": "",
+                        "LOG_MSG_NO": "000000",
+                        "MESSAGE_V1": "20100439",
+                        "MESSAGE_V2": "0",
+                        "MESSAGE_V3": "The asset",
+                        "MESSAGE_V4": ""
+                    }
+                    */
+                    //return true;
+
+                    DB::beginTransaction();
+
+                    try 
+                    {   
+
+                        $sql = " INSERT INTO TR_LOG_SYNC_SAP(no_reg,no_reg_item,msgtyp,msgid,msgnr,message,msgv1,msgv2,msgv3,msgv4)VALUES('{$dt->NO_REG}','{$dt->NO_REG_ITEM}','{$data->TYPE}','{$data->ID}','{$data->NUMBER}','{$data->MESSAGE}','{$data->MESSAGE_V1}','{$data->MESSAGE_V2}','{$data->MESSAGE_V3}','{$data->MESSAGE_V4}') ";
+                        DB::INSERT($sql); 
+                        
+                        DB::commit();
+                        return true;
+                    }
+                     catch (\Exception $e) 
+                    {
+                        DB::rollback();
+                        return false;
+                    }
+
+                }
+            
+            //die();
+            
+            //return false;
+        }
+        else
+        {
+            return false;
+        }
+
+        /*
+        $datax = array();
+        if(isset( $data->EBELN)) 
+        {
+            return response()->json(array('data' => $data));
+        } 
+        else 
+        {
+            return response()->json(array('data' => array())); 
+        }
+        */
+    }
+
+    public function get_kode_vendor($noreg)
+    {
+        $sql = "SELECT KODE_VENDOR FROM TR_REG_ASSET WHERE NO_REG = '{$noreg}' ";
+        $data = DB::SELECT($sql);
+        if($data){ $dt = $data[0]->KODE_VENDOR; }else{ $dt = '0'; }
+        return $dt;
     }
 }

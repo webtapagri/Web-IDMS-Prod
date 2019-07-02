@@ -773,44 +773,20 @@
                     }
                     else
                     {
+                        var kategori = ["asset", "no seri", "imei"];
+                        var print_kategori = [];
+
                         $.each(val.file, function(k, v) 
                         {
-
-                            if (v.category === "asset") {
-                                file_foto_asset = {
-                                    name: v.file_name,
-                                    size: v.size,
-                                    type: v.type,
-                                    file: v.file
-                                };
-                            } 
-                            else if (v.category === "no seri") 
-                            {
-                                file_foto_seri = {
-                                    name: v.file_name,
-                                    size: v.size,
-                                    type: v.type,
-                                    file: v.file
-                                };
-                            } 
-                            else if (v.category === "imei") 
-                            {
-                                file_foto_mesin = {
-                                    name: v.file_name,
-                                    size: v.size,
-                                    type: v.type,
-                                    file: v.file
-                                };
+                            if( $.inArray(v.file_category, kategori) !== -1 )
+                            {   
+                                //alert(kategori[k]);
+                                item += "<div class='col-md-4'><b>"+v.file_category+"</b><br/> <img id='foto_thumb' name='foto_thumb' data-status='0' title='' class='img-responsive' src='"+v.file_thumb+"'></div>";
+                                print_kategori.push(kategori[k]);
                             }
-
-                            //alert(v.file_thumb); 
-                            //$("#foto_thumb").prop('src', v.file_thumb);
-
-                            //item += "<div class='col-md-4'><b>"+v.file_category+"</b><br/>"+v.filename+"</div>";
-                            
-                            item += "<div class='col-md-4'><b>"+v.file_category+"</b><br/> <img id='foto_thumb' name='foto_thumb' data-status='0' title='' class='img-responsive' src='"+v.file_thumb+"'></div>";
-                        
                         });
+
+                        //alert(print_kategori);
                     }
                     
                     item += "</div></div>";
@@ -822,11 +798,11 @@
                     //item += "<form id='request-form-detail-asset-sap' class='form-horizontal' style=''>";
                     item += "<div class='col-md-6'> ";
 
-                    item += "<div class='form-group'><label for='' class='col-md-4'>DESCRIPTION</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='nama_asset_1-"+val.no_reg_item+"' value='"+val.nama_asset_1+"' id='nama_asset_1-"+val.no_reg_item+"' autocomplete='off' placeholder='Nama Asset 1'></div></div>";
+                    item += "<div class='form-group'><label for='' class='col-md-4'>DESCRIPTION</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='nama_asset_1-"+val.no_reg_item+"' value='"+val.nama_asset_1+"' id='nama_asset_1-"+val.no_reg_item+"' autocomplete='off' placeholder='Nama Asset 1' required></div></div>";
                     
                     item += "<div class='form-group'><label for='' class='col-md-4'></label><div class='col-md-8'><input type='text' class='form-control input-sm' name='nama_asset_2-"+val.no_reg_item+"' value='"+val.nama_asset_2+"' id='nama_asset_2-"+val.no_reg_item+"' autocomplete='off' placeholder='Nama Asset 2'></div></div>";
                     
-                    item += "<div class='form-group'><label for='' class='col-md-4'>ASET MAIN NO. TEXT</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='nama_asset_3-"+val.no_reg_item+"' value='"+val.nama_asset_3+"' id='nama_asset_3-"+val.no_reg_item+"' autocomplete='off' placeholder='Nama Asset 3'></div></div>";
+                    item += "<div class='form-group'><label for='' class='col-md-4'>ASET MAIN NO. TEXT</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='nama_asset_3-"+val.no_reg_item+"' value='"+val.nama_asset_3+"' id='nama_asset_3-"+val.no_reg_item+"' autocomplete='off' placeholder='Nama Asset 3' required></div></div>";
 
                     item += "<div class='form-group'><label for='' class='col-md-4'>ACCT DETERMINATION</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='acct_determination-"+val.no_reg_item+"' value='"+val.jenis_asset+"' id='nama_asset_3-"+val.no_reg_item+"' autocomplete='off' placeholder='Acct Determination' readonly></div></div>";
 
@@ -834,13 +810,13 @@
 
                     item += "<div class='form-group'><label for='' class='col-md-4'>INVENTORY NUMBER</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='inventory_number-"+val.no_reg_item+"' value='"+val.no_mesin_or_imei+"' id='inventory_number-"+val.no_reg_item+"' autocomplete='off' placeholder='Inventory Number' readonly></div></div>";
                     
-                    item += "<div class='form-group'><label for='' class='col-md-4'>QUANTITY</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='quantity-"+val.no_reg_item+"' value='"+val.quantity_asset_sap+"' id='quantity-"+val.no_reg_item+"' autocomplete='off'></div></div>";
+                    item += "<div class='form-group'><label for='' class='col-md-4'>QUANTITY</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='quantity-"+val.no_reg_item+"' value='"+val.quantity_asset_sap+"' id='quantity-"+val.no_reg_item+"' autocomplete='off' required></div></div>";
                     
-                    item += "<div class='form-group'><label for='' class='col-md-4'>UOM (UNIT)</label><div class='col-md-3' style='display: inline-block'><input type='text' class='form-control input-sm' name='uom-"+val.no_reg_item+"' value='"+val.uom_asset_sap+"' id='uom-"+val.no_reg_item+"' autocomplete='off'></div></div>";
+                    item += "<div class='form-group'><label for='' class='col-md-4'>UOM (UNIT)</label><div class='col-md-3' style='display: inline-block'><input type='text' class='form-control input-sm' name='uom-"+val.no_reg_item+"' value='"+val.uom_asset_sap+"' id='uom-"+val.no_reg_item+"' autocomplete='off' required></div></div>";
 
-                    item += "<div class='form-group'><label for='' class='col-md-4'>CAPITALIZED</label><div class='col-md-8'><input type='text' class='form-control input-sm capitalized_on_date' name='capitalized_on-"+val.no_reg_item+"' value='"+val.capitalized_on+"' id='capitalized_on-"+val.no_reg_item+"' autocomplete='off' placeholder='yyyy-mm-dd'></div></div>";
+                    item += "<div class='form-group'><label for='' class='col-md-4'>CAPITALIZED</label><div class='col-md-8'><input type='text' class='form-control input-sm capitalized_on_date' name='capitalized_on-"+val.no_reg_item+"' value='"+val.capitalized_on+"' id='capitalized_on-"+val.no_reg_item+"' autocomplete='off' placeholder='dd.mm.yyyy' required></div></div>";
 
-                    item += "<div class='form-group'><label for='' class='col-md-4'>DEACTIVATION</label><div class='col-md-8'><input type='text' class='form-control input-sm capitalized_on_date' name='deactivation_on-"+val.no_reg_item+"' value='"+val.deactivation_on+"' id='deactivation_on-"+val.no_reg_item+"' autocomplete='off' placeholder='yyyy-mm-dd'></div></div>";
+                    item += "<div class='form-group'><label for='' class='col-md-4'>DEACTIVATION</label><div class='col-md-8'><input type='text' class='form-control input-sm capitalized_on_date' name='deactivation_on-"+val.no_reg_item+"' value='"+val.deactivation_on+"' id='deactivation_on-"+val.no_reg_item+"' autocomplete='off' placeholder='dd.mm.yyyy' required></div></div>";
                     
                     item += "</div>";
                     
@@ -848,7 +824,7 @@
 
                     item += "<div class='form-group'><label for='' class='col-md-4'>BUSINESS AREA</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='business_area-"+val.no_reg_item+"' value='"+val.business_area+"' id='business_area-"+val.no_reg_item+"' autocomplete='off' readonly></div></div>";
 
-                    item += "<div class='form-group'><label for='' class='col-md-4'>COST CENTER</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='cost_center-"+val.no_reg_item+"' value='"+val.cost_center+"' id='cost_center-"+val.no_reg_item+"' autocomplete='off'></div></div>";
+                    item += "<div class='form-group'><label for='' class='col-md-4'>COST CENTER</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='cost_center-"+val.no_reg_item+"' value='"+val.cost_center+"' id='cost_center-"+val.no_reg_item+"' autocomplete='off' required></div></div>";
 
                     item += "<div class='form-group'><label for='' class='col-md-4'>PLANT</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='plant-"+val.no_reg_item+"' value='"+val.business_area+"' id='plant-"+val.no_reg_item+"' autocomplete='off' readonly></div></div>";
 
@@ -865,8 +841,8 @@
                     item += "<div class='xform-group'><label for='' class='xcol-md-4'>DEPREC, AREAS</label><br/>";
                     item += "<table class='tabel table-bordered table-responsive table-condensed table-striped table-container'>";
                     item += "<tr><th>Area Number</th><th>Depreciation Area</th><th>Dkey</th><th>Use Life</th></tr>";
-                    item += "<tr><td>01</td><td>Book</td><td>Z001</td><td><input type='text' class='form-control input-sm' name='book_deprec_01-"+val.no_reg_item+"' value='"+val.book_deprec_01+"' id='book_deprec_01-"+val.no_reg_item+"' autocomplete='off'></td></tr>";
-                    item += "<tr><td>15</td><td>Fiscal</td><td>Z001</td><td><input type='text' class='form-control input-sm' name='fiscal_deprec_15-"+val.no_reg_item+"' value='"+val.fiscal_deprec_15+"' id='fiscal_deprec_15-"+val.no_reg_item+"' autocomplete='off'></td></tr>";
+                    item += "<tr><td>01</td><td>Book</td><td>Z001</td><td><input type='text' class='form-control input-sm' name='book_deprec_01-"+val.no_reg_item+"' value='"+val.book_deprec_01+"' id='book_deprec_01-"+val.no_reg_item+"' autocomplete='off' required></td></tr>";
+                    item += "<tr><td>15</td><td>Fiscal</td><td>Z001</td><td><input type='text' class='form-control input-sm' name='fiscal_deprec_15-"+val.no_reg_item+"' value='"+val.fiscal_deprec_15+"' id='fiscal_deprec_15-"+val.no_reg_item+"' autocomplete='off' required></td></tr>";
                     item += "<tr><td>30</td><td>Group</td><td>Z001</td><td><input type='text' class='form-control input-sm' name='group_deprec_30-"+val.no_reg_item+"' value='"+val.book_deprec_01+"' id='group_deprec_30-"+val.no_reg_item+"' autocomplete='off' placeholder='yyyy' readonly></td></tr>";
                     item += "</table>";
                     item += "</div>";
@@ -1020,7 +996,6 @@
                 }
             }); 
         }
-       
     }
 
     function changeStatus(status)
@@ -1171,7 +1146,7 @@
             item += '<th>AREA CODE</th>';
             item += '<th>USER ID</th>';
             item += '<th>NAME</th>';
-            item += '<th>STATUS DOKUMEN</th>';
+            //item += '<th>STATUS DOKUMEN</th>';
             item += '<th>STATUS APPROVAL</th>';
             item += '<th>NOTES</th>';
             item += '<th>DATE</th>';
@@ -1185,7 +1160,7 @@
                     item += "<td>" + val.area_code + "</td>";
                     item += "<td>" + val.user_id + "</td>";
                     item += "<td>" + val.name + "</td>";
-                    item += "<td>" + val.status_dokumen + "</td>";
+                    //item += "<td>" + val.status_dokumen + "</td>";
                     item += "<td>" + val.status_approval + "</td>";
                     item += "<td>" + val.notes + "</td>";
                     item += "<td>" + val.date + "</td>";
@@ -1221,8 +1196,54 @@
 
     function sinkronisasi()
     {
-        var noreg = $("#no-reg").val();
-        alert(noreg);
+        //var noreg = $("#no-reg").val();
+        //alert(noreg);
+
+         if(confirm('Confirm Synchronize SAP ?'))
+        {
+            var getnoreg = $("#getnoreg").val();
+            var no_registrasi= getnoreg.replace(/\//g, '-');
+
+            //alert(id+"_"+no_po+"_"+no_reg_item+"_"+no_registrasi);
+
+            var param = '';//$("#request-form-detail-asset-sap").serialize();
+            //alert(capitalized_on);
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                url: "{{ url('approval/synchronize_sap') }}",
+                method: "POST",
+                data: param+"&noreg="+getnoreg,
+                beforeSend: function() {
+                    $('.loading-event').fadeIn();
+                },
+                success: function(result) 
+                {
+                    //alert(result.status);
+                    if (result.status) 
+                    {
+                        //$("#approve-modal").modal("hide");
+                        //$("#data-table").DataTable().ajax.reload();
+                        notify({
+                            type: 'success',
+                            message: result.message
+                        });
+                    } else {
+                        notify({
+                            type: 'warning',
+                            message: result.message
+                        });
+                    }
+                    
+                },
+                complete: function() {
+                    jQuery('.loading-event').fadeOut();
+                }
+            }); 
+        }
     }
 
 </script>

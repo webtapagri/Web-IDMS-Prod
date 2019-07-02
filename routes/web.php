@@ -68,6 +68,7 @@ Route::post('/approval/save_asset_sap/{id}','ApprovalController@save_asset_sap')
 Route::get('grid-approval-history', ['as' => 'get.approval_grid_history', 'uses' => 'ApprovalController@dataGridHistory']);
 Route::post('/approval/update_status/{status}/{no_reg}','ApprovalController@update_status');
 Route::get('/approval/log_history/{no_reg}', 'ApprovalController@log_history')->name('no_reg');
+Route::post('/approval/synchronize_sap', 'ApprovalController@synchronize_sap');
 
 Route::resource('/mutasi', 'MutasiController');
 Route::get('/mutasi/create/{type}', 'MutasiController@create')->name('type');
@@ -78,8 +79,10 @@ Route::post('/mutasi/active', 'MutasiController@active');
 Route::get('grid-mutasi', ['as' => 'get.mutasi_grid', 'uses' => 'MutasiController@dataGrid']);
 
 /* USER SETTINGS */
-Route::get('/', 'HomeController@index')->name('home');
-Route::get('/home', 'HomeController@index')->name('home');
+//Route::get('/', 'HomeController@index')->name('home');
+//Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/', 'ApprovalController@index')->name('home');
+Route::get('/home', 'ApprovalController@index')->name('home');
 Route::get('/profile', 'ProfileController@index');
 Route::post('/ldaplogin', 'LDAPController@login');
 Route::post('/ldaplogout', 'LDAPController@logout');
