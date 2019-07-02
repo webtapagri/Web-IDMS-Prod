@@ -15,13 +15,13 @@ class ApprovalController extends Controller
 {
     public function index()
     {
-        /*  if (empty(Session::get('authenticated')))
+        if (empty(Session::get('authenticated')))
             return redirect('/login');
 
         if (AccessRight::granted() == false)
             return response(view('errors.403'), 403);
 
-        $access = AccessRight::access(); */
+        $access = AccessRight::access();
         $data['page_title'] = "Approval";
         $data['ctree_mod'] = 'Approval';
         $data['ctree'] = 'approval';
@@ -557,7 +557,7 @@ class ApprovalController extends Controller
         $records = array();
 
         /*$sql = "SELECT a.*, date_format(a.date,'%d-%m-%Y %h:%i:%s') AS date2 FROM v_history a WHERE a.document_code = '{$noreg}' ORDER BY a.date";*/
-        $sql = "SELECT a.* FROM v_history_approval a WHERE a.document_code = '{$noreg}'";
+        $sql = "SELECT document_code,user_id,name,area_code,status_approval,notes,date FROM v_history_approval WHERE document_code = '{$noreg}'";
 
         $data = DB::SELECT($sql);
         
