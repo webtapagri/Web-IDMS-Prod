@@ -709,72 +709,60 @@ class ApprovalController extends Controller
 
         if(!empty($data))
         {
-                //echo "<pre>"; print_r($v); die();
-                if( $data->TYPE == 'E' )
-                {
-                    /*
-                    $result = array('status'=>'error','message'=>$data->MESSAGE);
+            //echo "<pre>"; print_r($v); die();
+                
+            if( $data->TYPE == 'E' )
+            {
+
+                DB::beginTransaction();
+
+                try 
+                {    
+                    $sql = " INSERT INTO TR_LOG_SYNC_SAP(no_reg,no_reg_item,msgtyp,msgid,msgnr,message,msgv1,msgv2,msgv3,msgv4)VALUES('{$dt->NO_REG}','{$dt->NO_REG_ITEM}','{$data->TYPE}','{$data->ID}','{$data->NUMBER}','{$data->MESSAGE}','{$data->MESSAGE_V1}','{$data->MESSAGE_V2}','{$data->MESSAGE_V3}','{$data->MESSAGE_V4}') ";
+                    //echo $sql; die();
+                    DB::INSERT($sql); 
+                    DB::commit();
+                    
+                    $result = array('status'=>'error','message'=> ''.$data->MESSAGE.' (No Reg Item: '.$dt->NO_REG_ITEM.')');
                     return $result;
-                    die();
-                    */
-
-                    DB::beginTransaction();
-
-                    try 
-                    {    
-                        $sql = " INSERT INTO TR_LOG_SYNC_SAP(no_reg,no_reg_item,msgtyp,msgid,msgnr,message,msgv1,msgv2,msgv3,msgv4)VALUES('{$dt->NO_REG}','{$dt->NO_REG_ITEM}','{$data->TYPE}','{$data->ID}','{$data->NUMBER}','{$data->MESSAGE}','{$data->MESSAGE_V1}','{$data->MESSAGE_V2}','{$data->MESSAGE_V3}','{$data->MESSAGE_V4}') ";
-                        //echo $sql; die();
-                        DB::INSERT($sql); 
-                        DB::commit();
-                        
-                        $result = array('status'=>'error','message'=>$data->MESSAGE);
-                        return $result;
-                        //return false;
-                    }
-                    catch (\Exception $e) 
-                    {
-                        DB::rollback();
-                        $result = array('status'=>'error','message'=>$e->getMessage());
-                        return $result;
-                        //return false;
-                    }
+                    //return false;
                 }
-                else
+                catch (\Exception $e) 
                 {
-                    /*
-                    {
-                        "TYPE": "S",
-                        "ID": "AA",
-                        "NUMBER": "228",
-                        "MESSAGE": "The asset 20100439 0 is created",
-                        "LOG_NO": "",
-                        "LOG_MSG_NO": "000000",
-                        "MESSAGE_V1": "20100439",
-                        "MESSAGE_V2": "0",
-                        "MESSAGE_V3": "The asset",
-                        "MESSAGE_V4": ""
-                    }
-                    */
-                    //return true;
-
-                    DB::beginTransaction();
-
-                    try 
-                    {   
-
-                        $sql = " INSERT INTO TR_LOG_SYNC_SAP(no_reg,no_reg_item,msgtyp,msgid,msgnr,message,msgv1,msgv2,msgv3,msgv4)VALUES('{$dt->NO_REG}','{$dt->NO_REG_ITEM}','{$data->TYPE}','{$data->ID}','{$data->NUMBER}','{$data->MESSAGE}','{$data->MESSAGE_V1}','{$data->MESSAGE_V2}','{$data->MESSAGE_V3}','{$data->MESSAGE_V4}') ";
-                        DB::INSERT($sql); 
-                        
-                        DB::commit();
-                        return true;
-                    }
-                     catch (\Exception $e) 
-                    {
-                        DB::rollback();
-                        return false;
-                    }
-
+                    DB::rollback();
+                    $result = array('status'=>'error','message'=>$e->getMessage());
+                    return $result;
+                    //return false;
                 }
+            }
+            else
+            {
+                
+                DB::beginTransaction();
+                try 
+                {   
+                    $user_id = Session::get('user_id');
+
+                    //UPDATE TR_REG_ASSET
+                    $sql_1 = " UPDATE TR_REG_ASSET_DETAIL SET KODE_ASSET_SAP = '{$data->MESSAGE_V1}', UPDATED_BY = '{$user_id}', UPDATED_AT = current_timestamp() WHERE NO_REG = '{$dt->NO_REG}' AND NO_REG_ITEM = '{$dt->NO_REG_ITEM}' ";
+                     //echo $sql_1; die();
+                    DB::UPDATE($sql_1);
+
+                    $sql_2 = " INSERT INTO TR_LOG_SYNC_SAP(no_reg,no_reg_item,msgtyp,msgid,msgnr,message,msgv1,msgv2,msgv3,msgv4)VALUES('{$dt->NO_REG}','{$dt->NO_REG_ITEM}','{$data->TYPE}','{$data->ID}','{$data->NUMBER}','{$data->MESSAGE}','{$data->MESSAGE_V1}','{$data->MESSAGE_V2}','{$data->MESSAGE_V3}','{$data->MESSAGE_V4}') ";
+                    //echo $sql_2; die();
+                    DB::INSERT($sql_2);
+                    
+                    DB::commit();
+                    return true;
+                }
+                catch (\Exception $e) 
+                {
+                    DB::rollback();
+                    return false;
+                    //die();
+                }
+                
+            }
             
             //die();
             

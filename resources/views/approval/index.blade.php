@@ -528,7 +528,8 @@
                 else
                 {
                     $("#create-button-sync-sap").hide();
-                    $("button-approve").show();
+                    $("#button-approve").show();
+                    $(".button-reject").attr("disabled", false); 
                 }
 
                 var item = '<table class="table xtable-condensed table-responsive table-striped" id="request-item-table" style="font-size:13px">';
@@ -1231,7 +1232,12 @@
                             type: 'success',
                             message: result.message
                         });
-                    } else {
+
+                        //$("button-approve").show();
+                        //$("create-button-sync-sap").hide();
+                    } 
+                    else 
+                    {
                         notify({
                             type: 'warning',
                             message: result.message
