@@ -330,7 +330,8 @@ class ApprovalController extends Controller
                     'group_deprec_30' => trim($v->GROUP_DEPREC_30),
                     'no_reg_item' => trim($v->NO_REG_ITEM),
                     'vendor' => trim($v->KODE_VENDOR).'-'.trim($v->NAMA_VENDOR),
-                    'business_area' => trim($v->BUSINESS_AREA)
+                    'business_area' => trim($v->BUSINESS_AREA),
+                    'kode_asset_sap' => trim($v->KODE_ASSET_SAP)
                 );
             }
         }
@@ -640,7 +641,7 @@ class ApprovalController extends Controller
         //echo "<pre>"; print_r($request->noreg); die();
         $no_reg = @$request->noreg;
 
-        $sql = " SELECT * FROM TR_REG_ASSET_DETAIL WHERE NO_REG = '{$no_reg}' AND (KODE_ASSET_SAP = '' OR KODE_ASSET_SAP is null) ";
+        $sql = " SELECT a.*, date_format(a.CAPITALIZED_ON,'%d.%m.%Y') AS CAPITALIZED_ON, date_format(a.DEACTIVATION_ON,'%d.%m.%Y') AS DEACTIVATION_ON FROM TR_REG_ASSET_DETAIL a WHERE a.NO_REG = '{$no_reg}' AND (a.KODE_ASSET_SAP = '' OR a.KODE_ASSET_SAP is null) ";
 
         $data = DB::SELECT($sql); 
         //echo "<pre>"; print_r($data); die();
@@ -761,17 +762,18 @@ class ApprovalController extends Controller
             }
             else
             {
-                
+                $user_id = Session::get('user_id');
+                $asset_controller = $this->get_asset_controller($user_id,$dt->LOKASI_BA_CODE);
+
                 DB::beginTransaction();
                 try 
                 {   
-                    $user_id = Session::get('user_id');
-
-                    //UPDATE TR_REG_ASSET
-                    $sql_1 = " UPDATE TR_REG_ASSET_DETAIL SET KODE_ASSET_SAP = '{$data->MESSAGE_V1}', UPDATED_BY = '{$user_id}', UPDATED_AT = current_timestamp() WHERE NO_REG = '{$dt->NO_REG}' AND NO_REG_ITEM = '{$dt->NO_REG_ITEM}' ";
+                    //1. ADD KODE_ASSET_SAP & ASSET_CONTROLLER TR_REG_ASSET 
+                    $sql_1 = " UPDATE TR_REG_ASSET_DETAIL SET ASSET_CONTROLLER = '{$asset_controller}', KODE_ASSET_SAP = '{$data->MESSAGE_V1}', UPDATED_BY = '{$user_id}', UPDATED_AT = current_timestamp() WHERE NO_REG = '{$dt->NO_REG}' AND NO_REG_ITEM = '{$dt->NO_REG_ITEM}' ";
                      //echo $sql_1; die();
                     DB::UPDATE($sql_1);
 
+                    //2. INSERT LOG
                     $sql_2 = " INSERT INTO TR_LOG_SYNC_SAP(no_reg,no_reg_item,msgtyp,msgid,msgnr,message,msgv1,msgv2,msgv3,msgv4)VALUES('{$dt->NO_REG}','{$dt->NO_REG_ITEM}','{$data->TYPE}','{$data->ID}','{$data->NUMBER}','{$data->MESSAGE}','{$data->MESSAGE_V1}','{$data->MESSAGE_V2}','{$data->MESSAGE_V3}','{$data->MESSAGE_V4}') ";
                     //echo $sql_2; die();
                     DB::INSERT($sql_2);
@@ -808,6 +810,14 @@ class ApprovalController extends Controller
             return response()->json(array('data' => array())); 
         }
         */
+    }
+
+    public function get_asset_controller($user_id, $area_code)
+    {
+        $sql = "SELECT description FROM v_user WHERE id = '{$user_id}' AND area_code = '{$area_code}' ";
+        $data = DB::SELECT($sql);
+        if(!empty($data)){ $dt = $data[0]->DESCRIPTION; }else{ $dt = ''; }
+        return $dt;
     }
 
     public function get_kode_vendor($noreg)

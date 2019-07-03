@@ -523,14 +523,14 @@
                     
                     <?php if( $user_role == 'AC' ){ ?>
                         $("#button-approve").hide();
-                        $(".button-reject").attr("disabled", true); 
+                        $(".button-reject").attr("disabled", false); 
                     <?php } ?>
                 }
                 else
                 {
                     $("#create-button-sync-sap").hide();
                     $("#button-approve").show();
-                    $(".button-reject").attr("disabled", false); 
+                    $(".button-reject").attr("disabled", true); 
                 }
 
                 var item = '<table class="table xtable-condensed table-responsive table-striped" id="request-item-table" style="font-size:13px">';
@@ -794,6 +794,7 @@
                     item += "</div></div>";
                     /* END FILE UPLOAD */
 
+                    /* BOX DETAIL ASSET SAP */
                     item += "<div class='col-md-12'><div class='row'>";
                     item += "<span class='label bg-blue'><i class='fa fa-bars'></i> DETAIL ASET SAP</span><br/><br/>";
                     
@@ -816,9 +817,9 @@
                     
                     item += "<div class='form-group'><label for='' class='col-md-4'>UOM (UNIT)</label><div class='col-md-3' style='display: inline-block'><input type='text' class='form-control input-sm' name='uom-"+val.no_reg_item+"' value='"+val.uom_asset_sap+"' id='uom-"+val.no_reg_item+"' autocomplete='off' required></div></div>";
 
-                    item += "<div class='form-group'><label for='' class='col-md-4'>CAPITALIZED</label><div class='col-md-8'><input type='text' class='form-control input-sm capitalized_on_date' name='capitalized_on-"+val.no_reg_item+"' value='"+val.capitalized_on+"' id='capitalized_on-"+val.no_reg_item+"' autocomplete='off' placeholder='dd.mm.yyyy' required></div></div>";
+                    item += "<div class='form-group'><label for='' class='col-md-4'>CAPITALIZED</label><div class='col-md-8'><input type='text' class='form-control input-sm capitalized_on_date' name='capitalized_on-"+val.no_reg_item+"' value='"+val.capitalized_on+"' id='capitalized_on-"+val.no_reg_item+"' autocomplete='off' placeholder='yyyy-mm-dd' required></div></div>";
 
-                    item += "<div class='form-group'><label for='' class='col-md-4'>DEACTIVATION</label><div class='col-md-8'><input type='text' class='form-control input-sm capitalized_on_date' name='deactivation_on-"+val.no_reg_item+"' value='"+val.deactivation_on+"' id='deactivation_on-"+val.no_reg_item+"' autocomplete='off' placeholder='dd.mm.yyyy' required></div></div>";
+                    item += "<div class='form-group'><label for='' class='col-md-4'>DEACTIVATION</label><div class='col-md-8'><input type='text' class='form-control input-sm capitalized_on_date' name='deactivation_on-"+val.no_reg_item+"' value='"+val.deactivation_on+"' id='deactivation_on-"+val.no_reg_item+"' autocomplete='off' placeholder='yyyy-mm-dd' required></div></div>";
                     
                     item += "</div>";
                     
@@ -831,14 +832,6 @@
                     item += "<div class='form-group'><label for='' class='col-md-4'>PLANT</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='plant-"+val.no_reg_item+"' value='"+val.business_area+"' id='plant-"+val.no_reg_item+"' autocomplete='off' readonly></div></div>";
 
                     item += "<div class='form-group'><label for='' class='col-md-4'>VENDOR</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='vendor-"+val.no_reg_item+"' value='"+val.vendor+"' id='vendor-"+val.no_reg_item+"' autocomplete='off' readonly></div></div>";
-
-                    <?php /* 
-                    item += "<div class='form-group'><label for='' class='col-md-4'>BOOK DEPREC 01</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='book_deprec_01-"+val.no_reg_item+"' value='"+val.book_deprec_01+"' id='book_deprec_01-"+val.no_reg_item+"' autocomplete='off'></div></div>";
-
-                    item += "<div class='form-group'><label for='' class='col-md-4'>FISCAL DEPREC 15</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='fiscal_deprec_15-"+val.no_reg_item+"' value='"+val.fiscal_deprec_15+"' id='fiscal_deprec_15-"+val.no_reg_item+"' autocomplete='off'></div></div>";
-                    
-                    item += "<div class='form-group'><label for='' class='col-md-4'>GROUP DEPREC 30</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='group_deprec_30-"+val.no_reg_item+"' value='"+val.group_deprec_30+"' id='group_deprec_30-"+val.no_reg_item+"' autocomplete='off' placeholder='yyyy'></div></div>";
-                    */ ?>
 
                     item += "<div class='xform-group'><label for='' class='xcol-md-4'>DEPREC, AREAS</label><br/>";
                     item += "<table class='tabel table-bordered table-responsive table-condensed table-striped table-container'>";
@@ -855,12 +848,20 @@
                             item += "<div class='form-group' align='right'><div class='btn btn-warning btn-sm' value='Save' OnClick='saveAssetSap("+val.id+","+val.no_po+","+val.no_reg_item+")' style='margin-right:25px'><i class='fa fa-save'></i> SAVE</div></div>";
                         <?php } ?>
                     }
-
                     item += "</div>";
-
-                    //item += "</form>";
-
                     item += "</div></div>";
+                    /* END BOX DETAIL ASSET SAP */
+
+                    /* BOX KODE ASET CONTROLLER */
+                    if( val.kode_asset_sap != '' )
+                    {
+                        item += "<div class='col-md-12 box-kode-asset-controller'><div class='row'>";
+                        item += "<span class='label bg-blue'><i class='fa fa-bars'></i> KODE ASET CONTROLLER</span><br/><br/>";
+                        item += "<div class='col-md-6'> ";
+                        item += "<div class='form-group'><label for='' class='col-md-4'>KODE ASET CONTROLLER</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='kode_aset_controller-"+val.no_reg_item+"' value='' id='kode_aset_controller-"+val.no_reg_item+"' autocomplete='off'></div></div>";
+                        item += "</div></div></div>";
+                    }
+                    /* END BOX KODE ASET CONTROLLER */
                     
                     item += "</div>";
                     item += "</div>";
