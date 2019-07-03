@@ -66,6 +66,8 @@ class RequestController extends Controller
             }
         }
 
+        //echo "<pre>"; print_r($data['ba_user']); die();
+
         if($request->type == "amp") {
             $data['ctree'] = 'request/create/amp';
             return view('request.amp')->with(compact('data'));

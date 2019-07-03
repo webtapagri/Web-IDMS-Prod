@@ -41,7 +41,7 @@
       <div class="tab-pane active" id="tab_1">
             <div class="small table-container">
                     <div class="table-actions-wrapper">
-                        <button class="btn btn-flat btn-sm btn-flat label-danger btn-refresh"><i class="glyphicon glyphicon-refresh" title="Refresh"></i></button><div OnClick="approval('19.06/AMS/PDFA/00027')">test</div>
+                        <button class="btn btn-flat btn-sm btn-flat label-danger btn-refresh"><i class="glyphicon glyphicon-refresh" title="Refresh"></i></button><?php /* <div OnClick="approval('19.06/AMS/PDFA/00027')">test</div>*/ ?>
                     </div>
                     <table id="data-table" class="table table-bordered table-condensed">
                         <thead>
@@ -518,6 +518,7 @@
 
                 if(data.sync_sap != '')
                 {
+                    $("#create-button-sync-sap").show();
                     $("#create-button-sync-sap").html('<button type="button" class="btn btn-flat label-danger" OnClick="sinkronisasi()" style="margin-right: 5px;">SYNC SAP</button>');
                     
                     <?php if( $user_role == 'AC' ){ ?>
