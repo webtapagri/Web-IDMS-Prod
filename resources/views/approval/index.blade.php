@@ -752,8 +752,17 @@
 
                     if(tipe==1)
                     {
-                        item += "<div class='form-group' align='right'><div class='btn btn-warning btn-sm' value='Delete' OnClick='delAsset("+val.id+")' style='margin-right:15px'><i class='fa fa-trash'></i> DELETE</div></div>";
-                        //item += "<div class='form-group' align='right'><button type='button' class='btn btn-flat label-danger' OnClick='delAsset("+val.id+")' style='margin-right: 5px'>Delete</button></div>";
+                        if( total_tab == 1 )
+                        {
+                            //alert(total_tab);
+                            //$(".button-delete").hide(); 
+                            item += "<div class='form-group' align='right'><button type='button' class='btn btn-warning btn-sm' OnClick='delAsset("+val.id+")' style='margin-right: 15px' disabled><i class='fa fa-trash'></i> DELETE</button></div>";
+                        }
+                        else
+                        {
+                            item += "<div class='form-group' align='right'><div class='btn btn-warning btn-sm button-delete' value='Delete' OnClick='delAsset("+val.id+")' style='margin-right:15px'><i class='fa fa-trash'></i> DELETE</div></div>";
+                            //item += "<div class='form-group' align='right'><button type='button' class='btn btn-flat label-danger' OnClick='delAsset("+val.id+")' style='margin-right: 5px'>Delete</button></div>";
+                        }
                     }
 
                     item += "</div>";
@@ -1235,8 +1244,9 @@
                             message: result.message
                         });
 
-                        //$("button-approve").show();
-                        //$("create-button-sync-sap").hide();
+                        $("#create-button-sync-sap").hide();
+                        $("#button-approve").show();
+                        $(".button-reject").attr("disabled", true); 
                     } 
                     else 
                     {

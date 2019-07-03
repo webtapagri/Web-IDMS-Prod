@@ -736,31 +736,7 @@ class ApprovalController extends Controller
         {
             //echo "<pre>"; print_r($v); die();
                 
-            if( $data->TYPE == 'E' )
-            {
-
-                DB::beginTransaction();
-
-                try 
-                {    
-                    $sql = " INSERT INTO TR_LOG_SYNC_SAP(no_reg,no_reg_item,msgtyp,msgid,msgnr,message,msgv1,msgv2,msgv3,msgv4)VALUES('{$dt->NO_REG}','{$dt->NO_REG_ITEM}','{$data->TYPE}','{$data->ID}','{$data->NUMBER}','{$data->MESSAGE}','{$data->MESSAGE_V1}','{$data->MESSAGE_V2}','{$data->MESSAGE_V3}','{$data->MESSAGE_V4}') ";
-                    //echo $sql; die();
-                    DB::INSERT($sql); 
-                    DB::commit();
-                    
-                    $result = array('status'=>'error','message'=> ''.$data->MESSAGE.' (No Reg Item: '.$dt->NO_REG_ITEM.')');
-                    return $result;
-                    //return false;
-                }
-                catch (\Exception $e) 
-                {
-                    DB::rollback();
-                    $result = array('status'=>'error','message'=>$e->getMessage());
-                    return $result;
-                    //return false;
-                }
-            }
-            else
+            if( $data->TYPE == 'S' )
             {
                 $user_id = Session::get('user_id');
                 $asset_controller = $this->get_asset_controller($user_id,$dt->LOKASI_BA_CODE);
@@ -787,12 +763,30 @@ class ApprovalController extends Controller
                     return false;
                     //die();
                 }
-                
             }
-            
-            //die();
-            
-            //return false;
+            else 
+            {
+                DB::beginTransaction();
+
+                try 
+                {    
+                    $sql = " INSERT INTO TR_LOG_SYNC_SAP(no_reg,no_reg_item,msgtyp,msgid,msgnr,message,msgv1,msgv2,msgv3,msgv4)VALUES('{$dt->NO_REG}','{$dt->NO_REG_ITEM}','{$data->TYPE}','{$data->ID}','{$data->NUMBER}','{$data->MESSAGE}','{$data->MESSAGE_V1}','{$data->MESSAGE_V2}','{$data->MESSAGE_V3}','{$data->MESSAGE_V4}') ";
+                    //echo $sql; die();
+                    DB::INSERT($sql); 
+                    DB::commit();
+                    
+                    $result = array('status'=>'error','message'=> ''.$data->MESSAGE.' (No Reg Item: '.$dt->NO_REG_ITEM.')');
+                    return $result;
+                    //return false;
+                }
+                catch (\Exception $e) 
+                {
+                    DB::rollback();
+                    $result = array('status'=>'error','message'=>$e->getMessage());
+                    return $result;
+                    //return false;
+                }
+            }
         }
         else
         {
