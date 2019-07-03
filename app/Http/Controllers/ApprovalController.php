@@ -211,12 +211,12 @@ class ApprovalController extends Controller
                 # code...
 
                 $records[] = array(
-                    'no_reg' => $v->NO_REG,
-                    'type_transaksi' => $type_transaksi[$v->TYPE_TRANSAKSI],
-                    'po_type' => $po_type[$v->PO_TYPE],
-                    'business_area' => $v->CODE_AREA.' - '.$v->NAME_AREA,
-                    'requestor' => $v->REQUESTOR,
-                    'tanggal_reg' => $v->TANGGAL_REG,
+                    'no_reg' => trim($v->NO_REG),
+                    'type_transaksi' => trim($type_transaksi[$v->TYPE_TRANSAKSI]),
+                    'po_type' => trim($po_type[$v->PO_TYPE]),
+                    'business_area' => trim($v->CODE_AREA).' - '.trim($v->NAME_AREA),
+                    'requestor' => trim($v->REQUESTOR),
+                    'tanggal_reg' => trim($v->TANGGAL_REG),
                     'item_detail' => $this->get_item_detail($noreg),
                     'sync_sap' => $this->get_sinkronisasi_sap($noreg)
                 );
@@ -235,6 +235,7 @@ class ApprovalController extends Controller
     function get_item_detail($noreg)
     {
         $request = array();
+        
         $sql = " SELECT a.* FROM TR_REG_ASSET_DETAIL_PO a WHERE a.no_reg = '{$noreg}' ";
         $data = DB::SELECT($sql);
         //echo "<pre>"; print_r($data); die();
@@ -245,18 +246,27 @@ class ApprovalController extends Controller
             {
                 $request[] = array
                 (
-                    'id' => $v->ID,
-                    'no_po' => $v->NO_PO,
-                    'item' => $v->ITEM_PO,
-                    'qty' => $v->QUANTITY_SUBMIT,
-                    'kode' => $v->KODE_MATERIAL,
-                    'nama' => $v->NAMA_MATERIAL,
+                    'id' => trim($v->ID),
+                    'no_po' => trim($v->NO_PO),
+                    'item' => trim($v->ITEM_PO),
+                    'qty' => trim($v->QUANTITY_SUBMIT),
+                    //'qty' => $this->get_total_qty($noreg),
+                    'kode' => trim($v->KODE_MATERIAL),
+                    'nama' => trim($v->NAMA_MATERIAL),
                     //'asset' => $this->get_asset_detail($noreg,$v->KODE_MATERIAL) 
                 );
             }
         }
 
         return $request;
+    }
+
+    function get_total_qty($noreg)
+    {
+        $sql = " SELECT COUNT(*) AS JML FROM TR_REG_ASSET_DETAIL WHERE NO_REG = '{$noreg}' AND DELETED != 'X' ";
+        $data = DB::SELECT($sql);
+        //echo "<pre>"; print_r($data);die();
+        return trim($data[0]->JML);
     }
 
     function get_asset_detail($noreg,$id)
@@ -278,7 +288,7 @@ class ApprovalController extends Controller
                         LEFT JOIN TM_GROUP_ASSET c ON a.group = c.group_code AND a.jenis_asset = c.jenis_asset_code
                         LEFT JOIN TM_SUBGROUP_ASSET d ON a.sub_group = d.subgroup_code AND a.group = d.group_code
                         LEFT JOIN TR_REG_ASSET e ON a.NO_REG = e.NO_REG
-                    WHERE a.no_reg = '{$noreg}' AND a.asset_po_id = '{$id}' AND a.DELETED is null
+                    WHERE a.no_reg = '{$noreg}' AND a.asset_po_id = '{$id}' AND (a.DELETED is null OR a.DELETED = '')
                         ORDER BY a.kode_material ";
         //echo $sql; die();
         $data = DB::SELECT($sql);
@@ -290,37 +300,37 @@ class ApprovalController extends Controller
             {
                 $records[] = array
                 (
-                    'id' => $v->ID,
-                    'no_po' => $v->NO_PO,
-                    'asset_po_id' => $v->ASSET_PO_ID,
-                    'tgl_po' => $v->CREATED_AT,
-                    'kondisi_asset' => @$kondisi[$v->KONDISI_ASSET],
-                    'jenis_asset' => $v->JENIS_ASSET.'-'.$v->JENIS_ASSET_NAME,
-                    'group' => $v->GROUP.'-'.$v->GROUP_NAME,
-                    'sub_group' => $v->SUB_GROUP.'-'.$v->SUB_GROUP_NAME,
-                    'nama_asset' => $v->NAMA_ASSET,
-                    'merk' => $v->MERK,
-                    'spesifikasi_or_warna' => $v->SPESIFIKASI_OR_WARNA,
-                    'no_rangka_or_no_seri' => $v->NO_RANGKA_OR_NO_SERI,
-                    'no_mesin_or_imei' => $v->NO_MESIN_OR_IMEI,
-                    'lokasi' => $v->LOKASI_BA_DESCRIPTION,
-                    'tahun' => $v->TAHUN_ASSET,
-                    'info' => $v->INFORMASI,
+                    'id' => trim($v->ID),
+                    'no_po' => trim($v->NO_PO),
+                    'asset_po_id' => trim($v->ASSET_PO_ID),
+                    'tgl_po' => trim($v->CREATED_AT),
+                    'kondisi_asset' => trim(@$kondisi[$v->KONDISI_ASSET]),
+                    'jenis_asset' => trim($v->JENIS_ASSET).'-'.trim($v->JENIS_ASSET_NAME),
+                    'group' => trim($v->GROUP).'-'.trim($v->GROUP_NAME),
+                    'sub_group' => trim($v->SUB_GROUP).'-'.trim($v->SUB_GROUP_NAME),
+                    'nama_asset' => trim($v->NAMA_ASSET),
+                    'merk' => trim($v->MERK),
+                    'spesifikasi_or_warna' => trim($v->SPESIFIKASI_OR_WARNA),
+                    'no_rangka_or_no_seri' => trim($v->NO_RANGKA_OR_NO_SERI),
+                    'no_mesin_or_imei' => trim($v->NO_MESIN_OR_IMEI),
+                    'lokasi' => trim($v->LOKASI_BA_DESCRIPTION),
+                    'tahun' => trim($v->TAHUN_ASSET),
+                    'info' => trim($v->INFORMASI),
                     'file' => $this->get_asset_file($v->ID,$noreg),
-                    'nama_asset_1' => $v->NAMA_ASSET_1,
-                    'nama_asset_2' => $v->NAMA_ASSET_2,
-                    'nama_asset_3' => $v->NAMA_ASSET_3,
-                    'quantity_asset_sap' => $v->QUANTITY_ASSET_SAP,
-                    'uom_asset_sap' => $v->UOM_ASSET_SAP,
-                    'capitalized_on' => $v->CAPITALIZED_ON,
-                    'deactivation_on' => $v->DEACTIVATION_ON,
-                    'cost_center' => $v->COST_CENTER,
-                    'book_deprec_01' => $v->BOOK_DEPREC_01,
-                    'fiscal_deprec_15' => $v->FISCAL_DEPREC_15,
-                    'group_deprec_30' => $v->GROUP_DEPREC_30,
-                    'no_reg_item' => $v->NO_REG_ITEM,
-                    'vendor' => $v->KODE_VENDOR.'-'.$v->NAMA_VENDOR,
-                    'business_area' => $v->BUSINESS_AREA
+                    'nama_asset_1' => trim($v->NAMA_ASSET_1),
+                    'nama_asset_2' => trim($v->NAMA_ASSET_2),
+                    'nama_asset_3' => trim($v->NAMA_ASSET_3),
+                    'quantity_asset_sap' => trim($v->QUANTITY_ASSET_SAP),
+                    'uom_asset_sap' => trim($v->UOM_ASSET_SAP),
+                    'capitalized_on' => trim($v->CAPITALIZED_ON),
+                    'deactivation_on' => trim($v->DEACTIVATION_ON),
+                    'cost_center' => trim($v->COST_CENTER),
+                    'book_deprec_01' => trim($v->BOOK_DEPREC_01),
+                    'fiscal_deprec_15' => trim($v->FISCAL_DEPREC_15),
+                    'group_deprec_30' => trim($v->GROUP_DEPREC_30),
+                    'no_reg_item' => trim($v->NO_REG_ITEM),
+                    'vendor' => trim($v->KODE_VENDOR).'-'.trim($v->NAMA_VENDOR),
+                    'business_area' => trim($v->BUSINESS_AREA)
                 );
             }
         }
@@ -355,13 +365,25 @@ class ApprovalController extends Controller
 
     function delete_asset(Request $request, $id)
     {
-        //echo $id; die();
+
+        //$total_asset_now = 100; //$this->getInfo;
+
         DB::beginTransaction();
 
         try 
         {
-            $sql = " UPDATE TR_REG_ASSET_DETAIL SET DELETED = 'X' WHERE ID = $id ";
-            DB::UPDATE($sql);    
+            $user_id = Session::get('user_id');
+
+            /*
+            if( $total_asset_now == 1 )
+            {
+                //JALANKAN PROSEDURE REJECT
+                DB::SELECT('call update_approval("'.$no_registrasi.'", "'.$user_id.'","'.$status.'", "'.$note.'", "'.$role_id.'", "'.$asset_controller.'")');
+            }
+            */
+
+            $sql = " UPDATE TR_REG_ASSET_DETAIL SET DELETED = 'X', UPDATED_AT = current_timestamp(), UPDATED_BY = '{$user_id}' WHERE ID = $id ";
+                DB::UPDATE($sql);    
 
             DB::commit();
             return response()->json(['status' => true, "message" => 'Data is successfully ' . ($id ? 'updated' : 'update')]);
@@ -391,7 +413,7 @@ class ApprovalController extends Controller
                             cost_center = '{$request->cost_center}',
                             book_deprec_01 = '{$request->book_deprec_01}',
                             fiscal_deprec_15 = '{$request->fiscal_deprec_15}',
-                            group_deprec_30 = '{$request->group_deprec_30}',
+                            group_deprec_30 = '{$request->book_deprec_01}',
                             updated_by = '{$user_id}',
                             updated_at = current_timestamp()
                     WHERE ID = $id AND NO_REG = '{$request->getnoreg}' AND NO_REG_ITEM = {$request->no_reg_item} ";
@@ -605,7 +627,7 @@ class ApprovalController extends Controller
             {
                 $request[] = array
                 (
-                    'kode_material' => $v->KODE_MATERIAL,
+                    'kode_material' => trim($v->KODE_MATERIAL),
                 );
             }
         }
