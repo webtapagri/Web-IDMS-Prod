@@ -816,7 +816,7 @@ class ApprovalController extends Controller
     {
         $sql = "SELECT description FROM v_user WHERE id = '{$user_id}' AND area_code = '{$area_code}' ";
         $data = DB::SELECT($sql);
-        if(!empty($data)){ $dt = $data[0]->DESCRIPTION; }else{ $dt = ''; }
+        if(!empty($data)){ $dt = $data[0]->description; }else{ $dt = ''; }
         return $dt;
     }
 
