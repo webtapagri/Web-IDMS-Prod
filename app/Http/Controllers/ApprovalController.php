@@ -557,14 +557,22 @@ class ApprovalController extends Controller
     {
         $rolename = Session::get('role');
         
-        if($rolename == 'AC')
+        if($status != 'R')
         {
-            $validasi_io = $this->get_validasi_io($request);
-        } 
+            if($rolename == 'AC')
+            {
+                $validasi_io = $this->get_validasi_io($request);
+            } 
+            else
+            {
+                $validasi_io['status'] = true;
+            }
+        }
         else
         {
-            $validasi_io['status'] = true;
+            $validasi_io['status'] = true;            
         }
+        
 
         if( $validasi_io['status'] == false )
         {
