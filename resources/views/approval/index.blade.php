@@ -518,6 +518,7 @@
 
                 if(data.po_type == 'SAP')
                 {
+                    //VALIDASI SYNC VIEW SAP
                     if(data.sync_sap != '')
                     {
                         $("#create-button-sync-sap").show();
@@ -539,7 +540,7 @@
                 else
                 {
                     $("#create-button-sync-sap").show();
-                        $("#create-button-sync-sap").html('<button type="button" class="btn btn-flat label-danger" OnClick="" style="margin-right: 5px;">SYNC AMP</button>');
+                        $("#create-button-sync-sap").html('<button type="button" class="btn btn-flat label-danger" OnClick="sinkronisasi_amp()" style="margin-right: 5px;">SYNC AMP</button>');
                     $("#button-approve").hide();
                 }
                     
@@ -1283,6 +1284,14 @@
                 }
             }); 
         }
+    }
+
+    function sinkronisasi_amp()
+    {
+        var noreg = $("#no-reg").val();
+        alert(noreg);
+
+        $("#box-detail-item").hide();
     }
 
 </script>
