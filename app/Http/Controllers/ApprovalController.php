@@ -549,7 +549,16 @@ class ApprovalController extends Controller
 
     function update_status(Request $request, $status, $noreg)
     {
-        $validasi_io = $this->get_validasi_io($request);
+        $role_id = Session::get('role_id');
+        
+        if($role_id != 'AC')
+        {
+            $validasi_io['status'] = true;
+        } 
+        else
+        {
+            $validasi_io = $this->get_validasi_io($request);
+        }
 
         if( $validasi_io['status'] == false )
         {
