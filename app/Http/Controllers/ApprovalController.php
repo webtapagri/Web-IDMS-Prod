@@ -402,6 +402,11 @@ class ApprovalController extends Controller
 
         try 
         {
+            $deactivation_on = $request->deactivation_on;
+            if($deactivation_on == '')
+            { $do = "deactivation_on = NULL,"; }else
+            { $do = "deactivation_on = '{$request->deactivation_on}',"; }
+
             $sql = " UPDATE TR_REG_ASSET_DETAIL 
                         SET 
                             nama_asset_1 = '{$request->nama_asset_1}',
@@ -410,7 +415,7 @@ class ApprovalController extends Controller
                             quantity_asset_sap = '{$request->quantity}',
                             uom_asset_sap = '{$request->uom}',
                             capitalized_on = '{$request->capitalized_on}',
-                            deactivation_on = '{$request->deactivation_on}',
+                            ".$do."
                             cost_center = '{$request->cost_center}',
                             book_deprec_01 = '{$request->book_deprec_01}',
                             fiscal_deprec_15 = '{$request->fiscal_deprec_15}',
