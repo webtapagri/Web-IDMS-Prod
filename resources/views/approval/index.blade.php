@@ -865,10 +865,14 @@
                     if( val.kode_asset_sap != '' )
                     {
                         item += "<div class='col-md-12 box-kode-asset-controller'><div class='row'>";
-                        item += "<span class='label bg-blue'><i class='fa fa-bars'></i> KODE ASET CONTROLLER</span><br/><br/>";
+                        item += "<span class='label bg-blue'><i class='fa fa-bars'></i> KODE ASET</span><br/><br/>";
                         item += "<div class='col-md-6'> ";
-                        item += "<div class='form-group'><label for='' class='col-md-4'>KODE ASET CONTROLLER</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='kode_aset_controller-"+val.no_reg_item+"' value='"+val.kode_asset_controller+"' id='kode_aset_controller-"+val.no_reg_item+"' autocomplete='off'><input type='hidden' class='form-control input-sm' name='kode_aset_sap-"+val.no_reg_item+"' value='"+val.kode_asset_sap+"' id='kode_aset_sap-"+val.no_reg_item+"' autocomplete='off'></div></div>";
-                        item += "</div></div></div>";
+                        item += "<div class='form-group'><label for='' class='col-md-4'>IO CONTROLLER</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='kode_aset_controller-"+val.no_reg_item+"' value='"+val.kode_asset_controller+"' id='kode_aset_controller-"+val.no_reg_item+"' autocomplete='off'></div></div>";
+                        item += "</div>";
+                        item += "<div class='col-md-6'> ";
+                        item += "<div class='form-group'><label for='' class='col-md-4'>SAP</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='kode_aset_sap-"+val.no_reg_item+"' value='"+val.kode_asset_sap+"' id='kode_aset_sap-"+val.no_reg_item+"' autocomplete='off'></div></div>";
+                        item += "</div>";
+                        item += "</div></div>";
                     }
                     /* END BOX KODE ASET CONTROLLER */
                     
@@ -1015,6 +1019,19 @@
         var getnoreg = $("#getnoreg").val();
         var no_registrasi= getnoreg.replace(/\//g, '-');
         var specification = $("#specification").val();
+        
+        var nama_asset_1 = $("#nama_asset_1-1").val();
+        
+        // VALIDASI INPUT KODE ASSET SAP
+        if( nama_asset_1 === undefined || nama_asset_1 === '' )
+        {
+            notify({
+                    type: 'warning',
+                    message: "Detail Aset SAP : DESCRIPTION (Nama Aset 1) required"
+                });
+            return false;
+        }
+
         if( status == 'A' ){ status_desc = 'approve'; }else
         if( status == 'R' ){ status_desc = 'reject' }else{ status_desc = 'cancel'; }
 
