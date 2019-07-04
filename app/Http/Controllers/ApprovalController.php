@@ -252,8 +252,7 @@ class ApprovalController extends Controller
                     'qty' => trim($v->QUANTITY_SUBMIT),
                     //'qty' => $this->get_total_qty($noreg),
                     'kode' => trim($v->KODE_MATERIAL),
-                    'nama' => trim($v->NAMA_MATERIAL),
-                    //'asset' => $this->get_asset_detail($noreg,$v->KODE_MATERIAL) 
+                    'nama' => trim($v->NAMA_MATERIAL)
                 );
             }
         }
@@ -331,7 +330,8 @@ class ApprovalController extends Controller
                     'no_reg_item' => trim($v->NO_REG_ITEM),
                     'vendor' => trim($v->KODE_VENDOR).'-'.trim($v->NAMA_VENDOR),
                     'business_area' => trim($v->BUSINESS_AREA),
-                    'kode_asset_sap' => trim($v->KODE_ASSET_SAP)
+                    'kode_asset_sap' => trim($v->KODE_ASSET_SAP),
+                    'kode_asset_controller' => trim($v->KODE_ASSET_CONTROLLER)
                 );
             }
         }
@@ -549,15 +549,15 @@ class ApprovalController extends Controller
 
     function update_status(Request $request, $status, $noreg)
     {
-        $role_id = Session::get('role_id');
+        $rolename = Session::get('role');
         
-        if($role_id != 'AC')
+        if($rolename == 'AC')
         {
-            $validasi_io['status'] = true;
+            $validasi_io = $this->get_validasi_io($request);
         } 
         else
         {
-            $validasi_io = $this->get_validasi_io($request);
+            $validasi_io['status'] = true;
         }
 
         if( $validasi_io['status'] == false )
@@ -578,9 +578,9 @@ class ApprovalController extends Controller
 
             try 
             {
-                DB::SELECT('call update_approval("'.$no_registrasi.'", "'.$user_id.'","'.$status.'", "'.$note.'", "'.$role_id.'", "'.$asset_controller.'")');
+                DB::SELECT('CALL update_approval("'.$no_registrasi.'", "'.$user_id.'","'.$status.'", "'.$note.'", "'.$role_id.'", "'.$asset_controller.'")');
 
-                DB::commit();
+                 DB::commit();
                 return response()->json(['status' => true, "message" => 'Data is successfully ' . ($no_registrasi ? 'updated' : 'update')]);
             } catch (\Exception $e) {
                 DB::rollback();
@@ -592,6 +592,62 @@ class ApprovalController extends Controller
     function get_validasi_io(Request $request)
     {
         $req = $request->all();
+        $noreg = $req['no-reg'];
+        //echo "<pre>"; print_r($req); die();
+        /*
+            <pre>Array
+            (
+                [no-reg] => 19.07/AMS/PDFA/00017
+                [type-transaksi] => Barang
+                [po-type] => SAP
+                [business-area] => 2121 - ESTATE BBB
+                [requestor] => PGA (Payroll & General Affair) - BBB
+                [tanggal-reg] => 04-07-2019
+                
+                [total_tab] => 2
+                [nama_asset_1-1] => 11
+                [nama_asset_2-1] => 22
+                [nama_asset_3-1] => 33
+                [acct_determination-1] => 4030-KENDARAAN & ALAT BERAT
+                [serial_number-1] => 1
+                [inventory_number-1] => 2
+                [quantity-1] => 44.00
+                [uom-1] => 55
+                [capitalized_on-1] => 2019-12-11
+                [deactivation_on-1] => 2019-12-22
+                [business_area-1] => 2121
+                [cost_center-1] => 66
+                [plant-1] => 2121
+                [vendor-1] => 2300001364-PT DAYA ANUGRAH MANDIRI
+                [book_deprec_01-1] => 77
+                [fiscal_deprec_15-1] => 88
+                [group_deprec_30-1] => 77
+                [kode_aset_controller-1] => aaaadd
+                [kode_aset_sap-1] => 172
+                
+                [nama_asset_1-2] => 1
+                [nama_asset_2-2] => 2
+                [nama_asset_3-2] => 3
+                [acct_determination-2] => 4030-KENDARAAN & ALAT BERAT
+                [serial_number-2] => 3
+                [inventory_number-2] => 4
+                [quantity-2] => 5.00
+                [uom-2] => 6
+                [capitalized_on-2] => 2019-01-02
+                [deactivation_on-2] => 2019-01-05
+                [business_area-2] => 2121
+                [cost_center-2] => 7
+                [plant-2] => 2121
+                [vendor-2] => 2300001364-PT DAYA ANUGRAH MANDIRI
+                [book_deprec_01-2] => 8
+                [fiscal_deprec_15-2] => 9
+                [group_deprec_30-2] => 8
+                [kode_aset_controller-2] => aaaa
+                [kode_aset_sap-2] => 171
+                [specification] => 
+                [parNote] => 
+            )
+        */
 
         // KAC = Kode Aset Controller
         $total_kac = @$req['total_tab'];
@@ -602,7 +658,7 @@ class ApprovalController extends Controller
             $i = 1;
             for($i; $i<=$total_kac; $i++)
             {
-                $proses = $this->validasi_io_proses($req['kode_aset_sap-'.$i.''],$req['kode_aset_controller-'.$i.'']);
+                $proses = $this->validasi_io_proses($noreg, $req['kode_aset_sap-'.$i.''],$req['kode_aset_controller-'.$i.'']);
                 
                 if($proses['status']=='error')
                 {
@@ -617,12 +673,12 @@ class ApprovalController extends Controller
             }
         }else
         {
-            $result = array('status'=>false,'message'=> 'Kode Aset Controller belum diisi / salah');
+            $result = array('status'=>false,'message'=> 'Kode Aset Controller belum diisi (di ITEM DETAIL)');
             return $result;
         }
     }
 
-    function validasi_io_proses($ka_sap, $ka_con)
+    function validasi_io_proses($noreg, $ka_sap, $ka_con)
     {
         $service = API::exec(array(
             'request' => 'GET',
@@ -633,10 +689,13 @@ class ApprovalController extends Controller
         $data = $service;
         if( $data->TYPE == 'S' )
         {
+            DB::UPDATE(" UPDATE TR_REG_ASSET_DETAIL SET KODE_ASSET_CONTROLLER = '{$ka_con}' WHERE NO_REG = '{$noreg}' AND KODE_ASSET_SAP = '{$ka_sap}' ");
+
             $result = array('status'=>'success','message'=> $data->MESSAGE);
         }
         else
         {
+            
             $result = array('status'=>'error','message'=> $data->MESSAGE.' (Kode Aset Controller:'.$ka_con.')');
         }
         return $result;
