@@ -663,18 +663,27 @@ class ApprovalController extends Controller
             $i = 1;
             for($i; $i<=$total_kac; $i++)
             {
-                $proses = $this->validasi_io_proses($noreg, $req['kode_aset_sap-'.$i.''],$req['kode_aset_controller-'.$i.'']);
-                
-                if($proses['status']=='error')
+                if( !empty($req['kode_aset_sap-1']) )
                 {
-                    $result = array('status'=>false,'message'=> $proses['message']);
-                    return $result;
+                    $proses = $this->validasi_io_proses($noreg, $req['kode_aset_sap-'.$i.''],$req['kode_aset_controller-'.$i.'']);
+                
+                    if($proses['status']=='error')
+                    {
+                        $result = array('status'=>false,'message'=> $proses['message']);
+                        return $result;
+                    }
+                    else
+                    {
+                        $result = array('status'=>true,'message'=> $proses['message']);
+                        return $result;
+                    }
                 }
                 else
                 {
-                    $result = array('status'=>true,'message'=> $proses['message']);
+                    $result = array('status'=>false,'message'=> 'Kode Aset Controller belum diisi (di ITEM DETAIL)');
                     return $result;
                 }
+                
             }
         }else
         {
