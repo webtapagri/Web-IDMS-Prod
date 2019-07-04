@@ -516,23 +516,33 @@
                 $("#request-form #requestor").val(data.requestor);
                 $("#request-form #tanggal-reg").val(data.tanggal_reg);
 
-                if(data.sync_sap != '')
+                if(data.po_type == 'SAP')
                 {
-                    $("#create-button-sync-sap").show();
-                    $("#create-button-sync-sap").html('<button type="button" class="btn btn-flat label-danger" OnClick="sinkronisasi()" style="margin-right: 5px;">SYNC SAP</button>');
-                    
-                    <?php if( $user_role == 'AC' ){ ?>
-                        $("#button-approve").hide();
-                        $(".button-reject").attr("disabled", false); 
-                    <?php } ?>
+                    if(data.sync_sap != '')
+                    {
+                        $("#create-button-sync-sap").show();
+                        $("#create-button-sync-sap").html('<button type="button" class="btn btn-flat label-danger" OnClick="sinkronisasi()" style="margin-right: 5px;">SYNC SAP</button>');
+                        
+                        <?php if( $user_role == 'AC' ){ ?>
+                            $("#button-approve").hide();
+                            $(".button-reject").attr("disabled", false); 
+                        <?php } ?>
+                    }
+                    else
+                    {
+                        $("#create-button-sync-sap").hide();
+                        $("#button-approve").show();
+                        //$(".button-reject").attr("disabled", true); 
+                        $(".button-reject").hide(); 
+                    }
                 }
                 else
                 {
-                    $("#create-button-sync-sap").hide();
-                    $("#button-approve").show();
-                    $(".button-reject").attr("disabled", true); 
+                    $("#create-button-sync-sap").show();
+                        $("#create-button-sync-sap").html('<button type="button" class="btn btn-flat label-danger" OnClick="" style="margin-right: 5px;">SYNC AMP</button>');
+                    $("#button-approve").hide();
                 }
-
+                    
                 var item = '<table class="table xtable-condensed table-responsive table-striped" id="request-item-table" style="font-size:13px">';
                 item += '<th>NO.</th>';
                 item += '<th>NO PO</th>';
@@ -1022,18 +1032,6 @@
         var getnoreg = $("#getnoreg").val();
         var no_registrasi= getnoreg.replace(/\//g, '-');
         var specification = $("#specification").val();
-        
-        var nama_asset_1 = $("#nama_asset_1-1").val();
-        
-        // VALIDASI INPUT KODE ASSET SAP
-        if( nama_asset_1 === undefined || nama_asset_1 === '' )
-        {
-            notify({
-                    type: 'warning',
-                    message: "Detail Aset SAP : DESCRIPTION (Nama Aset 1) required"
-                });
-            return false;
-        }
 
         if( status == 'A' ){ status_desc = 'approve'; }else
         if( status == 'R' ){ status_desc = 'reject' }else{ status_desc = 'cancel'; }

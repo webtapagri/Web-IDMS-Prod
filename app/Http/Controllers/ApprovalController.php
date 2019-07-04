@@ -557,7 +557,7 @@ class ApprovalController extends Controller
     {
         $rolename = Session::get('role');
         
-        if($rolename == 'AC' || $rolename == 'AMS')
+        if($rolename == 'AC')
         {
             $validasi_io = $this->get_validasi_io($request);
         } 
