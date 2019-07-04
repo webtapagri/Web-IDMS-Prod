@@ -1212,7 +1212,9 @@
         //var noreg = $("#no-reg").val();
         //alert(noreg);
 
-         if(confirm('Confirm Synchronize SAP ?'))
+        $("#box-detail-item").hide();
+
+        if(confirm('Confirm Synchronize SAP ?'))
         {
             var getnoreg = $("#getnoreg").val();
             var no_registrasi= getnoreg.replace(/\//g, '-');
