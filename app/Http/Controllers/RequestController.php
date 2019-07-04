@@ -309,7 +309,7 @@ class RequestController extends Controller
                                 "KODE_MATERIAL" =>  $row["code"],
                                 "NAMA_MATERIAL" =>  $row["name"],
                                 "NO_PO" =>  $request->po_no,
-                                "KODE_JENIS_ASSET" =>  '',
+                                "BA_PEMILIK_ASSET" =>  $request->business_area,
                                 "JENIS_ASSET" =>  $detail[$i]["asset_type"],
                                 "GROUP" =>  $detail[$i]["asset_group"],
                                 "SUB_GROUP" =>  $detail[$i]["asset_sub_group"],
