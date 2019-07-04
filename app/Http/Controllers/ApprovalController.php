@@ -331,7 +331,8 @@ class ApprovalController extends Controller
                     'vendor' => trim($v->KODE_VENDOR).'-'.trim($v->NAMA_VENDOR),
                     'business_area' => trim($v->BUSINESS_AREA),
                     'kode_asset_sap' => trim($v->KODE_ASSET_SAP),
-                    'kode_asset_controller' => trim($v->KODE_ASSET_CONTROLLER)
+                    'kode_asset_controller' => trim($v->KODE_ASSET_CONTROLLER),
+                    'kode_asset_ams' => trim($v->KODE_ASSET_AMS)
                 );
             }
         }
@@ -694,13 +695,17 @@ class ApprovalController extends Controller
 
     function validasi_io_proses($noreg, $ka_sap, $ka_con)
     {
+        //echo $ka_sap.'===='.$ka_con;
         $service = API::exec(array(
             'request' => 'GET',
             'host' => 'ldap',
-            'method' => "check_io?IT_AUFNR=$ka_con&IT_ASSET=$ka_sap", 
+            'method' => "check_io?AUFNR=$ka_con&AUFUSER3=$ka_sap", 
         ));
         
         $data = $service;
+
+        //echo "<pre>"; print_r($data); die();
+
         if( $data->TYPE == 'S' )
         {
             DB::UPDATE(" UPDATE TR_REG_ASSET_DETAIL SET KODE_ASSET_CONTROLLER = '{$ka_con}' WHERE NO_REG = '{$noreg}' AND KODE_ASSET_SAP = '{$ka_sap}' ");
