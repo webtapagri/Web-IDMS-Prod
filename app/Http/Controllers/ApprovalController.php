@@ -549,30 +549,88 @@ class ApprovalController extends Controller
 
     function update_status(Request $request, $status, $noreg)
     {
-        //echo $status.'===='.$noreg; die();
-        //A====19.06-AMS-PDFA-00009
+        $validasi_io = $this->get_validasi_io($request);
 
-        //echo "<pre>"; print_r($_REQUEST); die();
-
-        $no_registrasi = str_replace("-", "/", $noreg);
-        $user_id = Session::get('user_id');
-        $note = $request->parNote;
-        $role_id = Session::get('role_id'); //get role id user
-        $asset_controller = ''; //get asset controller 
-        //echo $note;die();
-
-        DB::beginTransaction();
-
-        try 
+        if( $validasi_io['status'] == false )
         {
-            DB::SELECT('call update_approval("'.$no_registrasi.'", "'.$user_id.'","'.$status.'", "'.$note.'", "'.$role_id.'", "'.$asset_controller.'")');
-
-            DB::commit();
-            return response()->json(['status' => true, "message" => 'Data is successfully ' . ($no_registrasi ? 'updated' : 'update')]);
-        } catch (\Exception $e) {
-            DB::rollback();
-            return response()->json(['status' => false, "message" => $e->getMessage()]);
+            return response()->json(['status' => false, "message" => $validasi_io['message']]);
         }
+        else
+        {
+            
+            $no_registrasi = str_replace("-", "/", $noreg);
+            $user_id = Session::get('user_id');
+            $note = $request->parNote;
+            $role_id = Session::get('role_id'); //get role id user
+            $asset_controller = ''; //get asset controller 
+            //echo $note;die();
+
+            DB::beginTransaction();
+
+            try 
+            {
+                DB::SELECT('call update_approval("'.$no_registrasi.'", "'.$user_id.'","'.$status.'", "'.$note.'", "'.$role_id.'", "'.$asset_controller.'")');
+
+                DB::commit();
+                return response()->json(['status' => true, "message" => 'Data is successfully ' . ($no_registrasi ? 'updated' : 'update')]);
+            } catch (\Exception $e) {
+                DB::rollback();
+                return response()->json(['status' => false, "message" => $e->getMessage()]);
+            }    
+        }   
+    }
+
+    function get_validasi_io(Request $request)
+    {
+        $req = $request->all();
+
+        // KAC = Kode Aset Controller
+        $total_kac = @$req['total_tab'];
+        //echo $total_kac; die();
+
+        if(!empty($total_kac))
+        {
+            $i = 1;
+            for($i; $i<=$total_kac; $i++)
+            {
+                $proses = $this->validasi_io_proses($req['kode_aset_sap-'.$i.''],$req['kode_aset_controller-'.$i.'']);
+                
+                if($proses['status']=='error')
+                {
+                    $result = array('status'=>false,'message'=> $proses['message']);
+                    return $result;
+                }
+                else
+                {
+                    $result = array('status'=>true,'message'=> $proses['message']);
+                    return $result;
+                }
+            }
+        }else
+        {
+            $result = array('status'=>false,'message'=> 'Kode Aset Controller belum diisi / salah');
+            return $result;
+        }
+    }
+
+    function validasi_io_proses($ka_sap, $ka_con)
+    {
+        $service = API::exec(array(
+            'request' => 'GET',
+            'host' => 'ldap',
+            'method' => "check_io?IT_AUFNR=$ka_con&IT_ASSET=$ka_sap", 
+        ));
+        
+        $data = $service;
+        if( $data->TYPE == 'S' )
+        {
+            $result = array('status'=>'success','message'=> $data->MESSAGE);
+        }
+        else
+        {
+            $result = array('status'=>'error','message'=> $data->MESSAGE.' (Kode Aset Controller:'.$ka_con.')');
+        }
+        return $result;
     }
 
     function log_history($id)
@@ -707,36 +765,53 @@ class ApprovalController extends Controller
             'request' => 'GET',
             'host' => 'ldap',
             'method' => "create_asset?ANLA_ANLKL={$dt->JENIS_ASSET}&ANLA_BUKRS={$ANLA_BUKRS}&RA02S_NASSETS=1&ANLA_TXT50={$dt->NAMA_ASSET_1}&ANLA_TXA50={$dt->NAMA_ASSET_2}&ANLH_ANLHTXT={$dt->NAMA_ASSET_3}&ANLA_SERNR={$dt->NO_RANGKA_OR_NO_SERI}&ANLA_INVNR={$dt->NO_MESIN_OR_IMEI}&ANLA_MENGE={$dt->QUANTITY_ASSET_SAP}&ANLA_MEINS={$dt->UOM_ASSET_SAP}&ANLA_AKTIV={$dt->CAPITALIZED_ON}&ANLA_DEAKT={$dt->DEACTIVATION_ON}&ANLZ_GSBER={$dt->LOKASI_BA_CODE}&ANLZ_KOSTL={$dt->COST_CENTER}&ANLZ_WERKS=$dt->LOKASI_BA_CODE&ANLA_LIFNR={$ANLA_LIFNR}&ANLB_NDJAR_01={$dt->BOOK_DEPREC_01}&ANLB_NDJAR_02={$dt->FISCAL_DEPREC_15}", 
-            // http://tap-ldapdev.tap-agri.com/data-sap/create_asset
-            //'param' => $param
         ));
         
         $data = $service;
 
-        //echo "<pre>"; print_r($data); die();
-        /*
-        stdClass Object
-        (
-            [TYPE] => E
-            [ID] => AA
-            [NUMBER] => 108
-            [MESSAGE] => Asset class 3010 does not exist (Check your entry)
-            [LOG_NO] => 
-            [LOG_MSG_NO] => 000000
-            [MESSAGE_V1] => 3010
-            [MESSAGE_V2] => 
-            [MESSAGE_V3] => 
-            [MESSAGE_V4] => 
-        )
-        */
-
-        //echo $data->TYPE; die();
-
         if(!empty($data))
         {
-            //echo "<pre>"; print_r($v); die();
+            $result = array();
+            $message = '';
+
+            foreach($data->data as $k => $v)
+            {
+
+                if( $v->TYPE == 'S' && $v->ID == 'AA' && $v->NUMBER == 228 )
+                {
+                    $message .= $v->MESSAGE.',';
+                    $result = array(
+                        'TYPE' => 'S',
+                        'ID' => $v->ID,
+                        'NUMBER' => $v->NUMBER,
+                        'MESSAGE' => $message,
+                        'LOG_NO' => $v->LOG_NO,
+                        'LOG_MSG_NO' => $v->LOG_MSG_NO,
+                        'MESSAGE_V1' => $v->MESSAGE_V1,
+                        'MESSAGE_V2' => $v->MESSAGE_V2,
+                        'MESSAGE_V3' => $v->MESSAGE_V3,
+                        'MESSAGE_V4' => $v->MESSAGE_V4
+                    );
+                }
+                else
+                {
+                    $message .= $v->MESSAGE.',';
+                    $result = array(
+                        'TYPE' => 'E',
+                        'ID' => $v->ID,
+                        'NUMBER' => $v->NUMBER,
+                        'MESSAGE' => $message,
+                        'LOG_NO' => $v->LOG_NO,
+                        'LOG_MSG_NO' => $v->LOG_MSG_NO,
+                        'MESSAGE_V1' => $v->MESSAGE_V1,
+                        'MESSAGE_V2' => $v->MESSAGE_V2,
+                        'MESSAGE_V3' => $v->MESSAGE_V3,
+                        'MESSAGE_V4' => $v->MESSAGE_V4
+                    );
+                }
+            }
                 
-            if( $data->TYPE == 'S' )
+            if( $result['TYPE'] == 'S' )
             {
                 $user_id = Session::get('user_id');
                 $asset_controller = $this->get_asset_controller($user_id,$dt->LOKASI_BA_CODE);
@@ -745,13 +820,11 @@ class ApprovalController extends Controller
                 try 
                 {   
                     //1. ADD KODE_ASSET_SAP & ASSET_CONTROLLER TR_REG_ASSET 
-                    $sql_1 = " UPDATE TR_REG_ASSET_DETAIL SET ASSET_CONTROLLER = '{$asset_controller}', KODE_ASSET_SAP = '{$data->MESSAGE_V1}', UPDATED_BY = '{$user_id}', UPDATED_AT = current_timestamp() WHERE NO_REG = '{$dt->NO_REG}' AND NO_REG_ITEM = '{$dt->NO_REG_ITEM}' ";
-                     //echo $sql_1; die();
+                    $sql_1 = " UPDATE TR_REG_ASSET_DETAIL SET ASSET_CONTROLLER = '{$asset_controller}', KODE_ASSET_SAP = '".$result['MESSAGE_V1']."', UPDATED_BY = '{$user_id}', UPDATED_AT = current_timestamp() WHERE NO_REG = '{$dt->NO_REG}' AND NO_REG_ITEM = '{$dt->NO_REG_ITEM}' ";
                     DB::UPDATE($sql_1);
 
                     //2. INSERT LOG
-                    $sql_2 = " INSERT INTO TR_LOG_SYNC_SAP(no_reg,no_reg_item,msgtyp,msgid,msgnr,message,msgv1,msgv2,msgv3,msgv4)VALUES('{$dt->NO_REG}','{$dt->NO_REG_ITEM}','{$data->TYPE}','{$data->ID}','{$data->NUMBER}','{$data->MESSAGE}','{$data->MESSAGE_V1}','{$data->MESSAGE_V2}','{$data->MESSAGE_V3}','{$data->MESSAGE_V4}') ";
-                    //echo $sql_2; die();
+                    $sql_2 = " INSERT INTO TR_LOG_SYNC_SAP(no_reg,no_reg_item,msgtyp,msgid,msgnr,message,msgv1,msgv2,msgv3,msgv4)VALUES('{$dt->NO_REG}','{$dt->NO_REG_ITEM}','".$result['TYPE']."','".$result['ID']."','".$result['NUMBER']."','".$result['MESSAGE']."','".$result['MESSAGE_V1']."','".$result['MESSAGE_V2']."','".$result['MESSAGE_V3']."','".$result['MESSAGE_V4']."') ";
                     DB::INSERT($sql_2);
                     
                     DB::commit();
@@ -770,21 +843,19 @@ class ApprovalController extends Controller
 
                 try 
                 {    
-                    $sql = " INSERT INTO TR_LOG_SYNC_SAP(no_reg,no_reg_item,msgtyp,msgid,msgnr,message,msgv1,msgv2,msgv3,msgv4)VALUES('{$dt->NO_REG}','{$dt->NO_REG_ITEM}','{$data->TYPE}','{$data->ID}','{$data->NUMBER}','{$data->MESSAGE}','{$data->MESSAGE_V1}','{$data->MESSAGE_V2}','{$data->MESSAGE_V3}','{$data->MESSAGE_V4}') ";
-                    //echo $sql; die();
+                    $sql = " INSERT INTO TR_LOG_SYNC_SAP(no_reg,no_reg_item,msgtyp,msgid,msgnr,message,msgv1,msgv2,msgv3,msgv4)VALUES('{$dt->NO_REG}','{$dt->NO_REG_ITEM}','".$result['TYPE']."','".$result['ID']."','".$result['NUMBER']."','".$result['MESSAGE']."','".$result['MESSAGE_V1']."','".$result['MESSAGE_V2']."','".$result['MESSAGE_V3']."','".$result['MESSAGE_V4']."') ";
+                    
                     DB::INSERT($sql); 
                     DB::commit();
                     
-                    $result = array('status'=>'error','message'=> ''.$data->MESSAGE.' (No Reg Item: '.$dt->NO_REG_ITEM.')');
-                    return $result;
-                    //return false;
+                    $result = array('status'=>'error','message'=> ''.$result['MESSAGE'].' (No Reg Item: '.$dt->NO_REG_ITEM.')');
+                    return $result;                 
                 }
                 catch (\Exception $e) 
                 {
                     DB::rollback();
                     $result = array('status'=>'error','message'=>$e->getMessage());
                     return $result;
-                    //return false;
                 }
             }
         }
@@ -792,18 +863,6 @@ class ApprovalController extends Controller
         {
             return false;
         }
-
-        /*
-        $datax = array();
-        if(isset( $data->EBELN)) 
-        {
-            return response()->json(array('data' => $data));
-        } 
-        else 
-        {
-            return response()->json(array('data' => array())); 
-        }
-        */
     }
 
     public function get_asset_controller($user_id, $area_code)

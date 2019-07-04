@@ -695,7 +695,7 @@
 
                 var item = "<span class='label bg-blue'><i class='fa fa-bars'></i> RINCIAN INFORMASI ASET</span><br/><br/>";
                 item += "<div class='form-group'>";
-                item += "<div class='col-md-12 xnav-tabs-custom'>";
+                item += "<div class='col-md-12 xnav-tabs-custom'><input type='hidden' id='total_tab' name='total_tab' value='"+total_tab+"'>";
 
                 if(total_tab == 0)
                 {
@@ -867,7 +867,7 @@
                         item += "<div class='col-md-12 box-kode-asset-controller'><div class='row'>";
                         item += "<span class='label bg-blue'><i class='fa fa-bars'></i> KODE ASET CONTROLLER</span><br/><br/>";
                         item += "<div class='col-md-6'> ";
-                        item += "<div class='form-group'><label for='' class='col-md-4'>KODE ASET CONTROLLER</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='kode_aset_controller-"+val.no_reg_item+"' value='' id='kode_aset_controller-"+val.no_reg_item+"' autocomplete='off'></div></div>";
+                        item += "<div class='form-group'><label for='' class='col-md-4'>KODE ASET CONTROLLER</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='kode_aset_controller-"+val.no_reg_item+"' value='' id='kode_aset_controller-"+val.no_reg_item+"' autocomplete='off'><input type='hidden' class='form-control input-sm' name='kode_aset_sap-"+val.no_reg_item+"' value='"+val.kode_asset_sap+"' id='kode_aset_sap-"+val.no_reg_item+"' autocomplete='off'></div></div>";
                         item += "</div></div></div>";
                     }
                     /* END BOX KODE ASET CONTROLLER */
@@ -1022,7 +1022,8 @@
         {
             
             //e.preventDefault();
-            var param = $(this).serialize();
+            var param = $("#request-form").serialize();
+            //alert(param); //return false;
 
             $.ajaxSetup({
                 headers: {
