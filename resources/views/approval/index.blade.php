@@ -541,7 +541,10 @@
                 {
                     $("#create-button-sync-sap").show();
                         $("#create-button-sync-sap").html('<button type="button" class="btn btn-flat label-danger" OnClick="sinkronisasi_amp()" style="margin-right: 5px;">SYNC AMP</button>');
-                    $("#button-approve").hide();
+                    <?php if( $user_role == 'AC' ){ ?>
+                        $("#button-approve").hide();
+                        $(".button-reject").attr("disabled", false); 
+                    <?php } ?>
                 }
                     
                 var item = '<table class="table xtable-condensed table-responsive table-striped" id="request-item-table" style="font-size:13px">';
@@ -856,7 +859,7 @@
                     item += "<div class='xform-group'><label for='' class='xcol-md-4'>DEPREC, AREAS</label><br/>";
                     item += "<table class='tabel table-bordered table-responsive table-condensed table-striped table-container'>";
                     item += "<tr><th>Area Number</th><th>Depreciation Area</th><th>Dkey</th><th>Use Life</th></tr>";
-                    item += "<tr><td>01</td><td>Book</td><td>Z001</td><td><input type='text' class='form-control input-sm' name='book_deprec_01-"+val.no_reg_item+"' value='"+val.book_deprec_01+"' id='book_deprec_01-"+val.no_reg_item+"' autocomplete='off' required></td></tr>";
+                    item += "<tr><td>01</td><td>Book</td><td>Z001</td><td><input type='text' class='form-control input-sm' name='book_deprec_01-"+val.no_reg_item+"' value='"+val.book_deprec_01+"' id='book_deprec_01-"+val.no_reg_item+"' autocomplete='off' onkeyup='bookgroup("+val.no_reg_item+")' required></td></tr>";
                     item += "<tr><td>15</td><td>Fiscal</td><td>Z001</td><td><input type='text' class='form-control input-sm' name='fiscal_deprec_15-"+val.no_reg_item+"' value='"+val.fiscal_deprec_15+"' id='fiscal_deprec_15-"+val.no_reg_item+"' autocomplete='off' required></td></tr>";
                     item += "<tr><td>30</td><td>Group</td><td>Z001</td><td><input type='text' class='form-control input-sm' name='group_deprec_30-"+val.no_reg_item+"' value='"+val.book_deprec_01+"' id='group_deprec_30-"+val.no_reg_item+"' autocomplete='off' placeholder='' readonly></td></tr>";
                     item += "</table>";
@@ -1292,6 +1295,12 @@
         alert(noreg);
 
         $("#box-detail-item").hide();
+    }
+
+    function bookgroup(no)
+    {
+        var book = $("#book_deprec_01-"+no+"").val();
+        $("#group_deprec_30-"+no+"").val(book);
     }
 
 </script>
