@@ -613,7 +613,7 @@ class ApprovalController extends Controller
                 
                 try 
                 {
-                    DB::SELECT('CALL complete_document("'.$no_registrasi.'", "'.$user_id.'", "'.$note.'")');
+                    DB::SELECT('CALL complete_document("'.$no_registrasi.'", "'.$user_id.'")');
                     DB::commit();
                     return response()->json(['status' => true, "message" => 'Data is successfully ' . ($no_registrasi ? 'updated' : 'update')]);
                 } 

@@ -1067,6 +1067,7 @@
                     {
                         $("#approve-modal").modal("hide");
                         $("#data-table").DataTable().ajax.reload();
+                        $("#data-table-history").DataTable().ajax.reload();
                         notify({
                             type: 'success',
                             message: result.message
