@@ -628,9 +628,9 @@ class ApprovalController extends Controller
 
     public function get_validasi_last_approve($noreg)
     {
-        $sql = "SELECT COUNT(*) AS JML FROM V_HISTORY WHERE status_dokumen = 'Disetujui' AND document_code = '{$noreg}' ";
+        $sql = "SELECT COUNT(*) AS jml FROM v_history WHERE status_dokumen = 'Disetujui' AND document_code = '{$noreg}' ";
         $data = DB::SELECT($sql);
-        if($data){ $dt = $data[0]->JML; }else{ $dt = '0'; }
+        if($data){ $dt = $data[0]->jml; }else{ $dt = '0'; }
         return $dt;
     }
 
