@@ -859,16 +859,15 @@
                     item += "<div class='xform-group'><label for='' class='xcol-md-4'>DEPREC, AREAS</label><br/>";
                     item += "<table class='tabel table-bordered table-responsive table-condensed table-striped table-container'>";
                     item += "<tr><th>Area Number</th><th>Depreciation Area</th><th>Dkey</th><th>Use Life</th></tr>";
-                    item += "<tr><td>01</td><td>Book</td><td>Z001</td><td><input type='text' class='form-control input-sm' name='book_deprec_01-"+val.no_reg_item+"' value='"+val.book_deprec_01+"' id='book_deprec_01-"+val.no_reg_item+"' autocomplete='off' onkeyup='bookgroup("+val.no_reg_item+")' required></td></tr>";
-                    item += "<tr><td>15</td><td>Fiscal</td><td>Z001</td><td><input type='text' class='form-control input-sm' name='fiscal_deprec_15-"+val.no_reg_item+"' value='"+val.fiscal_deprec_15+"' id='fiscal_deprec_15-"+val.no_reg_item+"' autocomplete='off' required></td></tr>";
+                    item += "<tr><td>01</td><td>Book</td><td>Z001</td><td><input type='text' class='form-control input-sm' name='book_deprec_01-"+val.no_reg_item+"' value='"+val.book_deprec_01+"' id='book_deprec_01-"+val.no_reg_item+"' autocomplete='off' required></td></tr>";
+                    item += "<tr><td>15</td><td>Fiscal</td><td>Z001</td><td><input type='text' class='form-control input-sm' name='fiscal_deprec_15-"+val.no_reg_item+"' value='"+val.fiscal_deprec_15+"' id='fiscal_deprec_15-"+val.no_reg_item+"' autocomplete='off' onkeyup='fiscalgroup("+val.no_reg_item+")' required></td></tr>";
                     item += "<tr><td>30</td><td>Group</td><td>Z001</td><td><input type='text' class='form-control input-sm' name='group_deprec_30-"+val.no_reg_item+"' value='"+val.book_deprec_01+"' id='group_deprec_30-"+val.no_reg_item+"' autocomplete='off' placeholder='' readonly></td></tr>";
                     item += "</table>";
                     item += "</div>";
                     
-                    if(tipe==1)
-                    {
+                    if(val.kode_asset_sap == ''){
                         <?php if( $user_role == 'AMS' ){ ?>
-                            item += "<div class='form-group' align='right'><div class='btn btn-warning btn-sm' value='Save' OnClick='saveAssetSap("+val.id+","+val.no_po+","+val.no_reg_item+")' style='margin-right:25px'><i class='fa fa-save'></i> SAVE</div></div>";
+                            item += "<div class='form-group' align='right'><div class='btn btn-warning btn-sm' value='Save' OnClick='saveAssetSap("+val.id+","+val.no_po+","+val.no_reg_item+")' style='margin-right:25px;margin-top:5px'><i class='fa fa-save'></i> SAVE</div></div>";
                         <?php } ?>
                     }
                     item += "</div>";
@@ -1298,10 +1297,10 @@
         $("#box-detail-item").hide();
     }
 
-    function bookgroup(no)
+    function fiscalgroup(no)
     {
-        var book = $("#book_deprec_01-"+no+"").val();
-        $("#group_deprec_30-"+no+"").val(book);
+        var fiscal = $("#fiscal_deprec_15-"+no+"").val();
+        $("#group_deprec_30-"+no+"").val(fiscal);
     }
 
 </script>
