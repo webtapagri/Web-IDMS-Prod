@@ -25,7 +25,8 @@ class LDAPController extends Controller
         return redirect('/login');
     }
 
-    public function login(Request $request) {
+    public function login(Request $request) 
+    {
         $this->validate($request, [
             'username' => 'required',
             'password' => 'required'
@@ -47,7 +48,18 @@ class LDAPController extends Controller
         ));
 
         $data = $service;
-        if($data->status) {
+
+        //echo "<pre>"; print_r($data); die();
+        /*
+        stdClass Object
+        (
+            [status] => 1
+            [message] => Login berhasil
+        )
+        */
+        
+        if($data->status) 
+        {
             Session::put('authenticated', time());
             Session::put('user', $username);
 
@@ -60,20 +72,34 @@ class LDAPController extends Controller
             ])
             ->get();
 
-            if($profile) {
+            if(count($profile) > 0) 
+            {
                 Session::put('user_img', $profile[0]->img);
                 Session::put('user_id', $profile[0]->id);
                 Session::put('name', $profile[0]->name);
                 Session::put('role', $profile[0]->role_name);
                 Session::put('role_id', $profile[0]->role_id);
-            } else {
-                Session::put('name', $username);
-                Session::put('role', 'GUEST');
+            } 
+            else 
+            {
+                #2
+                $errors = new MessageBag([
+                    'password' => ['User Anda belum terdaftar di FAMS Web.']
+                ]);
+                
+                return Redirect::back()->withErrors($errors)->withInput(Input::except('password'));
+
+                #1
+                //echo "User Not Found!"; die();
+                //Session::put('name', $username);
+                //Session::put('role', 'GUEST');
             }
            
             AccessRight::grantAccess();
             return redirect('/');
-        }else{
+        }
+        else
+        {
             $errors = new MessageBag([
                 'password' => ['Email and/or password invalid.']
             ]);
