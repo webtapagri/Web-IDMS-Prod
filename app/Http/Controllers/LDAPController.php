@@ -108,10 +108,11 @@ class LDAPController extends Controller
         }
     }
 
-    public function logout(Request $request) {
+    public function logout(Request $request) 
+    {
         $request->session()->forget('authenticated');
         $request->session()->forget('user');
-        $request->session()->flush();;
+        $request->session()->flush();
         return redirect()->intended('/login');
     }
 

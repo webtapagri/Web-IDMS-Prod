@@ -562,6 +562,7 @@ class ApprovalController extends Controller
             if($rolename == 'AC')
             {
                 $validasi_io = $this->get_validasi_io($request);
+                //$validasi_io['status'] = true;
             } 
             else
             {
@@ -588,19 +589,49 @@ class ApprovalController extends Controller
             $asset_controller = ''; //get asset controller 
             //echo $note;die();
 
-            DB::beginTransaction();
+            $validasi_last_approve = $this->get_validasi_last_approve($no_registrasi);
 
-            try 
+            if( $validasi_last_approve == 0 )
             {
-                DB::SELECT('CALL update_approval("'.$no_registrasi.'", "'.$user_id.'","'.$status.'", "'.$note.'", "'.$role_id.'", "'.$asset_controller.'")');
-
-                 DB::commit();
-                return response()->json(['status' => true, "message" => 'Data is successfully ' . ($no_registrasi ? 'updated' : 'update')]);
-            } catch (\Exception $e) {
-                DB::rollback();
-                return response()->json(['status' => false, "message" => $e->getMessage()]);
+                DB::beginTransaction();
+                
+                try 
+                {
+                    DB::SELECT('CALL update_approval("'.$no_registrasi.'", "'.$user_id.'","'.$status.'", "'.$note.'", "'.$role_id.'", "'.$asset_controller.'")');
+                    DB::commit();
+                    return response()->json(['status' => true, "message" => 'Data is successfully ' . ($no_registrasi ? 'updated' : 'update')]);
+                } 
+                catch (\Exception $e) 
+                {
+                    DB::rollback();
+                    return response()->json(['status' => false, "message" => $e->getMessage()]);
+                }
             }    
+            else
+            {
+                DB::beginTransaction();
+                
+                try 
+                {
+                    DB::SELECT('CALL complete_document("'.$no_registrasi.'", "'.$user_id.'", "'.$note.'")');
+                    DB::commit();
+                    return response()->json(['status' => true, "message" => 'Data is successfully ' . ($no_registrasi ? 'updated' : 'update')]);
+                } 
+                catch (\Exception $e) 
+                {
+                    DB::rollback();
+                    return response()->json(['status' => false, "message" => $e->getMessage()]);
+                }
+            }
         }   
+    }
+
+    public function get_validasi_last_approve($noreg)
+    {
+        $sql = "SELECT COUNT(*) AS JML FROM V_HISTORY WHERE status_dokumen = 'Disetujui' AND document_code = '{$noreg}' ";
+        $data = DB::SELECT($sql);
+        if($data){ $dt = $data[0]->JML; }else{ $dt = '0'; }
+        return $dt;
     }
 
     function get_validasi_io(Request $request)
