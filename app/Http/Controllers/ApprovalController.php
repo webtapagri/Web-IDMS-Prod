@@ -614,15 +614,17 @@ class ApprovalController extends Controller
         }
         else
         {
-
-            if($rolename == 'AC' )
+            if( $status != 'R' )
             {
-                $validasi_input_all_io = $this->validasi_input_all_io($request, $status, $noreg);
-        
-                if(!$validasi_input_all_io['status'])
+                if($rolename == 'AC' )
                 {
-                    return response()->json(['status' => false, "message" => $validasi_input_all_io['message']] );
-                    die();
+                    $validasi_input_all_io = $this->validasi_input_all_io($request, $status, $noreg);
+            
+                    if(!$validasi_input_all_io['status'])
+                    {
+                        return response()->json(['status' => false, "message" => $validasi_input_all_io['message']] );
+                        die();
+                    }
                 }
             }
 
@@ -1119,16 +1121,25 @@ class ApprovalController extends Controller
                 //return response()->json(['status' => true, "message" => "Synchronize SAP Success "]);
             }
 
-
-
-            return response()->json(['status' => true, "message" => "Synchronize SAP berhasil"]);
+            #### PROSES CREATE KODE ASSET AMS 
+            //$execute_create_kode_asset_ams = true; 
+            $execute_create_kode_asset_ams = $this->execute_create_kode_asset_ams($v);
+            if( $execute_create_kode_asset_ams )
+            {
+                return response()->json(['status' => true, "message" => "Synchronize SAP success"]);
+            }
+            else
+            {
+                return response()->json(['status' => false, "message" => "Create Kode Asset AMS failed"]);
+            }
+            
             //echo "<pre>"; print_r($params);
 
             //die();
         }
         else
         {
-            return response()->json(['status' => false, "message" => "Synchronize SAP Gagal, tidak ada data"]);
+            return response()->json(['status' => false, "message" => "Synchronize SAP failed, data not found"]);
         }
     }
 
@@ -1149,14 +1160,13 @@ class ApprovalController extends Controller
         $list_kode_asset = '';
         $sql_validasi_kas = " SELECT * FROM TR_REG_ASSET_DETAIL WHERE NO_REG = '{$dt->NO_REG}' AND (COST_CENTER is null OR COST_CENTER = '' ) ";
         $datax = DB::SELECT($sql_validasi_kas); 
-        //echo "<pre>"; print_r($dt);
-        //die();
+        //echo "<pre>"; print_r($datax);die();
 
         if(!empty($datax))
         {
-            foreach($dt as $k => $v)
+            foreach($datax as $kk => $vv)
             {
-                $list_kode_asset .= $v->KODE_MATERIAL." - NO. REG ITEM : ".$v->NO_REG_ITEM.",";
+                $list_kode_asset .= $vv->KODE_MATERIAL." - NO. REG ITEM : ".$vv->NO_REG_ITEM.",";
             }
 
             $result = array('status'=>'error','message'=> 'Kode Aset Controller (KODE MATERIAL : '.rtrim($list_kode_asset,',').') belum diisi');
@@ -1201,8 +1211,11 @@ class ApprovalController extends Controller
         
         $data = $service;
 
-        //echo "<pre>5"; dd($data, false); die();
+        //echo "<pre>12"; dd($data, true); die();
         //echo "<pre>7"; count($data); die();
+        //echo "<pre>8"; var_dump($data, true); die();
+        //echo "<pre>9"; print_r($data, true); die();
+        //echo "<pre>11"; json_encode($data, true); die();
 
         if(!empty($data))
         //if( $data )
@@ -1266,11 +1279,14 @@ class ApprovalController extends Controller
                     $sql_2 = " INSERT INTO TR_LOG_SYNC_SAP(no_reg,asset_po_id,no_reg_item,msgtyp,msgid,msgnr,message,msgv1,msgv2,msgv3,msgv4)VALUES('{$dt->NO_REG}','{$dt->ASSET_PO_ID}','{$dt->NO_REG_ITEM}','".$result['TYPE']."','".$result['ID']."','".$result['NUMBER']."','".$result['MESSAGE']."','".$result['MESSAGE_V1']."','".$result['MESSAGE_V2']."','".$result['MESSAGE_V3']."','".$result['MESSAGE_V4']."') ";
                     DB::INSERT($sql_2);
 
-                    DB::commit();
+                    
 
                     //3. CREATE KODE ASSET AMS PROCEDURE
-                    $sql_3 = 'CALL create_kode_asset_ams("'.$noreg.'", "'.$ANLA_BUKRS.'", "'.$dt->JENIS_ASSET.'", "'.$ka_sap.'")';
-                    DB::SELECT($sql_3);
+                    //$sql_3 = 'CALL create_kode_asset_ams("'.$noreg.'", "'.$ANLA_BUKRS.'", "'.$dt->JENIS_ASSET.'", "'.$ka_sap.'")';
+                    //echo $sql_3; die();
+                    //DB::SELECT($sql_3);
+
+                    DB::commit();
 
                     return true;
                 }
@@ -1329,5 +1345,89 @@ class ApprovalController extends Controller
     {
         $req = $request->all();
         echo "<pre>"; print_r($req); die();
+    }
+
+    public function execute_create_kode_asset_ams($dt) 
+    {
+        //echo "<pre>"; print_r($dt); die();
+        /*
+        <pre>stdClass Object
+        (
+            [ID] => 108
+            [ASSET_PO_ID] => 187
+            [NO_REG_ITEM] => 1
+            [NO_REG] => 19.07/AMS/PDFA/00042
+            [ITEM_PO] => 3
+            [KODE_MATERIAL] => 000000000210020012
+            [NAMA_MATERIAL] => TEE PVC 8" WAVIN
+            [NO_PO] => 2013010585
+            [BA_PEMILIK_ASSET] => 2121
+            [JENIS_ASSET] => E4030
+            [GROUP] => G20
+            [SUB_GROUP] => SG164
+            [ASSET_CLASS] => 
+            [NAMA_ASSET] => TEE PVC 8" WAVIN
+            [MERK] => 
+            [SPESIFIKASI_OR_WARNA] => 
+            [NO_RANGKA_OR_NO_SERI] => 21
+            [NO_MESIN_OR_IMEI] => 21
+            [NO_POLISI] => 
+            [LOKASI_BA_CODE] => 2124
+            [LOKASI_BA_DESCRIPTION] => 2124-SAWIT BRAHMA
+            [TAHUN_ASSET] => 2001
+            [KONDISI_ASSET] => B
+            [INFORMASI] => 
+            [NAMA_PENANGGUNG_JAWAB_ASSET] => 
+            [JABATAN_PENANGGUNG_JAWAB_ASSET] => 
+            [ASSET_CONTROLLER] => IT
+            [KODE_ASSET_CONTROLLER] => 
+            [NAMA_ASSET_1] => versa1
+            [NAMA_ASSET_2] => versa2
+            [NAMA_ASSET_3] => versa3
+            [QUANTITY_ASSET_SAP] => 1.00
+            [UOM_ASSET_SAP] => UN
+            [CAPITALIZED_ON] => 09.07.2019
+            [DEACTIVATION_ON] => 
+            [COST_CENTER] => 21zd210999
+            [BOOK_DEPREC_01] => 4
+            [FISCAL_DEPREC_15] => 4
+            [GROUP_DEPREC_30] => 4
+            [DELETED] => 
+            [CREATED_BY] => 22
+            [CREATED_AT] => 2019-07-09 18:29:28
+            [UPDATED_BY] => 24
+            [UPDATED_AT] => 2019-07-09 19:32:01
+            [KODE_ASSET_SAP] => 
+            [KODE_ASSET_SUBNO_SAP] => 
+            [GI_NUMBER] => 
+            [GI_YEAR] => 
+            [KODE_ASSET_AMS] => 
+        )
+
+        */
+        
+        $ANLA_BUKRS = substr($dt->BA_PEMILIK_ASSET,0,2);
+        $user_id = Session::get('user_id');
+
+        DB::beginTransaction();
+        try 
+        {   
+            //3. CREATE KODE ASSET AMS PROCEDURE
+            $sql_3 = 'CALL create_kode_asset_ams("'.$noreg.'", "'.$ANLA_BUKRS.'", "'.$dt->JENIS_ASSET.'", "'.$dt->KODE_ASSET_SAP.'")';
+            //echo $sql_3; die();
+            DB::SELECT($sql_3);
+
+            DB::commit();
+
+            return true;
+        }
+        catch (\Exception $e) 
+        {
+            DB::rollback();
+            return false;
+            //die();
+        }
+            
+        
     }
 }
