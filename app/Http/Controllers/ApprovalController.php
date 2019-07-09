@@ -15,10 +15,11 @@ class ApprovalController extends Controller
 {
     public function index()
     {
-        /*
+        
         if (empty(Session::get('authenticated')))
             return redirect('/login');
 
+        /*
         if (AccessRight::granted() == false)
             return response(view('errors.403'), 403);
         */
@@ -281,7 +282,7 @@ class ApprovalController extends Controller
         $noreg = str_replace("-", "/", $noreg);
 
         $records = array();
-        $sql = " SELECT a.*, b.jenis_asset_description AS JENIS_ASSET_NAME, c.group_description AS GROUP_NAME, d.subgroup_description AS SUB_GROUP_NAME, e.KODE_VENDOR, e.NAMA_VENDOR, e.BUSINESS_AREA AS BUSINESS_AREA
+        $sql = " SELECT a.*, b.jenis_asset_description AS JENIS_ASSET_NAME, c.group_description AS GROUP_NAME, d.subgroup_description AS SUB_GROUP_NAME, e.KODE_VENDOR, e.NAMA_VENDOR, e.BUSINESS_AREA AS BUSINESS_AREA, e.PO_TYPE AS PO_TYPE
                     FROM TR_REG_ASSET_DETAIL a 
                         LEFT JOIN TM_JENIS_ASSET b ON a.jenis_asset = b.jenis_asset_code 
                         LEFT JOIN TM_GROUP_ASSET c ON a.group = c.group_code AND a.jenis_asset = c.jenis_asset_code
@@ -332,7 +333,10 @@ class ApprovalController extends Controller
                     'business_area' => trim($v->BUSINESS_AREA),
                     'kode_asset_sap' => trim($v->KODE_ASSET_SAP),
                     'kode_asset_controller' => trim($v->KODE_ASSET_CONTROLLER),
-                    'kode_asset_ams' => trim($v->KODE_ASSET_AMS)
+                    'kode_asset_ams' => trim($v->KODE_ASSET_AMS),
+                    'po_type' => trim($v->PO_TYPE),
+                    'gi_number' => trim($v->GI_NUMBER),
+                    'gi_year' => trim($v->GI_YEAR)
                 );
             }
         }
@@ -553,6 +557,36 @@ class ApprovalController extends Controller
         return response()->json($records);
     }
 
+    function validasi_input_all_io(Request $request, $status, $noreg)
+    {
+        $req = $request->all();
+        //echo "<pre>"; print_r($req); die();
+
+        $request_ka = json_decode($req['request_ka']);
+        $no_registrasi = str_replace("-", "/", $noreg);
+        $list_kode_asset = "";
+
+        $sql = " SELECT * FROM TR_REG_ASSET_DETAIL WHERE NO_REG = '{$no_registrasi}' AND (KODE_ASSET_CONTROLLER is null OR KODE_ASSET_CONTROLLER = '' ) ";
+        $dt = DB::SELECT($sql); 
+        //echo "<pre>"; print_r($dt);
+        //die();
+
+        if(!empty($dt))
+        {
+            foreach($dt as $k => $v)
+            {
+                $list_kode_asset .= $v->KODE_ASSET_SAP.",";
+            }
+            $result = array('status'=>false,'message'=> 'Kode Aset Controller (KODE ASET : '.rtrim($list_kode_asset).') belum diisi');
+        }
+        else
+        {
+            $result = array('status'=>true,'message'=> '');
+        }
+        
+        return $result; 
+    }
+
     function update_status(Request $request, $status, $noreg)
     {
         $rolename = Session::get('role');
@@ -562,7 +596,6 @@ class ApprovalController extends Controller
             if($rolename == 'AC')
             {
                 $validasi_io = $this->get_validasi_io($request);
-                //$validasi_io['status'] = true;
             } 
             else
             {
@@ -581,7 +614,22 @@ class ApprovalController extends Controller
         }
         else
         {
-            
+
+            if($rolename == 'AC' )
+            {
+                $validasi_input_all_io = $this->validasi_input_all_io($request, $status, $noreg);
+        
+                if(!$validasi_input_all_io['status'])
+                {
+                    return response()->json(['status' => false, "message" => $validasi_input_all_io['message']] );
+                    die();
+                }
+            }
+
+           
+
+            //echo "masuk ke validasi last approve"; die();            
+
             $no_registrasi = str_replace("-", "/", $noreg);
             $user_id = Session::get('user_id');
             $note = $request->parNote;
@@ -609,103 +657,232 @@ class ApprovalController extends Controller
             }    
             else
             {
-                DB::beginTransaction();
-                
-                try 
+                //echo "1<pre>"; print_r($request->all()); die();
+
+                $validasi_check_gi = false;//$this->get_validasi_check_gi($no_registrasi,$request);
+                //echo "<pre>"; print_r($validasi_check_gi); die();
+
+                if($validasi_check_gi)
                 {
-                    DB::SELECT('CALL complete_document("'.$no_registrasi.'", "'.$user_id.'")');
-                    DB::commit();
-                    return response()->json(['status' => true, "message" => 'Data is successfully ' . ($no_registrasi ? 'updated' : 'update')]);
-                } 
-                catch (\Exception $e) 
-                {
-                    DB::rollback();
-                    return response()->json(['status' => false, "message" => $e->getMessage()]);
+                    DB::beginTransaction();
+                    try 
+                    {
+                        DB::SELECT('CALL complete_document("'.$no_registrasi.'", "'.$user_id.'")');
+                        DB::commit();
+                        return response()->json(['status' => true, "message" => 'Data is successfully ' . ($no_registrasi ? 'updated' : 'update')]);
+                    } 
+                    catch (\Exception $e) 
+                    {
+                        DB::rollback();
+                        return response()->json(['status' => false, "message" => $e->getMessage()]);
+                    }
                 }
+                else
+                {
+                    return response()->json(['status' => false, "message" => "CHECK GI ERROR! "]);
+                }
+               
             }
         }   
+    }
+
+    function get_validasi_check_gi($noreg,$request)
+    {
+        return response()->json(['status' => false, "message" => "CHECK GI GAGAL "]);
+        die();
+        //echo "4<pre>".$noreg."<br/>"; print_r($request->all()); die();
+        /*
+        Array
+        (
+            [no-reg] => 19.07/AMS/PDFA/00031
+            [type-transaksi] => Jasa
+            [po-type] => SAP
+            [business-area] => 2121 - ESTATE BBB
+            [requestor] => PGA (Payroll & General Affair) - BBB
+            [tanggal-reg] => 08-07-2019
+            [total_tab] => 1
+            [nama_asset_1-1] => Verza1
+            [nama_asset_2-1] => Verza2
+            [nama_asset_3-1] => Verza3
+            [acct_determination-1] => E4030-
+            [serial_number-1] => 5
+            [inventory_number-1] => 6
+            [quantity-1] => 1.00
+            [uom-1] => UN
+            [capitalized_on-1] => 2019-07-04
+            [deactivation_on-1] => 
+            [business_area-1] => 2121
+            [cost_center-1] => 21zd210999
+            [plant-1] => 2121
+            [vendor-1] => 2300001209-SAHABAT SUKSES, CV
+            [book_deprec_01-1] => 4
+            [fiscal_deprec_15-1] => 4
+            [group_deprec_30-1] => 4
+            [kode_aset_controller-1] => O6421SM055
+            [kode_aset_sap-1] => 40300038
+            [kode_asset_ams-1] => 
+            [md_number-1] => 
+            [md_year-1] => 
+            [specification] => #4
+            [parNote] => #4
+        )
+        */
     }
 
     public function get_validasi_last_approve($noreg)
     {
         $sql = "SELECT COUNT(*) AS jml FROM v_history WHERE status_dokumen = 'Disetujui' AND document_code = '{$noreg}' ";
         $data = DB::SELECT($sql);
-        if($data){ $dt = $data[0]->jml; }else{ $dt = '0'; }
+        
+        if($data)
+        { 
+            $dt = $data[0]->jml; 
+        }
+        else
+        { 
+            $dt = '0'; 
+        }
+        
         return $dt;
     }
 
     function get_validasi_io(Request $request)
     {
         $req = $request->all();
-        $noreg = $req['no-reg'];
-        //echo "<pre>"; print_r($req); die();
-        /*
-            <pre>Array
-            (
-                [no-reg] => 19.07/AMS/PDFA/00017
-                [type-transaksi] => Barang
-                [po-type] => SAP
-                [business-area] => 2121 - ESTATE BBB
-                [requestor] => PGA (Payroll & General Affair) - BBB
-                [tanggal-reg] => 04-07-2019
-                
-                [total_tab] => 2
-                [nama_asset_1-1] => 11
-                [nama_asset_2-1] => 22
-                [nama_asset_3-1] => 33
-                [acct_determination-1] => 4030-KENDARAAN & ALAT BERAT
-                [serial_number-1] => 1
-                [inventory_number-1] => 2
-                [quantity-1] => 44.00
-                [uom-1] => 55
-                [capitalized_on-1] => 2019-12-11
-                [deactivation_on-1] => 2019-12-22
-                [business_area-1] => 2121
-                [cost_center-1] => 66
-                [plant-1] => 2121
-                [vendor-1] => 2300001364-PT DAYA ANUGRAH MANDIRI
-                [book_deprec_01-1] => 77
-                [fiscal_deprec_15-1] => 88
-                [group_deprec_30-1] => 77
-                [kode_aset_controller-1] => aaaadd
-                [kode_aset_sap-1] => 172
-                
-                [nama_asset_1-2] => 1
-                [nama_asset_2-2] => 2
-                [nama_asset_3-2] => 3
-                [acct_determination-2] => 4030-KENDARAAN & ALAT BERAT
-                [serial_number-2] => 3
-                [inventory_number-2] => 4
-                [quantity-2] => 5.00
-                [uom-2] => 6
-                [capitalized_on-2] => 2019-01-02
-                [deactivation_on-2] => 2019-01-05
-                [business_area-2] => 2121
-                [cost_center-2] => 7
-                [plant-2] => 2121
-                [vendor-2] => 2300001364-PT DAYA ANUGRAH MANDIRI
-                [book_deprec_01-2] => 8
-                [fiscal_deprec_15-2] => 9
-                [group_deprec_30-2] => 8
-                [kode_aset_controller-2] => aaaa
-                [kode_aset_sap-2] => 171
-                [specification] => 
-                [parNote] => 
-            )
-        */
+        $request_ka = json_decode($req['request_ka']);
 
+        $noreg = $req['no-reg'];
+        $jenis_dokumen = $req['po-type'];
+
+        if($jenis_dokumen == 'AMP')
+        {
+            //echo "Proses IO AMP Gaes";
+            $this->get_validasi_io_amp($req);
+        }
+
+        //echo "<pre>"; print_r($req); die();
+
+        #2
+        if(!empty($request_ka))
+        {
+            foreach( $request_ka as $k => $v )
+            {
+                //echo "<pre>"; print_r($v);
+                /*
+                    stdClass Object
+                    (
+                        [kode_aset_controller] => 3
+                        [kode_aset_sap] => 40100248
+                        [no_registrasi] => 19.07/AMS/PDFA/00038
+                    )
+                */
+
+                $proses = $this->validasi_io_proses_v2($noreg,$v);
+
+                if($proses['status']=='error')
+                {
+                    $result = array('status'=>false,'message'=> $proses['message']);
+                    return $result;
+                    die();
+                }
+            }
+            //die();
+
+            $result = array('status'=>true,'message'=> 'SUCCESS');
+            return $result;
+        }
+        else
+        {
+            $result = array('status'=>false,'message'=> 'Kode Aset Controller belum diisi! (di ITEM DETAIL)');
+            return $result;
+        }
+
+        /*
+        #1
         // KAC = Kode Aset Controller
         $total_kac = @$req['total_tab'];
         //echo $total_kac; die();
 
         if(!empty($total_kac))
         {
+
             $i = 1;
             for($i; $i<=$total_kac; $i++)
             {
-                if( !empty($req['kode_aset_sap-1']) )
+                $proses = $this->validasi_io_proses($noreg,$req,$i);
+                //$proses = $this->validasi_io_proses_v1($noreg, $req['kode_aset_sap-'.$i.''],$req['kode_aset_controller-'.$i.'']);
+
+                if($proses['status']=='error')
                 {
-                    $proses = $this->validasi_io_proses($noreg, $req['kode_aset_sap-'.$i.''],$req['kode_aset_controller-'.$i.'']);
+                    $result = array('status'=>false,'message'=> $proses['message']);
+                    return $result;
+                    die();
+                }
+            }
+
+            $result = array('status'=>true,'message'=> 'SUCCESS');
+            return $result;
+        }
+        else
+        {
+            $result = array('status'=>false,'message'=> 'Kode Aset Controller belum diisi! (di ITEM DETAIL)');
+            return $result;
+        }
+        */
+    }
+
+    function get_validasi_io_amp($req)
+    {
+        //echo "<h1>INI DATA AMP 1</h1>";
+        //echo "1<pre>"; print_r($data); die();
+        /*
+        <h1>INI DATA AMP</h1><pre>Array
+            (
+                [no-reg] => 19.07/AMS/PDFA/00026
+                [type-transaksi] => Jasa
+                [po-type] => AMP
+                [business-area] => 1211 - HO - AMP
+                [requestor] => PGA (Payroll & General Affair) - BBB
+                [tanggal-reg] => 05-07-2019
+                [total_tab] => 1
+                [nama_asset_1-1] => 1
+                [nama_asset_2-1] => 2
+                [nama_asset_3-1] => 3
+                [acct_determination-1] => 4030-KENDARAAN & ALAT BERAT
+                [serial_number-1] => 1
+                [inventory_number-1] => 2
+                [quantity-1] => 4.00
+                [uom-1] => UN
+                [capitalized_on-1] => 2019-05-01
+                [deactivation_on-1] => 
+                [business_area-1] => 1211
+                [cost_center-1] => 5
+                [plant-1] => 1211
+                [vendor-1] => 1334-tigabelas tigaempat
+                [book_deprec_01-1] => 6
+                [fiscal_deprec_15-1] => 7
+                [group_deprec_30-1] => 6
+                [kode_aset_controller-1] => qqqq
+                [kode_aset_sap-1] => 
+                [kode_asset_ams-1] => 
+                [specification] => #3
+                [parNote] => #3
+            )
+        */
+
+        $noreg = $req['no-reg'];
+        $total_kac = @$req['total_tab'];
+        //echo "5<br/>".$total_kac; die();
+
+        if(!empty($total_kac))
+        {
+            //echo "2".$total_kac; die();
+            $i = 1;
+            for($i; $i<=$total_kac; $i++)
+            {
+                if( !empty($req['kode_aset_controller-1']) )
+                {
+                    $proses = $this->validasi_io_proses_amp($noreg, $req['kode_aset_sap-'.$i.''],$req['kode_aset_controller-'.$i.'']);
                 
                     if($proses['status']=='error')
                     {
@@ -720,7 +897,7 @@ class ApprovalController extends Controller
                 }
                 else
                 {
-                    $result = array('status'=>false,'message'=> 'Kode Aset Controller belum diisi (di ITEM DETAIL)');
+                    $result = array('status'=>false,'message'=> 'Kode Aset Controller belum diisi! (di ITEM DETAIL)');
                     return $result;
                 }
                 
@@ -732,9 +909,9 @@ class ApprovalController extends Controller
         }
     }
 
-    function validasi_io_proses($noreg, $ka_sap, $ka_con)
+    function validasi_io_proses_amp($noreg, $ka_sap, $ka_con)
     {
-        //echo $ka_sap.'===='.$ka_con;
+        //echo "2<br/>".$noreg.'====='.$ka_sap.'===='.$ka_con;
         $service = API::exec(array(
             'request' => 'GET',
             'host' => 'ldap',
@@ -759,6 +936,176 @@ class ApprovalController extends Controller
         return $result;
     }
 
+    function validasi_io_proses_v2($noreg, $data)
+    {
+        //echo "<pre>"; print_r($data); die();
+        /*
+        stdClass Object
+            (
+                [kode_aset_controller] => 1
+                [kode_aset_sap] => 40100246
+                [no_registrasi] => 19.07/AMS/PDFA/00038
+            )
+        */
+
+        $ka_con = $data->kode_aset_controller;
+        $ka_sap = $data->kode_aset_sap;
+
+        $user_id = Session::get('user_id');
+        //echo "1".$nore.'====='.$ka_sap.'===='.$ka_con;
+        
+        $service = API::exec(array(
+            'request' => 'GET',
+            'host' => 'ldap',
+            'method' => "check_io?AUFNR=$ka_con&AUFUSER3=$ka_sap", 
+        ));
+        
+        $data = $service;
+        //$data = 1;
+        
+        //echo "<pre>"; print_r($data); die();
+
+        if( $data->TYPE == 'S' )
+        //if($data==1)
+        {
+            DB::beginTransaction();
+            try 
+            {   
+                $sql = " UPDATE TR_REG_ASSET_DETAIL SET KODE_ASSET_CONTROLLER = '{$ka_con}', UPDATED_AT = current_timestamp(), UPDATED_BY = '{$user_id}' WHERE NO_REG = '{$noreg}' AND KODE_ASSET_SAP = '{$ka_sap}' ";
+                //echo $sql; die();
+                DB::UPDATE($sql);
+                
+                DB::commit();
+                $result = array('status'=>'success','message'=> "SUKSES UPDATE KODE ASET");
+            }
+            catch (\Exception $e) 
+            {
+                DB::rollback();
+                $result = array('status'=>'error','message'=>$e->getMessage());
+            }
+        }
+        else
+        {
+            
+            $result = array('status'=>'error','message'=> $data->MESSAGE.' (Kode Aset Controller:'.$ka_con.')');
+        }
+        
+
+        return $result;
+    }
+
+    function validasi_io_proses($noreg, $req, $i)
+    {
+        //echo "<pre>"; dd($req); die();
+        //echo $ka_sap.'===='.$ka_con; die();
+
+        $ka_sap = $req['kode_aset_sap-'.$i.''];
+        $ka_con = $req['kode_aset_controller-'.$i.''];
+        //echo "1".$ka_con; die();
+
+        if( $ka_con == '' )
+        {
+            $result = array('status'=>'error','message'=> 'Kode Asset Controller Kosong ('.$ka_sap.')' );
+            return $result;
+        }
+
+        $user_id = Session::get('user_id');
+        //echo "1".$nore.'====='.$ka_sap.'===='.$ka_con;
+        
+        $service = API::exec(array(
+            'request' => 'GET',
+            'host' => 'ldap',
+            'method' => "check_io?AUFNR=$ka_con&AUFUSER3=$ka_sap", 
+        ));
+        
+        //$data = $service;
+        $data = 1;
+        
+        //echo "<pre>"; print_r($data); die();
+
+        //if( $data->TYPE == 'S' )
+        if($data==1)
+        {
+            DB::beginTransaction();
+            try 
+            {   
+                $sql = " UPDATE TR_REG_ASSET_DETAIL SET KODE_ASSET_CONTROLLER = '{$ka_con}', UPDATED_AT = current_timestamp(), UPDATED_BY = '{$user_id}' WHERE NO_REG = '{$noreg}' AND KODE_ASSET_SAP = '{$ka_sap}' ";
+                //echo $sql; die();
+                DB::UPDATE($sql);
+                
+                DB::commit();
+                $result = array('status'=>'success','message'=> "SUKSES UPDATE KODE ASET");
+            }
+            catch (\Exception $e) 
+            {
+                DB::rollback();
+                $result = array('status'=>'error','message'=>$e->getMessage());
+            }
+        }
+        else
+        {
+            
+            $result = array('status'=>'error','message'=> $data->MESSAGE.' (Kode Aset Controller:'.$ka_con.')');
+        }
+        
+
+        return $result;
+    }
+
+    /*
+    function validasi_io_proses_v1($noreg, $ka_sap, $ka_con)
+    {
+        //echo $ka_sap.'===='.$ka_con; die();
+        if( $ka_con == '' )
+        {
+            $result = array('status'=>'error','message'=> 'Kode Asset Controller Kosong ('.$ka_sap.')' );
+            return $result;
+        }
+
+        $user_id = Session::get('user_id');
+        //echo "1".$nore.'====='.$ka_sap.'===='.$ka_con;
+        
+        $service = API::exec(array(
+            'request' => 'GET',
+            'host' => 'ldap',
+            'method' => "check_io?AUFNR=$ka_con&AUFUSER3=$ka_sap", 
+        ));
+        
+        //$data = $service;
+        //$data = 1;
+        
+        //echo "<pre>"; print_r($data); die();
+
+        if( $data->TYPE == 'S' )
+        //if($data==1)
+        {
+            DB::beginTransaction();
+            try 
+            {   
+                $sql = " UPDATE TR_REG_ASSET_DETAIL SET KODE_ASSET_CONTROLLER = '{$ka_con}', UPDATED_AT = current_timestamp(), UPDATED_BY = '{$user_id}' WHERE NO_REG = '{$noreg}' AND KODE_ASSET_SAP = '{$ka_sap}' ";
+                //echo $sql; die();
+                DB::UPDATE($sql);
+                
+                DB::commit();
+                $result = array('status'=>'success','message'=> "SUKSES UPDATE KODE ASET");
+            }
+            catch (\Exception $e) 
+            {
+                DB::rollback();
+                $result = array('status'=>'error','message'=>$e->getMessage());
+            }
+        }
+        else
+        {
+            
+            $result = array('status'=>'error','message'=> $data->MESSAGE.' (Kode Aset Controller:'.$ka_con.')');
+        }
+        
+
+        return $result;
+    }
+    */
+
     function log_history($id)
     {
         $noreg = str_replace("-", "/", $id);
@@ -769,6 +1116,7 @@ class ApprovalController extends Controller
         $sql = "SELECT document_code,user_id,name,area_code,status_approval,notes,date FROM v_history_approval WHERE document_code = '{$noreg}' ORDER BY -date ASC, date ASC ";
 
         $data = DB::SELECT($sql);
+        //echo "3<pre>"; print_r($data); die();
         
         if($data)
         {
@@ -836,17 +1184,21 @@ class ApprovalController extends Controller
         {
             foreach( $data as $k => $v )
             {
-                //$this->synchronize_sap_process($v);
-
                 $proses = $this->synchronize_sap_process($v);
-                //echo "<pre>"; print_r($proses['status']);die();
+                //echo "<pre>"; print_r($proses); die();
                 
                 if($proses['status']=='error')
                 {
                     return response()->json(['status' => false, "message" => $proses['message']]);
                     die();
                 }
-                
+                /*
+                else
+                {
+                    return response()->json(['status' => false, "message" => "Client Error"]);
+                    die();
+                }
+                */
             }
 
             return response()->json(['status' => true, "message" => "Synchronize SAP berhasil"]);
@@ -860,10 +1212,25 @@ class ApprovalController extends Controller
         }
     }
 
+    function synchronize_amp(Request $request)
+    {
+        //echo "<pre>"; print_r($request->noreg); die();
+        $no_reg = @$request->noreg;
+        //echo $no_reg; 
+
+        #CREATE KODE ASSET FAMS (tunggu mas Dega)
+
+        return response()->json(['status' => true, "message" => "Synchronize AMP berhasil"]);
+    }
+
     public function synchronize_sap_process($dt) 
     {
+        //echo "<pre>"; print_r($dt); die();
         $ANLA_BUKRS = substr($dt->LOKASI_BA_CODE,0,2);
         $ANLA_LIFNR = $this->get_kode_vendor($dt->NO_REG);
+        //echo "<pre>1"; dd($ANLA_LIFNR); die();
+        
+        /*
         $param = array(
             'ANLA_ANLKL'    => $dt->JENIS_ASSET,
             'ANLA_BUKRS'    => substr($dt->LOKASI_BA_CODE,0,2),
@@ -884,8 +1251,7 @@ class ApprovalController extends Controller
             'ANLB_NDJAR_01' => $dt->BOOK_DEPREC_01,
             'ANLB_NDJAR_02' => $dt->FISCAL_DEPREC_15
         );
-
-        //echo "<pre>"; print_r($param); die();
+        */
 
         $service = API::exec(array(
             'request' => 'GET',
@@ -895,14 +1261,19 @@ class ApprovalController extends Controller
         
         $data = $service;
 
+        //echo "<pre>2"; dd($data['message']); die();
+
         if(!empty($data))
+        //if( count($data) > 0 )
         {
             $result = array();
             $message = '';
 
+            //echo "testt 2 <pre>"; count($data); die();
+
             foreach($data->data as $k => $v)
             {
-
+                //echo "6<pre>"; dd($v);
                 if( $v->TYPE == 'S' && $v->ID == 'AA' && $v->NUMBER == 228 )
                 {
                     $message .= $v->MESSAGE.',';
@@ -936,6 +1307,7 @@ class ApprovalController extends Controller
                     );
                 }
             }
+            //die();
                 
             if( $result['TYPE'] == 'S' )
             {
@@ -946,11 +1318,11 @@ class ApprovalController extends Controller
                 try 
                 {   
                     //1. ADD KODE_ASSET_SAP & ASSET_CONTROLLER TR_REG_ASSET 
-                    $sql_1 = " UPDATE TR_REG_ASSET_DETAIL SET ASSET_CONTROLLER = '{$asset_controller}', KODE_ASSET_SAP = '".$result['MESSAGE_V1']."', UPDATED_BY = '{$user_id}', UPDATED_AT = current_timestamp() WHERE NO_REG = '{$dt->NO_REG}' AND NO_REG_ITEM = '{$dt->NO_REG_ITEM}' ";
+                    $sql_1 = " UPDATE TR_REG_ASSET_DETAIL SET ASSET_CONTROLLER = '{$asset_controller}', KODE_ASSET_SAP = '".$result['MESSAGE_V1']."', UPDATED_BY = '{$user_id}', UPDATED_AT = current_timestamp() WHERE NO_REG = '{$dt->NO_REG}' AND ASSET_PO_ID = '{$dt->ASSET_PO_ID}' AND NO_REG_ITEM = '{$dt->NO_REG_ITEM}' ";
                     DB::UPDATE($sql_1);
 
                     //2. INSERT LOG
-                    $sql_2 = " INSERT INTO TR_LOG_SYNC_SAP(no_reg,no_reg_item,msgtyp,msgid,msgnr,message,msgv1,msgv2,msgv3,msgv4)VALUES('{$dt->NO_REG}','{$dt->NO_REG_ITEM}','".$result['TYPE']."','".$result['ID']."','".$result['NUMBER']."','".$result['MESSAGE']."','".$result['MESSAGE_V1']."','".$result['MESSAGE_V2']."','".$result['MESSAGE_V3']."','".$result['MESSAGE_V4']."') ";
+                    $sql_2 = " INSERT INTO TR_LOG_SYNC_SAP(no_reg,asset_po_id,no_reg_item,msgtyp,msgid,msgnr,message,msgv1,msgv2,msgv3,msgv4)VALUES('{$dt->NO_REG}','{$dt->ASSET_PO_ID}','{$dt->NO_REG_ITEM}','".$result['TYPE']."','".$result['ID']."','".$result['NUMBER']."','".$result['MESSAGE']."','".$result['MESSAGE_V1']."','".$result['MESSAGE_V2']."','".$result['MESSAGE_V3']."','".$result['MESSAGE_V4']."') ";
                     DB::INSERT($sql_2);
                     
                     DB::commit();
@@ -969,7 +1341,7 @@ class ApprovalController extends Controller
 
                 try 
                 {    
-                    $sql = " INSERT INTO TR_LOG_SYNC_SAP(no_reg,no_reg_item,msgtyp,msgid,msgnr,message,msgv1,msgv2,msgv3,msgv4)VALUES('{$dt->NO_REG}','{$dt->NO_REG_ITEM}','".$result['TYPE']."','".$result['ID']."','".$result['NUMBER']."','".$result['MESSAGE']."','".$result['MESSAGE_V1']."','".$result['MESSAGE_V2']."','".$result['MESSAGE_V3']."','".$result['MESSAGE_V4']."') ";
+                    $sql = " INSERT INTO TR_LOG_SYNC_SAP(no_reg,asset_po_id,no_reg_item,msgtyp,msgid,msgnr,message,msgv1,msgv2,msgv3,msgv4)VALUES('{$dt->NO_REG}','{$dt->ASSET_PO_ID}','{$dt->NO_REG_ITEM}','".$result['TYPE']."','".$result['ID']."','".$result['NUMBER']."','".$result['MESSAGE']."','".$result['MESSAGE_V1']."','".$result['MESSAGE_V2']."','".$result['MESSAGE_V3']."','".$result['MESSAGE_V4']."') ";
                     
                     DB::INSERT($sql); 
                     DB::commit();
@@ -1005,5 +1377,11 @@ class ApprovalController extends Controller
         $data = DB::SELECT($sql);
         if($data){ $dt = $data[0]->KODE_VENDOR; }else{ $dt = '0'; }
         return $dt;
+    }
+
+    function update_ka_con_temp(Request $request)
+    {
+        $req = $request->all();
+        echo "<pre>"; print_r($req); die();
     }
 }

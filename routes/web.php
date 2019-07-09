@@ -69,6 +69,8 @@ Route::get('grid-approval-history', ['as' => 'get.approval_grid_history', 'uses'
 Route::post('/approval/update_status/{status}/{no_reg}','ApprovalController@update_status');
 Route::get('/approval/log_history/{no_reg}', 'ApprovalController@log_history')->name('no_reg');
 Route::post('/approval/synchronize_sap', 'ApprovalController@synchronize_sap');
+Route::post('/approval/synchronize_amp', 'ApprovalController@synchronize_amp');
+Route::post('/approval/update_ka_con_temp', 'ApprovalController@update_ka_con_temp');
 
 Route::resource('/mutasi', 'MutasiController');
 Route::get('/mutasi/create/{type}', 'MutasiController@create')->name('type');
