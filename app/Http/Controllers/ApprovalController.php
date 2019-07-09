@@ -873,13 +873,13 @@ class ApprovalController extends Controller
             'method' => "check_io?AUFNR=$ka_con&AUFUSER3=$ka_sap", 
         ));
         
-        //$data = $service;
-        $data = 1;
+        $data = $service;
+        //$data = 1;
         
         //echo "<pre>"; print_r($data); die();
 
-        //if( $data->TYPE == 'S' )
-        if($data==1)
+        if( $data->TYPE == 'S' )
+        //if($data==1)
         {
             DB::beginTransaction();
             try 
@@ -1084,6 +1084,8 @@ class ApprovalController extends Controller
 
     function synchronize_sap(Request $request)
     {
+        //$req = $request->all();
+        //echo "<pre>"; print_r($req); die();
         //echo "<pre>"; print_r($request->noreg); die();
         $no_reg = @$request->noreg;
 
@@ -1143,6 +1145,25 @@ class ApprovalController extends Controller
 
     public function synchronize_sap_process($dt) 
     {
+        ##### PROSES 1
+        $list_kode_asset = '';
+        $sql_validasi_kas = " SELECT * FROM TR_REG_ASSET_DETAIL WHERE NO_REG = '{$dt->NO_REG}' AND (COST_CENTER is null OR COST_CENTER = '' ) ";
+        $datax = DB::SELECT($sql_validasi_kas); 
+        //echo "<pre>"; print_r($dt);
+        //die();
+
+        if(!empty($datax))
+        {
+            foreach($dt as $k => $v)
+            {
+                $list_kode_asset .= $v->KODE_MATERIAL." - NO. REG ITEM : ".$v->NO_REG_ITEM.",";
+            }
+
+            $result = array('status'=>'error','message'=> 'Kode Aset Controller (KODE MATERIAL : '.rtrim($list_kode_asset,',').') belum diisi');
+            return $result;     
+        }
+
+        ##### PROSES 2
         //echo "<pre>"; print_r($dt->BA_PEMILIK_ASSET); die();
         $ANLA_BUKRS = substr($dt->BA_PEMILIK_ASSET,0,2);
         //echo $ANLA_BUKRS; die();
@@ -1180,10 +1201,11 @@ class ApprovalController extends Controller
         
         $data = $service;
 
-        //echo "<pre>2"; dd($data['message']); die();
+        //echo "<pre>5"; dd($data, false); die();
+        //echo "<pre>7"; count($data); die();
 
         if(!empty($data))
-        //if( count($data) > 0 )
+        //if( $data )
         {
             $result = array();
             $message = '';
@@ -1244,11 +1266,11 @@ class ApprovalController extends Controller
                     $sql_2 = " INSERT INTO TR_LOG_SYNC_SAP(no_reg,asset_po_id,no_reg_item,msgtyp,msgid,msgnr,message,msgv1,msgv2,msgv3,msgv4)VALUES('{$dt->NO_REG}','{$dt->ASSET_PO_ID}','{$dt->NO_REG_ITEM}','".$result['TYPE']."','".$result['ID']."','".$result['NUMBER']."','".$result['MESSAGE']."','".$result['MESSAGE_V1']."','".$result['MESSAGE_V2']."','".$result['MESSAGE_V3']."','".$result['MESSAGE_V4']."') ";
                     DB::INSERT($sql_2);
 
-                    //3. CREATE KODE ASSET AMS PROCEDURE
-                    //$sql_3 = 'CALL create_kode_asset_ams("'.$noreg.'", "'.$ANLA_BUKRS.'", "'.$dt->JENIS_ASSET.'", "'.$ka_sap.'")';
-                    //DB::SELECT($sql_3);
-
                     DB::commit();
+
+                    //3. CREATE KODE ASSET AMS PROCEDURE
+                    $sql_3 = 'CALL create_kode_asset_ams("'.$noreg.'", "'.$ANLA_BUKRS.'", "'.$dt->JENIS_ASSET.'", "'.$ka_sap.'")';
+                    DB::SELECT($sql_3);
 
                     return true;
                 }
