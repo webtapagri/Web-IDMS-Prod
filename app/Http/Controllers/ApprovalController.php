@@ -873,13 +873,13 @@ class ApprovalController extends Controller
             'method' => "check_io?AUFNR=$ka_con&AUFUSER3=$ka_sap", 
         ));
         
-        $data = $service;
-        //$data = 1;
+        //$data = $service;
+        $data = 1;
         
         //echo "<pre>"; print_r($data); die();
 
-        if( $data->TYPE == 'S' )
-        //if($data==1)
+        //if( $data->TYPE == 'S' )
+        if($data==1)
         {
             DB::beginTransaction();
             try 
@@ -887,8 +887,8 @@ class ApprovalController extends Controller
                 $sql = " UPDATE TR_REG_ASSET_DETAIL SET KODE_ASSET_CONTROLLER = '{$ka_con}', UPDATED_AT = current_timestamp(), UPDATED_BY = '{$user_id}' WHERE NO_REG = '{$noreg}' AND KODE_ASSET_SAP = '{$ka_sap}' ";
                 //echo $sql; die();
                 DB::UPDATE($sql);
-                
                 DB::commit();
+
                 $result = array('status'=>'success','message'=> "SUKSES UPDATE KODE ASET");
             }
             catch (\Exception $e) 
@@ -896,6 +896,7 @@ class ApprovalController extends Controller
                 DB::rollback();
                 $result = array('status'=>'error','message'=>$e->getMessage());
             }
+
         }
         else
         {
@@ -1113,8 +1114,10 @@ class ApprovalController extends Controller
                 }
                 */
 
-                return response()->json(['status' => true, "message" => "Synchronize SAP Success "]);
+                //return response()->json(['status' => true, "message" => "Synchronize SAP Success "]);
             }
+
+
 
             return response()->json(['status' => true, "message" => "Synchronize SAP berhasil"]);
             //echo "<pre>"; print_r($params);
@@ -1140,8 +1143,9 @@ class ApprovalController extends Controller
 
     public function synchronize_sap_process($dt) 
     {
-        //echo "<pre>"; print_r($dt); die();
-        $ANLA_BUKRS = substr($dt->LOKASI_BA_CODE,0,2);
+        //echo "<pre>"; print_r($dt->BA_PEMILIK_ASSET); die();
+        $ANLA_BUKRS = substr($dt->BA_PEMILIK_ASSET,0,2);
+        //echo $ANLA_BUKRS; die();
         $ANLA_LIFNR = $this->get_kode_vendor($dt->NO_REG);
         //echo "<pre>1"; dd($ANLA_LIFNR); die();
         
@@ -1171,7 +1175,7 @@ class ApprovalController extends Controller
         $service = API::exec(array(
             'request' => 'GET',
             'host' => 'ldap',
-            'method' => "create_asset?ANLA_ANLKL={$dt->JENIS_ASSET}&ANLA_BUKRS={$ANLA_BUKRS}&RA02S_NASSETS=1&ANLA_TXT50={$dt->NAMA_ASSET_1}&ANLA_TXA50={$dt->NAMA_ASSET_2}&ANLH_ANLHTXT={$dt->NAMA_ASSET_3}&ANLA_SERNR={$dt->NO_RANGKA_OR_NO_SERI}&ANLA_INVNR={$dt->NO_MESIN_OR_IMEI}&ANLA_MENGE={$dt->QUANTITY_ASSET_SAP}&ANLA_MEINS={$dt->UOM_ASSET_SAP}&ANLA_AKTIV={$dt->CAPITALIZED_ON}&ANLA_DEAKT={$dt->DEACTIVATION_ON}&ANLZ_GSBER={$dt->LOKASI_BA_CODE}&ANLZ_KOSTL={$dt->COST_CENTER}&ANLZ_WERKS=$dt->LOKASI_BA_CODE&ANLA_LIFNR={$ANLA_LIFNR}&ANLB_NDJAR_01={$dt->BOOK_DEPREC_01}&ANLB_NDJAR_02={$dt->FISCAL_DEPREC_15}", 
+            'method' => "create_asset?ANLA_ANLKL={$dt->JENIS_ASSET}&ANLA_BUKRS={$ANLA_BUKRS}&RA02S_NASSETS=1&ANLA_TXT50={$dt->NAMA_ASSET_1}&ANLA_TXA50={$dt->NAMA_ASSET_2}&ANLH_ANLHTXT={$dt->NAMA_ASSET_3}&ANLA_SERNR={$dt->NO_RANGKA_OR_NO_SERI}&ANLA_INVNR={$dt->NO_MESIN_OR_IMEI}&ANLA_MENGE={$dt->QUANTITY_ASSET_SAP}&ANLA_MEINS={$dt->UOM_ASSET_SAP}&ANLA_AKTIV={$dt->CAPITALIZED_ON}&ANLA_DEAKT={$dt->DEACTIVATION_ON}&ANLZ_GSBER={$dt->BA_PEMILIK_ASSET}&ANLZ_KOSTL={$dt->COST_CENTER}&ANLZ_WERKS=$dt->BA_PEMILIK_ASSET&ANLA_LIFNR={$ANLA_LIFNR}&ANLB_NDJAR_01={$dt->BOOK_DEPREC_01}&ANLB_NDJAR_02={$dt->FISCAL_DEPREC_15}", 
         ));
         
         $data = $service;
@@ -1239,8 +1243,13 @@ class ApprovalController extends Controller
                     //2. INSERT LOG
                     $sql_2 = " INSERT INTO TR_LOG_SYNC_SAP(no_reg,asset_po_id,no_reg_item,msgtyp,msgid,msgnr,message,msgv1,msgv2,msgv3,msgv4)VALUES('{$dt->NO_REG}','{$dt->ASSET_PO_ID}','{$dt->NO_REG_ITEM}','".$result['TYPE']."','".$result['ID']."','".$result['NUMBER']."','".$result['MESSAGE']."','".$result['MESSAGE_V1']."','".$result['MESSAGE_V2']."','".$result['MESSAGE_V3']."','".$result['MESSAGE_V4']."') ";
                     DB::INSERT($sql_2);
-                    
+
+                    //3. CREATE KODE ASSET AMS PROCEDURE
+                    //$sql_3 = 'CALL create_kode_asset_ams("'.$noreg.'", "'.$ANLA_BUKRS.'", "'.$dt->JENIS_ASSET.'", "'.$ka_sap.'")';
+                    //DB::SELECT($sql_3);
+
                     DB::commit();
+
                     return true;
                 }
                 catch (\Exception $e) 
