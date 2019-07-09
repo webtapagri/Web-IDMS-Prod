@@ -626,8 +626,6 @@ class ApprovalController extends Controller
                 }
             }
 
-           
-
             //echo "masuk ke validasi last approve"; die();            
 
             $no_registrasi = str_replace("-", "/", $noreg);
@@ -754,28 +752,12 @@ class ApprovalController extends Controller
         $noreg = $req['no-reg'];
         $jenis_dokumen = $req['po-type'];
 
-        if($jenis_dokumen == 'AMP')
-        {
-            //echo "Proses IO AMP Gaes";
-            $this->get_validasi_io_amp($req);
-        }
+        if($jenis_dokumen == 'AMP'){$this->get_validasi_io_amp($req);}
 
-        //echo "<pre>"; print_r($req); die();
-
-        #2
         if(!empty($request_ka))
         {
             foreach( $request_ka as $k => $v )
             {
-                //echo "<pre>"; print_r($v);
-                /*
-                    stdClass Object
-                    (
-                        [kode_aset_controller] => 3
-                        [kode_aset_sap] => 40100248
-                        [no_registrasi] => 19.07/AMS/PDFA/00038
-                    )
-                */
 
                 $proses = $this->validasi_io_proses_v2($noreg,$v);
 
@@ -796,79 +778,10 @@ class ApprovalController extends Controller
             $result = array('status'=>false,'message'=> 'Kode Aset Controller belum diisi! (di ITEM DETAIL)');
             return $result;
         }
-
-        /*
-        #1
-        // KAC = Kode Aset Controller
-        $total_kac = @$req['total_tab'];
-        //echo $total_kac; die();
-
-        if(!empty($total_kac))
-        {
-
-            $i = 1;
-            for($i; $i<=$total_kac; $i++)
-            {
-                $proses = $this->validasi_io_proses($noreg,$req,$i);
-                //$proses = $this->validasi_io_proses_v1($noreg, $req['kode_aset_sap-'.$i.''],$req['kode_aset_controller-'.$i.'']);
-
-                if($proses['status']=='error')
-                {
-                    $result = array('status'=>false,'message'=> $proses['message']);
-                    return $result;
-                    die();
-                }
-            }
-
-            $result = array('status'=>true,'message'=> 'SUCCESS');
-            return $result;
-        }
-        else
-        {
-            $result = array('status'=>false,'message'=> 'Kode Aset Controller belum diisi! (di ITEM DETAIL)');
-            return $result;
-        }
-        */
     }
 
     function get_validasi_io_amp($req)
     {
-        //echo "<h1>INI DATA AMP 1</h1>";
-        //echo "1<pre>"; print_r($data); die();
-        /*
-        <h1>INI DATA AMP</h1><pre>Array
-            (
-                [no-reg] => 19.07/AMS/PDFA/00026
-                [type-transaksi] => Jasa
-                [po-type] => AMP
-                [business-area] => 1211 - HO - AMP
-                [requestor] => PGA (Payroll & General Affair) - BBB
-                [tanggal-reg] => 05-07-2019
-                [total_tab] => 1
-                [nama_asset_1-1] => 1
-                [nama_asset_2-1] => 2
-                [nama_asset_3-1] => 3
-                [acct_determination-1] => 4030-KENDARAAN & ALAT BERAT
-                [serial_number-1] => 1
-                [inventory_number-1] => 2
-                [quantity-1] => 4.00
-                [uom-1] => UN
-                [capitalized_on-1] => 2019-05-01
-                [deactivation_on-1] => 
-                [business_area-1] => 1211
-                [cost_center-1] => 5
-                [plant-1] => 1211
-                [vendor-1] => 1334-tigabelas tigaempat
-                [book_deprec_01-1] => 6
-                [fiscal_deprec_15-1] => 7
-                [group_deprec_30-1] => 6
-                [kode_aset_controller-1] => qqqq
-                [kode_aset_sap-1] => 
-                [kode_asset_ams-1] => 
-                [specification] => #3
-                [parNote] => #3
-            )
-        */
 
         $noreg = $req['no-reg'];
         $total_kac = @$req['total_tab'];
@@ -1199,6 +1112,8 @@ class ApprovalController extends Controller
                     die();
                 }
                 */
+
+                return response()->json(['status' => true, "message" => "Synchronize SAP Success "]);
             }
 
             return response()->json(['status' => true, "message" => "Synchronize SAP berhasil"]);
