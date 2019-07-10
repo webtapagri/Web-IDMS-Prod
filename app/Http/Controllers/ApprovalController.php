@@ -589,85 +589,68 @@ class ApprovalController extends Controller
 
     function update_status(Request $request, $status, $noreg)
     {
+        $req = $request->all();
+        $jenis_dokumen = $req['po-type'];
         $rolename = Session::get('role');
         
-        if($status != 'R')
+        if($jenis_dokumen == 'AMP')
         {
-            if($rolename == 'AC')
+            if($status != 'R')
             {
-                $validasi_io = $this->get_validasi_io($request);
-            } 
+                if($rolename == 'AC')
+                {
+                    $validasi_io = $this->get_validasi_io_amp($request, $status, $noreg);
+                } 
+                else
+                {
+                    $validasi_io['status'] = true;
+                }
+            }
             else
             {
-                $validasi_io['status'] = true;
+                $validasi_io['status'] = true;            
             }
-        }
-        else
-        {
-            $validasi_io['status'] = true;            
-        }
-        
 
-        if( $validasi_io['status'] == false )
-        {
-            return response()->json(['status' => false, "message" => $validasi_io['message']]);
-        }
-        else
-        {
-            if( $status != 'R' )
+            if( $validasi_io['status'] == false )
             {
-                if($rolename == 'AC' )
+                return response()->json(['status' => false, "message" => $validasi_io['message']]);
+            }
+            else
+            {
+                /* AMP PROCESS */
+
+                if( $status != 'R' )
                 {
-                    $validasi_input_all_io = $this->validasi_input_all_io($request, $status, $noreg);
-            
-                    if(!$validasi_input_all_io['status'])
+                    if($rolename == 'AC' )
                     {
-                        return response()->json(['status' => false, "message" => $validasi_input_all_io['message']] );
-                        die();
+                        $validasi_input_all_io = $this->validasi_input_all_io($request, $status, $noreg);
+                
+                        if(!$validasi_input_all_io['status'])
+                        {
+                            return response()->json(['status' => false, "message" => $validasi_input_all_io['message']] );
+                            die();
+                        }
                     }
                 }
-            }
 
-            //echo "masuk ke validasi last approve"; die();            
+                //echo "masuk ke validasi last approve"; die();            
 
-            $no_registrasi = str_replace("-", "/", $noreg);
-            $user_id = Session::get('user_id');
-            $note = $request->parNote;
-            $role_id = Session::get('role_id'); //get role id user
-            $asset_controller = ''; //get asset controller 
-            //echo $note;die();
+                $no_registrasi = str_replace("-", "/", $noreg);
+                $user_id = Session::get('user_id');
+                $note = $request->parNote;
+                $role_id = Session::get('role_id'); //get role id user
+                $asset_controller = ''; //get asset controller 
+                //echo $note;die();
 
-            $validasi_last_approve = $this->get_validasi_last_approve($no_registrasi);
+                $validasi_last_approve = $this->get_validasi_last_approve($no_registrasi);
 
-            if( $validasi_last_approve == 0 )
-            {
-                DB::beginTransaction();
-                
-                try 
-                {
-                    DB::SELECT('CALL update_approval("'.$no_registrasi.'", "'.$user_id.'","'.$status.'", "'.$note.'", "'.$role_id.'", "'.$asset_controller.'")');
-                    DB::commit();
-                    return response()->json(['status' => true, "message" => 'Data is successfully ' . ($no_registrasi ? 'updated' : 'update')]);
-                } 
-                catch (\Exception $e) 
-                {
-                    DB::rollback();
-                    return response()->json(['status' => false, "message" => $e->getMessage()]);
-                }
-            }    
-            else
-            {
-                //echo "1<pre>"; print_r($request->all()); die();
-
-                $validasi_check_gi = false;//$this->get_validasi_check_gi($no_registrasi,$request);
-                //echo "<pre>"; print_r($validasi_check_gi); die();
-
-                if($validasi_check_gi)
+                if( $validasi_last_approve == 0 )
                 {
                     DB::beginTransaction();
+                    
                     try 
                     {
-                        DB::SELECT('CALL complete_document("'.$no_registrasi.'", "'.$user_id.'")');
+                        DB::SELECT('CALL update_approval("'.$no_registrasi.'", "'.$user_id.'","'.$status.'", "'.$note.'", "'.$role_id.'", "'.$asset_controller.'")');
                         DB::commit();
                         return response()->json(['status' => true, "message" => 'Data is successfully ' . ($no_registrasi ? 'updated' : 'update')]);
                     } 
@@ -676,14 +659,135 @@ class ApprovalController extends Controller
                         DB::rollback();
                         return response()->json(['status' => false, "message" => $e->getMessage()]);
                     }
-                }
+                }    
                 else
                 {
-                    return response()->json(['status' => false, "message" => "CHECK GI ERROR! "]);
+                    //echo "1<pre>"; print_r($request->all()); die();
+
+                    $validasi_check_gi = false;//$this->get_validasi_check_gi($no_registrasi,$request);
+                    //echo "<pre>"; print_r($validasi_check_gi); die();
+
+                    if($validasi_check_gi)
+                    {
+                        DB::beginTransaction();
+                        try 
+                        {
+                            DB::SELECT('CALL complete_document("'.$no_registrasi.'", "'.$user_id.'")');
+                            DB::commit();
+                            return response()->json(['status' => true, "message" => 'Data is successfully ' . ($no_registrasi ? 'updated' : 'update')]);
+                        } 
+                        catch (\Exception $e) 
+                        {
+                            DB::rollback();
+                            return response()->json(['status' => false, "message" => $e->getMessage()]);
+                        }
+                    }
+                    else
+                    {
+                        return response()->json(['status' => false, "message" => "CHECK GI ERROR! "]);
+                    }
+                   
                 }
-               
             }
-        }   
+        }
+        else
+        {
+            /* SAP PROCESS */ 
+
+            if($status != 'R')
+            {
+                if($rolename == 'AC')
+                {
+                    $validasi_io = $this->get_validasi_io($request);
+                } 
+                else
+                {
+                    $validasi_io['status'] = true;
+                }
+            }
+            else
+            {
+                $validasi_io['status'] = true;            
+            }
+            
+
+            if( $validasi_io['status'] == false )
+            {
+                return response()->json(['status' => false, "message" => $validasi_io['message']]);
+            }
+            else
+            {
+                if( $status != 'R' )
+                {
+                    if($rolename == 'AC' )
+                    {
+                        $validasi_input_all_io = $this->validasi_input_all_io($request, $status, $noreg);
+                
+                        if(!$validasi_input_all_io['status'])
+                        {
+                            return response()->json(['status' => false, "message" => $validasi_input_all_io['message']] );
+                            die();
+                        }
+                    }
+                }
+
+                //echo "masuk ke validasi last approve"; die();            
+
+                $no_registrasi = str_replace("-", "/", $noreg);
+                $user_id = Session::get('user_id');
+                $note = $request->parNote;
+                $role_id = Session::get('role_id'); //get role id user
+                $asset_controller = ''; //get asset controller 
+                //echo $note;die();
+
+                $validasi_last_approve = $this->get_validasi_last_approve($no_registrasi);
+
+                if( $validasi_last_approve == 0 )
+                {
+                    DB::beginTransaction();
+                    
+                    try 
+                    {
+                        DB::SELECT('CALL update_approval("'.$no_registrasi.'", "'.$user_id.'","'.$status.'", "'.$note.'", "'.$role_id.'", "'.$asset_controller.'")');
+                        DB::commit();
+                        return response()->json(['status' => true, "message" => 'Data is successfully ' . ($no_registrasi ? 'updated' : 'update')]);
+                    } 
+                    catch (\Exception $e) 
+                    {
+                        DB::rollback();
+                        return response()->json(['status' => false, "message" => $e->getMessage()]);
+                    }
+                }    
+                else
+                {
+                    //echo "1<pre>"; print_r($request->all()); die();
+
+                    $validasi_check_gi = false;//$this->get_validasi_check_gi($no_registrasi,$request);
+                    //echo "<pre>"; print_r($validasi_check_gi); die();
+
+                    if($validasi_check_gi)
+                    {
+                        DB::beginTransaction();
+                        try 
+                        {
+                            DB::SELECT('CALL complete_document("'.$no_registrasi.'", "'.$user_id.'")');
+                            DB::commit();
+                            return response()->json(['status' => true, "message" => 'Data is successfully ' . ($no_registrasi ? 'updated' : 'update')]);
+                        } 
+                        catch (\Exception $e) 
+                        {
+                            DB::rollback();
+                            return response()->json(['status' => false, "message" => $e->getMessage()]);
+                        }
+                    }
+                    else
+                    {
+                        return response()->json(['status' => false, "message" => "CHECK GI ERROR! "]);
+                    }
+                   
+                }
+            }
+        }           
     }
 
     function get_validasi_check_gi($noreg,$request)
@@ -754,8 +858,6 @@ class ApprovalController extends Controller
         $noreg = $req['no-reg'];
         $jenis_dokumen = $req['po-type'];
 
-        if($jenis_dokumen == 'AMP'){$this->get_validasi_io_amp($req);}
-
         if(!empty($request_ka))
         {
             foreach( $request_ka as $k => $v )
@@ -782,51 +884,45 @@ class ApprovalController extends Controller
         }
     }
 
-    function get_validasi_io_amp($req)
+    function get_validasi_io_amp(Request $request , $status, $no_reg)
     {
+        $req = $request->all();
+        //echo "2<pre>"; print_r($req); die();
+
+        $request_ka = json_decode($req['request_ka']);
 
         $noreg = $req['no-reg'];
-        $total_kac = @$req['total_tab'];
-        //echo "5<br/>".$total_kac; die();
 
-        if(!empty($total_kac))
+        if(!empty($request_ka))
         {
-            //echo "2".$total_kac; die();
-            $i = 1;
-            for($i; $i<=$total_kac; $i++)
+            foreach( $request_ka as $k => $v )
             {
-                if( !empty($req['kode_aset_controller-1']) )
+                $proses = $this->validasi_io_proses_amp($noreg, $v);
+            
+                if($proses['status']=='error')
                 {
-                    $proses = $this->validasi_io_proses_amp($noreg, $req['kode_aset_sap-'.$i.''],$req['kode_aset_controller-'.$i.'']);
-                
-                    if($proses['status']=='error')
-                    {
-                        $result = array('status'=>false,'message'=> $proses['message']);
-                        return $result;
-                    }
-                    else
-                    {
-                        $result = array('status'=>true,'message'=> $proses['message']);
-                        return $result;
-                    }
-                }
-                else
-                {
-                    $result = array('status'=>false,'message'=> 'Kode Aset Controller belum diisi! (di ITEM DETAIL)');
+                    $result = array('status'=>false,'message'=> $proses['message']);
                     return $result;
+                    die();
                 }
-                
             }
-        }else
+            $result = array('status'=>true,'message'=> 'Validasi IO AMP Success');
+            return $result;
+        }
+        else
         {
-            $result = array('status'=>false,'message'=> 'Kode Aset Controller belum diisi (di ITEM DETAIL)');
+            $result = array('status'=>false,'message'=> 'Kode Aset Controller belum diisi (di Item Detail)');
             return $result;
         }
     }
 
-    function validasi_io_proses_amp($noreg, $ka_sap, $ka_con)
+    function validasi_io_proses_amp($noreg, $data)
     {
+        $ka_con = $data->kode_aset_controller;
+        $ka_sap = $data->kode_aset_sap;
+        $user_id = Session::get('user_id');
         //echo "2<br/>".$noreg.'====='.$ka_sap.'===='.$ka_con;
+        
         $service = API::exec(array(
             'request' => 'GET',
             'host' => 'ldap',
@@ -834,20 +930,32 @@ class ApprovalController extends Controller
         ));
         
         $data = $service;
-
+        //$data = 1;
         //echo "<pre>"; print_r($data); die();
 
         if( $data->TYPE == 'S' )
+        //if($data==1)
         {
-            DB::UPDATE(" UPDATE TR_REG_ASSET_DETAIL SET KODE_ASSET_CONTROLLER = '{$ka_con}' WHERE NO_REG = '{$noreg}' AND KODE_ASSET_SAP = '{$ka_sap}' ");
+            DB::beginTransaction();
+            try 
+            {   
+                $sql = " UPDATE TR_REG_ASSET_DETAIL SET KODE_ASSET_CONTROLLER = '{$ka_con}', UPDATED_AT = current_timestamp(), UPDATED_BY = '{$user_id}' WHERE NO_REG = '{$noreg}' AND ID = '{$ka_sap}' ";
+                DB::UPDATE($sql);
+                DB::commit();
 
-            $result = array('status'=>'success','message'=> $data->MESSAGE);
+                $result = array('status'=>'success','message'=> "SUKSES UPDATE KODE ASET");
+            }
+            catch (\Exception $e) 
+            {
+                DB::rollback();
+                $result = array('status'=>'error','message'=>$e->getMessage());
+            }
         }
         else
-        {
-            
+        {    
             $result = array('status'=>'error','message'=> $data->MESSAGE.' (Kode Aset Controller:'.$ka_con.')');
         }
+
         return $result;
     }
 
@@ -1134,7 +1242,7 @@ class ApprovalController extends Controller
                 $sql = " UPDATE TR_REG_ASSET_DETAIL SET KODE_ASSET_SAP = '' WHERE NO_REG = '{$no_reg}' "; 
                 DB::UPDATE($sql);
 
-                return response()->json(['status' => false, "message" => "Create Kode Asset AMS failed 2"]);
+                return response()->json(['status' => false, "message" => "Create Kode Asset AMS failed"]);
             }
             
             //echo "<pre>"; print_r($params);
