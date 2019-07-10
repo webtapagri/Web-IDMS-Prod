@@ -1156,7 +1156,7 @@ class ApprovalController extends Controller
 
     public function synchronize_sap_process($dt) 
     {
-        ##### PROSES 1
+        ##### PROSES 1. VALIDASI ALL INPUT KODE ASSET SAP
         $list_kode_asset = '';
         $sql_validasi_kas = " SELECT * FROM TR_REG_ASSET_DETAIL WHERE NO_REG = '{$dt->NO_REG}' AND (COST_CENTER is null OR COST_CENTER = '' ) ";
         $datax = DB::SELECT($sql_validasi_kas); 
@@ -1211,118 +1211,168 @@ class ApprovalController extends Controller
         
         $data = $service;
 
-        //echo "<pre>12"; dd($data, true); die();
-        //echo "<pre>7"; count($data); die();
+        //echo "<pre>15"; dd($data, true); die();
+        //echo "<pre>13"; count($data->item); //die();
         //echo "<pre>8"; var_dump($data, true); die();
-        //echo "<pre>9"; print_r($data, true); die();
+        //echo "<pre>30"; print_r($data->item); die();
         //echo "<pre>11"; json_encode($data, true); die();
-
-        if(!empty($data))
-        //if( $data )
+        /*
+        foreach($data->item as $k => $v)
         {
-            $result = array();
-            $message = '';
+            echo "1<pre>"; print_r($v);
+        }
+        die();
+        */
 
-            //echo "testt 2 <pre>"; count($data); die();
-
-            foreach($data->data as $k => $v)
+        //if(empty($data->item[0])){
+            if( $data->item->TYPE != '' )
             {
-                //echo "6<pre>"; dd($v);
-                if( $v->TYPE == 'S' && $v->ID == 'AA' && $v->NUMBER == 228 )
+                #2
+                if( $data->item->TYPE == 'S' )
                 {
-                    $message .= $v->MESSAGE.',';
-                    $result = array(
-                        'TYPE' => 'S',
-                        'ID' => $v->ID,
-                        'NUMBER' => $v->NUMBER,
-                        'MESSAGE' => $message,
-                        'LOG_NO' => $v->LOG_NO,
-                        'LOG_MSG_NO' => $v->LOG_MSG_NO,
-                        'MESSAGE_V1' => $v->MESSAGE_V1,
-                        'MESSAGE_V2' => $v->MESSAGE_V2,
-                        'MESSAGE_V3' => $v->MESSAGE_V3,
-                        'MESSAGE_V4' => $v->MESSAGE_V4
-                    );
+                    $user_id = Session::get('user_id');
+                    $asset_controller = $this->get_asset_controller($user_id,$dt->LOKASI_BA_CODE);
+
+                    DB::beginTransaction();
+                    try 
+                    {   
+                        //1. ADD KODE_ASSET_SAP & ASSET_CONTROLLER TR_REG_ASSET 
+                        $sql_1 = " UPDATE TR_REG_ASSET_DETAIL SET ASSET_CONTROLLER = '{$asset_controller}', KODE_ASSET_SAP = '".$data->item->MESSAGE_V1."', UPDATED_BY = '{$user_id}', UPDATED_AT = current_timestamp() WHERE NO_REG = '{$dt->NO_REG}' AND ASSET_PO_ID = '{$dt->ASSET_PO_ID}' AND NO_REG_ITEM = '{$dt->NO_REG_ITEM}' ";
+                        DB::UPDATE($sql_1);
+
+                        //2. INSERT LOG
+                        $sql_2 = " INSERT INTO TR_LOG_SYNC_SAP(no_reg,asset_po_id,no_reg_item,msgtyp,msgid,msgnr,message,msgv1,msgv2,msgv3,msgv4)VALUES('{$dt->NO_REG}','{$dt->ASSET_PO_ID}','{$dt->NO_REG_ITEM}','".$data->item->TYPE."','".$data->item->ID."','".$data->item->NUMBER."','".$data->item->MESSAGE."','".$data->item->MESSAGE_V1."','".$data->item->MESSAGE_V2."','".$data->item->MESSAGE_V3."','".$data->item->MESSAGE_V4."') ";
+                        DB::INSERT($sql_2);
+
+                        DB::commit();
+
+                        return true;
+                    }
+                    catch (\Exception $e) 
+                    {
+                        DB::rollback();
+                        return false;
+                        //die();
+                    }
                 }
-                else
+                else 
                 {
-                    $message .= $v->MESSAGE.',';
-                    $result = array(
-                        'TYPE' => 'E',
-                        'ID' => $v->ID,
-                        'NUMBER' => $v->NUMBER,
-                        'MESSAGE' => $message,
-                        'LOG_NO' => $v->LOG_NO,
-                        'LOG_MSG_NO' => $v->LOG_MSG_NO,
-                        'MESSAGE_V1' => $v->MESSAGE_V1,
-                        'MESSAGE_V2' => $v->MESSAGE_V2,
-                        'MESSAGE_V3' => $v->MESSAGE_V3,
-                        'MESSAGE_V4' => $v->MESSAGE_V4
-                    );
+                    DB::beginTransaction();
+
+                    try 
+                    {    
+                        $sql = " INSERT INTO TR_LOG_SYNC_SAP(no_reg,asset_po_id,no_reg_item,msgtyp,msgid,msgnr,message,msgv1,msgv2,msgv3,msgv4)VALUES('{$dt->NO_REG}','{$dt->ASSET_PO_ID}','{$dt->NO_REG_ITEM}','".$data->item->TYPE."','".$data->item->ID."','".$data->item->NUMBER."','".$data->item->MESSAGE."','".$data->item->MESSAGE_V1."','".$data->item->MESSAGE_V2."','".$data->item->MESSAGE_V3."','".$data->item->MESSAGE_V4."') ";
+                        
+                        DB::INSERT($sql); 
+                        DB::commit();
+                        
+                        $result = array('status'=>'error','message'=> ''.$data->item->MESSAGE.' (No Reg Item: '.$dt->NO_REG_ITEM.')');
+                        return $result;                 
+                    }
+                    catch (\Exception $e) 
+                    {
+                        DB::rollback();
+                        $result = array('status'=>'error','message'=>$e->getMessage());
+                        return $result;
+                    }
                 }
-            }
-            //die();
+
+                /* #1
+                $result = array();
+                $message = '';
+
+                //echo "20<pre>"; count($data); die();
+
+                foreach($data->item as $k => $v)
+                {
+                    //echo "19<pre>"; print_r($v);
+                    if( $v->TYPE == 'S' && $v->ID == 'AA' && $v->NUMBER == 228 )
+                    {
+                        $message .= $v->MESSAGE.',';
+                        $result = array(
+                            'TYPE' => 'S',
+                            'ID' => $v->ID,
+                            'NUMBER' => $v->NUMBER,
+                            'MESSAGE' => $message,
+                            'LOG_NO' => $v->LOG_NO,
+                            'LOG_MSG_NO' => $v->LOG_MSG_NO,
+                            'MESSAGE_V1' => $v->MESSAGE_V1,
+                            'MESSAGE_V2' => $v->MESSAGE_V2,
+                            'MESSAGE_V3' => $v->MESSAGE_V3,
+                            'MESSAGE_V4' => $v->MESSAGE_V4
+                        );
+                    }
+                    else
+                    {
+                        $message .= $v->MESSAGE.',';
+                        $result = array(
+                            'TYPE' => 'E',
+                            'ID' => $v->ID,
+                            'NUMBER' => $v->NUMBER,
+                            'MESSAGE' => $message,
+                            'LOG_NO' => $v->LOG_NO,
+                            'LOG_MSG_NO' => $v->LOG_MSG_NO,
+                            'MESSAGE_V1' => $v->MESSAGE_V1,
+                            'MESSAGE_V2' => $v->MESSAGE_V2,
+                            'MESSAGE_V3' => $v->MESSAGE_V3,
+                            'MESSAGE_V4' => $v->MESSAGE_V4
+                        );
+                    }
+                }
+                //die();
                 
-            if( $result['TYPE'] == 'S' )
-            {
-                $user_id = Session::get('user_id');
-                $asset_controller = $this->get_asset_controller($user_id,$dt->LOKASI_BA_CODE);
 
-                DB::beginTransaction();
-                try 
-                {   
-                    //1. ADD KODE_ASSET_SAP & ASSET_CONTROLLER TR_REG_ASSET 
-                    $sql_1 = " UPDATE TR_REG_ASSET_DETAIL SET ASSET_CONTROLLER = '{$asset_controller}', KODE_ASSET_SAP = '".$result['MESSAGE_V1']."', UPDATED_BY = '{$user_id}', UPDATED_AT = current_timestamp() WHERE NO_REG = '{$dt->NO_REG}' AND ASSET_PO_ID = '{$dt->ASSET_PO_ID}' AND NO_REG_ITEM = '{$dt->NO_REG_ITEM}' ";
-                    DB::UPDATE($sql_1);
-
-                    //2. INSERT LOG
-                    $sql_2 = " INSERT INTO TR_LOG_SYNC_SAP(no_reg,asset_po_id,no_reg_item,msgtyp,msgid,msgnr,message,msgv1,msgv2,msgv3,msgv4)VALUES('{$dt->NO_REG}','{$dt->ASSET_PO_ID}','{$dt->NO_REG_ITEM}','".$result['TYPE']."','".$result['ID']."','".$result['NUMBER']."','".$result['MESSAGE']."','".$result['MESSAGE_V1']."','".$result['MESSAGE_V2']."','".$result['MESSAGE_V3']."','".$result['MESSAGE_V4']."') ";
-                    DB::INSERT($sql_2);
-
-                    
-
-                    //3. CREATE KODE ASSET AMS PROCEDURE
-                    //$sql_3 = 'CALL create_kode_asset_ams("'.$noreg.'", "'.$ANLA_BUKRS.'", "'.$dt->JENIS_ASSET.'", "'.$ka_sap.'")';
-                    //echo $sql_3; die();
-                    //DB::SELECT($sql_3);
-
-                    DB::commit();
-
-                    return true;
-                }
-                catch (\Exception $e) 
+                if( $result['TYPE'] == 'S' )
                 {
-                    DB::rollback();
-                    return false;
-                    //die();
-                }
-            }
-            else 
-            {
-                DB::beginTransaction();
+                    $user_id = Session::get('user_id');
+                    $asset_controller = $this->get_asset_controller($user_id,$dt->LOKASI_BA_CODE);
 
-                try 
-                {    
-                    $sql = " INSERT INTO TR_LOG_SYNC_SAP(no_reg,asset_po_id,no_reg_item,msgtyp,msgid,msgnr,message,msgv1,msgv2,msgv3,msgv4)VALUES('{$dt->NO_REG}','{$dt->ASSET_PO_ID}','{$dt->NO_REG_ITEM}','".$result['TYPE']."','".$result['ID']."','".$result['NUMBER']."','".$result['MESSAGE']."','".$result['MESSAGE_V1']."','".$result['MESSAGE_V2']."','".$result['MESSAGE_V3']."','".$result['MESSAGE_V4']."') ";
-                    
-                    DB::INSERT($sql); 
-                    DB::commit();
-                    
-                    $result = array('status'=>'error','message'=> ''.$result['MESSAGE'].' (No Reg Item: '.$dt->NO_REG_ITEM.')');
-                    return $result;                 
+                    DB::beginTransaction();
+                    try 
+                    {   
+                        //1. ADD KODE_ASSET_SAP & ASSET_CONTROLLER TR_REG_ASSET 
+                        $sql_1 = " UPDATE TR_REG_ASSET_DETAIL SET ASSET_CONTROLLER = '{$asset_controller}', KODE_ASSET_SAP = '".$result['MESSAGE_V1']."', UPDATED_BY = '{$user_id}', UPDATED_AT = current_timestamp() WHERE NO_REG = '{$dt->NO_REG}' AND ASSET_PO_ID = '{$dt->ASSET_PO_ID}' AND NO_REG_ITEM = '{$dt->NO_REG_ITEM}' ";
+                        DB::UPDATE($sql_1);
+
+                        //2. INSERT LOG
+                        $sql_2 = " INSERT INTO TR_LOG_SYNC_SAP(no_reg,asset_po_id,no_reg_item,msgtyp,msgid,msgnr,message,msgv1,msgv2,msgv3,msgv4)VALUES('{$dt->NO_REG}','{$dt->ASSET_PO_ID}','{$dt->NO_REG_ITEM}','".$result['TYPE']."','".$result['ID']."','".$result['NUMBER']."','".$result['MESSAGE']."','".$result['MESSAGE_V1']."','".$result['MESSAGE_V2']."','".$result['MESSAGE_V3']."','".$result['MESSAGE_V4']."') ";
+                        DB::INSERT($sql_2);
+
+                        DB::commit();
+
+                        return true;
+                    }
+                    catch (\Exception $e) 
+                    {
+                        DB::rollback();
+                        return false;
+                        //die();
+                    }
                 }
-                catch (\Exception $e) 
+                else 
                 {
-                    DB::rollback();
-                    $result = array('status'=>'error','message'=>$e->getMessage());
-                    return $result;
+                    DB::beginTransaction();
+
+                    try 
+                    {    
+                        $sql = " INSERT INTO TR_LOG_SYNC_SAP(no_reg,asset_po_id,no_reg_item,msgtyp,msgid,msgnr,message,msgv1,msgv2,msgv3,msgv4)VALUES('{$dt->NO_REG}','{$dt->ASSET_PO_ID}','{$dt->NO_REG_ITEM}','".$result['TYPE']."','".$result['ID']."','".$result['NUMBER']."','".$result['MESSAGE']."','".$result['MESSAGE_V1']."','".$result['MESSAGE_V2']."','".$result['MESSAGE_V3']."','".$result['MESSAGE_V4']."') ";
+                        
+                        DB::INSERT($sql); 
+                        DB::commit();
+                        
+                        $result = array('status'=>'error','message'=> ''.$result['MESSAGE'].' (No Reg Item: '.$dt->NO_REG_ITEM.')');
+                        return $result;                 
+                    }
+                    catch (\Exception $e) 
+                    {
+                        DB::rollback();
+                        $result = array('status'=>'error','message'=>$e->getMessage());
+                        return $result;
+                    }
                 }
-            }
-        }
-        else
-        {
-            return false;
-        }
+                */
+            }else{return false;}
+        //}
     }
 
     public function get_asset_controller($user_id, $area_code)
