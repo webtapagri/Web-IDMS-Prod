@@ -1006,11 +1006,12 @@
             jQuery('.select-item-panel').removeClass("hide");
             var item = '<table class="table table-bordered table-condensed table-hover" id="table-detail-item">';
             item += '<tr>';
-            item += '<th width="45px">Select</th>';
-            item += '<th>Item PO</th>';
-            item += '<th>Kode</th>';
-            item += ' <th>Name</th>';
-            item += '<th class="text-right">Qty</th>';
+            item += '<th width="45px">SELECT</th>';
+            item += '<th>ITEM PO</th>';
+            item += '<th>KODE</th>';
+            item += '<th>NAME</th>';
+            item += '<th>HARGA (RP)</th>';
+            item += '<th class="text-right">QTY</th>';
             item += '</tr>';
             
             selected_detail_item = [];
@@ -1019,12 +1020,14 @@
             {
                 if( $.inArray(val.WERKS, ba_user) !== -1 )
                 {
+                    var HARGA = val.NETPR;
                     selected_detail_item.push(val);
                     item += "<tr>";
                     item += "<td><input type='checkbox' onClick='selectPOItem(this)' value='" + key + "' ></td>";
                     item += "<td>" + val.EBELP + "</td>";
                     item += "<td>" + val.MATNR + "</td>";
                     item += "<td>" + val.MAKTX + "</td>";
+                    item += "<td>" + convertToRupiah(HARGA.replace(".00", "")); + "</td>";
                     item += "<td class='text-right'>" + val.MENGE + "</td>";
                     item += "</tr>";
                     count++;
@@ -1063,6 +1066,15 @@
             });
         }
         jQuery('.loading-event').fadeOut();
+    }
+
+    function convertToRupiah(angka)
+    {
+        //alert(angka); return false;
+        var rupiah = '';        
+        var angkarev = angka.toString().split('').reverse().join('');
+        for(var i = 0; i < angkarev.length; i++) if(i%3 == 0) rupiah += angkarev.substr(i,3)+'.';
+        return rupiah.split('',rupiah.length-1).reverse().join('');
     }
 
     function selectPOItem(param) {

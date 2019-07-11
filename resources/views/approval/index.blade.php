@@ -902,20 +902,23 @@
 
                         item += "</div></div>";
 
-                        /* BOX CHECK GI */
-                        item += "<div class='col-md-12 box-kode-asset-controller'><div class='row'>";
-                        item += "<span class='label bg-blue'><i class='fa fa-bars'></i> MATERIAL DOCUMENT / CHECK GI</span><br/><br/>";
+                        if( val.po_type == 0 )
+                        {
+                            /* BOX CHECK GI */
+                            item += "<div class='col-md-12 box-kode-asset-controller'><div class='row'>";
+                            item += "<span class='label bg-blue'><i class='fa fa-bars'></i> MATERIAL DOCUMENT / CHECK GI</span><br/><br/>";
 
-                        item += "<div class='col-md-4'> ";
-                        item += "<div class='form-group'><label for='' class='col-md-4'>NUMBER</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='md_number-"+val.no_reg_item+"' value='"+val.gi_number+"' id='md_number-"+val.no_reg_item+"' autocomplete='off'></div></div>";
-                        item += "</div>";
+                            item += "<div class='col-md-4'> ";
+                            item += "<div class='form-group'><label for='' class='col-md-4'>NUMBER</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='md_number-"+val.no_reg_item+"' value='"+val.gi_number+"' id='md_number-"+val.no_reg_item+"' autocomplete='off'></div></div>";
+                            item += "</div>";
 
-                        item += "<div class='col-md-4'> ";
-                        item += "<div class='form-group'><label for='' class='col-md-4'>YEAR</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='md_year-"+val.no_reg_item+"' value='"+val.gi_year+"' id='md_year-"+val.no_reg_item+"' autocomplete='off' onkeyup='get_check_gi("+val.no_reg_item+")'></div></div>";
-                        item += "</div>";
+                            item += "<div class='col-md-4'> ";
+                            item += "<div class='form-group'><label for='' class='col-md-4'>YEAR</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='md_year-"+val.no_reg_item+"' value='"+val.gi_year+"' id='md_year-"+val.no_reg_item+"' autocomplete='off' onkeyup='get_check_gi("+val.no_reg_item+")'></div></div>";
+                            item += "</div>";
 
-                        item += "</div></div>";
-                        /* END BOX CHECK GI */
+                            item += "</div></div>";
+                            /* END BOX CHECK GI */
+                        }
                     }
                     /* END BOX KODE ASET CONTROLLER */
 

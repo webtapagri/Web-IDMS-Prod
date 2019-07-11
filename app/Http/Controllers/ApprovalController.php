@@ -566,7 +566,7 @@ class ApprovalController extends Controller
         $no_registrasi = str_replace("-", "/", $noreg);
         $list_kode_asset = "";
 
-        $sql = " SELECT * FROM TR_REG_ASSET_DETAIL WHERE NO_REG = '{$no_registrasi}' AND (KODE_ASSET_CONTROLLER is null OR KODE_ASSET_CONTROLLER = '' ) AND (DELETED is null OR DELETED = '') ";
+        $sql = " SELECT * FROM TR_REG_ASSET_DETAIL WHERE NO_REG = '{$no_registrasi}' AND (KODE_ASSET_CONTROLLER is null OR KODE_ASSET_CONTROLLER = '' ) AND (DELETED is null OR DELETED = '') AND JENIS_ASSET IN ('E4030','4030', '4010') ";
         $dt = DB::SELECT($sql); 
         //echo "<pre>"; print_r($dt);
         //die();
@@ -577,7 +577,7 @@ class ApprovalController extends Controller
             {
                 $list_kode_asset .= $v->KODE_ASSET_SAP.",";
             }
-            $result = array('status'=>false,'message'=> 'Kode Aset Controller (KODE ASET : '.rtrim($list_kode_asset).') belum diisi');
+            $result = array('status'=>false,'message'=> 'Kode Aset Controller (KODE ASET : '.rtrim($list_kode_asset,',').') belum diisi');
         }
         else
         {
@@ -662,10 +662,7 @@ class ApprovalController extends Controller
                 }    
                 else
                 {
-                    echo "22<pre>"; print_r($request->all()); die();
-
-                    $validasi_check_gi = false;//$this->get_validasi_check_gi($no_registrasi,$request);
-                    //echo "<pre>"; print_r($validasi_check_gi); die();
+                    $validasi_check_gi = true;
 
                     if($validasi_check_gi)
                     {
@@ -684,7 +681,7 @@ class ApprovalController extends Controller
                     }
                     else
                     {
-                        return response()->json(['status' => false, "message" => "CHECK GI ERROR! "]);
+                        return response()->json(['status' => false, "message" => "Error Validasi GI"]);
                     }
                    
                 }
@@ -969,8 +966,28 @@ class ApprovalController extends Controller
         }
         else
         {
-            $result = array('status'=>false,'message'=> 'Kode Aset Controller belum diisi! (di ITEM DETAIL)');
-            return $result;
+            //Cek Data Jenis Asset harus kendaraan
+            $sql = " SELECT * FROM TR_REG_ASSET_DETAIL WHERE NO_REG = '".$noreg."' AND JENIS_ASSET IN ('E4030','4030', '4010') AND (KODE_ASSET_SAP != '' OR KODE_ASSET_SAP IS NOT NULL) ";
+            $dt = DB::SELECT($sql); 
+            //echo "4<pre>"; print_r($dt);die();
+
+            if(!empty($dt))
+            {
+                $message = '';
+                foreach($dt as $k => $v)
+                {
+                    //echo "5<pre>"; print_r($v);
+                    $message .= $v->KODE_ASSET_SAP.",";
+                }
+                //die();
+                $result = array('status'=>false,'message'=> 'Kode IO Asset Controller belum diisi! ( Kode Asset SAP : '.rtrim($message,',').' )');
+                return $result;
+            }
+            else
+            {
+                $result = array('status'=>true,'message'=> 'Success');
+                return $result;   
+            }
         }
     }
 
