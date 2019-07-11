@@ -566,7 +566,7 @@ class ApprovalController extends Controller
         $no_registrasi = str_replace("-", "/", $noreg);
         $list_kode_asset = "";
 
-        $sql = " SELECT * FROM TR_REG_ASSET_DETAIL WHERE NO_REG = '{$no_registrasi}' AND (KODE_ASSET_CONTROLLER is null OR KODE_ASSET_CONTROLLER = '' ) ";
+        $sql = " SELECT * FROM TR_REG_ASSET_DETAIL WHERE NO_REG = '{$no_registrasi}' AND (KODE_ASSET_CONTROLLER is null OR KODE_ASSET_CONTROLLER = '' ) AND (DELETED is null OR DELETED = '') ";
         $dt = DB::SELECT($sql); 
         //echo "<pre>"; print_r($dt);
         //die();
@@ -662,7 +662,7 @@ class ApprovalController extends Controller
                 }    
                 else
                 {
-                    //echo "1<pre>"; print_r($request->all()); die();
+                    echo "22<pre>"; print_r($request->all()); die();
 
                     $validasi_check_gi = false;//$this->get_validasi_check_gi($no_registrasi,$request);
                     //echo "<pre>"; print_r($validasi_check_gi); die();
@@ -760,19 +760,19 @@ class ApprovalController extends Controller
                 }    
                 else
                 {
-                    //echo "1<pre>"; print_r($request->all()); die();
+                    //echo "3<pre>"; print_r($request->all()); die();
 
-                    $validasi_check_gi = false;//$this->get_validasi_check_gi($no_registrasi,$request);
-                    //echo "<pre>"; print_r($validasi_check_gi); die();
+                    $validasi_check_gi = $this->get_validasi_check_gi($request,$no_registrasi);
+                    //echo "1<pre>"; print_r($validasi_check_gi); die();
 
-                    if($validasi_check_gi)
+                    if($validasi_check_gi['status']=='success')
                     {
                         DB::beginTransaction();
                         try 
                         {
                             DB::SELECT('CALL complete_document("'.$no_registrasi.'", "'.$user_id.'")');
                             DB::commit();
-                            return response()->json(['status' => true, "message" => 'Data is successfully ' . ($no_registrasi ? 'updated' : 'update')]);
+                            return response()->json(['status' => true, "message" => 'Data is successfully ' . ($no_registrasi ? 'updated' : 'completed')]);
                         } 
                         catch (\Exception $e) 
                         {
@@ -782,7 +782,7 @@ class ApprovalController extends Controller
                     }
                     else
                     {
-                        return response()->json(['status' => false, "message" => "CHECK GI ERROR! "]);
+                        return response()->json(['status' => false, "message" => $validasi_check_gi['message'] ]);
                     }
                    
                 }
@@ -790,47 +790,137 @@ class ApprovalController extends Controller
         }           
     }
 
-    function get_validasi_check_gi($noreg,$request)
+    function get_validasi_check_gi(Request $request, $noreg)
     {
-        return response()->json(['status' => false, "message" => "CHECK GI GAGAL "]);
-        die();
-        //echo "4<pre>".$noreg."<br/>"; print_r($request->all()); die();
+        $req = $request->all();
+        
+        $request_gi = json_decode($req['request_gi']);
+        //echo "3<pre>"; print_r($request_gi); die();
+
+        if(!empty($request_gi))
+        {
+            foreach( $request_gi as $k => $v )
+            {
+                //echo "1<pre>"; print_r($v);
+                
+                $proses = $this->proses_validasi_check_gi($noreg,$v);
+
+                if($proses['status']=='error')
+                {
+                    $result = array('status'=>'error','message'=> $proses['message']);
+                    return $result;
+                    die();
+                }
+                
+            }
+            //die();
+
+            $result = array('status'=>'success','message'=> 'SUCCESS');
+            return $result;
+        }
+        else
+        {
+
+            //Cek sekali lagi utk penginputan GI Number dan GI Year
+            $sql = " SELECT * FROM TR_REG_ASSET_DETAIL WHERE NO_REG = '".$noreg."' AND ((GI_NUMBER is null OR GI_NUMBER = '') OR (GI_YEAR is null OR GI_YEAR = '')) ";
+            $data = DB::SELECT($sql);
+            //echo "4<pre>"; print_r($data); die();
+            if(!empty($data))
+            {
+                $message = '';
+                foreach($data as $a => $b)
+                {
+                    //echo "2<pre>"; print_r($b);
+                    $message .= "".$b->KODE_ASSET_SAP.",";
+                }
+                //die();
+
+                $result = array('status'=>'error','message'=> 'Kode GI Number & Year belum diisi (Kode Asset SAP : '.rtrim($message,',').' ) ' );
+                return $result;
+            }
+            else
+            {
+                $result = array('status'=>'success','message'=> 'Check GI Success');
+                return $result;
+            }
+            //$result = array('status'=>'error','message'=> 'Kode GI Number & Year belum diisi');
+            //return $result;
+        }
+             
+    }
+
+    function proses_validasi_check_gi($noreg, $data)
+    {
+        //echo "1<pre>"; print_r($data); die();
         /*
-        Array
+        stdClass Object
         (
-            [no-reg] => 19.07/AMS/PDFA/00031
-            [type-transaksi] => Jasa
-            [po-type] => SAP
-            [business-area] => 2121 - ESTATE BBB
-            [requestor] => PGA (Payroll & General Affair) - BBB
-            [tanggal-reg] => 08-07-2019
-            [total_tab] => 1
-            [nama_asset_1-1] => Verza1
-            [nama_asset_2-1] => Verza2
-            [nama_asset_3-1] => Verza3
-            [acct_determination-1] => E4030-
-            [serial_number-1] => 5
-            [inventory_number-1] => 6
-            [quantity-1] => 1.00
-            [uom-1] => UN
-            [capitalized_on-1] => 2019-07-04
-            [deactivation_on-1] => 
-            [business_area-1] => 2121
-            [cost_center-1] => 21zd210999
-            [plant-1] => 2121
-            [vendor-1] => 2300001209-SAHABAT SUKSES, CV
-            [book_deprec_01-1] => 4
-            [fiscal_deprec_15-1] => 4
-            [group_deprec_30-1] => 4
-            [kode_aset_controller-1] => O6421SM055
-            [kode_aset_sap-1] => 40300038
-            [kode_asset_ams-1] => 
-            [md_number-1] => 
-            [md_year-1] => 
-            [specification] => #4
-            [parNote] => #4
+            [gi_number] => 1
+            [gi_year] => 2
+            [no_registrasi] => 19.07/AMS/PDFA/00042
         )
         */
+
+        $gi_number = $data->gi_number;
+        $gi_year = $data->gi_year;
+        $ka_sap = $data->kode_sap;
+
+        $user_id = Session::get('user_id');
+        //echo "1".$nore.'====='.$ka_sap.'===='.$ka_con;
+        
+        $service = API::exec(array(
+            'request' => 'GET',
+            'host' => 'ldap',
+            'method' => "check_gi?MBLNR=".$gi_number."&MJAHR=".$gi_year."&ANLN1=1&ANLN2=2", 
+        ));
+        
+        //$data = $service;
+        $data = 1;
+        
+        //echo "2<pre>"; print_r($data); die();
+        /*
+        stdClass Object
+        (
+            [TYPE] => E
+            [ID] => 
+            [NUMBER] => 002
+            [MESSAGE] => Number GI Not Found !!
+            [LOG_NO] => 
+            [LOG_MSG_NO] => 000000
+            [MESSAGE_V1] => 
+            [MESSAGE_V2] => 
+            [MESSAGE_V3] => 
+            [MESSAGE_V4] => 
+        )
+        */
+
+        //if( $data->TYPE == 'S' )
+        if($data==1)
+        {
+            
+            DB::beginTransaction();
+            try 
+            {   
+                $sql = " UPDATE TR_REG_ASSET_DETAIL SET GI_NUMBER = '{$gi_number}', GI_YEAR = '{$gi_year}', UPDATED_AT = current_timestamp(), UPDATED_BY = '{$user_id}' WHERE NO_REG = '{$noreg}' AND KODE_ASSET_SAP = '{$ka_sap}' ";
+                //echo $sql; die();
+                DB::UPDATE($sql);
+                DB::commit();
+
+                $result = array('status'=>'success','message'=> "Validation Success");
+            }
+            catch (\Exception $e) 
+            {
+                DB::rollback();
+                $result = array('status'=>'error','message'=>$e->getMessage());
+            }
+            
+            //$result = array('status'=>'success','message'=> "Validation Success");
+        }
+        else
+        {
+            $result = array('status'=>'error','message'=> $data->MESSAGE.' (GI Number:'.$gi_number.' & Year : '.$gi_year.' )');
+        }
+        return $result;
     }
 
     public function get_validasi_last_approve($noreg)
@@ -929,12 +1019,12 @@ class ApprovalController extends Controller
             'method' => "check_io?AUFNR=$ka_con&AUFUSER3=$ka_sap", 
         ));
         
-        $data = $service;
-        //$data = 1;
+        //$data = $service;
+        $data = 1;
         //echo "<pre>"; print_r($data); die();
 
-        if( $data->TYPE == 'S' )
-        //if($data==1)
+        //if( $data->TYPE == 'S' )
+        if($data==1)
         {
             DB::beginTransaction();
             try 
@@ -1018,6 +1108,7 @@ class ApprovalController extends Controller
         return $result;
     }
 
+    /*
     function validasi_io_proses($noreg, $req, $i)
     {
         //echo "<pre>"; dd($req); die();
@@ -1075,6 +1166,7 @@ class ApprovalController extends Controller
 
         return $result;
     }
+    */
 
     /*
     function validasi_io_proses_v1($noreg, $ka_sap, $ka_con)
@@ -1231,8 +1323,8 @@ class ApprovalController extends Controller
             }
 
             #### PROSES CREATE KODE ASSET AMS 
-            //$execute_create_kode_asset_ams = true; 
-            $execute_create_kode_asset_ams = $this->execute_create_kode_asset_ams($v);
+            $execute_create_kode_asset_ams = true; 
+            //$execute_create_kode_asset_ams = $this->execute_create_kode_asset_ams($v);
             if( $execute_create_kode_asset_ams )
             {
                 return response()->json(['status' => true, "message" => "Synchronize SAP success"]);
@@ -1251,6 +1343,8 @@ class ApprovalController extends Controller
         }
         else
         {
+            $sql = " UPDATE TR_REG_ASSET_DETAIL SET KODE_ASSET_SAP = '' WHERE NO_REG = '{$no_reg}' "; 
+                DB::UPDATE($sql);
             return response()->json(['status' => false, "message" => "Synchronize SAP failed, data not found"]);
         }
     }
@@ -1288,34 +1382,8 @@ class ApprovalController extends Controller
         */
 
         ##### PROSES 2
-        //echo "<pre>"; print_r($dt->BA_PEMILIK_ASSET); die();
         $ANLA_BUKRS = substr($dt->BA_PEMILIK_ASSET,0,2);
-        //echo $ANLA_BUKRS; die();
         $ANLA_LIFNR = $this->get_kode_vendor($dt->NO_REG);
-        //echo "<pre>1"; dd($ANLA_LIFNR); die();
-        
-        /*
-        $param = array(
-            'ANLA_ANLKL'    => $dt->JENIS_ASSET,
-            'ANLA_BUKRS'    => substr($dt->LOKASI_BA_CODE,0,2),
-            'RA02S_NASSETS' => 1,
-            'ANLA_TXT50'    => $dt->NAMA_ASSET_1,
-            'ANLA_TXA50'    => $dt->NAMA_ASSET_2,
-            'ANLH_ANLHTXT'  => $dt->NAMA_ASSET_3,
-            'ANLA_SERNR'    => $dt->NO_RANGKA_OR_NO_SERI,
-            'ANLA_INVNR'    => $dt->NO_MESIN_OR_IMEI,
-            'ANLA_MENGE'    => $dt->QUANTITY_ASSET_SAP,
-            'ANLA_MEINS'    => $dt->UOM_ASSET_SAP,
-            'ANLA_AKTIV'    => $dt->CAPITALIZED_ON,
-            'ANLA_DEAKT'    => $dt->DEACTIVATION_ON,
-            'ANLZ_GSBER'    => $dt->LOKASI_BA_CODE,
-            'ANLZ_KOSTL'    => $dt->COST_CENTER,
-            'ANLZ_WERKS'    => $dt->LOKASI_BA_CODE,
-            'ANLA_LIFNR'    => $this->get_kode_vendor($dt->NO_REG),
-            'ANLB_NDJAR_01' => $dt->BOOK_DEPREC_01,
-            'ANLB_NDJAR_02' => $dt->FISCAL_DEPREC_15
-        );
-        */
 
         $service = API::exec(array(
             'request' => 'GET',
@@ -1324,19 +1392,6 @@ class ApprovalController extends Controller
         ));
         
         $data = $service;
-
-        //echo "<pre>16"; dd($data, true); die();
-        //echo "<pre>13"; count($data->item); //die();
-        //echo "<pre>8"; var_dump($data, true); die();
-        //echo "<pre>33"; print_r($data->item[0]->TYPE); die();
-        //echo "<pre>11"; json_encode($data, true); die();
-        /*
-        foreach($data->item as $k => $v)
-        {
-            echo "1<pre>"; print_r($v);
-        }
-        die();
-        */
         
         if( !empty($data->item->TYPE) )
         {
@@ -1593,8 +1648,6 @@ class ApprovalController extends Controller
             DB::rollback();
             return false;
             //die();
-        }
-            
-        
+        } 
     }
 }
