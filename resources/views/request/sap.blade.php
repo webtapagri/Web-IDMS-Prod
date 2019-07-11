@@ -871,17 +871,17 @@
                     beforeSend: function() {
                         jQuery('.loading-event').fadeIn();
                     },
-                    success: function(result) {
-                        if (result.status) {
+                    success: function(result) 
+                    {
+                        if (result.status) 
+                        {
                             notify({
                                 type: 'success',
                                 message: result.message
                             });
-                            notify({
-                                type: 'error',
-                                message: 'reqeust has been submited!'
-                            });
-                            window.location.href = "{{ url('/') }}";
+                            
+                            setTimeout(reload_page, 2000);
+
                         } else {
                             notify({
                                 type: 'warning',
@@ -896,6 +896,8 @@
             }
         }
     }
+
+    function reload_page(){window.location.href = "{{ url('/') }}";}
 
     function validateQty(request_item)
     {

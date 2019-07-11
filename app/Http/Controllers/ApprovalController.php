@@ -78,15 +78,6 @@ class ApprovalController extends Controller
             WHERE asset.NO_REG > 0 '.$addwhere.'
         ';
 
-        /*
-        $sql = '
-            SELECT asset.ID as id ' . implode(", ", $selectedColumn) . '
-            FROM TR_REG_ASSET as asset
-            INNER JOIN TBM_USER as requestor ON (requestor.id=asset.CREATED_BY)
-            WHERE asset.NO_REG > 0
-        ';
-        */
-
         $total_data = DB::select(DB::raw($sql));
 
         if ($request->no_po)
@@ -112,7 +103,6 @@ class ApprovalController extends Controller
 
         if ($request->request_date)
             $sql .= " AND DATE_FORMAT(asset.TANGGAL_REG, '%Y-%m-%d') = '" . DATE_FORMAT(date_create($request->request_date), 'Y-m-d'). "'";
-
 
         if ($request->po_date)
             $sql .= " AND DATE_FORMAT(asset.TANGGAL_PO, '%Y-%m-%d') = '" . DATE_FORMAT(date_create($request->po_date), 'Y-m-d') ."'";
@@ -587,6 +577,31 @@ class ApprovalController extends Controller
         return $result; 
     }
 
+    function get_validasi_input_create_asset_sap(Request $request)
+    {
+        $req = $request->all();
+        $noreg = $req['no-reg'];
+
+        $sql = " SELECT * FROM TR_REG_ASSET_DETAIL WHERE NO_REG = '{$noreg}' AND (COST_CENTER is null OR COST_CENTER = '') ";
+        $dt = DB::SELECT($sql);
+       
+        if(!empty($dt))
+        {
+            $message = '';
+            foreach($dt as $k => $v)
+            {
+                $message .= $v->KODE_MATERIAL.'('.$v->NAMA_MATERIAL.'),';
+            }
+            $result = array('status'=>false,'message'=> 'Detail Aset SAP belum diisi! ( Material : '.rtrim($message,',').' )');
+                return $result;
+        }
+        else
+        {
+            $result = array('status'=>true,'message'=> 'Success');
+            return $result;  
+        }
+    }
+
     function update_status(Request $request, $status, $noreg)
     {
         $req = $request->all();
@@ -697,6 +712,10 @@ class ApprovalController extends Controller
                 {
                     $validasi_io = $this->get_validasi_io($request);
                 } 
+                else if($rolename == 'AMS')
+                {
+                    $validasi_io = $this->get_validasi_input_create_asset_sap($request);
+                }
                 else
                 {
                     $validasi_io['status'] = true;
