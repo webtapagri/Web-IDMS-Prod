@@ -977,12 +977,12 @@
                         item += "<span class='label bg-blue'><i class='fa fa-bars'></i> KODE ASET</span><br/><br/>";
                         
                         item += "<div class='col-md-4'> ";
-                        item += "<div class='form-group'><label for='' class='col-md-4'>KODE ASET CONTROLLER</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='kode_aset_controller-"+val.no_reg_item+"' value='"+val.kode_asset_controller+"' id='kode_aset_controller-"+val.no_reg_item+"' autocomplete='off' onkeyup='get_kode_aset_amp("+val.no_reg_item+")'></div></div>";
+                        item += "<div class='form-group'><label for='' class='col-md-4'>KODE ASET CONTROLLER</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='kode_aset_controller-"+val.no_reg_item+"' value='"+val.kode_asset_controller+"' id='kode_aset_controller-"+val.no_reg_item+"' autocomplete='off' onkeyup='get_kode_aset_amp("+val.no_reg_item+")'><input type='hidden' class='form-control input-sm' name='id-"+val.no_reg_item+"' value='"+val.id+"' id='id-"+val.no_reg_item+"'></div></div>";
                         item += "</div>";
                         
                         // IT@100719 SEMENTARA PAKE ID DULU UTK MENDAPATKAN NILAI UNIQUE
                         item += "<div class='col-md-4'> ";
-                        item += "<div class='form-group'><label for='' class='col-md-4'>KODE ASET SAP</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='kode_aset_sap-"+val.no_reg_item+"' value='"+val.id+"' id='kode_aset_sap-"+val.no_reg_item+"' autocomplete='off'></div></div>";
+                        item += "<div class='form-group'><label for='' class='col-md-4'>KODE ASET SAP</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='kode_aset_sap-"+val.no_reg_item+"' value='"+val.kode_asset_sap+"' id='kode_aset_sap-"+val.no_reg_item+"' autocomplete='off'></div></div>";
                         item += "</div>";
                         
                         item += "<div class='col-md-4'> ";
@@ -1473,7 +1473,7 @@
     {
         //alert(no);
         var ka_con = $("#kode_aset_controller-"+no+"").val();
-        var ka_sap = $("#kode_aset_sap-"+no+"").val();
+        var ka_sap = $("#id-"+no+"").val();
         var noreg = $("#no-reg").val();
         //alert(ka_sap); return false;
 

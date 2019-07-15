@@ -1005,7 +1005,7 @@ class ApprovalController extends Controller
     function get_validasi_io_amp(Request $request , $status, $no_reg)
     {
         $req = $request->all();
-        //echo "2<pre>"; print_r($req); die();
+        //echo "3<pre>"; print_r($req); die();
 
         $request_ka = json_decode($req['request_ka']);
 
@@ -1654,6 +1654,7 @@ class ApprovalController extends Controller
 
     public function execute_amp_create_kode_asset_ams($noreg,$dt) 
     { 
+        //return true;
         $ANLA_BUKRS = substr($dt->BA_PEMILIK_ASSET,0,2);
         $user_id = Session::get('user_id');
 
