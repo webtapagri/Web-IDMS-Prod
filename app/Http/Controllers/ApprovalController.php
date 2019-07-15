@@ -1351,8 +1351,8 @@ class ApprovalController extends Controller
             }
 
             #### PROSES CREATE KODE ASSET AMS 
-            $execute_create_kode_asset_ams = true; 
-            //$execute_create_kode_asset_ams = $this->execute_create_kode_asset_ams($v);
+            //$execute_create_kode_asset_ams = true; 
+            $execute_create_kode_asset_ams = $this->execute_create_kode_asset_ams($v);
             if( $execute_create_kode_asset_ams )
             {
                 return response()->json(['status' => true, "message" => "Synchronize SAP success"]);
@@ -1591,71 +1591,16 @@ class ApprovalController extends Controller
         return $dt;
     }
 
+    /*
     function update_ka_con_temp(Request $request)
     {
         $req = $request->all();
         echo "<pre>"; print_r($req); die();
     }
+    */
 
     public function execute_create_kode_asset_ams($dt) 
-    {
-        //echo "<pre>"; print_r($dt); die();
-        /*
-        <pre>stdClass Object
-        (
-            [ID] => 108
-            [ASSET_PO_ID] => 187
-            [NO_REG_ITEM] => 1
-            [NO_REG] => 19.07/AMS/PDFA/00042
-            [ITEM_PO] => 3
-            [KODE_MATERIAL] => 000000000210020012
-            [NAMA_MATERIAL] => TEE PVC 8" WAVIN
-            [NO_PO] => 2013010585
-            [BA_PEMILIK_ASSET] => 2121
-            [JENIS_ASSET] => E4030
-            [GROUP] => G20
-            [SUB_GROUP] => SG164
-            [ASSET_CLASS] => 
-            [NAMA_ASSET] => TEE PVC 8" WAVIN
-            [MERK] => 
-            [SPESIFIKASI_OR_WARNA] => 
-            [NO_RANGKA_OR_NO_SERI] => 21
-            [NO_MESIN_OR_IMEI] => 21
-            [NO_POLISI] => 
-            [LOKASI_BA_CODE] => 2124
-            [LOKASI_BA_DESCRIPTION] => 2124-SAWIT BRAHMA
-            [TAHUN_ASSET] => 2001
-            [KONDISI_ASSET] => B
-            [INFORMASI] => 
-            [NAMA_PENANGGUNG_JAWAB_ASSET] => 
-            [JABATAN_PENANGGUNG_JAWAB_ASSET] => 
-            [ASSET_CONTROLLER] => IT
-            [KODE_ASSET_CONTROLLER] => 
-            [NAMA_ASSET_1] => versa1
-            [NAMA_ASSET_2] => versa2
-            [NAMA_ASSET_3] => versa3
-            [QUANTITY_ASSET_SAP] => 1.00
-            [UOM_ASSET_SAP] => UN
-            [CAPITALIZED_ON] => 09.07.2019
-            [DEACTIVATION_ON] => 
-            [COST_CENTER] => 21zd210999
-            [BOOK_DEPREC_01] => 4
-            [FISCAL_DEPREC_15] => 4
-            [GROUP_DEPREC_30] => 4
-            [DELETED] => 
-            [CREATED_BY] => 22
-            [CREATED_AT] => 2019-07-09 18:29:28
-            [UPDATED_BY] => 24
-            [UPDATED_AT] => 2019-07-09 19:32:01
-            [KODE_ASSET_SAP] => 
-            [KODE_ASSET_SUBNO_SAP] => 
-            [GI_NUMBER] => 
-            [GI_YEAR] => 
-            [KODE_ASSET_AMS] => 
-        )
-
-        */
-        
+    { 
         $ANLA_BUKRS = substr($dt->BA_PEMILIK_ASSET,0,2);
         $user_id = Session::get('user_id');
 
