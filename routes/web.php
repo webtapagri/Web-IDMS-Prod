@@ -59,18 +59,26 @@ Route::post('/approval/post', 'ApprovalController@store');
 Route::get('/approval/edit/', 'ApprovalController@show');
 Route::post('/approval/inactive', 'ApprovalController@inactive');
 Route::post('/approval/active', 'ApprovalController@active');
-Route::get('grid-approval', ['as' => 'get.approval_grid', 'uses' => 'ApprovalController@dataGrid']);
 //Route::get('view-data-approval/{no_reg}', ['as' => 'get.approval_view', 'uses' => 'ApprovalController@dataView']);
 Route::get('/approval/view/{no_reg}', 'ApprovalController@view')->name('no_reg');
 Route::get('/approval/view_detail/{no_reg}/{id}', 'ApprovalController@get_asset_detail');
 Route::post('/approval/delete_asset/{id}','ApprovalController@delete_asset');
 Route::post('/approval/save_asset_sap/{id}','ApprovalController@save_asset_sap');
-Route::get('grid-approval-history', ['as' => 'get.approval_grid_history', 'uses' => 'ApprovalController@dataGridHistory']);
 Route::post('/approval/update_status/{status}/{no_reg}','ApprovalController@update_status');
 Route::get('/approval/log_history/{no_reg}', 'ApprovalController@log_history')->name('no_reg');
 Route::post('/approval/synchronize_sap', 'ApprovalController@synchronize_sap');
 Route::post('/approval/synchronize_amp', 'ApprovalController@synchronize_amp');
 Route::post('/approval/update_ka_con_temp', 'ApprovalController@update_ka_con_temp');
+//Route::get('grid-approval', ['as' => 'get.approval_grid', 'uses' => 'ApprovalController@dataGrid']);
+//Route::get('grid-approval-history', ['as' => 'get.approval_grid_history', 'uses' => 'ApprovalController@dataGridHistory']);
+Route::match(['get', 'post'], 'grid-approval', [
+    'as' => 'get.approval_grid',
+    'uses' => 'ApprovalController@dataGrid'
+]);
+Route::match(['get', 'post'], 'grid-approval-history', [
+    'as' => 'get.approval_grid_history',
+    'uses' => 'ApprovalController@dataGridHistory'
+]);
 
 Route::resource('/mutasi', 'MutasiController');
 Route::get('/mutasi/create/{type}', 'MutasiController@create')->name('type');

@@ -34,25 +34,27 @@ class ApprovalController extends Controller
 
     public function dataGrid(Request $request)
     {
+        //echo "<pre>"; print_r($request->all());
+        $role_id = Session::get('role_id');
+        $user_id = Session::get('user_id');
+
         $orderColumn = $request->order[0]["column"];
         $dirColumn = $request->order[0]["dir"];
         $sortColumn = "";
         $selectedColumn[] = "";
         $addwhere = "";
-        $role_id = Session::get('role_id');
-        $user_id = Session::get('user_id');
         
         $field = array
         (
-            array("index" => "0", "field" => "asset.NO_REG", "alias" => "no_reg"),
-            array("index" => "1", "field" => "asset.TYPE_TRANSAKSI ", "alias" => "type"),
-            array("index" => "2", "field" => "asset.PO_TYPE", "alias" => "po_type"),
-            array("index" => "3", "field" => "asset.NO_PO", "alias" => "no_po"),
-            array("index" => "4", "field" => "DATE_FORMAT(asset.TANGGAL_REG, '%d %b %Y')", "alias" => "request_date"),
-            array("index" => "5", "field" => "requestor.name", "alias" => "requestor"),
-            array("index" => "6", "field" => "DATE_FORMAT(asset.TANGGAL_PO, '%d %b %Y')", "alias" => "po_date"),
-            array("index" => "7", "field" => "asset.KODE_VENDOR", "alias" => "vendor_code"),
-            array("index" => "8", "field" => "asset.NAMA_VENDOR", "alias" => "vendor_name"),
+            array("index" => "0", "field" => "ASSET.NO_REG", "alias" => "NO_REG"),
+            array("index" => "1", "field" => "ASSET.TYPE_TRANSAKSI ", "alias" => "TYPE"),
+            array("index" => "2", "field" => "ASSET.PO_TYPE", "alias" => "PO_TYPE"),
+            array("index" => "3", "field" => "ASSET.NO_PO", "alias" => "NO_PO"),
+            array("index" => "4", "field" => "DATE_FORMAT(ASSET.TANGGAL_REG, '%d %b %Y')", "alias" => "REQUEST_DATE"),
+            array("index" => "5", "field" => "REQUESTOR.NAME", "alias" => "REQUESTOR"),
+            array("index" => "6", "field" => "DATE_FORMAT(ASSET.TANGGAL_PO, '%d %b %Y')", "alias" => "PO_DATE"),
+            array("index" => "7", "field" => "ASSET.KODE_VENDOR", "alias" => "VENDOR_CODE"),
+            array("index" => "8", "field" => "ASSET.NAMA_VENDOR", "alias" => "VENDOR_NAME"),
         );
 
         foreach ($field as $row) 
@@ -69,53 +71,55 @@ class ApprovalController extends Controller
         }
 
         // it@140619 JOIN W v_outstanding
-        if($role_id!=4){ $addwhere .= " AND approval.user_id = '{$user_id}' "; }
         $sql = '
-            SELECT distinct(asset.id) as id '.implode(", ", $selectedColumn).'
-            FROM v_outstanding as approval 
-                LEFT JOIN TR_REG_ASSET as asset ON ( approval.document_code = asset.no_reg)
-                INNER JOIN TBM_USER as requestor ON (requestor.id=asset.CREATED_BY)
-            WHERE asset.NO_REG > 0 '.$addwhere.'
+            SELECT DISTINCT(ASSET.ID) AS ID '.implode(", ", $selectedColumn).'
+            FROM v_outstanding AS APPROVAL 
+                LEFT JOIN TR_REG_ASSET AS ASSET ON ( APPROVAL.DOCUMENT_CODE = ASSET.NO_REG)
+                INNER JOIN TBM_USER AS REQUESTOR ON (REQUESTOR.ID=ASSET.CREATED_BY)
+            WHERE ASSET.NO_REG > 0
         ';
 
-        $total_data = DB::select(DB::raw($sql));
+        //$total_data = DB::select(DB::raw($sql));
 
-        if ($request->no_po)
-            $sql .= " AND asset.NO_PO  like '%" . $request->no_po . "%'";
+        if($role_id != 4)
+            $sql .= " AND APPROVAL.USER_ID = '{$user_id}' "; 
+
+        if ($request->NO_PO)
+            $sql .= " AND ASSET.NO_PO  like '%" . $request->NO_PO . "%'";
        
-            if ($request->no_reg)
-            $sql .= " AND asset.NO_REG  like '%" . $request->no_reg . "%'";
+        if ($request->NO_REG)
+            $sql .= " AND ASSET.NO_REG  like '%" . $request->NO_REG . "%'";
 
-        if ($request->requestor)
-            $sql .= " AND requestor.name  like '%" . $request->requestor . "%'";
+        if ($request->REQUESTOR)
+            $sql .= " AND requestor.NAME  like '%" . $request->REQUESTOR . "%'";
 
-        if ($request->vendor_code)
-            $sql .= " AND asset.KODE_VENDOR  like '%" . $request->vendor_code . "%'";
+        if ($request->VENDOR_CODE)
+            $sql .= " AND ASSET.KODE_VENDOR  like '%" . $request->VENDOR_CODE . "%'";
 
-        if ($request->vendor_name)
-            $sql .= " AND asset.NAMA_VENDOR  like '%" . $request->vendor_name . "%'";
+        if ($request->VENDOR_NAME)
+            $sql .= " AND ASSET.NAMA_VENDOR  like '%" . $request->VENDOR_NAME . "%'";
 
-        if ($request->transaction_type)
-            $sql .= " AND asset.TYPE_TRANSAKSI  = " . $request->transaction_type;
+        if ($request->TYPE)
+            $sql .= " AND ASSET.TYPE_TRANSAKSI  = " . $request->TYPE;
      
-        if($request->po_type !='')
-            $sql .= " AND asset.PO_TYPE  = " . $request->po_type;
+        if($request->PO_TYPE !='')
+            $sql .= " AND ASSET.PO_TYPE  = " . $request->PO_TYPE;
 
-        if ($request->request_date)
-            $sql .= " AND DATE_FORMAT(asset.TANGGAL_REG, '%Y-%m-%d') = '" . DATE_FORMAT(date_create($request->request_date), 'Y-m-d'). "'";
+        if ($request->REQUEST_DATE)
+            $sql .= " AND DATE_FORMAT(ASSET.TANGGAL_REG, '%Y-%m-%d') = '" . DATE_FORMAT(date_create($request->REQUEST_DATE), 'Y-m-d'). "'";
 
-        if ($request->po_date)
-            $sql .= " AND DATE_FORMAT(asset.TANGGAL_PO, '%Y-%m-%d') = '" . DATE_FORMAT(date_create($request->po_date), 'Y-m-d') ."'";
+        if ($request->PO_DATE)
+            $sql .= " AND DATE_FORMAT(ASSET.TANGGAL_PO, '%Y-%m-%d') = '" . DATE_FORMAT(date_create($request->PO_DATE), 'Y-m-d') ."'";
 
         if ($orderColumn != "") {
             $sql .= " ORDER BY " . $field[$orderColumn]['field'] . " " . $dirColumn;
         }
         else
         {
-            $sql .= " ORDER BY asset.ID DESC ";
+            $sql .= " ORDER BY ASSET.ID DESC ";
         }
 
-        //echo $sql; die();
+       // echo $sql; die();
 
         $data = DB::select(DB::raw($sql));
 
@@ -462,16 +466,6 @@ class ApprovalController extends Controller
             }
         }
 
-        // it@140619 JOIN W v_outstanding
-        //if($role_id!=4){ $addwhere .= " AND approval.user_id = '{$user_id}' "; }
-        /*$sql = '
-            SELECT distinct(asset.id) as id '.implode(", ", $selectedColumn).'
-            FROM v_outstanding as approval 
-                LEFT JOIN TR_REG_ASSET as asset ON ( approval.document_code = asset.no_reg)
-                INNER JOIN TBM_USER as requestor ON (requestor.id=asset.CREATED_BY)
-            WHERE asset.NO_REG > 0 '.$addwhere.'
-        ';*/
-
         $sql = '
             SELECT user_id as user_id '.implode(", ", $selectedColumn).'
                 FROM v_history
@@ -480,13 +474,12 @@ class ApprovalController extends Controller
 
         $total_data = DB::select(DB::raw($sql));
 
-        /*
+        if ($request->document_code)
+            $sql .= " AND document_code like '%".$request->document_code."%'";
+
         if ($request->no_po)
             $sql .= " AND asset.NO_PO  like '%" . $request->no_po . "%'";
        
-            if ($request->no_reg)
-            $sql .= " AND asset.NO_REG  like '%" . $request->no_reg . "%'";
-
         if ($request->requestor)
             $sql .= " AND requestor.name  like '%" . $request->requestor . "%'";
 
@@ -507,7 +500,6 @@ class ApprovalController extends Controller
 
         if ($request->po_date)
             $sql .= " AND DATE_FORMAT(asset.TANGGAL_PO, '%Y-%m-%d') = '" . DATE_FORMAT(date_create($request->po_date), 'Y-m-d') ."'";
-        */
     
         if ($orderColumn != "") {
             $sql .= " ORDER BY " . $field[$orderColumn]['field'] . " " . $dirColumn;

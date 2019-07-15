@@ -46,7 +46,7 @@
                     <table id="data-table" class="table table-bordered table-condensed">
                         <thead>
                             <tr role="row" class="heading">
-                                <th>NO REG</th>
+                                <th>DOCUMENT CODE</th>
                                 <th>TIPE</th>
                                 <th>PO</th>
                                 <th>NO PO</th>
@@ -57,23 +57,23 @@
                                 <th>NAMA VENDOR</th>
                             </tr>
                             <tr role="row" class="filter">
-                                <th><input type="text" class="form-control input-xs form-filter" name="no_reg"></th>
+                                <th><input type="text" class="form-control input-xs form-filter" name="NO_REG" id="NO_REG"></th>
                                 <th>
-                                    <select type="text" class="form-control input-xs form-filter" name="transaction_type" id="flt_transaction_type">
+                                    <select type="text" class="form-control input-xs form-filter" name="TYPE" id="TYPE">
                                         <option></option>
                                     </select>
                                 </th>
                                 <th>
-                                    <select class="form-control input-xs form-filter" name="po_type" id="po_type">
+                                    <select class="form-control input-xs form-filter" name="PO_TYPE" id="PO_TYPE">
                                         <option></option>
                                     </select>
                                 </th>
-                                <th><input type="text" class="form-control input-xs form-filter" name="no_po"></th>
-                                <th><input type="text" class="form-control input-xs form-filter datepicker" name="request_date" autocomplete="off"></th>
-                                <th><input type="text" class="form-control input-xs form-filter" name="requestor"></th>
-                                <th><input type="text" class="form-control input-xs form-filter datepicker" name="po_date" autocomplete="off"></th>
-                                <th><input type="text" class="form-control input-xs form-filter" name="vendor_code"></th>
-                                <th><input type="text" class="form-control input-xs form-filter" name="vendor_name"></th>
+                                <th><input type="text" class="form-control input-xs form-filter" name="NO_PO" id="NO_PO"></th>
+                                <th><input type="text" class="form-control input-xs form-filter datepicker" name="REQUEST_DATE" id="REQUEST_DATE" autocomplete="off"></th>
+                                <th><input type="text" class="form-control input-xs form-filter" name="REQUESTOR"></th>
+                                <th><input type="text" class="form-control input-xs form-filter datepicker" name="PO_DATE" id="PO_DATE" autocomplete="off"></th>
+                                <th><input type="text" class="form-control input-xs form-filter" name="VENDOR_CODE"></th>
+                                <th><input type="text" class="form-control input-xs form-filter" name="VENDOR_NAME"></th>
                             </tr>
                         </thead>
                         <tbody></tbody>
@@ -333,37 +333,46 @@
     {
         $("#box-detail-item").fadeIn();
 
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
         var grid = new Datatable();
         grid.init({
-            src: jQuery("#data-table"),
+            src: $("#data-table"),
             onSuccess: function(grid) {},
             onError: function(grid) {},
             onDataLoad: function(grid) {},
+            destroy: true,
             loadingMessage: 'Loading...',
             dataTable: {
-                "order":[[0,"desc"]],
                 "dom": "<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'<'table-group-actions pull-right'>>r>t<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'>>",
-                //"bStateSave": true, // save datatable state(pagination, sort, etc) in cookie.
+                "bStateSave": true, // save datatable state(pagination, sort, etc) in cookie.
                 "lengthMenu": [
                     [10, 20, 50, 100, 150],
                     [10, 20, 50, 100, 150]
                 ],
                 "pageLength": 10,
-                ajax: "{!! route('get.approval_grid') !!}",
+                "ajax": {
+                    url: "{!! route('get.approval_grid') !!}"
+                },
                 columns: [
                     {
                         "render": function(data, type, row) 
                         {
-                            var no_registrasi= row.no_reg.replace(/\//g, '-');
-                            return '<a href="javascript:;" style="font-weight:bold" OnClick="approval(\'' + no_registrasi + '\')">' + row.no_reg + '</a>';
+                            var no_registrasi= row.NO_REG.replace(/\//g, '-');
+                            return '<a href="javascript:;" style="font-weight:bold" OnClick="approval(\'' + no_registrasi + '\')">' + row.NO_REG + '</a>';
                         }
                     }, {
-                        "render": function(data, type, row) {
-                            if (row.type == 1) {
+                        "render": function(data, type, row) 
+                        {
+                            if (row.TYPE == 1) {
                                 var content = 'Barang'
-                            } else if (row.type == 2) {
+                            } else if (row.TYPE == 2) {
                                 var content = 'Jasa'
-                            } else if (row.type == 3) {
+                            } else if (row.TYPE == 3) {
                                 var content = 'lain-lain'
                             }
 
@@ -371,9 +380,9 @@
                         }
                     }, {
                         "render": function(data, type, row) {
-                            if (row.po_type == 0) {
+                            if (row.PO_TYPE == 0) {
                                 var content = '<span class="label label-primary">SAP</span>';
-                            } else if (row.po_type == 1) {
+                            } else if (row.PO_TYPE == 1) {
                                 var content = '<span class="label label-danger">AMP</span>';
                             }
 
@@ -381,55 +390,124 @@
                         }
                     },
                     {
-                        data: 'no_po',
-                        name: 'no_po'
+                        data: 'NO_PO',
+                        name: 'NO_PO'
                     },
                     {
-                        data: 'request_date',
-                        name: 'request_date'
+                        data: 'REQUEST_DATE',
+                        name: 'REQUEST_DATE'
                     },
                     {
-                        data: 'requestor',
-                        name: 'requestor'
+                        data: 'REQUESTOR',
+                        name: 'REQUESTOR'
                     },
                     {
-                        data: 'po_date',
-                        name: 'po_date'
+                        data: 'PO_DATE',
+                        name: 'PO_DATE'
                     },
                     {
-                        data: 'vendor_code',
-                        name: 'vendor_code'
+                        data: 'VENDOR_CODE',
+                        name: 'VENDOR_CODE'
                     },
                     {
-                        data: 'vendor_name',
-                        name: 'vendor_name'
+                        data: 'VENDOR_NAME',
+                        name: 'VENDOR_NAME'
                     }
                 ],
                 columnDefs: [
-                ]
+                    {
+                        targets: [0],
+                        width: '15%'
+                    },
+                    {
+                        targets: [1],
+                        width: '10%'
+                    },
+                    {
+                        targets: [2],
+                        width: '8%'
+                    }
+                ],
+                oLanguage: {
+                    sProcessing: "<div id='datatable-loader'></div>",
+                    sEmptyTable: "Data tidak di temukan",
+                    sLoadingRecords: ""
+                },
+                "order": [],
             }
         });
 
+        $("#PO_TYPE").select2({
+            data: [{
+                    id: 0,
+                    text: 'SAP'
+                },
+                {
+                    id: 1,
+                    text: 'AMP'
+                }
+            ],
+            width: '100%',
+            placeholder: ' ',
+            allowClear: true
+        });
+
+        $("#TYPE").select2({
+            data: [{
+                    id: 1,
+                    text: 'Barang'
+                },
+                {
+                    id: 2,
+                    text: 'Jasa'
+                },
+                {
+                    id: 3,
+                    text: 'Lain-lain'
+                },
+            ],
+            width: '100%',
+            placeholder: ' ',
+            allowClear: true
+        });
+
+        /*
+        var po_type = $.parseJSON(JSON.stringify(dataJson('{!! route("get.select_role_idname") !!}')));
+        $('#PO_TYPE').select2({
+            data: po_type,
+            width: '100%',
+            placeholder: ' ',
+            allowClear: true
+        });
+        */
+
+
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
         var grid_history = new Datatable();
         grid_history.init({
-            src: jQuery("#data-table-history"),
-            onSuccess: function(grid) {},
-            onError: function(grid) {},
-            onDataLoad: function(grid) {},
+            src: $("#data-table-history"),
+            onSuccess: function(grid_history) {},
+            onError: function(grid_history) {},
+            onDataLoad: function(grid_history) {},
+            destroy: true,
             loadingMessage: 'Loading...',
             dataTable: 
             {
-                "order":[[0,"desc"]],
                 "dom": "<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'<'table-group-actions pull-right'>>r>t<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'>>",
-                //"bStateSave": true, // save datatable state(pagination, sort, etc) in cookie.
+                "bStateSave": true, // save datatable state(pagination, sort, etc) in cookie.
                 "lengthMenu": [
                     [10, 20, 50, 100, 150],
                     [10, 20, 50, 100, 150]
                 ],
                 "pageLength": 10,
-                ajax: "{!! route('get.approval_grid_history') !!}",
-                columns: [
-                    {
+                "ajax": {
+                    url: "{!! route('get.approval_grid_history') !!}"
+                },
+                columns: [{
                         "render": function(data, type, row) 
                         {
                             var no_registrasi= row.document_code.replace(/\//g, '-');
@@ -483,13 +561,33 @@
                     {
                         data: 'po_date',
                         name: 'po_date'
+                    }],
+                columnDefs: [
+                    {
+                        targets: [0],
+                        width: '15%'
+                    },
+                    {
+                        targets: [1],
+                        width: '10%'
+                    },
+                    {
+                        targets: [2],
+                        width: '8%'
                     }
                 ],
-                columnDefs: []
+                oLanguage: {
+                    sProcessing: "<div id='datatable-loader'></div>",
+                    sEmptyTable: "Data tidak di temukan",
+                    sLoadingRecords: ""
+                },
+                "order": []
             }
         });
+       
 
-        jQuery(".capitalized_on_date").datepicker({
+        $(".capitalized_on_date, #REQUEST_DATE, #PO_DATE").datepicker(
+        {
             format: "mm/dd/yyyy",
             autoclose: true,
             endDate: "today",
@@ -603,60 +701,6 @@
             }
         }); 
     }
-
-    /*
-    function ___approval(id) 
-    {
-        request_item = [];
-        jQuery("#edit_id").val(id);
-
-        request_item.push({
-            item_po: 1,
-            code: "4040100001",
-            name: "SEPEDA MOTOR 150 HONDA VERZA",
-            qty_index: 1,
-            business_area: '4141 - Gawi Mill',
-            mrp: '4141 - Gawi Mill',
-            business_area_location: '4121',
-            requestor: 'dadang.kurniawan',
-        });
-        request_item.push({
-            item_po: 1,
-            code: "4040100001",
-            name: "SEPEDA MOTOR 150 HONDA VERZA",
-            qty_index: 1,
-            business_area: '4141 - Gawi Mill',
-            mrp: '4141 - Gawi Mill',
-            business_area_location: '4121',
-            requestor: 'dadang.kurniawan',
-        });
-        request_item.push({
-            item_po: 1,
-            code: "4040100001",
-            name: "SEPEDA MOTOR 150 HONDA VERZA",
-            qty_index: 1,
-            business_area: '4141 - Gawi Mill',
-            mrp: '4141 - Gawi Mill',
-            business_area_location: '4121',
-            requestor: 'dadang.kurniawan',
-        });
-        request_item.push({
-            item_po: 1,
-            code: "4040100001",
-            name: "SEPEDA MOTOR 150 HONDA VERZA",
-            qty_index: 1,
-            business_area: '4141 - Gawi Mill',
-            mrp: '4141 - Gawi Mill',
-            business_area_location: '4121',
-            requestor: 'dadang.kurniawan',
-        });
-
-        createItemRequestTable();
-
-        jQuery("#approve-modal .modal-title").html("<i class='fa fa-edit'></i>  Approval Request - Penambahan <span style='color:#dd4b39'>" + id + "</span>");
-        jQuery("#approve-modal").modal("show");
-    }
-    */
 
     function createItemRequestTable() {
         var item = '<table class="table table-condensed" id="request-item-table" style="font-size:13px">';
