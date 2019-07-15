@@ -1350,6 +1350,9 @@ class ApprovalController extends Controller
                 //return response()->json(['status' => true, "message" => "Synchronize SAP Success "]);
             }
 
+            return response()->json(['status' => true, "message" => "Synchronize SAP success"]);
+
+            /* SKIP IT@150719
             #### PROSES CREATE KODE ASSET AMS 
             //$execute_create_kode_asset_ams = true; 
             $execute_create_kode_asset_ams = $this->execute_create_kode_asset_ams($v);
@@ -1364,10 +1367,7 @@ class ApprovalController extends Controller
 
                 return response()->json(['status' => false, "message" => "Create Kode Asset AMS failed"]);
             }
-            
-            //echo "<pre>"; print_r($params);
-
-            //die();
+            */
         }
         else
         {
@@ -1441,6 +1441,11 @@ class ApprovalController extends Controller
                     DB::INSERT($sql_2);
 
                     DB::commit();
+
+                    //3. CREATE CODE ASSET AMS
+                    $sql_3 = 'CALL create_kode_asset_ams("'.$dt->NO_REG.'", "'.$ANLA_BUKRS.'", "'.$dt->JENIS_ASSET.'", "'.$data->item->MESSAGE_V1.'")';
+                    //echo $sql_3; die();
+                    DB::SELECT($sql_3);
 
                     return true;
                 }
@@ -1541,6 +1546,11 @@ class ApprovalController extends Controller
 
                     DB::commit();
 
+                    //3. CREATE CODE ASSET AMS
+                    $sql_3 = 'CALL create_kode_asset_ams("'.$dt->NO_REG.'", "'.$ANLA_BUKRS.'", "'.$dt->JENIS_ASSET.'", "'.$data->item->MESSAGE_V1.'")';
+                    //echo $sql_3; die();
+                    DB::SELECT($sql_3);
+
                     return true;
                 }
                 catch (\Exception $e) 
@@ -1609,7 +1619,7 @@ class ApprovalController extends Controller
         {   
             //3. CREATE KODE ASSET AMS PROCEDURE
             $sql_3 = 'CALL create_kode_asset_ams("'.$noreg.'", "'.$ANLA_BUKRS.'", "'.$dt->JENIS_ASSET.'", "'.$dt->KODE_ASSET_SAP.'")';
-            echo $sql_3; die();
+            //echo $sql_3; die();
             DB::SELECT($sql_3);
 
             DB::commit();
