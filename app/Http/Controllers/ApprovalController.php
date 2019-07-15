@@ -1379,19 +1379,17 @@ class ApprovalController extends Controller
 
     function synchronize_amp(Request $request)
     {
-        //echo "<pre>"; print_r($request->noreg); die();
         $no_reg = @$request->noreg;
         //echo $no_reg; 
 
-        #CREATE KODE ASSET FAMS (tunggu mas Dega)
+        #CREATE KODE ASSET FAMS
         $sql = " SELECT * FROM TR_REG_ASSET_DETAIL WHERE NO_REG = '{$no_reg}' ";
         $data = DB::SELECT($sql);
-        //echo "<pre>"; print_r($data); die();
+
         if( !empty($data) )
         {
             foreach($data as $k => $v)
             {
-                //echo "1<pre>"; print_r($v);
                 if( !$this->execute_amp_create_kode_asset_ams($no_reg, $v) )
                 {
                     return response()->json(['status' => false, "message" => "Synchronize AMP failed"]);
@@ -1656,16 +1654,14 @@ class ApprovalController extends Controller
 
     public function execute_amp_create_kode_asset_ams($noreg,$dt) 
     { 
-        //return true;
-        //echo "2<pre>"; print_r($dt); die();
         $ANLA_BUKRS = substr($dt->BA_PEMILIK_ASSET,0,2);
         $user_id = Session::get('user_id');
 
         DB::beginTransaction();
         try 
         {   
-            $sql = " CALL create_kode_asset_ams('".$noreg."', '".$ANLA_BUKRS."', '".$dt->JENIS_ASSET."', '') ";
-            echo $sql; die();
+            $sql = " CALL create_kode_asset_ams('".$noreg."', '".$ANLA_BUKRS."', '".$dt->JENIS_ASSET."', '-".$dt->ID."') ";
+
             DB::SELECT($sql);
 
             DB::commit();
