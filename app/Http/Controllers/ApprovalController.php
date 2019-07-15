@@ -1665,6 +1665,7 @@ class ApprovalController extends Controller
         try 
         {   
             $sql = " CALL create_kode_asset_ams('".$noreg."', '".$ANLA_BUKRS."', '".$dt->JENIS_ASSET."', '') ";
+            echo $sql; die();
             DB::SELECT($sql);
 
             DB::commit();
