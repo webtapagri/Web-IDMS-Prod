@@ -1609,7 +1609,7 @@ class ApprovalController extends Controller
         {   
             //3. CREATE KODE ASSET AMS PROCEDURE
             $sql_3 = 'CALL create_kode_asset_ams("'.$noreg.'", "'.$ANLA_BUKRS.'", "'.$dt->JENIS_ASSET.'", "'.$dt->KODE_ASSET_SAP.'")';
-            //echo $sql_3; die();
+            echo $sql_3; die();
             DB::SELECT($sql_3);
 
             DB::commit();
