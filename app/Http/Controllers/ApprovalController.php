@@ -579,7 +579,8 @@ WHERE a.NO_REG = '{$no_registrasi}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KO
         $req = $request->all();
         $noreg = $req['no-reg'];
 
-        $sql = " SELECT * FROM TR_REG_ASSET_DETAIL WHERE NO_REG = '{$noreg}' AND (COST_CENTER is null OR COST_CENTER = '') ";
+        $sql = " SELECT * FROM TR_REG_ASSET_DETAIL WHERE NO_REG = '{$noreg}' AND (COST_CENTER is null OR COST_CENTER = '') AND (DELETED IS NULL OR DELETED = '') ";
+
         $dt = DB::SELECT($sql);
        
         if(!empty($dt))
