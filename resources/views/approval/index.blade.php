@@ -644,12 +644,23 @@
                 }
                 else
                 {
-                    $("#create-button-sync-sap").show();
+                    //VALIDASI SYNC AMP IT@160719
+                    if(data.sync_amp != 0)
+                    {
+                        $("#create-button-sync-sap").show();
                         $("#create-button-sync-sap").html('<button type="button" class="btn btn-flat label-danger" OnClick="sinkronisasi_amp()" style="margin-right: 5px;">SYNC AMP</button>');
-                    <?php if( $user_role == 'AC' ){ ?>
-                        $("#button-approve").hide();
-                        $(".button-reject").attr("disabled", false); 
-                    <?php } ?>
+                        <?php if( $user_role == 'AC' ){ ?>
+                            $("#button-approve").hide();
+                            $(".button-reject").attr("disabled", false); 
+                        <?php } ?>
+                    }
+                    else
+                    {
+                        $("#create-button-sync-sap").hide();
+                        $("#button-approve").show();
+                        $(".button-reject").hide(); 
+                    }
+
                 }
                     
                 var item = '<table class="table xtable-condensed table-responsive table-striped" id="request-item-table" style="font-size:13px">';
@@ -950,8 +961,8 @@
 
                         item += "</div></div>";
 
-                        if( val.po_type == 0 )
-                        {
+                        //if( val.po_type == 0 ){ //HIDE KRN AMP JG MENGINPUT GI IT@170619
+                            
                             /* BOX CHECK GI */
                             item += "<div class='col-md-12 box-kode-asset-controller'><div class='row'>";
                             item += "<span class='label bg-blue'><i class='fa fa-bars'></i> MATERIAL DOCUMENT / CHECK GI</span><br/><br/>";
@@ -966,7 +977,8 @@
 
                             item += "</div></div>";
                             /* END BOX CHECK GI */
-                        }
+                        
+                        //}
                     }
                     /* END BOX KODE ASET CONTROLLER */
 
@@ -1491,7 +1503,7 @@
         var cgi_number = $("#md_number-"+no+"").val();
         //alert(cgi_number);
         var cgi_year = $("#md_year-"+no+"").val();
-        var csap = $("#kode_aset_sap-"+no+"").val();
+        var csap = $("#kode_aset_ams-"+no+"").val();
         var cnoreg = $("#no-reg").val();
 
         request_check_gi.push(

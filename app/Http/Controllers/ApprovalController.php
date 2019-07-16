@@ -213,7 +213,8 @@ class ApprovalController extends Controller
                     'requestor' => trim($v->REQUESTOR),
                     'tanggal_reg' => trim($v->TANGGAL_REG),
                     'item_detail' => $this->get_item_detail($noreg),
-                    'sync_sap' => $this->get_sinkronisasi_sap($noreg)
+                    'sync_sap' => $this->get_sinkronisasi_sap($noreg),
+                    'sync_amp' => $this->get_sinkronisasi_amp($noreg)
                 );
 
             }
@@ -732,6 +733,8 @@ WHERE a.NO_REG = '{$no_registrasi}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KO
             }
             else
             {
+                // IF SYNCHRONIZE SAP SUCCESS
+
                 if( $status != 'R' )
                 {
                     if($rolename == 'AC' )
@@ -848,11 +851,11 @@ WHERE a.NO_REG = '{$no_registrasi}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KO
                 foreach($data as $a => $b)
                 {
                     //echo "2<pre>"; print_r($b);
-                    $message .= "".$b->KODE_ASSET_SAP.",";
+                    $message .= "".$b->KODE_ASSET_AMS.",";
                 }
                 //die();
 
-                $result = array('status'=>'error','message'=> 'Kode GI Number & Year belum diisi (Kode Asset SAP : '.rtrim($message,',').' ) ' );
+                $result = array('status'=>'error','message'=> 'Kode GI Number & Year belum diisi (Kode Asset AMS : '.rtrim($message,',').' ) ' );
                 return $result;
             }
             else
@@ -945,7 +948,7 @@ WHERE a.NO_REG = '{$no_registrasi}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KO
         DB::beginTransaction();
         try 
         {   
-            $sql = " UPDATE TR_REG_ASSET_DETAIL SET GI_NUMBER = '{$gi_number}', GI_YEAR = '{$gi_year}', UPDATED_AT = current_timestamp(), UPDATED_BY = '{$user_id}' WHERE NO_REG = '{$noreg}' AND KODE_ASSET_SAP = '{$ka_sap}' ";
+            $sql = " UPDATE TR_REG_ASSET_DETAIL SET GI_NUMBER = '{$gi_number}', GI_YEAR = '{$gi_year}', UPDATED_AT = current_timestamp(), UPDATED_BY = '{$user_id}' WHERE NO_REG = '{$noreg}' AND KODE_ASSET_AMS = '{$ka_sap}' ";
             //echo $sql; die();
             DB::UPDATE($sql);
             DB::commit();
@@ -986,8 +989,8 @@ WHERE a.NO_REG = '{$no_registrasi}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KO
             'method' => "check_gi?MBLNR=".$gi_number."&MJAHR=".$gi_year."&ANLN1=1&ANLN2=2", 
         ));
         
-        //$data = $service;
-        $data = 1;
+        $data = $service;
+        //$data = 1;
         
         //echo "2<pre>"; print_r($data); die();
         /*
@@ -1006,8 +1009,8 @@ WHERE a.NO_REG = '{$no_registrasi}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KO
         )
         */
 
-        //if( $data->TYPE == 'S' )
-        if($data==1)
+        if( $data->TYPE == 'S' )
+        //if($data==1)
         {
             
             DB::beginTransaction();
@@ -1088,7 +1091,13 @@ WHERE a.NO_REG = '{$noreg}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KODE_ASSET
             else
             {
                 //Cek Data Jenis Asset harus kendaraan
+                
+                $sql = " SELECT * FROM TR_REG_ASSET_DETAIL WHERE NO_REG = '{$noreg}' AND (KODE_ASSET_AMS is not null OR KODE_ASSET_AMS != '' ) ";
+
+                /*hide it@071519
                 $sql = " SELECT * FROM TR_REG_ASSET_DETAIL WHERE NO_REG = '".$noreg."' AND JENIS_ASSET IN ('E4030','4030', '4010') AND (KODE_ASSET_SAP != '' OR KODE_ASSET_SAP IS NOT NULL) ";
+                */
+
                 $dt = DB::SELECT($sql); 
                 //echo "4<pre>"; print_r($dt);die();
 
@@ -1437,6 +1446,29 @@ WHERE a.NO_REG = '{$noreg}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KODE_ASSET
                 $request[] = array
                 (
                     'kode_material' => trim($v->KODE_MATERIAL),
+                );
+            }
+        }
+
+        return $datax;
+    }
+
+    function get_sinkronisasi_amp($noreg)
+    {
+        $request = array();
+        $datax = '';
+        $sql = " SELECT COUNT(*) AS TOTAL FROM TR_REG_ASSET_DETAIL a WHERE a.no_reg = '{$noreg}' AND (a.KODE_ASSET_AMS IS NULL OR a.KODE_ASSET_AMS = '')  ";
+        $data = DB::SELECT($sql);
+        //echo "<pre>"; print_r($data); die();
+
+        if($data)
+        {
+            $datax .= $data[0]->TOTAL;
+            foreach( $data as $k => $v )
+            {
+                $request[] = array
+                (
+                    'SYNC_AMP' => trim($v->TOTAL),
                 );
             }
         }
