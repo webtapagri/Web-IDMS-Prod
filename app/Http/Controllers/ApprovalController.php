@@ -835,8 +835,31 @@ WHERE a.NO_REG = '{$no_registrasi}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KO
             }
             //die();
 
-            $result = array('status'=>'success','message'=> 'SUCCESS');
-            return $result;
+            //Cek sekali lagi utk penginputan GI Number dan GI Year
+            $sql = " SELECT * FROM TR_REG_ASSET_DETAIL WHERE NO_REG = '".$noreg."' AND ((GI_NUMBER is null OR GI_NUMBER = '') OR (GI_YEAR is null OR GI_YEAR = '')) ";
+            $data = DB::SELECT($sql);
+            //echo "4<pre>"; print_r($data); die();
+            if(!empty($data))
+            {
+                $message = '';
+                foreach($data as $a => $b)
+                {
+                    //echo "2<pre>"; print_r($b);
+                    $message .= "".$b->KODE_ASSET_AMS.",";
+                }
+                //die();
+
+                $result = array('status'=>'error','message'=> 'Kode GI Number & Year belum diisi (Kode Asset AMS : '.rtrim($message,',').' ) ' );
+                return $result;
+            }
+            else
+            {
+                $result = array('status'=>'success','message'=> 'Check GI Success');
+                return $result;
+            }
+
+            //$result = array('status'=>'success','message'=> 'SUCCESS');
+            //return $result;
         }
         else
         {
@@ -893,13 +916,34 @@ WHERE a.NO_REG = '{$no_registrasi}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KO
             }
             //die();
 
-            $result = array('status'=>'success','message'=> 'SUCCESS');
-            return $result;
+            // MELAKUKAN CEK SEKALI LAGI JIKA INPUTAN GI MASIH ADA YG BLM DIINPUT IT@160719
+            $sql = " SELECT * FROM TR_REG_ASSET_DETAIL WHERE NO_REG = '".$noreg."' AND ((GI_NUMBER is null OR GI_NUMBER = '') OR (GI_YEAR is null OR GI_YEAR = '')) ";
+            $data = DB::SELECT($sql);
+            //echo "4<pre>"; print_r($data); die();
+            if(!empty($data))
+            {
+                $message = '';
+                foreach($data as $a => $b)
+                {
+                    //echo "2<pre>"; print_r($b);
+                    $message .= "".$b->KODE_ASSET_SAP.",";
+                }
+                //die();
+
+                $result = array('status'=>'error','message'=> 'Kode GI Number & Year belum diisi (Kode Asset SAP : '.rtrim($message,',').' ) ' );
+                return $result;
+            }
+            else
+            {
+                $result = array('status'=>'success','message'=> 'Check GI Success');
+                return $result;
+            }
+
+            //$result = array('status'=>'success','message'=> 'SUCCESS');
+            //return $result;
         }
         else
         {
-
-            //Cek sekali lagi utk penginputan GI Number dan GI Year
             $sql = " SELECT * FROM TR_REG_ASSET_DETAIL WHERE NO_REG = '".$noreg."' AND ((GI_NUMBER is null OR GI_NUMBER = '') OR (GI_YEAR is null OR GI_YEAR = '')) ";
             $data = DB::SELECT($sql);
             //echo "4<pre>"; print_r($data); die();
@@ -937,86 +981,24 @@ WHERE a.NO_REG = '{$no_registrasi}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KO
             [no_registrasi] => 19.07/AMS/PDFA/00042
         )
         */
+        //VALIDASI IF GI NUMBER & GI YEAR NULL THEN LAKUKAN VALIDASI IT@170619
+        $sql = " SELECT COUNT(*) AS TOTAL FROM TR_REG_ASSET_DETAIL WHERE NO_REG = '{$data->no_registrasi}' AND KODE_ASSET_AMS = {$data->kode_sap} AND (GI_NUMBER IS NOT NULL OR GI_NUMBER != '') AND (GI_YEAR IS NOT NULL OR GI_YEAR != '') ";
+        $jml = DB::SELECT($sql);
+        //echo "2<pre>"; print_r($jml);die();
 
-        $gi_number = $data->gi_number;
-        $gi_year = $data->gi_year;
-        $ka_sap = $data->kode_sap;
-
-        $user_id = Session::get('user_id');
-        //echo "1".$nore.'====='.$ka_sap.'===='.$ka_con;
-            
-        DB::beginTransaction();
-        try 
-        {   
-            $sql = " UPDATE TR_REG_ASSET_DETAIL SET GI_NUMBER = '{$gi_number}', GI_YEAR = '{$gi_year}', UPDATED_AT = current_timestamp(), UPDATED_BY = '{$user_id}' WHERE NO_REG = '{$noreg}' AND KODE_ASSET_AMS = '{$ka_sap}' ";
-            //echo $sql; die();
-            DB::UPDATE($sql);
-            DB::commit();
-
-            $result = array('status'=>'success','message'=> "Validation Success");
-        }
-        catch (\Exception $e) 
+        if($jml[0]->TOTAL == 0)
         {
-            DB::rollback();
-            $result = array('status'=>'error','message'=>$e->getMessage());
-        }
-        
-        return $result;
-    }
+            $gi_number = $data->gi_number;
+            $gi_year = $data->gi_year;
+            $ka_sap = $data->kode_sap;
 
-    function proses_validasi_check_gi($noreg, $data)
-    {
-        //echo "1<pre>"; print_r($data); die();
-        /*
-        stdClass Object
-        (
-            [gi_number] => 1
-            [gi_year] => 2
-            [no_registrasi] => 19.07/AMS/PDFA/00042
-        )
-        */
-
-        $gi_number = $data->gi_number;
-        $gi_year = $data->gi_year;
-        $ka_sap = $data->kode_sap;
-
-        $user_id = Session::get('user_id');
-        //echo "1".$nore.'====='.$ka_sap.'===='.$ka_con;
-        
-        $service = API::exec(array(
-            'request' => 'GET',
-            'host' => 'ldap',
-            'method' => "check_gi?MBLNR=".$gi_number."&MJAHR=".$gi_year."&ANLN1=1&ANLN2=2", 
-        ));
-        
-        $data = $service;
-        //$data = 1;
-        
-        //echo "2<pre>"; print_r($data); die();
-        /*
-        stdClass Object
-        (
-            [TYPE] => E
-            [ID] => 
-            [NUMBER] => 002
-            [MESSAGE] => Number GI Not Found !!
-            [LOG_NO] => 
-            [LOG_MSG_NO] => 000000
-            [MESSAGE_V1] => 
-            [MESSAGE_V2] => 
-            [MESSAGE_V3] => 
-            [MESSAGE_V4] => 
-        )
-        */
-
-        if( $data->TYPE == 'S' )
-        //if($data==1)
-        {
-            
+            $user_id = Session::get('user_id');
+            //echo "1".$nore.'====='.$ka_sap.'===='.$ka_con;
+                
             DB::beginTransaction();
             try 
             {   
-                $sql = " UPDATE TR_REG_ASSET_DETAIL SET GI_NUMBER = '{$gi_number}', GI_YEAR = '{$gi_year}', UPDATED_AT = current_timestamp(), UPDATED_BY = '{$user_id}' WHERE NO_REG = '{$noreg}' AND KODE_ASSET_SAP = '{$ka_sap}' ";
+                $sql = " UPDATE TR_REG_ASSET_DETAIL SET GI_NUMBER = '{$gi_number}', GI_YEAR = '{$gi_year}', UPDATED_AT = current_timestamp(), UPDATED_BY = '{$user_id}' WHERE NO_REG = '{$noreg}' AND KODE_ASSET_AMS = '{$ka_sap}' ";
                 //echo $sql; die();
                 DB::UPDATE($sql);
                 DB::commit();
@@ -1029,13 +1011,81 @@ WHERE a.NO_REG = '{$no_registrasi}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KO
                 $result = array('status'=>'error','message'=>$e->getMessage());
             }
             
-            //$result = array('status'=>'success','message'=> "Validation Success");
+            return $result;
         }
         else
         {
-            $result = array('status'=>'error','message'=> $data->MESSAGE.' (GI Number:'.$gi_number.' & Year : '.$gi_year.' )');
+            $result = array('status'=>'success','message'=> "Skip Validation");
+            return $result;
         }
-        return $result;
+    }
+
+    function proses_validasi_check_gi($noreg, $data)
+    {
+        //echo "2<pre>"; print_r($data); die();
+        /*
+            [gi_number] => 1
+            [gi_year] => 2
+            [kode_sap] => 40300279
+            [no_registrasi] => 19.07/AMS/PDFA/00064
+        */
+
+        //VALIDASI IF GI NUMBER & GI YEAR NULL THEN LAKUKAN VALIDASI IT@170619
+        $sql = " SELECT COUNT(*) AS TOTAL FROM TR_REG_ASSET_DETAIL WHERE NO_REG = '{$data->no_registrasi}' AND KODE_ASSET_SAP = {$data->kode_sap} AND (GI_NUMBER IS NOT NULL OR GI_NUMBER != '') AND (GI_YEAR IS NOT NULL OR GI_YEAR != '') ";
+        $jml = DB::SELECT($sql);
+        //echo "2<pre>"; print_r($jml);die();
+
+        if($jml[0]->TOTAL == 0)
+        {
+            $gi_number = $data->gi_number;
+            $gi_year = $data->gi_year;
+            $ka_sap = $data->kode_sap;
+
+            $user_id = Session::get('user_id');
+            //echo "1".$nore.'====='.$ka_sap.'===='.$ka_con;
+            
+            $service = API::exec(array(
+                'request' => 'GET',
+                'host' => 'ldap',
+                'method' => "check_gi?MBLNR=".$gi_number."&MJAHR=".$gi_year."&ANLN1=1&ANLN2=2", 
+            ));
+            
+            $data = $service;
+            //$data = 1;
+
+            if( $data->TYPE == 'S' )
+            //if($data==1)
+            {
+                
+                DB::beginTransaction();
+                try 
+                {   
+                    $sql = " UPDATE TR_REG_ASSET_DETAIL SET GI_NUMBER = '{$gi_number}', GI_YEAR = '{$gi_year}', UPDATED_AT = current_timestamp(), UPDATED_BY = '{$user_id}' WHERE NO_REG = '{$noreg}' AND KODE_ASSET_SAP = '{$ka_sap}' ";
+                    //echo $sql; die();
+                    DB::UPDATE($sql);
+                    DB::commit();
+
+                    $result = array('status'=>'success','message'=> "Validation Success");
+                }
+                catch (\Exception $e) 
+                {
+                    DB::rollback();
+                    $result = array('status'=>'error','message'=>$e->getMessage());
+                }
+                
+                //$result = array('status'=>'success','message'=> "Validation Success");
+            }
+            else
+            {
+                $result = array('status'=>'error','message'=> $data->MESSAGE.' (GI Number:'.$gi_number.' & Year : '.$gi_year.' )');
+            }
+            return $result;
+        }
+        else
+        {
+            $result = array('status'=>'success','message'=> "Skip Validation");
+            return $result;
+        }
     }
 
     public function get_validasi_last_approve($noreg)

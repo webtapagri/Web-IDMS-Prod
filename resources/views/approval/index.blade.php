@@ -972,7 +972,7 @@
                             item += "</div>";
 
                             item += "<div class='col-md-4'> ";
-                            item += "<div class='form-group'><label for='' class='col-md-4'>YEAR</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='md_year-"+val.no_reg_item+"' value='"+val.gi_year+"' id='md_year-"+val.no_reg_item+"' autocomplete='off' onkeyup='get_check_gi("+val.no_reg_item+")'></div></div>";
+                            item += "<div class='form-group'><label for='' class='col-md-4'>YEAR</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='md_year-"+val.no_reg_item+"' value='"+val.gi_year+"' id='md_year-"+val.no_reg_item+"' autocomplete='off' onkeyup='get_check_gi("+val.no_reg_item+","+val.po_type+")'></div></div>";
                             item += "</div>";
 
                             item += "</div></div>";
@@ -1497,13 +1497,23 @@
         });
     }
 
-    function get_check_gi(no)
+    function get_check_gi(no, po_type)
     {
-        //alert(no);
+        //alert(po_type); return false;
         var cgi_number = $("#md_number-"+no+"").val();
         //alert(cgi_number);
         var cgi_year = $("#md_year-"+no+"").val();
-        var csap = $("#kode_aset_ams-"+no+"").val();
+        
+        if(po_type == 1)
+        {
+            var csap = $("#kode_aset_ams-"+no+"").val();
+        }
+        else
+        {
+            var csap = $("#kode_aset_sap-"+no+"").val();
+        }
+        
+        
         var cnoreg = $("#no-reg").val();
 
         request_check_gi.push(
