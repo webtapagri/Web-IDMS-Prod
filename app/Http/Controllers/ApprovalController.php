@@ -284,7 +284,7 @@ class ApprovalController extends Controller
                         LEFT JOIN TM_SUBGROUP_ASSET d ON a.sub_group = d.subgroup_code AND a.group = d.group_code
                         LEFT JOIN TR_REG_ASSET e ON a.NO_REG = e.NO_REG
                     WHERE a.no_reg = '{$noreg}' AND a.asset_po_id = '{$id}' AND (a.DELETED is null OR a.DELETED = '')
-                        ORDER BY a.kode_material ";
+                        ORDER BY a.no_reg_item ";
         //echo $sql; die();
         $data = DB::SELECT($sql);
         //echo "<pre>"; print_r($data); die();
