@@ -26,33 +26,6 @@ class FamsEmailController extends Controller
 		$sql2 = " SELECT * FROM v_history WHERE DOCUMENT_CODE = '{$document_code}' ";
 		$dt_history_approval = DB::SELECT($sql2);
 
-		// 3. EMAIL TO
-		$sql3 = " SELECT b.email FROM v_history_approval a LEFT JOIN TBM_USER 
-b ON a.USER_ID = b.ID WHERE a.document_code = '{$document_code}' AND status_approval = 'menunggu' "; //echo $sql3; die();
-		$dt_email_to = DB::SELECT($sql3);
-		//echo "2<pre>"; print_r($dt_email_to); die();
-		if(!empty($dt_email_to))
-		{
-			$to = "";
-			$cc = "";
-			foreach($dt_email_to as $k => $v)
-			{
-				if($k==0)
-				{
-					$to = $v->email;	
-				}
-				else
-				{
-					$cc = $v->email.",";
-				}
-			}
-		}
-		else
-		{
-			$to = "no-reply@tap-agri.co.id";
-			$cc = "no-reply@tap-agri.co.id,no-reply@tap-agri.co.id";
-		}
-
 		$data = new \stdClass();
         $data->noreg = array($document_code,1,2);
         $data->jenis_pemberitahuan = 'PENDAFTARAN';
@@ -63,7 +36,43 @@ b ON a.USER_ID = b.ID WHERE a.document_code = '{$document_code}' AND status_appr
         
         //$to = "irvan27@gmail.com";
         //$to = "irvan.tazrian@tap-agri.co.id";
-        //$cc = "irvan27@yahoo.co.id, me@vanrayen.com";     
+        //$cc = "irvan27@yahoo.co.id, me@vanrayen.com";
+
+        // 3. EMAIL TO
+		$sql3 = " SELECT b.name, b.email FROM v_history_approval a LEFT JOIN TBM_USER 
+b ON a.USER_ID = b.ID WHERE a.document_code = '{$document_code}' AND status_approval = 'menunggu' "; //echo $sql3; die();
+		$dt_email_to = DB::SELECT($sql3);
+		//echo "2<pre>"; print_r($dt_email_to); die();
+		if(!empty($dt_email_to))
+		{
+			//$to = "";
+			//$cc = "";
+			foreach($dt_email_to as $k => $v)
+			{
+				$data->nama_lengkap = $v->name;
+				Mail::to($v->email)
+					->bcc('system.administrator@tap-agri.com')
+					->send(new FamsEmail($data));
+
+				/*
+				if($k==0)
+				{
+					$to = $v->email;	
+				}
+				else
+				{
+					$cc = $v->email.",";
+				}
+				*/
+			}
+		}
+
+		/*
+		else
+		{
+			$to = "no-reply@tap-agri.co.id";
+			$cc = "no-reply@tap-agri.co.id,no-reply@tap-agri.co.id";
+		}     
 
         if($cc != "")
         {
@@ -75,7 +84,7 @@ b ON a.USER_ID = b.ID WHERE a.document_code = '{$document_code}' AND status_appr
         {
         	Mail::to($to)->send(new FamsEmail($data));
         }
-        
+        */
 	}
 
 }

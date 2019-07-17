@@ -49,7 +49,7 @@ class FamsEmail extends Mailable
         if( $this->data->jenis_pemberitahuan == 'PENDAFTARAN' )
         {
             return $this->from('no-reply@tap-agri.com')
-                   ->subject("Permohonan Pengajuan Persetujuan Aset")
+                   ->subject("Permohonan Pengajuan Persetujuan Aset ( {$this->data->noreg[0]} )")
                    ->view('email.email_pendaftaran')
                    ->with(
                     [

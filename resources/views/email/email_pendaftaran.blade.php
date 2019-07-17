@@ -11,12 +11,12 @@
 
 ?>
 
-<h3>PERMOHONAN PERSETUJUAN PENGAJUAN ASSET - ( {{ $data->datax[0]->document_code }}  )</h3>
+<h3>PERMOHONAN PERSETUJUAN PENGAJUAN ASET</h3>
 <h4>Asset Management PT. Triputra Agro Persada</h4>
 <br/>
 <br/>
-Kepada Yth,
-( JABATAN YANG DITUJU : V_USER_ROLE )
+Kepada Yth, <br/>
+{{ $data->nama_lengkap }}
 <br/>
 <br/>
 <br/>
@@ -24,10 +24,10 @@ Dibutuhkan persetujuan atas dokumen berikut :
 <br/>
 <br/>
 <div style='margin-left:10%'>
-	NO DOCUMENT : {{ $data->datax[0]->document_code }} <br/>
+	NO DOCUMENT : {{ $data->datax[0]->document_code }} (<a href="{{ url('/') }}" target="_blank">detail</a>) <br/>
 	TYPE OF SUBMISSION : {{ $TYPE_OF_SUBMISSION }} <br/>
 	PURCHASE NO : {{ $data->datax[0]->NO_PO }} <br/>
-	BUSINESS AREA KEPEMILIKAN : {{ $data->datax[0]->BA_PEMILIK_ASSET }} <br/><br/>
+	BUSINESS AREA KEPEMILIKAN ASET : {{ $data->datax[0]->BA_PEMILIK_ASSET }} <br/><br/>
 	<?php 
 
 		//echo "1<pre>"; print_r($data->datax); 
@@ -94,8 +94,8 @@ Dibutuhkan persetujuan atas dokumen berikut :
 <br/>
 <br/>
 
-Email ini dihasilkan otomatis dari Asset Management System PT. Triputra Agro Persada <br/>
-Mohon tidak melakukan reply.
+<i>Email ini terbentuk otomatis oleh System. <br/>
+Mohon tidak melakukan reply.</i>
 
 <br/>
 <br/>
@@ -111,8 +111,8 @@ dapat dilakukan dengan memilih action Detail <br/>
 
 <br/>
 
-Email <br/>
-Ext <br/>
-HP <br/>
-PIN <br/>
-Website 
+Email : TAP.callcenter.helpdesk@tap-agri.com <br/>
+Ext : 794/502 <br/>
+HP : 0821 1401 3315 <br/>
+PIN : 74A84D64 <br/>
+Website : helpdesk.tap-agri.com
