@@ -797,17 +797,21 @@
                     jQuery('.loading-event').fadeIn();
                 },
                 success: function(result) {
-                    if (result.status) {
+                    if (result.status) 
+                    {
+                        //SEND EMAIL 
+                        send_email_create_po(result.new_noreg);
+
                         notify({
                             type: 'success',
                             message: result.message
                         });
-                        notify({
-                            type: 'error',
-                            message: 'reqeust has been submited!'
-                        });
-                        window.location.href = "{{ url('/') }}";
-                    } else {
+                        
+                        //window.location.href = "{{ url('/') }}";
+                        setTimeout(reload_page, 2000);
+                    } 
+                    else 
+                    {
                         notify({
                             type: 'warning',
                             message: result.message
@@ -1418,6 +1422,40 @@
             console.log('Error: ', error);
         };
     }
+
+    function reload_page(){window.location.href = "{{ url('/') }}";}
+
+    function send_email_create_po(noreg)
+    {
+        //alert(noreg);
+
+        var getnoreg = noreg;
+        var no_registrasi= getnoreg.replace(/\//g, '-');
+
+        //alert(id+"_"+no_po+"_"+no_reg_item+"_"+no_registrasi);
+
+        var param = '';//$("#request-form-detail-asset-sap").serialize();
+        //alert(capitalized_on);
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        $.ajax({
+            url: "{{ url('request/email_create_po') }}",
+            method: "POST",
+            data: param+"&noreg="+no_registrasi,
+            beforeSend: function() {
+                $('.loading-event').fadeIn();
+            },
+            success: function(result) 
+            {},
+            complete: function() {
+                jQuery('.loading-event').fadeOut();
+            }
+        }); 
+    }
+
 </script>
 
 @stop

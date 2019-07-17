@@ -875,10 +875,15 @@
                     {
                         if (result.status) 
                         {
+                            //SEND EMAIL 
+                            send_email_create_po(result.new_noreg);
+
                             notify({
                                 type: 'success',
                                 message: result.message
                             });
+
+                            //alert(result.new_noreg);
                             
                             setTimeout(reload_page, 2000);
 
@@ -1639,6 +1644,61 @@
         //var asset_sub_group_val = $("#asset_sub_group").val();
 
         $("#asset_controller").val(asset_type+"-"+asset_group+"-"+asset_sub_group);
+    }
+
+    function send_email_create_po(noreg)
+    {
+        //alert(noreg);
+
+        var getnoreg = noreg;
+        var no_registrasi= getnoreg.replace(/\//g, '-');
+
+        //alert(id+"_"+no_po+"_"+no_reg_item+"_"+no_registrasi);
+
+        var param = '';//$("#request-form-detail-asset-sap").serialize();
+        //alert(capitalized_on);
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        $.ajax({
+            url: "{{ url('request/email_create_po') }}",
+            method: "POST",
+            data: param+"&noreg="+no_registrasi,
+            beforeSend: function() {
+                $('.loading-event').fadeIn();
+            },
+            success: function(result) 
+            {
+                /*
+                //alert(result.status);
+                if (result.status) 
+                {
+                    //$("#approve-modal").modal("hide");
+                    //$("#data-table").DataTable().ajax.reload();
+                    notify({
+                        type: 'success',
+                        message: result.message
+                    });
+
+                    $("#create-button-sync-sap").hide();
+                    $("#button-approve").show();
+                    $(".button-reject").attr("disabled", true); 
+                } 
+                else 
+                {
+                    notify({
+                        type: 'warning',
+                        message: result.message
+                    });
+                }
+                */
+            },
+            complete: function() {
+                jQuery('.loading-event').fadeOut();
+            }
+        }); 
     }
 
 </script>

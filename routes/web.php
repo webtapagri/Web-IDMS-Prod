@@ -235,4 +235,8 @@ Route::match(['get', 'post'], 'grid-role-map', [
 Route::get('/role-map/edit/', 'RoleMapController@show');
 Route::post('/role-map/post', 'RoleMapController@store');
 
+/* SEND EMAIL */
+Route::post('/request/email_create_po','FamsEmailController@index');
+
+
 

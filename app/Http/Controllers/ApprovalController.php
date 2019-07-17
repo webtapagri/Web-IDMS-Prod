@@ -407,6 +407,11 @@ class ApprovalController extends Controller
             { $do = "deactivation_on = NULL,"; }else
             { $do = "deactivation_on = '{$request->deactivation_on}',"; }
 
+            $capitalized_on = $request->capitalized_on;
+            if($capitalized_on == '')
+            { $co = "capitalized_on = NULL,"; }else
+            { $co = "capitalized_on = '{$request->capitalized_on}',"; }
+
             $sql = " UPDATE TR_REG_ASSET_DETAIL 
                         SET 
                             nama_asset_1 = '{$request->nama_asset_1}',
@@ -414,7 +419,7 @@ class ApprovalController extends Controller
                             nama_asset_3 = '{$request->nama_asset_3}',
                             quantity_asset_sap = '{$request->quantity}',
                             uom_asset_sap = '{$request->uom}',
-                            capitalized_on = '{$request->capitalized_on}',
+                            ".$co."
                             ".$do."
                             cost_center = '{$request->cost_center}',
                             book_deprec_01 = '{$request->book_deprec_01}',
@@ -507,7 +512,7 @@ class ApprovalController extends Controller
         }
         else
         {
-            $sql .= " ORDER BY po_date DESC ";
+            $sql .= " ORDER BY DOCUMENT_CODE DESC ";
         }
 
         //echo $sql; die();
@@ -678,9 +683,9 @@ WHERE a.NO_REG = '{$no_registrasi}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KO
                 }    
                 else
                 {
-                    $validasi_check_gi = $this->get_validasi_check_gi_amp($request,$no_registrasi); //true;
+                    $validasi_check_gi_amp = $this->get_validasi_check_gi_amp($request,$no_registrasi); //true;
 
-                    if($validasi_check_gi)
+                    if($validasi_check_gi_amp)
                     {
                         DB::beginTransaction();
                         try 
@@ -864,7 +869,6 @@ WHERE a.NO_REG = '{$no_registrasi}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KO
         }
         else
         {
-
             //Cek sekali lagi utk penginputan GI Number dan GI Year
             $sql = " SELECT * FROM TR_REG_ASSET_DETAIL WHERE NO_REG = '".$noreg."' AND ((GI_NUMBER is null OR GI_NUMBER = '') OR (GI_YEAR is null OR GI_YEAR = '')) ";
             $data = DB::SELECT($sql);
@@ -1023,13 +1027,32 @@ WHERE a.NO_REG = '{$no_registrasi}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KO
 
     function proses_validasi_check_gi($noreg, $data)
     {
-        //echo "2<pre>"; print_r($data); die();
+        //echo "3<pre>"; print_r($data); die();
         /*
-            [gi_number] => 1
+            [gi_number] => 21212
             [gi_year] => 2
-            [kode_sap] => 40300279
-            [no_registrasi] => 19.07/AMS/PDFA/00064
+            [kode_sap] => 40100248
+            [no_registrasi] => 19.07/AMS/PDFA/00038
         */
+
+        //echo "6".strlen($data->gi_year);die();
+        if( strlen($data->gi_year) != 4 )
+        {
+            $result = array('status'=>'success','message'=> "Skip Validation");
+            return $result;
+        }
+
+        if( $data->gi_number == '' )
+        {
+            $result = array('status'=>'success','message'=> "Skip Validation");
+            return $result;
+        }
+
+        if( $data->gi_year == '' )
+        {
+            $result = array('status'=>'success','message'=> "Skip Validation");
+            return $result;
+        }
 
         //VALIDASI IF GI NUMBER & GI YEAR NULL THEN LAKUKAN VALIDASI IT@170619
         $sql = " SELECT COUNT(*) AS TOTAL FROM TR_REG_ASSET_DETAIL WHERE NO_REG = '{$data->no_registrasi}' AND KODE_ASSET_SAP = {$data->kode_sap} AND (GI_NUMBER IS NOT NULL OR GI_NUMBER != '') AND (GI_YEAR IS NOT NULL OR GI_YEAR != '') ";

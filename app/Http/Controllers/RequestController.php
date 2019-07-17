@@ -17,6 +17,9 @@ use App\TR_REG_ASSET_DETAIL_FILE;
 use App\TR_REG_ASSET_DETAIL_DETAIL;
 use App\TR_REG_ASSET_DETAIL_PO;
 
+use App\Mail\FamsEmail;
+use Illuminate\Support\Facades\Mail;
+
 class RequestController extends Controller
 {
     public function index()
@@ -221,6 +224,8 @@ class RequestController extends Controller
 
     public function store(Request $request)
     {
+        //return response()->json(["status"=>true, "message"=>"Document Created!", "new_noreg"=>"ini noreg"]);
+        
         DB::beginTransaction();
 
        try 
@@ -378,7 +383,14 @@ class RequestController extends Controller
                 }
             }
             DB::commit();
-            return response()->json(['status' => true, "message" => 'Data is successfully ' . ($request->edit_id ? 'updated' : 'added')]);
+
+            //SEND EMAIL NOTIF CREATE PO 
+            //$famsemail = new FamsEmail();
+            //Mail::to("irvan27@gmail.com")->send($famsemail);
+
+            //return response()->json(['status' => true, "message" => 'Data is successfully ' . ($request->edit_id ? 'updated' : 'added')]);
+            return response()->json(["status"=>true, "message"=>"Document Created ({$reg_no})", "new_noreg"=>$reg_no ]);
+
        } catch (\Exception $e) {
             DB::rollback();
             return response()->json(['status' => false, "message" => $e->getMessage()]);

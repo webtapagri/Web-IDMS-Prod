@@ -220,7 +220,7 @@
             </div>
             <div class="modal-footer">
                 <?php /* <button type="button" class="btn btn-flat btn-default" data-dismiss="modal">Close</button> */ ?>
-                <?php if($user_role == 'AC' || $user_role == 'Super Administrator' ){ ?> 
+                <?php if($user_role == 'AC'){ ?> 
                    <span id="create-button-sync-sap"></span>
                 <?php }  ?>
                 <span id="button-approve">
