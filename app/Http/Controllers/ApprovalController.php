@@ -986,6 +986,25 @@ WHERE a.NO_REG = '{$no_registrasi}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KO
             [no_registrasi] => 19.07/AMS/PDFA/00042
         )
         */
+
+        if( strlen($data->gi_year) != 4 )
+        {
+            $result = array('status'=>'success','message'=> "Skip Validation");
+            return $result;
+        }
+
+        if( $data->gi_number == '' )
+        {
+            $result = array('status'=>'success','message'=> "Skip Validation");
+            return $result;
+        }
+
+        if( $data->gi_year == '' )
+        {
+            $result = array('status'=>'success','message'=> "Skip Validation");
+            return $result;
+        }
+
         //VALIDASI IF GI NUMBER & GI YEAR NULL THEN LAKUKAN VALIDASI IT@170619
         $sql = " SELECT COUNT(*) AS TOTAL FROM TR_REG_ASSET_DETAIL WHERE NO_REG = '{$data->no_registrasi}' AND KODE_ASSET_AMS = {$data->kode_sap} AND (GI_NUMBER IS NOT NULL OR GI_NUMBER != '') AND (GI_YEAR IS NOT NULL OR GI_YEAR != '') ";
         $jml = DB::SELECT($sql);
@@ -1071,7 +1090,7 @@ WHERE a.NO_REG = '{$no_registrasi}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KO
             $service = API::exec(array(
                 'request' => 'GET',
                 'host' => 'ldap',
-                'method' => "check_gi?MBLNR=".$gi_number."&MJAHR=".$gi_year."&ANLN1=1&ANLN2=2", 
+                'method' => "check_gi?MBLNR=".$gi_number."&MJAHR=".$gi_year."&ANLN1=".$ka_sap."&ANLN2=0", 
             ));
             
             $data = $service;
