@@ -1127,6 +1127,9 @@
                             type: 'success',
                             message: result.message
                         });
+
+                        setTimeout(reload_page, 1000); 
+
                     } else {
                         notify({
                             type: 'warning',
@@ -1524,6 +1527,8 @@
             no_registrasi:cnoreg
         })
     }
+
+    function reload_page(){window.location.href = "{{ url('/') }}";}
 
 </script>
 @stop
