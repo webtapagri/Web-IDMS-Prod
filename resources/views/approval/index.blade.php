@@ -972,7 +972,7 @@
                             item += "</div>";
 
                             item += "<div class='col-md-4'> ";
-                            item += "<div class='form-group'><label for='' class='col-md-4'>YEAR</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='md_year-"+val.no_reg_item+"' value='"+val.gi_year+"' id='md_year-"+val.no_reg_item+"' autocomplete='off' onkeyup='get_check_gi("+val.no_reg_item+","+val.po_type+")'></div></div>";
+                            item += "<div class='form-group'><label for='' class='col-md-4'>YEAR</label><div class='col-md-8'><input type='text' class='form-control input-sm md_year' name='md_year-"+val.no_reg_item+"' value='"+val.gi_year+"' id='md_year-"+val.no_reg_item+"' autocomplete='off' onkeyup='get_check_gi("+val.no_reg_item+","+val.po_type+")'></div></div>";
                             item += "</div>";
 
                             item += "</div></div>";
@@ -1189,7 +1189,11 @@
                             type: 'success',
                             message: result.message
                         });
-                    } else {
+                    } 
+                    else 
+                    {
+                        request_check_gi = [];
+                        //$(".md_year").val("");
                         notify({
                             type: 'warning',
                             message: result.message
