@@ -223,10 +223,12 @@
                 <?php if($user_role == 'AC'){ ?> 
                    <span id="create-button-sync-sap"></span>
                 <?php }  ?>
-                <span id="button-approve">
-                    <button type="button" class="btn btn-flat label-danger" OnClick="changeStatus('A')" style="margin-right: 5px;">APPROVE</button>
-                </span>
-                <button type="button" class="btn btn-flat label-danger button-reject" OnClick="changeStatus('R')" style="margin-right: 5px;">REJECT</button>
+                <?php if($user_role != 'Super Administrator'){ ?> 
+                    <span id="button-approve">
+                        <button type="button" class="btn btn-flat label-danger" OnClick="changeStatus('A')" style="margin-right: 5px;">APPROVE</button>
+                    </span>
+                    <button type="button" class="btn btn-flat label-danger button-reject" OnClick="changeStatus('R')" style="margin-right: 5px;">REJECT</button>
+                <?php }  ?>
                 <?php /*
                 <button type="button" class="btn btn-flat label-danger" OnClick="saveRequest()" style="margin-right: 5px;">Revise</button>
                 <button type="button" class="btn btn-flat label-danger" OnClick="saveRequest()" style="margin-right: 5px;">Simpan</button>

@@ -19,11 +19,11 @@ class FamsEmailController extends Controller
 		//echo $document_code; die();
 	
 		// 1. DATA ASSET 
-		$sql = " SELECT * FROM V_EMAIL_APPROVAL WHERE DOCUMENT_CODE = '{$document_code}' ";
+		$sql = " SELECT * FROM v_email_approval WHERE document_code = '{$document_code}' ";
 		$dt = DB::SELECT($sql);
 
 		// 2. HISTORY APPROVAL 
-		$sql2 = " SELECT * FROM v_history WHERE DOCUMENT_CODE = '{$document_code}' ";
+		$sql2 = " SELECT * FROM v_history WHERE document_code = '{$document_code}' ";
 		$dt_history_approval = DB::SELECT($sql2);
 
 		$data = new \stdClass();
