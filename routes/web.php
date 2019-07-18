@@ -238,5 +238,14 @@ Route::post('/role-map/post', 'RoleMapController@store');
 /* SEND EMAIL */
 Route::post('/request/email_create_po','FamsEmailController@index');
 
+/* MASTER ASSET */
+Route::resource('/master-asset', 'MasterAssetController');
+Route::match(['get', 'post'], 'grid-master-asset', [
+    'as' => 'get.grid_master_asset',
+    'uses' => 'MasterAssetController@dataGrid'
+]);
+//Route::get('/master-asset/edit/', 'MasterAssetController@show');
+Route::get('/master-asset/edit-data/{id}', 'MasterAssetController@show_edit');
+
 
 
