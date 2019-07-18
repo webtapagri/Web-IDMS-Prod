@@ -882,9 +882,6 @@
                                 type: 'success',
                                 message: result.message
                             });
-
-                            //alert(result.new_noreg);
-                            
                             //setTimeout(reload_page, 2000);
 
                         } else {
