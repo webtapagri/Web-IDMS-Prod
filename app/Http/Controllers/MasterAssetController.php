@@ -56,7 +56,7 @@ class MasterAssetController extends Controller
 
         $sql = '
             SELECT ' . implode(", ", $selectedColumn) . '
-                FROM tm_mstr_asset
+                FROM TM_MSTR_ASSET
                 WHERE 1=1
         ';
 

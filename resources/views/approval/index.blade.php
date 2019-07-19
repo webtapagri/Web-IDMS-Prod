@@ -994,13 +994,12 @@
                         item += "<div class='form-group'><label for='' class='col-md-4'>KODE ASET CONTROLLER</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='kode_aset_controller-"+val.no_reg_item+"' value='"+val.kode_asset_controller+"' id='kode_aset_controller-"+val.no_reg_item+"' autocomplete='off' onkeyup='get_kode_aset_amp("+val.no_reg_item+")'><input type='hidden' class='form-control input-sm' name='kode_aset_ams-"+val.no_reg_item+"' value='"+val.kode_asset_ams+"' id='kode_aset_ams-"+val.no_reg_item+"'></div></div>";
                         item += "</div>";
                         
-                        // IT@100719 SEMENTARA PAKE ID DULU UTK MENDAPATKAN NILAI UNIQUE
                         item += "<div class='col-md-4'> ";
-                        item += "<div class='form-group'><label for='' class='col-md-4'>KODE ASET SAP</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='kode_aset_sap-"+val.no_reg_item+"' value='"+val.kode_asset_sap+"' id='kode_aset_sap-"+val.no_reg_item+"' autocomplete='off'></div></div>";
+                        item += "<div class='form-group'><label for='' class='col-md-4'>KODE ASET SAP</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='kode_aset_sap-"+val.no_reg_item+"' value='"+val.kode_asset_sap+"' id='kode_aset_sap-"+val.no_reg_item+"' autocomplete='off' readonly='1'></div></div>";
                         item += "</div>";
                         
                         item += "<div class='col-md-4'> ";
-                        item += "<div class='form-group'><label for='' class='col-md-4'>KODE ASET FAMS</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='kode_asset_ams-"+val.no_reg_item+"' value='"+val.kode_asset_ams+"' id='kode_asset_ams-"+val.no_reg_item+"' autocomplete='off'></div></div>";
+                        item += "<div class='form-group'><label for='' class='col-md-4'>KODE ASET FAMS</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='kode_asset_ams-"+val.no_reg_item+"' value='"+val.kode_asset_ams+"' id='kode_asset_ams-"+val.no_reg_item+"' autocomplete='off' readonly='1'></div></div>";
                         
                         item += "</div>";
                         item += "</div></div>";
@@ -1129,10 +1128,10 @@
                             type: 'success',
                             message: result.message
                         });
-
-                        setTimeout(reload_page, 1000); 
-
-                    } else {
+                        //setTimeout(reload_page, 1000); 
+                    } 
+                    else 
+                    {
                         notify({
                             type: 'warning',
                             message: result.message

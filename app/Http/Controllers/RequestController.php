@@ -397,13 +397,23 @@ class RequestController extends Controller
        }
     }
 
-    public function businessarea() {
+    public function businessarea() 
+    {
         $user_id = Session::get('user_id');
+        /*
         $sql = "
             SELECT DESCRIPTION_CODE as id, DESCRIPTION as text
             FROM TM_GENERAL_DATA
             WHERE GENERAL_CODE = 'plant'
             AND FIND_IN_SET(DESCRIPTION_CODE, (select  area_code from TBM_USER where id = ".$user_id."))
+        ";
+        */    
+
+        $sql = "
+            SELECT DESCRIPTION_CODE as id, DESCRIPTION as text
+            FROM TM_GENERAL_DATA
+            WHERE GENERAL_CODE = 'plant'
+            AND DESCRIPTION_CODE IN (select area_code from v_user where id = {$user_id} AND area_code != 'All' )
         ";
 
         $data = DB::select(DB::raw($sql));
