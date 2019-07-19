@@ -684,9 +684,9 @@ WHERE a.NO_REG = '{$no_registrasi}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KO
                 else
                 {
                     $validasi_check_gi_amp = $this->get_validasi_check_gi_amp($request,$no_registrasi); //true;
-                    echo "1<pre>"; print_r($validasi_check_gi_amp); die();
+                    //echo "1<pre>"; print_r($validasi_check_gi_amp); die();
 
-                    if($validasi_check_gi_amp)
+                    if($validasi_check_gi_amp['status'] != 'success')
                     {
                         DB::beginTransaction();
                         try 
