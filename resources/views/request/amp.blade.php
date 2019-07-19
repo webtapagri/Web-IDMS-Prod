@@ -831,6 +831,26 @@
             if (field) {
                 jQuery.each(field.detail, function(key, val) 
                 {
+                    if (val.asset_group === "" || val.asset_group == null  ) 
+                    {
+                        notify({
+                            type: 'warning',
+                            message: 'Group pada asset  ' + field.name + ' page ' + (key + 1) + ' tidak boleh kosong!'
+                        });
+                        valid = false;
+                        return false;
+                    }
+
+                    if (val.asset_sub_group === "" || val.asset_group == null ) 
+                    {
+                        notify({
+                            type: 'warning',
+                            message: 'Sub Group pada asset  ' + field.name + ' page ' + (key + 1) + ' tidak boleh kosong!'
+                        });
+                        valid = false;
+                        return false;
+                    }
+                    
                     //IF JENIS ASSET TYPE = 4030-KENDARAAN & ALAT BERAT
                     if( val.asset_type == 4030 || val.asset_type == 4010 )
                     {
