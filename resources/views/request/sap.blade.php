@@ -1032,7 +1032,7 @@
 
         //var ba_user = [<?php //echo $data['ba_user']; ?>];
         var ba_user = new Array(<?php echo $data['ba_user']; ?>);
-        //alert(ba_user); 
+        //alert(ba_user); return false; 
         var count = 0;
 
         if (data.AEDAT) 
@@ -1073,6 +1073,12 @@
             });
             
             item += "</table>";
+
+            // IT@220719 : IF BA_USER = ALL PT 
+            if( ba_user == 'All' )
+            {
+                count = 1;
+            }
             
             if(count>0)
             {
