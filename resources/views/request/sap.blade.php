@@ -1055,7 +1055,7 @@
 
             jQuery.each(data.DETAIL_ITEM, function(key, val) 
             {
-                if( $.inArray(val.WERKS, ba_user) !== -1 )
+                if( ba_user == 'All' )
                 {
                     var HARGA = val.NETPR;
                     selected_detail_item.push(val);
@@ -1069,6 +1069,24 @@
                     item += "</tr>";
                     count++;
                 }
+                else
+                {
+                    if( $.inArray(val.WERKS, ba_user) !== -1 )
+                    {
+                        var HARGA = val.NETPR;
+                        selected_detail_item.push(val);
+                        item += "<tr>";
+                        item += "<td><input type='checkbox' onClick='selectPOItem(this)' value='" + key + "' ></td>";
+                        item += "<td>" + val.EBELP + "</td>";
+                        item += "<td>" + val.MATNR + "</td>";
+                        item += "<td>" + val.MAKTX + "</td>";
+                        item += "<td>" + convertToRupiah(HARGA.replace(".00", "")); + "</td>";
+                        item += "<td class='text-right'>" + val.MENGE + "</td>";
+                        item += "</tr>";
+                        count++;
+                    }
+                }
+                
 
             });
             
@@ -1082,7 +1100,7 @@
             
             if(count>0)
             {
-                jQuery("#table-detail-item").html(item);
+                $("#table-detail-item").html(item);
             }
             else
             {
@@ -1099,10 +1117,10 @@
         } 
         else 
         {
-            jQuery("#po_date").val("");
-            jQuery("#vendor_code").val("");
-            jQuery("#vendor_name").val("");
-            jQuery('.select-item-panel').addClass("hide");
+            $("#po_date").val("");
+            $("#vendor_code").val("");
+            $("#vendor_name").val("");
+            $('.select-item-panel').addClass("hide");
             notify({
                 type: 'warning',
                 message: "PO number is not found!"
