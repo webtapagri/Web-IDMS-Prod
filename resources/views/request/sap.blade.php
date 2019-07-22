@@ -936,6 +936,16 @@
                 $.each(field.detail, function(key, val) 
                 {
                     //alert(val.asset_group); return false;
+
+                    if (val.asset_type === "" || val.asset_type == null  ) 
+                    {
+                        notify({
+                            type: 'warning',
+                            message: 'Jenis Asset pada asset  ' + field.name + ' page ' + (key + 1) + ' tidak boleh kosong!'
+                        });
+                        valid = false;
+                        return false;
+                    }
                     
                     if (val.asset_group === "" || val.asset_group == null  ) 
                     {

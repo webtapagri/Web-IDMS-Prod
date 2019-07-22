@@ -1920,7 +1920,7 @@ WHERE a.NO_REG = '{$noreg}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KODE_ASSET
         try 
         {   
             $sql = " CALL create_kode_asset_ams('".$noreg."', '".$ANLA_BUKRS."', '".$dt->JENIS_ASSET."', '-".$dt->ID."') ";
-            echo $sql; die();
+            //echo $sql; die();
             DB::SELECT($sql);
             DB::commit();
 

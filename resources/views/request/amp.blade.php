@@ -825,12 +825,26 @@
         }
     }
 
-    function validateSave() {
+    function validateSave() 
+    {
         var valid = true;
-        jQuery.each(request_item, function(i, field) {
-            if (field) {
+        
+        jQuery.each(request_item, function(i, field) 
+        {
+            if (field) 
+            {
                 jQuery.each(field.detail, function(key, val) 
                 {
+                    if (val.asset_type === "" || val.asset_type == null  ) 
+                    {
+                        notify({
+                            type: 'warning',
+                            message: 'Jenis Asset pada asset  ' + field.name + ' page ' + (key + 1) + ' tidak boleh kosong!'
+                        });
+                        valid = false;
+                        return false;
+                    }
+
                     if (val.asset_group === "" || val.asset_group == null  ) 
                     {
                         notify({
