@@ -196,7 +196,7 @@ class AssetClassController extends Controller
             if ( $request->edit_map_code_id != "" ) 
             {
                 $data = TM_ASSET_CONTROLLER_MAP::find($request->edit_map_code_id);
-                $sql = "UPDATE TM_ASSET_CONTROLLER_MAP SET asset_ctrl_code = '".$request->acm_asset_ctrl_code."', asset_ctrl_description = '".$asset_ctrl_description."' WHERE id = ".$request->edit_map_code_id."";
+                $sql = "UPDATE TM_ASSET_CONTROLLER_MAP SET asset_ctrl_code = '".$request->acm_asset_ctrl_code."', asset_ctrl_description = '".$asset_ctrl_description."', mandatory_kode_asset_controller = '".$request->acm_mandatory_kode_asset_controller."' WHERE id = ".$request->edit_map_code_id."";
                 DB::UPDATE($sql);
             } 
             else 
@@ -470,7 +470,7 @@ class AssetClassController extends Controller
         $sortColumn = "";
         $selectedColumn[] = "";
 
-        $selectedColumn = ['a.id','a.map_code', 'a.jenis_asset_code', 'a.group_code', 'a.subgroup_code', 'a.asset_ctrl_code', 'a.asset_ctrl_description'];
+        $selectedColumn = ['a.id','a.map_code', 'a.jenis_asset_code', 'a.group_code', 'a.subgroup_code', 'a.asset_ctrl_code', 'a.asset_ctrl_description','a.mandatory_kode_asset_controller'];
 
         if ($orderColumn) {
             $order = explode("as", $selectedColumn[$orderColumn]);
@@ -502,6 +502,9 @@ class AssetClassController extends Controller
 
         if ($request->asset_ctrl_description)
         $sql .= " AND a.asset_ctrl_description like'%" . $request->asset_ctrl_description . "%'";
+
+        if ($request->mandatory_kode_asset_controller)
+        $sql .= " AND a.mandatory_kode_asset_controller like'%" . $request->mandatory_kode_asset_controller . "%'";
 
         if ($orderColumn != "") {
             $sql .= " ORDER BY " . $orderBy . " " . $dirColumn;
