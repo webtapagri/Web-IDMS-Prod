@@ -804,6 +804,7 @@
                 $.each(data, function(key, val) 
                 {
                     var aktif = '';
+
                     if(key==0){ aktif = 'active'; }
                     item += "<div class='tab-pane "+aktif+" ' id='panel-"+num+"'>";
                     
@@ -821,12 +822,19 @@
                     item += "</div>";
 
                     item += "<div class='col-md-6'>";
-                    item += " <div class='form-group'><label for='plant' class='col-md-4'>JENIS ASET</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='' value='"+val.jenis_asset+"' id='' autocomplete='off' readonly></div></div>";
-                    item += " <div class='form-group'><label for='plant' class='col-md-4'>GROUP</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='' value='"+val.group+"' id='' autocomplete='off' readonly></div></div>";
-                    item += " <div class='form-group'><label for='plant' class='col-md-4'>SUB GROUP</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='' value='"+val.sub_group+"' id='' autocomplete='off' readonly></div></div>";
+                    
+                    item += " <div class='form-group'><label for='plant' class='col-md-4'>JENIS ASET</label><div class='col-md-8'><input type='text' class='form-control input-sm select-jenis-aset' name='jenis_asset-"+val.no_reg_item+"' value='"+val.jenis_asset+"' id='jenis_asset-"+val.no_reg_item+"' autocomplete='off'></div></div>";
+
+                    item += " <div class='form-group'><label for='plant' class='col-md-4'>GROUP</label><div class='col-md-8'><input type='text' class='form-control input-sm' id='jenis_asset_group-"+val.no_reg_item+"' name='jenis_asset_group-"+val.no_reg_item+"' value='"+val.group+"' id='' autocomplete='off'></div></div>";
+                    
+                    item += " <div class='form-group'><label for='plant' class='col-md-4'>SUB GROUP</label><div class='col-md-8'><input type='text' class='form-control input-sm' id='jenis_asset_subgroup-"+val.no_reg_item+"' name='jenis_asset_subgroup-"+val.no_reg_item+"' value='"+val.sub_group+"' id='' autocomplete='off'></div></div>";
                     item += " <div class='form-group'><label for='plant' class='col-md-4'>MERK</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='' value='"+val.merk+"' id='' autocomplete='off' readonly></div></div>";
                     item += " <div class='form-group'><label for='plant' class='col-md-4'>SPESIFIKASI/WARNA</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='' value='"+val.spesifikasi_or_warna+"' id='' autocomplete='off' readonly></div></div>";
                     item += " <div class='form-group'><label for='plant' class='col-md-4'>TAHUN</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='' value='"+val.tahun+"' id='' autocomplete='off' readonly></div></div>";
+
+                    item += "<div class='form-group'><label for='' class='col-md-4'>PENANGGUNG JAWAB</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='nama_penanggung_jawab_asset-"+val.no_reg_item+"' value='"+val.nama_penanggung_jawab_asset+"' id='nama_penanggung_jawab_asset-"+val.no_reg_item+"' autocomplete='off' readonly></div></div>";
+
+                        item += "<div class='form-group'><label for='' class='col-md-4'>JABATAN PENANGGUNG JAWAB</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='jabatan_penanggung_jawab_asset-"+val.no_reg_item+"' value='"+val.jabatan_penanggung_jawab_asset+"' id='jabatan_penanggung_jawab_asset-"+val.no_reg_item+"' autocomplete='off' readonly></div></div>";
 
                     if(tipe==1)
                     {
@@ -834,11 +842,20 @@
                         {
                             //alert(total_tab);
                             //$(".button-delete").hide(); 
-                            item += "<div class='form-group' align='right'><button type='button' class='btn btn-warning btn-sm' OnClick='delAsset("+val.id+")' style='margin-right: 15px' disabled><i class='fa fa-trash'></i> DELETE</button></div>";
+
+                            <?php if( $user_role == 'AMS' ){ ?>
+                                item += "<div class='form-group' align='right'><div class='btn btn-warning btn-sm' value='Save' OnClick='saveItemDetail("+val.id+","+val.no_po+","+val.no_reg_item+")' style='margin-right:5px;xmargin-top:5px'><i class='fa fa-save'></i> SAVE</div><button type='button' class='btn btn-warning btn-sm' OnClick='delAsset("+val.id+")' style='margin-right: 15px' disabled><i class='fa fa-trash'></i> DELETE</button></div>";
+                            <?php }else{ ?>
+                                item += "<div class='form-group' align='right'><button type='button' class='btn btn-warning btn-sm' OnClick='delAsset("+val.id+")' style='margin-right: 15px' disabled><i class='fa fa-trash'></i> DELETE</button></div>";
+                            <?php } ?>
                         }
                         else
                         {
-                            item += "<div class='form-group' align='right'><div class='btn btn-warning btn-sm button-delete' value='Delete' OnClick='delAsset("+val.id+")' style='margin-right:15px'><i class='fa fa-trash'></i> DELETE</div></div>";
+                            <?php if( $user_role == 'AMS' ){ ?>
+                                item += "<div class='form-group' align='right'><div class='btn btn-warning btn-sm' value='Save' OnClick='saveItemDetail("+val.id+","+val.no_po+","+val.no_reg_item+")' style='margin-right:5px;xmargin-top:5px'><i class='fa fa-save'></i> SAVE</div><div class='btn btn-warning btn-sm button-delete' value='Delete' OnClick='delAsset("+val.id+")' style='margin-right:15px'><i class='fa fa-trash'></i> DELETE</div></div>";
+                            <?php }else{ ?>
+                                item += "<div class='form-group' align='right'><div class='btn btn-warning btn-sm button-delete' value='Delete' OnClick='delAsset("+val.id+")' style='margin-right:15px'><i class='fa fa-trash'></i> DELETE</div></div>";
+                            <?php } ?>
                             //item += "<div class='form-group' align='right'><button type='button' class='btn btn-flat label-danger' OnClick='delAsset("+val.id+")' style='margin-right: 5px'>Delete</button></div>";
                         }
                     }
@@ -927,7 +944,7 @@
                         item += "<tr><th>Area Number</th><th>Depreciation Area</th><th>Dkey</th><th>Use Life</th></tr>";
                         item += "<tr><td>01</td><td>Book</td><td>Z001</td><td><input type='text' class='form-control input-sm' name='book_deprec_01-"+val.no_reg_item+"' value='"+val.book_deprec_01+"' id='book_deprec_01-"+val.no_reg_item+"' autocomplete='off' required></td></tr>";
                         item += "<tr><td>15</td><td>Fiscal</td><td>Z001</td><td><input type='text' class='form-control input-sm' name='fiscal_deprec_15-"+val.no_reg_item+"' value='"+val.fiscal_deprec_15+"' id='fiscal_deprec_15-"+val.no_reg_item+"' autocomplete='off' onkeyup='fiscalgroup("+val.no_reg_item+")' required></td></tr>";
-                        item += "<tr><td>30</td><td>Group</td><td>Z001</td><td><input type='text' class='form-control input-sm' name='group_deprec_30-"+val.no_reg_item+"' value='"+val.book_deprec_01+"' id='group_deprec_30-"+val.no_reg_item+"' autocomplete='off' placeholder='' readonly></td></tr>";
+                        item += "<tr><td>30</td><td>Group</td><td>Z001</td><td><input type='text' class='form-control input-sm' name='group_deprec_30-"+val.no_reg_item+"' value='"+val.group_deprec_30+"' id='group_deprec_30-"+val.no_reg_item+"' autocomplete='off' placeholder='' readonly></td></tr>";
                         item += "</table>";
                         item += "</div>";
 
@@ -1028,6 +1045,13 @@
                     $("#box-detail-item-history").html(item);
                 }
                 //alert(noreg);
+
+                <?php if( $user_role == 'AMS' ){ ?>
+                $.each(data, function(key, val) 
+                {
+                    trigger_edit_asset(val.no_reg_item,val.jenis_asset,val.group);
+                });
+                <?php } ?>
             },
             error: function(x) 
             {                           
@@ -1035,6 +1059,43 @@
             }
         });  
         
+    }
+
+    function trigger_edit_asset(no,jenis_asset,group,sub_group)
+    {
+        //alert(jenis_asset); //return false;
+        
+        var role_jenis_asset_code = $.parseJSON(JSON.stringify(dataJson('{!! route("get.select_jenis_asset_code") !!}')));
+        //$('#jenis_asset-'+no+'').select2({
+        $('input[name="jenis_asset-'+no+'"]').select2({    
+            data: role_jenis_asset_code,
+            width: '100%',
+            placeholder: ' ',
+            allowClear: true,
+            //readonly: true,
+        });
+        $('input[name="jenis_asset-'+no+'"]').val(jenis_asset).trigger('change');
+
+        //var assetgroup = jQuery.parseJSON(JSON.stringify(dataJson('{!! route("get.assetgroup") !!}?type=' + jenis_asset )));
+        var assetgroup = $.parseJSON(JSON.stringify(dataJson('{!! route("get.select_group_code") !!}' )));
+        $('input[name="jenis_asset_group-'+no+'"]').select2({
+            data: assetgroup,
+            width: "100%",
+            allowClear: true,
+            placeholder: ' '
+        });
+        $('input[name="jenis_asset_group-'+no+'"]').val(group).trigger('change');
+
+        //var assetsubgroup = $.parseJSON(JSON.stringify(dataJson('{!! route("get.assetsubgroup") !!}?group=' + group )));
+        var assetsubgroup = $.parseJSON(JSON.stringify(dataJson('{!! route("get.select_subgroup_code") !!}' )));
+            $('input[name="jenis_asset_subgroup-'+no+'"]').empty().select2({
+                data: assetsubgroup,
+                width: "100%",
+                allowClear: true,
+                placeholder: ' '
+            });
+        $('input[name="jenis_asset_subgroup-'+no+'"]').val(sub_group).trigger('change');
+
     }
 
     function delAsset(id)
@@ -1079,6 +1140,63 @@
                     jQuery('.loading-event').fadeOut();
                 }
             });
+        }
+    }
+
+    function saveItemDetail(id,no_po,no_reg_item)
+    {
+        if(confirm('Confirm Save Rincian Informasi Asset ?'))
+        {
+            var getnoreg = $("#getnoreg").val();
+            var no_registrasi= getnoreg.replace(/\//g, '-');
+
+            var jenis_asset = $("#jenis_asset-"+no_reg_item+"").val();
+            var group = $("#jenis_asset_group-"+no_reg_item+"").val();
+            var subgroup = $("#jenis_asset_subgroup-"+no_reg_item+"").val();
+            //alert(jenis_asset);return false;
+
+            //alert(id+"_"+no_po+"_"+no_reg_item+"_"+no_registrasi);
+
+            var param = '';//$("#request-form-detail-asset-sap").serialize();
+            //alert(capitalized_on);
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                url: "{{ url('approval/save_item_detail') }}/"+id,
+                method: "POST",
+                data: param+"&getnoreg="+getnoreg+"&no_po="+no_po+"&no_reg_item="+no_reg_item+"&jenis_asset="+jenis_asset+"&group="+group+"&subgroup="+subgroup,
+                beforeSend: function() {
+                    $('.loading-event').fadeIn();
+                },
+                success: function(result) 
+                {
+                    //alert(result.status);
+                    if (result.status) 
+                    {
+                        //$("#approve-modal").modal("hide");
+                        //$("#data-table").DataTable().ajax.reload();
+                        notify({
+                            type: 'success',
+                            message: result.message
+                        });
+                        //setTimeout(reload_page, 1000); 
+                    } 
+                    else 
+                    {
+                        notify({
+                            type: 'warning',
+                            message: result.message
+                        });
+                    }
+                    
+                },
+                complete: function() {
+                    jQuery('.loading-event').fadeOut();
+                }
+            }); 
         }
     }
 

@@ -7,6 +7,7 @@ use App\Mail\FamsEmail;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\DB;
 use App\TR_REG_ASSET_DETAIL;
+use API;
 
 class FamsEmailController extends Controller
 {
@@ -36,6 +37,8 @@ class FamsEmailController extends Controller
 		$sql3 = " SELECT b.name, b.email FROM v_history_approval a LEFT JOIN TBM_USER 
 b ON a.USER_ID = b.ID WHERE a.document_code = '{$document_code}' AND status_approval = 'menunggu' "; //echo $sql3; die();
 		$dt_email_to = DB::SELECT($sql3);
+		
+		#1 IT@220719 
 		//echo "2<pre>"; print_r($dt_email_to); die();
 		if(!empty($dt_email_to))
 		{
@@ -47,6 +50,47 @@ b ON a.USER_ID = b.ID WHERE a.document_code = '{$document_code}' AND status_appr
 					->send(new FamsEmail($data));
 			}
 		}
+
+		/*
+		#2 IT@220719 - SEND EMAIL VIA SERVICE LDAP 
+		$data->email_to = $dt_email_to;
+
+		//$data_asset = urlencode(serialize($data->noreg));
+		$data_asset = serialize($data->noreg);
+		//$content2 = base64_encode($content);
+		//$content3 = json_encode($data);
+		//$content = $data->noreg;
+		
+		/*$service = API::exec(array(
+			'request' => 'GET',
+			'host' => 'ldap',
+			'method' => "send_email_fams?data_asset=20190723",
+			'data' => $data 
+		));
+
+		//echo "14=<pre>"; print_r($data); die();
+		$service = API::exec(array(
+            'request' => 'PUT',
+            'host' => 'ldap',
+            'method' => 'send_email',
+            'data' => $data
+        ));
+	
+		/*$service = API::exec(array(
+            'request' => 'POST',
+            'host' => 'ldap',
+            'method' => 'send_email_fams',
+            'data' => $data
+        ));
+
+		$datax = $service;
+		echo "13=<pre>"; print_r($datax); die();
+		*/
 	}
+
+	public function showToken()
+	{
+      echo csrf_token(); 
+    }
 
 }

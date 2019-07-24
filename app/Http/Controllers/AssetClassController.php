@@ -621,6 +621,16 @@ class AssetClassController extends Controller
         $data = DB::table('TM_JENIS_ASSET')
         ->select('jenis_asset_code as id', 'jenis_asset_description as text')
         //->where('deleted', 0)
+        ->orderby('jenis_asset_description', 'asc')
+        ->get();
+        return response()->json(array("data"=>$data));
+    }
+
+    public function select_jenis_asset_code_text_only()
+    {
+        $data = DB::table('TM_JENIS_ASSET')
+        ->select('jenis_asset_code as id', 'jenis_asset_description as text')
+        //->where('deleted', 0)
         ->get();
         return response()->json(array("data"=>$data));
     }
@@ -630,6 +640,7 @@ class AssetClassController extends Controller
         $data = DB::table('TM_GROUP_ASSET')
         ->select('group_code as id', 'group_description as text')
         //->where('deleted', 0)
+        ->orderby('group_description', 'asc')
         ->get();
         return response()->json(array("data"=>$data));
     }
@@ -639,6 +650,7 @@ class AssetClassController extends Controller
         $data = DB::table('TM_SUBGROUP_ASSET')
         ->select('subgroup_code as id', 'subgroup_description as text')
         //->where('deleted', 0)
+        ->orderby('subgroup_description', 'asc')
         ->get();
         return response()->json(array("data"=>$data));
     }

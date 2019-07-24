@@ -209,20 +209,23 @@
                                                 </div>
                                             </div>
                                             <div class="form-group">
-                                                <label for="plant" class="col-md-2 col-md-offset-1">Jenis asset</label>
+                                                <label for="plant" class="col-md-2 col-md-offset-1">Jenis asset <sup style="color:red">*</sup></label>
+                                                
                                                 <div class="col-md-8">
                                                     <select class="form-control input-sm" name="asset_type" value="" id="asset_type"></select>
                                                 </div>
                                             </div>
                                             <div class="form-group">
-                                                <label for="plant" class="col-md-2 col-md-offset-1">Group</label>
+                                                <label for="plant" class="col-md-2 col-md-offset-1">Group <sup style="color:red">*</sup></label>
+                                                
                                                 <div class="col-md-8">
                                                     <select class="form-control input-sm" name="asset_group" value="" id="asset_group"></select>
                                                 </div>
                                             </div>
                                             
                                             <div class="form-group">
-                                                <label for="plant" class="col-md-2 col-md-offset-1">Sub Group</label>
+                                                <label for="plant" class="col-md-2 col-md-offset-1">Sub Group <sup style="color:red">*</sup></label>
+                                                
                                                 <div class="col-md-8">
                                                     <select class="form-control input-sm" name="asset_sub_group" value="" id="asset_sub_group"></select>
                                                 </div>
@@ -379,13 +382,15 @@
                                             </div>
                                             <h4>PENANGGUNG JAWAB ASSET : </h4>
                                             <div class="form-group material-group-input" id="input-specification">
-                                                <label for="part_no" class="col-md-2 col-md-offset-1 col-form-label">Nama</label>
+                                                <label for="part_no" class="col-md-2 col-md-offset-1 col-form-label">Nama <sup style="color:red">*</sup></label>
+                                                
                                                 <div class="col-md-8">
                                                     <input type="text" class="form-control input-sm attr-material-group" name="asset_pic_name" id="asset_pic_name">
                                                 </div>
                                             </div>
                                             <div class="form-group material-group-input" id="input-specification">
-                                                <label for="part_no" class="col-md-2 col-md-offset-1 col-form-label">Jabatan</label>
+                                                <label for="part_no" class="col-md-2 col-md-offset-1 col-form-label">Jabatan <sup style="color:red">*</sup></label>
+
                                                 <div class="col-md-8">
                                                     <input type="text" class="form-control input-sm attr-material-group" name="asset_pic_level" id="asset_pic_level">
                                                 </div>
@@ -1012,6 +1017,24 @@
                         notify({
                             type: 'warning',
                             message: 'Kondisi pada  asset ' + field.name + ' page ' + (key + 1) + ' tidak boleh kosong!'
+                        });
+                        valid = false;
+                        return false;
+                    }
+
+                    if (val.asset_pic_name === "") {
+                        notify({
+                            type: 'warning',
+                            message: 'Nama Penanggung Jawab Asset pada asset ' + field.name + ' page ' + (key + 1) + ' tidak boleh kosong!'
+                        });
+                        valid = false;
+                        return false;
+                    }
+
+                    if (val.asset_pic_level === "") {
+                        notify({
+                            type: 'warning',
+                            message: 'Jabatan Penanggung Jawab Asset pada asset ' + field.name + ' page ' + (key + 1) + ' tidak boleh kosong!'
                         });
                         valid = false;
                         return false;

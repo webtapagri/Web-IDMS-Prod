@@ -293,6 +293,20 @@ class ApprovalController extends Controller
         {
             foreach( $data as $k => $v )
             {
+                $rolename = Session::get('role');
+                if( $rolename == 'AMS' )
+                {
+                    $kondisi_asset = trim($v->JENIS_ASSET);
+                    $group = trim($v->GROUP);
+                    $subgroup = trim($v->SUB_GROUP);
+                }
+                else
+                {
+                    $kondisi_asset = trim($v->JENIS_ASSET).'-'.trim($v->JENIS_ASSET_NAME);
+                    $group = trim($v->GROUP).'-'.trim($v->GROUP_NAME);
+                    $subgroup = trim($v->SUB_GROUP).'-'.trim($v->SUB_GROUP_NAME);
+                }
+
                 $records[] = array
                 (
                     'id' => trim($v->ID),
@@ -300,9 +314,12 @@ class ApprovalController extends Controller
                     'asset_po_id' => trim($v->ASSET_PO_ID),
                     'tgl_po' => trim($v->CREATED_AT),
                     'kondisi_asset' => trim(@$kondisi[$v->KONDISI_ASSET]),
-                    'jenis_asset' => trim($v->JENIS_ASSET).'-'.trim($v->JENIS_ASSET_NAME),
-                    'group' => trim($v->GROUP).'-'.trim($v->GROUP_NAME),
-                    'sub_group' => trim($v->SUB_GROUP).'-'.trim($v->SUB_GROUP_NAME),
+                    //'jenis_asset' => trim($v->JENIS_ASSET).'-'.trim($v->JENIS_ASSET_NAME),
+                    'jenis_asset' => $kondisi_asset,
+                    //'group' => trim($v->GROUP).'-'.trim($v->GROUP_NAME),
+                    'group' => $group,
+                    //'sub_group' => trim($v->SUB_GROUP).'-'.trim($v->SUB_GROUP_NAME),
+                    'sub_group' => $subgroup,
                     'nama_asset' => trim($v->NAMA_ASSET),
                     'merk' => trim($v->MERK),
                     'spesifikasi_or_warna' => trim($v->SPESIFIKASI_OR_WARNA),
@@ -310,6 +327,8 @@ class ApprovalController extends Controller
                     'no_mesin_or_imei' => trim($v->NO_MESIN_OR_IMEI),
                     'lokasi' => trim($v->LOKASI_BA_DESCRIPTION),
                     'tahun' => trim($v->TAHUN_ASSET),
+                    'nama_penanggung_jawab_asset' => trim($v->NAMA_PENANGGUNG_JAWAB_ASSET),
+                    'jabatan_penanggung_jawab_asset' => trim($v->JABATAN_PENANGGUNG_JAWAB_ASSET),
                     'info' => trim($v->INFORMASI),
                     'file' => $this->get_asset_file($v->ID,$noreg),
                     'nama_asset_1' => trim($v->NAMA_ASSET_1),
@@ -404,34 +423,70 @@ class ApprovalController extends Controller
         {
             $deactivation_on = $request->deactivation_on;
             if($deactivation_on == '')
-            { $do = "deactivation_on = NULL,"; }else
-            { $do = "deactivation_on = '{$request->deactivation_on}',"; }
+            { $do = "a.deactivation_on = NULL,"; }else
+            { $do = "a.deactivation_on = '{$request->deactivation_on}',"; }
 
             $capitalized_on = $request->capitalized_on;
             if($capitalized_on == '')
-            { $co = "capitalized_on = NULL,"; }else
-            { $co = "capitalized_on = '{$request->capitalized_on}',"; }
+            { $co = "a.capitalized_on = NULL,"; }else
+            { $co = "a.capitalized_on = '{$request->capitalized_on}',"; }
 
-            $sql = " UPDATE TR_REG_ASSET_DETAIL 
+            $sql = " UPDATE TR_REG_ASSET_DETAIL a
                         SET 
-                            nama_asset_1 = '{$request->nama_asset_1}',
-                            nama_asset_2 = '{$request->nama_asset_2}',
-                            nama_asset_3 = '{$request->nama_asset_3}',
-                            quantity_asset_sap = '{$request->quantity}',
-                            uom_asset_sap = '{$request->uom}',
-                            ".$co."
-                            ".$do."
-                            cost_center = '{$request->cost_center}',
-                            book_deprec_01 = '{$request->book_deprec_01}',
-                            fiscal_deprec_15 = '{$request->fiscal_deprec_15}',
-                            group_deprec_30 = '{$request->book_deprec_01}',
-                            updated_by = '{$user_id}',
-                            updated_at = current_timestamp()
-                    WHERE ID = $id AND NO_REG = '{$request->getnoreg}' AND NO_REG_ITEM = {$request->no_reg_item} ";
+                            a.nama_asset_1 = '{$request->nama_asset_1}',
+                            a.nama_asset_2 = '{$request->nama_asset_2}',
+                            a.nama_asset_3 = '{$request->nama_asset_3}',
+                            a.quantity_asset_sap = '{$request->quantity}',
+                            a.uom_asset_sap = '{$request->uom}',
+                            {$co}
+                            {$do}
+                            a.cost_center = '{$request->cost_center}',
+                            a.book_deprec_01 = '{$request->book_deprec_01}',
+                            a.fiscal_deprec_15 = '{$request->fiscal_deprec_15}',
+                            a.group_deprec_30 = '{$request->fiscal_deprec_15}',
+                            a.updated_by = '{$user_id}',
+                            a.updated_at = current_timestamp()
+                    WHERE a.ID = $id AND a.NO_REG = '{$request->getnoreg}' AND a.NO_REG_ITEM = {$request->no_reg_item} ";
             DB::UPDATE($sql);    
 
             DB::commit();
-            return response()->json(['status' => true, "message" => 'Data Detail Asset SAP is successfully ' . ($id ? 'updated' : 'update')]);
+            return response()->json(['status' => true, "message" => 'Data is successfully ' . ($id ? 'updated' : 'update')]);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json(['status' => false, "message" => $e->getMessage()]);
+        }
+    }
+
+    function save_item_detail(Request $request, $id)
+    {
+        $user_id = Session::get('user_id');
+
+        DB::beginTransaction();
+
+        try 
+        {
+            $deactivation_on = $request->deactivation_on;
+            if($deactivation_on == '')
+            { $do = "a.deactivation_on = NULL,"; }else
+            { $do = "a.deactivation_on = '{$request->deactivation_on}',"; }
+
+            $capitalized_on = $request->capitalized_on;
+            if($capitalized_on == '')
+            { $co = "a.capitalized_on = NULL,"; }else
+            { $co = "a.capitalized_on = '{$request->capitalized_on}',"; }
+
+            $sql = " UPDATE TR_REG_ASSET_DETAIL a
+                        SET 
+                            a.jenis_asset = '{$request->jenis_asset}',
+                            a.group = '{$request->group}',
+                            a.sub_group = '{$request->subgroup}',
+                            a.updated_by = '{$user_id}',
+                            a.updated_at = current_timestamp()
+                    WHERE a.ID = $id AND a.NO_REG = '{$request->getnoreg}' AND a.NO_REG_ITEM = {$request->no_reg_item} ";
+            DB::UPDATE($sql);    
+
+            DB::commit();
+            return response()->json(['status' => true, "message" => 'Data is successfully ' . ($id ? 'updated' : 'update')]);
         } catch (\Exception $e) {
             DB::rollback();
             return response()->json(['status' => false, "message" => $e->getMessage()]);
@@ -683,8 +738,9 @@ WHERE a.NO_REG = '{$no_registrasi}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KO
                 }    
                 else
                 {
-                    $validasi_check_gi_amp = $this->get_validasi_check_gi_amp($request,$no_registrasi); //true;
+                    //$validasi_check_gi_amp = $this->get_validasi_check_gi_amp($request,$no_registrasi); //true;
                     //echo "1<pre>"; print_r($validasi_check_gi_amp); die();
+                    $validasi_check_gi_amp['status'] = 'success';
 
                     if($validasi_check_gi_amp['status'] == 'success')
                     {
@@ -1282,12 +1338,12 @@ WHERE a.NO_REG = '{$noreg}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KODE_ASSET
             'method' => "check_io?AUFNR=$ka_con&AUFUSER3=$ka_sap", 
         ));
         
-        //$data = $service;
-        $data = 1;
+        $data = $service;
+        //$data = 1;
         //echo "<pre>"; print_r($data); die();
 
-        //if( $data->TYPE == 'S' )
-        if($data==1)
+        if( $data->TYPE == 'S' )
+        //if($data==1)
         {
             DB::beginTransaction();
             try 

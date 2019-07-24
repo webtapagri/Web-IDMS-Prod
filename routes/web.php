@@ -64,6 +64,7 @@ Route::get('/approval/view/{no_reg}', 'ApprovalController@view')->name('no_reg')
 Route::get('/approval/view_detail/{no_reg}/{id}', 'ApprovalController@get_asset_detail');
 Route::post('/approval/delete_asset/{id}','ApprovalController@delete_asset');
 Route::post('/approval/save_asset_sap/{id}','ApprovalController@save_asset_sap');
+Route::post('/approval/save_item_detail/{id}','ApprovalController@save_item_detail');
 Route::post('/approval/update_status/{status}/{no_reg}','ApprovalController@update_status');
 Route::get('/approval/log_history/{no_reg}', 'ApprovalController@log_history')->name('no_reg');
 Route::post('/approval/synchronize_sap', 'ApprovalController@synchronize_sap');
@@ -171,6 +172,7 @@ Route::get('get-select_workflow_detail_code', ['as' => 'get.select_workflow_deta
 Route::get('get-select_workflow_detail_role', ['as' => 'get.select_workflow_detail_role', 'uses' => 'WorkflowController@workflowcoderole']);
 Route::get('get-select_workflow_detail_code', ['as' => 'get.select_workflow_detail_code', 'uses' => 'WorkflowController@workflowcodedetail']);
 Route::get('get-select_jenis_asset_code', ['as' => 'get.select_jenis_asset_code', 'uses' => 'AssetClassController@select_jenis_asset_code']);
+Route::get('get-select_jenis_asset_code_text_only', ['as' => 'get.select_jenis_asset_code_text_only', 'uses' => 'AssetClassController@select_jenis_asset_code_text_only']);
 Route::get('get-select_group_code', ['as' => 'get.select_group_code', 'uses' => 'AssetClassController@select_group_code']);
 Route::get('get-select_subgroup_code', ['as' => 'get.select_subgroup_code', 'uses' => 'AssetClassController@select_subgroup_code']);
 Route::get('get-select_asset_controller', ['as' => 'get.select_asset_controller', 'uses' => 'AssetClassController@select_asset_controller']);
