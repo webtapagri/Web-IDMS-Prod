@@ -613,7 +613,7 @@ class ApprovalController extends Controller
 
         $sql = " SELECT * FROM TR_REG_ASSET_DETAIL a 
 LEFT JOIN TM_ASSET_CONTROLLER_MAP b ON a.JENIS_ASSET = b.JENIS_ASSET_CODE AND a.GROUP = b.GROUP_CODE AND a.SUB_GROUP = b.SUBGROUP_CODE
-WHERE a.NO_REG = '{$no_registrasi}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KODE_ASSET_CONTROLLER = '' ) AND (a.DELETED is null OR a.DELETED = '')  ";
+WHERE a.NO_REG = '{$no_registrasi}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KODE_ASSET_CONTROLLER = '' ) AND (a.DELETED is null OR a.DELETED = '') AND (b.MANDATORY_KODE_ASSET_CONTROLLER is not null AND b.MANDATORY_KODE_ASSET_CONTROLLER != '') ";
 
         $dt = DB::SELECT($sql); 
         //echo "2<pre>"; print_r($dt);die();
