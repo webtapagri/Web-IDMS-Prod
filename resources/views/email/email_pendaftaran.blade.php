@@ -34,7 +34,7 @@ Dibutuhkan persetujuan atas dokumen berikut :
 <br/>
 <br/>
 <div style='margin-left:10%'>
-	NO DOCUMENT : {{ $data->datax[0]->document_code }} (<a href="{{ url('/?noreg=$dc') }}" target="_blank">detail</a>) <br/>
+	NO DOCUMENT : {{ $data->datax[0]->document_code }} (<a href="{{ url('/?noreg={{$dc}}') }}" target="_blank">detail</a>) <br/>
 	TYPE OF SUBMISSION : {{ $TYPE_OF_SUBMISSION }} <br/>
 	PURCHASE NO : {{ $data->datax[0]->NO_PO }} <br/>
 	BUSINESS AREA KEPEMILIKAN ASET : {{ $data->datax[0]->BA_PEMILIK_ASSET }} <br/><br/>
