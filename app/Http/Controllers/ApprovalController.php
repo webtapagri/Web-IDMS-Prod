@@ -1150,11 +1150,11 @@ WHERE a.NO_REG = '{$no_registrasi}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KO
                 'method' => "check_gi?MBLNR=".$gi_number."&MJAHR=".$gi_year."&ANLN1=".$ka_sap."&ANLN2=0", 
             ));
             
-            //$data = $service;
-            $data = 1;
+            $data = $service;
+            //$data = 1;
 
-            //if( $data->TYPE == 'S' )
-            if($data==1)
+            if( $data->TYPE == 'S' )
+            //if($data==1)
             {
                 
                 DB::beginTransaction();
@@ -1391,13 +1391,13 @@ WHERE a.NO_REG = '{$noreg}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KODE_ASSET
             'method' => "check_io?AUFNR=$ka_con&AUFUSER3=$ka_sap", 
         ));
         
-        //$data = $service;
-        $data = 1;
+        $data = $service;
+        //$data = 1;
         
         //echo "<pre>"; print_r($data); die();
 
-        //if( $data->TYPE == 'S' )
-        if($data==1)
+        if( $data->TYPE == 'S' )
+        //if($data==1)
         {
             DB::beginTransaction();
             try 
