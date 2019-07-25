@@ -609,11 +609,11 @@ class ApprovalController extends Controller
         $no_registrasi = str_replace("-", "/", $noreg);
         $list_kode_asset = "";
 
-        $sql = " SELECT * FROM TR_REG_ASSET_DETAIL WHERE NO_REG = '{$no_registrasi}' AND (KODE_ASSET_CONTROLLER is null OR KODE_ASSET_CONTROLLER = '' ) AND (DELETED is null OR DELETED = '') AND JENIS_ASSET IN ('E4030','4030', '4010') ";
+        //$sql = " SELECT * FROM TR_REG_ASSET_DETAIL WHERE NO_REG = '{$no_registrasi}' AND (KODE_ASSET_CONTROLLER is null OR KODE_ASSET_CONTROLLER = '' ) AND (DELETED is null OR DELETED = '') AND JENIS_ASSET IN ('E4030','4030', '4010') ";
 
-        /*$sql = " SELECT * FROM TR_REG_ASSET_DETAIL a 
+        $sql = " SELECT * FROM TR_REG_ASSET_DETAIL a 
 LEFT JOIN TM_ASSET_CONTROLLER_MAP b ON a.JENIS_ASSET = b.JENIS_ASSET_CODE AND a.GROUP = b.GROUP_CODE AND a.SUB_GROUP = b.SUBGROUP_CODE
-WHERE a.NO_REG = '{$no_registrasi}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KODE_ASSET_CONTROLLER = '' ) AND (a.DELETED is null OR a.DELETED = '')  ";*/
+WHERE a.NO_REG = '{$no_registrasi}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KODE_ASSET_CONTROLLER = '' ) AND (a.DELETED is null OR a.DELETED = '')  ";
 
         $dt = DB::SELECT($sql); 
         //echo "2<pre>"; print_r($dt);die();
@@ -624,7 +624,7 @@ WHERE a.NO_REG = '{$no_registrasi}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KO
             {
                 $list_kode_asset .= $v->KODE_ASSET_SAP.",";
             }
-            $result = array('status'=>false,'message'=> 'Kode Aset Controller (KODE ASET : '.rtrim($list_kode_asset,',').') belum diisi');
+            $result = array('status'=>false,'message'=> 'Kode Aset Controller (KODE ASET SAP : '.rtrim($list_kode_asset,',').') belum diisi');
         }
         else
         {
@@ -802,7 +802,7 @@ WHERE a.NO_REG = '{$no_registrasi}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KO
                 {
                     if($rolename == 'AC' )
                     {
-                        /* DISKIP KARENA SUDAH DI MAPPING DI TABLE TM_ASSET_CONTROLLER_MAP X IT@150719 
+                        // CEK SEKALI LAGI UNTUK ALL INPUT IO (KODE ASET CONTROLLER) IT@250719  ~ DISKIP KARENA SUDAH DI MAPPING DI TABLE TM_ASSET_CONTROLLER_MAP X IT@150719 
                         $validasi_input_all_io = $this->validasi_input_all_io($request, $status, $noreg);
                 
                         if(!$validasi_input_all_io['status'])
@@ -810,7 +810,7 @@ WHERE a.NO_REG = '{$no_registrasi}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KO
                             return response()->json(['status' => false, "message" => $validasi_input_all_io['message']] );
                             die();
                         }
-                        */ 
+                        
                     }
                 }
 
@@ -1150,11 +1150,11 @@ WHERE a.NO_REG = '{$no_registrasi}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KO
                 'method' => "check_gi?MBLNR=".$gi_number."&MJAHR=".$gi_year."&ANLN1=".$ka_sap."&ANLN2=0", 
             ));
             
-            $data = $service;
-            //$data = 1;
+            //$data = $service;
+            $data = 1;
 
-            if( $data->TYPE == 'S' )
-            //if($data==1)
+            //if( $data->TYPE == 'S' )
+            if($data==1)
             {
                 
                 DB::beginTransaction();
@@ -1268,8 +1268,7 @@ WHERE a.NO_REG = '{$noreg}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KODE_ASSET
                     $result = array('status'=>true,'message'=> 'Success');
                     return $result;   
                 }
-            }
-        
+            }   
         }
         else
         {
@@ -1392,13 +1391,13 @@ WHERE a.NO_REG = '{$noreg}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KODE_ASSET
             'method' => "check_io?AUFNR=$ka_con&AUFUSER3=$ka_sap", 
         ));
         
-        $data = $service;
-        //$data = 1;
+        //$data = $service;
+        $data = 1;
         
         //echo "<pre>"; print_r($data); die();
 
-        if( $data->TYPE == 'S' )
-        //if($data==1)
+        //if( $data->TYPE == 'S' )
+        if($data==1)
         {
             DB::beginTransaction();
             try 

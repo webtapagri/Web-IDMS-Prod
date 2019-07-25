@@ -755,7 +755,10 @@
     function getDetailItem(noreg,id,tipe,no_urut)
     {
         //alert(JSON.stringify(id));
-        
+        //alert(tipe);
+        //$(".rincian-informasi-aset-box").reset(); //return false;
+        $('.rincian-informasi-aset-box input[type="text"]').val('');
+
         $.ajax({
             type: 'GET',
             url: "{{ url('approval/view_detail') }}/"+noreg+"/"+id,
@@ -808,7 +811,7 @@
                     if(key==0){ aktif = 'active'; }
                     item += "<div class='tab-pane "+aktif+" ' id='panel-"+num+"'>";
                     
-                    item += "<div class='box-body'>";
+                    item += "<div class='box-body rincian-informasi-aset-box'>";
                     
                     item += "<div class='col-md-6'>";
                     item += "<div class='form-group'><label for='plant' class='col-md-4'>NO PO</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='' value='"+val.no_po+"' id='' autocomplete='off' readonly></div></div>";
@@ -971,17 +974,20 @@
                         item += "</div>";
                         
                         item += "<div class='col-md-4'> ";
-                        item += "<div class='form-group'><label for='' class='col-md-4'>KODE ASET SAP</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='kode_aset_sap-"+val.no_reg_item+"' value='"+val.kode_asset_sap+"' id='kode_aset_sap-"+val.no_reg_item+"' autocomplete='off'></div></div>";
+                        item += "<div class='form-group'><label for='' class='col-md-4'>KODE ASET SAP</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='kode_aset_sap-"+val.no_reg_item+"' value='"+val.kode_asset_sap+"' id='kode_aset_sap-"+val.no_reg_item+"' autocomplete='off' readonly='1'></div></div>";
                         item += "</div>";
                         
                         item += "<div class='col-md-4'> ";
-                        item += "<div class='form-group'><label for='' class='col-md-4'>KODE ASET FAMS</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='kode_asset_ams-"+val.no_reg_item+"' value='"+val.kode_asset_ams+"' id='kode_asset_ams-"+val.no_reg_item+"' autocomplete='off'></div></div>";
+                        item += "<div class='form-group'><label for='' class='col-md-4'>KODE ASET FAMS</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='kode_asset_ams-"+val.no_reg_item+"' value='"+val.kode_asset_ams+"' id='kode_asset_ams-"+val.no_reg_item+"' autocomplete='off' readonly='1'></div></div>";
                         item += "</div>";
 
                         item += "</div></div>";
 
-                        //if( val.po_type == 0 ){ //HIDE KRN AMP JG MENGINPUT GI IT@170619
-                            
+                        if( val.po_type == 0 )
+                        { //TIDAK JADI IT@250719  ~ HIDE KRN AMP JG MENGINPUT GI IT@170619
+                                
+                            <?php if( $user_role == 'PGA' ){ ?>
+
                             /* BOX CHECK GI */
                             item += "<div class='col-md-12 box-kode-asset-controller'><div class='row'>";
                             item += "<span class='label bg-blue'><i class='fa fa-bars'></i> MATERIAL DOCUMENT / CHECK GI</span><br/><br/>";
@@ -996,8 +1002,10 @@
 
                             item += "</div></div>";
                             /* END BOX CHECK GI */
-                        
-                        //}
+
+                            <?php } ?>
+
+                        }
                     }
                     /* END BOX KODE ASET CONTROLLER */
 
@@ -1635,10 +1643,12 @@
         
         if(po_type == 1)
         {
+            //AMP
             var csap = $("#kode_aset_ams-"+no+"").val();
         }
         else
         {
+            //SAP
             var csap = $("#kode_aset_sap-"+no+"").val();
         }
         
