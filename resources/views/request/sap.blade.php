@@ -978,7 +978,7 @@
                     }
 
                     //IF JENIS ASSET TYPE = 4030-KENDARAAN & ALAT BERAT
-                    if( val.asset_type == 4030 || val.asset_type == 4010 )
+                    if( val.asset_type == 'E4010' || val.asset_type == 'E4030' || val.asset_type == 4030 || val.asset_type == 4010 )
                     {
                         if (val.asset_serie_no === "") {
                             notify({
@@ -1609,7 +1609,7 @@
         var item = request.detail[obj];
         var valid = true;
 
-        if( item.asset_type == 4030 || item.asset_type == 4010 )
+        if( item.asset_type == 'E4010' || item.asset_type == 'E4030' || item.asset_type == 4030 || item.asset_type == 4010 )
         {
             if (item.asset_serie_no === "") {
                 valid = false;
