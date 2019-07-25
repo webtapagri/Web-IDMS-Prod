@@ -9,6 +9,16 @@
 		$TYPE_OF_SUBMISSION = 'PO AMP';
 	}
 
+	$document_code = $data->datax[0]->document_code;
+	if($document_code != "")
+	{
+		$dc = base64_encode($document_code);
+	}
+	else
+	{
+		$dc = "";
+	}
+
 ?>
 
 <h3>PERMOHONAN PERSETUJUAN PENGAJUAN ASET</h3>
@@ -24,7 +34,7 @@ Dibutuhkan persetujuan atas dokumen berikut :
 <br/>
 <br/>
 <div style='margin-left:10%'>
-	NO DOCUMENT : {{ $data->datax[0]->document_code }} (<a href="{{ url('/') }}" target="_blank">detail</a>) <br/>
+	NO DOCUMENT : {{ $data->datax[0]->document_code }} (<a href="{{ url('/?noreg={$dc}') }}" target="_blank">detail</a>) <br/>
 	TYPE OF SUBMISSION : {{ $TYPE_OF_SUBMISSION }} <br/>
 	PURCHASE NO : {{ $data->datax[0]->NO_PO }} <br/>
 	BUSINESS AREA KEPEMILIKAN ASET : {{ $data->datax[0]->BA_PEMILIK_ASSET }} <br/><br/>
@@ -37,8 +47,8 @@ Dibutuhkan persetujuan atas dokumen berikut :
 		{
 			$no = 1;
 			$l = " 
-				<table border='1' cellpadding='1' cellspacing='1'>
-					<tr>
+				<table border='1' cellpadding='5' cellspacing='0'>
+					<tr style='background-color:#EEEEEE'>
 						<th>NO</th>
 						<th>KODE MATERIAL</th>
 						<th>ASSETS</th>
@@ -109,10 +119,12 @@ Mohon tidak melakukan reply.</i>
 5.Permohonan penambahan data pendukung ke pembuat dokumen <br/>
 dapat dilakukan dengan memilih action Detail <br/>
 
-<br/>
+<hr/>
+
+<i><b>Email ini terbentuk otomatis oleh Sistem.</b></i><br/>
+Apabila ada pertanyaan mengenai email ini dapat menghubungi : <br/>
 
 Email : TAP.callcenter.helpdesk@tap-agri.com <br/>
-Ext : 794/502 <br/>
+Ext : 481 <br/>
 HP : 0821 1401 3315 <br/>
-PIN : 74A84D64 <br/>
 Website : helpdesk.tap-agri.com
