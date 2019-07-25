@@ -933,7 +933,7 @@
 
                         item += "<div class='form-group'><label for='' class='col-md-4'>BUSINESS AREA</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='business_area-"+val.no_reg_item+"' value='"+val.business_area+"' id='business_area-"+val.no_reg_item+"' autocomplete='off' readonly></div></div>";
 
-                        item += "<div class='form-group'><label for='' class='col-md-4'>COST CENTER</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='cost_center-"+val.no_reg_item+"' value='"+val.cost_center+"' id='cost_center-"+val.no_reg_item+"' autocomplete='off' required></div></div>";
+                        item += "<div class='form-group'><label for='' class='col-md-4'>COST CENTER</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='cost_center-"+val.no_reg_item+"' value='"+val.cost_center+"' id='cost_center-"+val.no_reg_item+"' autocomplete='off' maxlength='10' required></div></div>";
 
                         item += "<div class='form-group'><label for='' class='col-md-4'>PLANT</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='plant-"+val.no_reg_item+"' value='"+val.business_area+"' id='plant-"+val.no_reg_item+"' autocomplete='off' readonly></div></div>";
 

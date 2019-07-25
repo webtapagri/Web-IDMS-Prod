@@ -448,8 +448,13 @@
     var vendor_name = jQuery("#vendor_name");
 
 
-    jQuery(document).ready(function() {
-        jQuery(window).keydown(function(event) {
+    $(document).ready(function() 
+    {
+        $('input[type="text"]').change(function(){
+            this.value = $.trim(this.value);
+        });
+
+        $(window).keydown(function(event) {
             if (event.keyCode == 13) {
                 event.preventDefault();
                 return false;
@@ -508,7 +513,8 @@
             data: plant,
             width: "100%",
             allowClear: true,
-            placeholder: ' '
+            placeholder: ' ',
+            enable: false
         });
 
         jQuery('#business_area').val('1211');
@@ -778,7 +784,8 @@
             var param = {
                 transaction_type: transaction_type.val(),
                 request_date: request_date.val(),
-                business_area: business_area.val(),
+                //business_area: business_area.val(),
+                business_area: '1211',
                 po_no: po_no.val(),
                 po_type: 1,
                 po_date: po_date.val(),
@@ -976,13 +983,16 @@
 
     function addItem() 
     {
-        if (validateItem()) {
+        if (validateItem()) 
+        {
             var id = makeInt(5);
             //var item_po = jQuery("#detail_item_po");
-            var code = jQuery("#detail_item_code");
-            var name = jQuery("#detail_item_name");
-            var qty = jQuery("#detail_item_qty");
-            request_item[id] = {
+            var code = $("#detail_item_code");
+            var name = $("#detail_item_name");
+            var qty = $("#detail_item_qty");
+            
+            request_item[id] = 
+            {
                 id: id,
                 //item_po: item_po.val(),
                 code: code.val(),
@@ -1003,7 +1013,8 @@
         }
     }
 
-    function createPage(id) {
+    function createPage(id) 
+    {
         request_item_page = [];
         data_page = [];
         var item_detail = [];

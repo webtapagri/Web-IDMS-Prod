@@ -471,8 +471,13 @@
     var vendor_name = jQuery("#vendor_name");
 
 
-    jQuery(document).ready(function() {
-        jQuery(window).keydown(function(event) {
+    $(document).ready(function() 
+    {
+        $('input[type="text"]').change(function(){
+            this.value = $.trim(this.value);
+        });
+
+        $(window).keydown(function(event) {
             if (event.keyCode == 13) {
                 event.preventDefault();
                 return false;
