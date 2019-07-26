@@ -224,13 +224,28 @@ class RequestController extends Controller
 
     public function store(Request $request)
     {
+        $req = $request->all();
+        //echo "3<pre>"; print_r($req); die();
         //return response()->json(["status"=>true, "message"=>"Document Created!", "new_noreg"=>"ini noreg"]);
         
         DB::beginTransaction();
 
        try 
        {
-            //$reg_no = rand(0, 1000000);
+            //1 VALIDASI JENIS ASSET, GROUP, SUBGROUP HARUS SERAGAM IT@250719
+            $validasi_asset_controller = $this->validasi_asset_controller($req);
+            //echo "4<pre>"; print_r($validasi_asset_controller); die();
+
+            if( $validasi_asset_controller['status'] == false )
+            {
+                return response()->json(['status' => false, "message" => "Create document gagal, Asset Controller tidak sama"]);
+            }
+            else
+            {
+                $asset_type = $validasi_asset_controller['message'];
+            }
+
+            //2 INSERT DATABASE
             $reg_no = $this->get_reg_no();
             $user_id = Session::get('user_id');
 
@@ -238,7 +253,7 @@ class RequestController extends Controller
             //DB::SELECT('call create_approval(?,?,?,?)',array(6, $request->business_area,'',$reg_no));
             $po_type = $request->po_type;
             if($po_type == 0){ $menu_code = 'P1'; }else{ $menu_code = 'P2'; }
-            DB::SELECT('call create_approval("'.$menu_code.'", "'.$request->business_area.'","","'.$reg_no.'","'.$user_id.'")');
+            DB::SELECT('call create_approval("'.$menu_code.'", "'.$request->business_area.'","","'.$reg_no.'","'.$user_id.'","'.$asset_type.'")');
             //die();
 
             $asset_id = DB::table('TR_REG_ASSET')->insertGetId([
@@ -305,6 +320,7 @@ class RequestController extends Controller
 
                         for ($i = 0; $i < count($detail); $i++) 
                         {
+
                             $reg_asset_detail_id = DB::table( 'TR_REG_ASSET_DETAIL')->insertGetId([
                                 "ASSET_PO_ID" =>   $reg_asset_po_id,
                                 "NO_REG_ITEM" =>  $i + 1,
@@ -334,9 +350,11 @@ class RequestController extends Controller
                                 "JABATAN_PENANGGUNG_JAWAB_ASSET" =>  $detail[$i]["asset_pic_level"],
                                 "CREATED_BY" =>  Session::get('user_id'),
                             ]); 
+
                             $item_file_id = ($no + 1) . ($i + 1);
            
-                            if ($detail[$i]["foto_asset"]["name"]) {
+                            if ($detail[$i]["foto_asset"]["name"]) 
+                            {
                                 DB::table( 'TR_REG_ASSET_DETAIL_FILE')->insert([
                                     "ASSET_PO_DETAIL_ID" =>  $reg_asset_detail_id,
                                     "NO_REG_ITEM_FILE" => $item_file_id,
@@ -395,6 +413,63 @@ class RequestController extends Controller
             DB::rollback();
             return response()->json(['status' => false, "message" => $e->getMessage()]);
        }
+    }
+
+    function validasi_asset_controller($req)
+    {
+        //echo "1<pre>"; print_r($req); die();
+
+        $ac = array();
+        $vv = "";
+        
+        if( $req['asset'] ) 
+        {
+            foreach ( $req['asset'] as $row ) 
+            {
+                //echo "2"; count($row["detail"]); die();
+                if ($row["name"]) 
+                {
+                    $detail = $row["detail"];
+
+                    for ($i = 0; $i < count($detail); $i++) 
+                    {
+                        $sql = " SELECT ASSET_CTRL_CODE FROM TM_ASSET_CONTROLLER_MAP WHERE JENIS_ASSET_CODE = '".$detail[$i]["asset_type"]."' AND GROUP_CODE = '".$detail[$i]["asset_group"]."' AND SUBGROUP_CODE = '".$detail[$i]["asset_sub_group"]."' "; //echo $sql; die();
+                        $data = DB::SELECT($sql); 
+                        //echo "1<pre>"; print_r($data); die();
+                        if(!empty($data))
+                        {
+                            foreach($data as $k => $v)
+                            {
+                                //echo "1<pre>"; print_r($v);
+                                $vv = $v->ASSET_CTRL_CODE.","; 
+                            }
+                            array_push($ac,rtrim($vv,","));
+                            //die();
+                        }
+                    }
+                }
+            }
+        }
+
+        //echo "4<pre>"; print_r($ac);die();
+        /*
+        Array
+        (
+            [0] => IF
+            [1] => IT
+        )
+        */
+
+        if (count(array_unique($ac)) === 1) 
+        {
+            $result = array("status"=>true, "message"=> $ac[0]);
+        }
+        else
+        {
+            $result = array("status"=>false, "message"=> "Aset Controller Berbeda");
+        }
+
+        return $result;
     }
 
     public function businessarea() 
