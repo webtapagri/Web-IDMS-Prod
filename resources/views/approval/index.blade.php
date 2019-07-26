@@ -1,15 +1,7 @@
 <?php 
-    //echo Session::get('role_id').'<br/>';
-    //echo "<pre>"; print_r(session()->all()); 
-    //die();
-
     $user_role = Session::get('role');
-    //echo $user_role;die();
-
-    //echo "2<pre>"; print_r($_GET);
     if( !empty($_GET) )
     {
-        //echo "2<pre>"; print_r($_GET); die();
         $email_noreg = base64_decode($_GET['noreg']);
         $email_noreg = str_replace("-", "/", $email_noreg);
     }

@@ -235,7 +235,7 @@
                                             <div class="form-group" id="asset-controller">
                                                 <label for="part_no" class="col-md-2 col-md-offset-1">Asset Controller</label>
                                                 <div class="col-md-8">
-                                                    <input type="text" class="form-control input-sm asset-controller" name="asset_controller" id="asset_controller" autocomplete="off" readonly="readonly">
+                                                    <input type="text" class="form-control input-sm asset-controller" name="asset_controller" id="asset_controller" autocomplete="off">
                                                 </div>
                                             </div>
                                             */ ?>
@@ -553,7 +553,8 @@
             width: "100%",
             allowClear: true,
             placeholder: ' '
-        }).on('change', function() {
+        }).on('change', function() 
+        {
             var assetgroup = jQuery.parseJSON(JSON.stringify(dataJson('{!! route("get.assetgroup") !!}?type=' + jQuery(this).val())));
             jQuery("#asset_group").empty().select2({
                 data: assetgroup,
@@ -573,20 +574,18 @@
                 allowClear: true,
                 placeholder: ' '
             });
-            $("#asset_sub_group").trigger('change');
+            //$("#asset_sub_group").trigger('change');
 
-            var asset_type_val = $("#asset_type").val();
-            asset_group_val = $("#asset_group").val();
-            asset_sub_group_val = $("#asset_sub_group").val();
-            get_asset_controller(asset_type_val,asset_group_val,asset_sub_group_val);
+            //var asset_type_val = $("#asset_type").val();
+            //asset_group_val = $("#asset_group").val();
+            //asset_sub_group_val = $("#asset_sub_group").val();
+            //get_asset_controller(asset_type_val,asset_group_val,asset_sub_group_val);
 
         });
 
         $("#asset_type").trigger('change');
         $("#asset_group").trigger('change');
         $("#asset_sub_group").trigger('change');
-
-
 
         $("#request-form").on("submit", function(e) 
         {
@@ -824,10 +823,10 @@
 
         $("#asset_sub_group").on('change', function() 
         {
-            var asset_type_val = $("#asset_type").val();
-            asset_group_val = $("#asset_group").val();
-            asset_sub_group_val = $("#asset_sub_group").val();
-            get_asset_controller(asset_type_val,asset_group_val,asset_sub_group_val);
+            //var asset_type_val = $("#asset_type").val();
+            //asset_group_val = $("#asset_group").val();
+            //asset_sub_group_val = $("#asset_sub_group").val();
+            //get_asset_controller(asset_type_val,asset_group_val,asset_sub_group_val);
 
             var id = current_page - 1;
             var obj = jQuery('#detail_item_selected').val();
@@ -893,7 +892,7 @@
                                 message: result.message
                             });
                             
-                            //setTimeout(reload_page, 2000);
+                            setTimeout(reload_page, 2000);
 
                         } else {
                             notify({
@@ -1219,6 +1218,7 @@
                 asset_type: '',
                 asset_group: '',
                 asset_sub_group: '',
+                //asset_controller: '',
                 //asset_name: item.name + (item.request_qty > 1 ? ' - ' + (i + 1) : ''),
                 asset_name: item.name,
                 asset_brand: '',
@@ -1405,8 +1405,7 @@
         jQuery('#asset_sub_group').val(item.asset_sub_group);
         jQuery('#asset_sub_group').trigger('change');
 
-
-
+        //$('#asset_controller').val(item.asset_controller);
 
         jQuery('#asset_pic_name').val(item.asset_pic_name);
         jQuery('#asset_pic_level').val(item.asset_pic_level);
@@ -1661,6 +1660,22 @@
             });
         }
 
+        if (val.asset_pic_name === "") {
+            valid = false;
+            notify({
+                type: 'warning',
+                message: 'Nama Penanggung Jawab Asset tidak boleh kosong!'
+            });
+        }
+
+        if (val.asset_pic_level === "") {
+            valid = false;
+            notify({
+                type: 'warning',
+                message: 'Jabatan Penanggung Jawab Asset tidak boleh kosong!'
+            });
+        }
+
         return valid;
     }
 
@@ -1720,13 +1735,13 @@
         return qty_po;
     }
 
-    function get_asset_controller(asset_type,asset_group,asset_sub_group)
+    /*function get_asset_controller(asset_type,asset_group,asset_sub_group)
     {
-        //alert(asset_sub_group);
+        //alert(asset_type+'==='+asset_group+'==='+asset_sub_group);
         //var asset_sub_group_val = $("#asset_sub_group").val();
 
-        $("#asset_controller").val(asset_type+"-"+asset_group+"-"+asset_sub_group);
-    }
+        //$("#asset_controller").val(asset_type+"-"+asset_group+"-"+asset_sub_group);
+    }*/
 
     function send_email_create_po(noreg)
     {
