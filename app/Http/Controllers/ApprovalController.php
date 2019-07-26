@@ -940,13 +940,21 @@ WHERE a.NO_REG = '{$no_registrasi}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KO
             }
             else
             {
-                $result = array("status"=>false, "message"=> "Aset Controller Berbeda");
+                //echo "1<pre>"; print_r($ac); die();
+                if(!empty( $ac ))
+                {
+                    $result = array("status"=>false, "message"=> "Aset Controller tidak sama / belum disetting");
+                }
+                else
+                {
+                    $result = array("status"=>true, "message"=> "");
+                }
             }
 
         }
         else
         {
-            $result = array("status"=>false, "message"=> "Aset Controller kosong");
+            $result = array("status"=>false, "message"=> "Data not found");
         }
         return $result;
     }
