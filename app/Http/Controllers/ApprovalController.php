@@ -665,20 +665,21 @@ WHERE a.NO_REG = '{$no_registrasi}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KO
         $req = $request->all();
         $jenis_dokumen = $req['po-type'];
         $rolename = Session::get('role');
+        $asset_type = "";
 
         // VALIDASI ASSET CONTROLLER 
-        $validasi_asset_controller = $this->validasi_asset_controller($noreg);
-        // /echo "3<pre>"; print_r($validasi_asset_controller['message']); die();
-        if( $validasi_asset_controller['status'] == false )
+        if($status != 'R')
         {
-            return response()->json(['status' => false, "message" =>  $validasi_asset_controller['message'] ]);
+            $validasi_asset_controller = $this->validasi_asset_controller($noreg);
+            if( $validasi_asset_controller['status'] == false )
+            {
+                return response()->json(['status' => false, "message" =>  $validasi_asset_controller['message'] ]);
+            }
+            else
+            {
+                $asset_type = $validasi_asset_controller['message'];
+            }
         }
-        else
-        {
-            $asset_type = $validasi_asset_controller['message'];
-        }
-        //echo "2"; $asset_type;
-        //die();
         
         if($jenis_dokumen == 'AMP')
         {
