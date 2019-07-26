@@ -1660,7 +1660,7 @@
             });
         }
 
-        if (val.asset_pic_name === "") {
+        if (item.asset_pic_name === "") {
             valid = false;
             notify({
                 type: 'warning',
@@ -1668,7 +1668,7 @@
             });
         }
 
-        if (val.asset_pic_level === "") {
+        if (item.asset_pic_level === "") {
             valid = false;
             notify({
                 type: 'warning',
