@@ -225,6 +225,7 @@ class RequestController extends Controller
     public function store(Request $request)
     {
         $req = $request->all();
+        $asset_type = "";
         //echo "3<pre>"; print_r($req); die();
         //return response()->json(["status"=>true, "message"=>"Document Created!", "new_noreg"=>"ini noreg"]);
         
@@ -466,7 +467,14 @@ class RequestController extends Controller
         }
         else
         {
-            $result = array("status"=>false, "message"=> "Aset Controller Berbeda");
+            if(!empty( $ac ))
+            {
+                $result = array("status"=>false, "message"=> "Aset Controller tidak sama / belum disetting");
+            }
+            else
+            {
+                $result = array("status"=>true, "message"=> "");
+            }
         }
 
         return $result;
