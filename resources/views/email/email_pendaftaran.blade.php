@@ -86,10 +86,16 @@ Dibutuhkan persetujuan atas dokumen berikut :
 		{
 			$no = 1;
 			$l = "";
+			$note = "";
 
 			foreach( $data->history_approval as $kk => $vv )
 			{
-				$l .= $no.". ".$vv->name." :: ".$vv->status_approval."<br/>";
+				if( $vv->notes != "" )
+				{
+					$note .= "( ".$vv->notes." )";
+				}
+
+				$l .= $no.". ".$vv->name." :: ".$vv->status_approval." ".$note." <br/>";
 				$no++;
 			}
 

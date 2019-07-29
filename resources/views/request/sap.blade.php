@@ -896,7 +896,7 @@
                                 message: result.message
                             });
                             
-                            //setTimeout(reload_page, 2000);
+                            setTimeout(reload_page, 2000);
 
                         } else {
                             notify({
