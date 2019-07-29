@@ -101,13 +101,15 @@ class Select2Controller extends Controller
         return response()->json(array('data' => $arr));
     }
     
-    public function assetgroup(Request $request) {
+    public function assetgroup(Request $request) 
+    {
         $data = DB::table( 'TM_GROUP_ASSET')
         ->select('GROUP_CODE as id', 'GROUP_DESCRIPTION as text')
         ->where( "JENIS_ASSET_CODE", $request->type)
         ->get();
 
         $arr = array();
+        $arr[] = array("id"=>"","text"=>"");
         foreach ($data as $row) {
             $arr[] = array(
                 "id" => $row->id,
@@ -125,6 +127,7 @@ class Select2Controller extends Controller
         ->get();
 
         $arr = array();
+        $arr[] = array("id"=>"","text"=>"");
         foreach ($data as $row) {
             $arr[] = array(
                 "id" => $row->id,

@@ -23,7 +23,7 @@ class FamsEmailController extends Controller
 		$dt = DB::SELECT($sql);
 
 		// 2. HISTORY APPROVAL 
-		$sql2 = " SELECT * FROM v_history WHERE document_code = '{$document_code}' ";
+		$sql2 = " SELECT a.* FROM v_history a WHERE a.document_code = '{$document_code}' ORDER BY a.date ";
 		$dt_history_approval = DB::SELECT($sql2);
 
 		// 3. EMAIL TO

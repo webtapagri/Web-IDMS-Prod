@@ -103,12 +103,6 @@ Dibutuhkan persetujuan atas dokumen berikut :
 
 <br/>
 <br/>
-
-<i>Email ini terbentuk otomatis oleh System. <br/>
-Mohon tidak melakukan reply.</i>
-
-<br/>
-<br/>
 <br/>
 
 <h2>CATATAN PENTING</h2>
@@ -121,7 +115,8 @@ dapat dilakukan dengan memilih action Detail <br/>
 
 <hr/>
 
-<i><b>Email ini terbentuk otomatis oleh Sistem.</b></i><br/>
+<i><b>Email ini terbentuk otomatis oleh Sistem. <br/>
+Mohon tidak melakukan reply.</b></i><br/>
 Apabila ada pertanyaan mengenai email ini dapat menghubungi : <br/>
 
 Email : TAP.callcenter.helpdesk@tap-agri.com <br/>

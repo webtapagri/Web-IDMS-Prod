@@ -861,19 +861,19 @@
                             //alert(total_tab);
                             //$(".button-delete").hide(); 
 
-                            <?php if( $user_role == 'AMS' ){ ?>
+                            <?php if( $user_role == 'AMS' ){ if($data['outstanding'] != 0 ){ ?>
                                 item += "<div class='form-group' align='right'><div class='btn btn-warning btn-sm' value='Save' OnClick='saveItemDetail("+val.id+","+val.no_po+","+val.no_reg_item+")' style='margin-right:5px;xmargin-top:5px'><i class='fa fa-save'></i> SAVE</div><button type='button' class='btn btn-warning btn-sm' OnClick='delAsset("+val.id+")' style='margin-right: 15px' disabled><i class='fa fa-trash'></i> DELETE</button></div>";
-                            <?php }else{ ?>
+                            <?php } }else{ if($data['outstanding'] != 0 ){ ?>
                                 item += "<div class='form-group' align='right'><button type='button' class='btn btn-warning btn-sm' OnClick='delAsset("+val.id+")' style='margin-right: 15px' disabled><i class='fa fa-trash'></i> DELETE</button></div>";
-                            <?php } ?>
+                            <?php } }  ?>
                         }
                         else
                         {
-                            <?php if( $user_role == 'AMS' ){ ?>
+                            <?php if( $user_role == 'AMS' ){ if($data['outstanding'] != 0 ){ ?>
                                 item += "<div class='form-group' align='right'><div class='btn btn-warning btn-sm' value='Save' OnClick='saveItemDetail("+val.id+","+val.no_po+","+val.no_reg_item+")' style='margin-right:5px;xmargin-top:5px'><i class='fa fa-save'></i> SAVE</div><div class='btn btn-warning btn-sm button-delete' value='Delete' OnClick='delAsset("+val.id+")' style='margin-right:15px'><i class='fa fa-trash'></i> DELETE</div></div>";
-                            <?php }else{ ?>
+                            <?php } }else{ if($data['outstanding'] != 0 ){ ?>
                                 item += "<div class='form-group' align='right'><div class='btn btn-warning btn-sm button-delete' value='Delete' OnClick='delAsset("+val.id+")' style='margin-right:15px'><i class='fa fa-trash'></i> DELETE</div></div>";
-                            <?php } ?>
+                            <?php } } ?>
                             //item += "<div class='form-group' align='right'><button type='button' class='btn btn-flat label-danger' OnClick='delAsset("+val.id+")' style='margin-right: 5px'>Delete</button></div>";
                         }
                     }
@@ -1225,30 +1225,38 @@
 
     function saveAssetSap(id,no_po,no_reg_item)
     {
+        var getnoreg = $("#getnoreg").val();
+        var no_registrasi= getnoreg.replace(/\//g, '-');
+
+        var nama_asset_1 = $("#nama_asset_1-"+no_reg_item+"").val();
+        var nama_asset_2 = $("#nama_asset_2-"+no_reg_item+"").val();
+        var nama_asset_3 = $("#nama_asset_3-"+no_reg_item+"").val();
+        var quantity = $("#quantity-"+no_reg_item+"").val();
+        var uom = $("#uom-"+no_reg_item+"").val();
+        var capitalized_on = $("#capitalized_on-"+no_reg_item+"").val();
+        var deactivation_on = $("#deactivation_on-"+no_reg_item+"").val();
+        var cost_center = $("#cost_center-"+no_reg_item+"").val();
+        var book_deprec_01 = $("#book_deprec_01-"+no_reg_item+"").val();
+        var fiscal_deprec_15 = $("#fiscal_deprec_15-"+no_reg_item+"").val();
+        var group_deprec_30 = $("#group_deprec_30-"+no_reg_item+"").val();
+
+        //alert(id+"_"+no_po+"_"+no_reg_item+"_"+no_registrasi);
+
+        var param = '';//$("#request-form-detail-asset-sap").serialize();
+        //alert(capitalized_on);
+
+        // VALIDASI COST CENTER HARUS 10 CHAR
+        if( $.trim(cost_center).length < 10 )
+        {
+            notify({
+                type: 'warning',
+                message: " Cost Center < 10 char "
+            });
+            return false;
+        } 
+
         if(confirm('Confirm Save Detail Aset SAP ?'))
         {
-            var getnoreg = $("#getnoreg").val();
-            var no_registrasi= getnoreg.replace(/\//g, '-');
-
-            var nama_asset_1 = $("#nama_asset_1-"+no_reg_item+"").val();
-            var nama_asset_2 = $("#nama_asset_2-"+no_reg_item+"").val();
-            var nama_asset_3 = $("#nama_asset_3-"+no_reg_item+"").val();
-            var quantity = $("#quantity-"+no_reg_item+"").val();
-            var uom = $("#uom-"+no_reg_item+"").val();
-            var capitalized_on = $("#capitalized_on-"+no_reg_item+"").val();
-            var deactivation_on = $("#deactivation_on-"+no_reg_item+"").val();
-            var cost_center = $("#cost_center-"+no_reg_item+"").val();
-            var book_deprec_01 = $("#book_deprec_01-"+no_reg_item+"").val();
-            var fiscal_deprec_15 = $("#fiscal_deprec_15-"+no_reg_item+"").val();
-            var group_deprec_30 = $("#group_deprec_30-"+no_reg_item+"").val();
-
-            //alert(id+"_"+no_po+"_"+no_reg_item+"_"+no_registrasi);
-
-            var param = '';//$("#request-form-detail-asset-sap").serialize();
-            //alert(capitalized_on);
-
-            // VALIDASI COST CENTER 10 CHAR 
-
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
