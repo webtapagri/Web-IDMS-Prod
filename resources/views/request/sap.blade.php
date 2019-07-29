@@ -27,7 +27,7 @@
                 <div class="box-body">
                     <div class="box-body">
                         <div class="form-group">
-                            <label for="plant" class="col-md-3">TIPE TRANSAKSI <sup style="color:red">*</sup></label>
+                            <label for="plant" class="col-md-3">TIPE TRANSAKSI<sup style="color:red">*</sup></label>
                             <div class="col-md-6">
                                 <select class="form-control input-sm" name="transaction_type" id="transaction_type" required>
                                     <option></option>
@@ -382,14 +382,14 @@
                                             </div>
                                             <h4>PENANGGUNG JAWAB ASSET : </h4>
                                             <div class="form-group material-group-input" id="input-specification">
-                                                <label for="part_no" class="col-md-2 col-md-offset-1 col-form-label">Nama <sup style="color:red">*</sup></label>
+                                                <label for="part_no" class="col-md-2 col-md-offset-1 col-form-label">Nama 2<sup style="color:red">*</sup></label>
                                                 
                                                 <div class="col-md-8">
                                                     <input type="text" class="form-control input-sm attr-material-group" name="asset_pic_name" id="asset_pic_name">
                                                 </div>
                                             </div>
                                             <div class="form-group material-group-input" id="input-specification">
-                                                <label for="part_no" class="col-md-2 col-md-offset-1 col-form-label">Jabatan <sup style="color:red">*</sup></label>
+                                                <label for="part_no" class="col-md-2 col-md-offset-1 col-form-label">Jabatan 2<sup style="color:red">*</sup></label>
 
                                                 <div class="col-md-8">
                                                     <input type="text" class="form-control input-sm attr-material-group" name="asset_pic_level" id="asset_pic_level">
@@ -555,6 +555,7 @@
             placeholder: ' '
         }).on('change', function() 
         {
+            //alert("change 2");
             var assetgroup = jQuery.parseJSON(JSON.stringify(dataJson('{!! route("get.assetgroup") !!}?type=' + jQuery(this).val())));
             jQuery("#asset_group").empty().select2({
                 data: assetgroup,
@@ -562,7 +563,7 @@
                 allowClear: true,
                 placeholder: ' '
             });
-            jQuery("#asset_group").trigger('change');
+            //jQuery("#asset_group").trigger('change');
         });
 
         $("#asset_group").on('change', function() 
@@ -583,9 +584,9 @@
 
         });
 
-        $("#asset_type").trigger('change');
-        $("#asset_group").trigger('change');
-        $("#asset_sub_group").trigger('change');
+        //$("#asset_type").trigger('change');
+        //$("#asset_group").trigger('change');
+        //$("#asset_sub_group").trigger('change');
 
         $("#request-form").on("submit", function(e) 
         {
@@ -738,7 +739,8 @@
             jQuery("#item-detail-modal").modal('show');
         });
 
-        jQuery("#asset_name").on('keyup', function() {
+        jQuery("#asset_name").on('keyup', function() 
+        {
             var id = current_page - 1;
             var obj = jQuery('#detail_item_selected').val();
             request_item[obj].detail[id].asset_name = jQuery(this).val();
@@ -809,7 +811,9 @@
             }
         });
 
-        jQuery("#asset_type").on('change', function() {
+        jQuery("#asset_type").on('change', function() 
+        {
+            //alert("change");
             var id = current_page - 1;
             var obj = jQuery('#detail_item_selected').val();
             request_item[obj].detail[id].asset_type = jQuery(this).val();
@@ -1373,6 +1377,8 @@
         var key = jQuery('#detail_item_selected').val();
         var request = request_item[key];
         var item = request.detail[obj];
+
+        //alert(item.asset_group); 
 
         jQuery('#asset_name').val(item.asset_name);
         jQuery('#asset_brand').val(item.asset_brand);

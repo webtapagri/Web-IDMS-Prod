@@ -24,6 +24,20 @@ class ApprovalController extends Controller
             return response(view('errors.403'), 403);
         */
 
+        //echo "2<pre>"; print_r($_GET); die();
+        if( !empty($_GET) )
+        {
+            $role_id = Session::get('role_id');
+            $noreg = base64_decode($_GET['noreg']);
+            $noreg = str_replace("-", "/", $noreg);
+            //echo "3<pre>"; print_r($noreg); die();
+            $data['outstanding'] = $this->validasi_outstanding($noreg,$role_id);
+        }
+        else
+        {
+            $data['outstanding'] = 1;   
+        }
+
         $access = AccessRight::access();
         $data['page_title'] = "Approval";
         $data['ctree_mod'] = 'Approval';
@@ -2073,5 +2087,14 @@ WHERE a.NO_REG = '{$noreg}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KODE_ASSET
             return false;
             //die();
         } 
+    }
+
+    function validasi_outstanding($noreg,$role_id)
+    {
+        $sql = " SELECT COUNT(*) AS JML FROM v_outstanding WHERE document_code = '{$noreg}' AND role_id = $role_id ";
+        //echo $sql; die();
+        $data = DB::SELECT($sql); 
+        //echo "4<pre>"; print_r($data);die(); 
+        return $data[0]->JML;
     }
 }

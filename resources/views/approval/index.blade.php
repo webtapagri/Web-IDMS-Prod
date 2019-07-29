@@ -1,4 +1,7 @@
 <?php 
+    
+    //echo "8<pre>"; print_r($data); die();
+
     $user_role = Session::get('role');
     if( !empty($_GET) )
     {
@@ -228,12 +231,12 @@
                 <?php if($user_role == 'AC'){ ?> 
                    <span id="create-button-sync-sap"></span>
                 <?php }  ?>
-                <?php if($user_role != 'Super Administrator'){ ?> 
+                <?php if($user_role != 'Super Administrator'){ if($data['outstanding'] != 0 ){ ?> 
                     <span id="button-approve">
                         <button type="button" class="btn btn-flat label-danger" OnClick="changeStatus('A')" style="margin-right: 5px;">APPROVE</button>
                     </span>
                     <button type="button" class="btn btn-flat label-danger button-reject" OnClick="changeStatus('R')" style="margin-right: 5px;">REJECT</button>
-                <?php }  ?>
+                <?php }} ?>
                 <?php /*
                 <button type="button" class="btn btn-flat label-danger" OnClick="saveRequest()" style="margin-right: 5px;">Revise</button>
                 <button type="button" class="btn btn-flat label-danger" OnClick="saveRequest()" style="margin-right: 5px;">Simpan</button>
@@ -934,7 +937,7 @@
 
                         item += "<div class='form-group'><label for='' class='col-md-4'>INVENTORY NUMBER</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='inventory_number-"+val.no_reg_item+"' value='"+val.no_mesin_or_imei+"' id='inventory_number-"+val.no_reg_item+"' autocomplete='off' placeholder='Inventory Number' readonly></div></div>";
                         
-                        item += "<div class='form-group'><label for='' class='col-md-4'>QUANTITY</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='quantity-"+val.no_reg_item+"' value='"+val.quantity_asset_sap+"' id='quantity-"+val.no_reg_item+"' autocomplete='off' required></div></div>";
+                        item += "<div class='form-group'><label for='' class='col-md-4'>QUANTITY</label><div class='col-md-8'><input type='number' class='form-control input-sm' name='quantity-"+val.no_reg_item+"' value='"+val.quantity_asset_sap+"' id='quantity-"+val.no_reg_item+"' autocomplete='off' required></div></div>";
                         
                         item += "<div class='form-group'><label for='' class='col-md-4'>UOM (UNIT)</label><div class='col-md-3' style='display: inline-block'><input type='text' class='form-control input-sm' name='uom-"+val.no_reg_item+"' value='"+val.uom_asset_sap+"' id='uom-"+val.no_reg_item+"' autocomplete='off' required></div></div>";
 
