@@ -382,14 +382,14 @@
                                             </div>
                                             <h4>PENANGGUNG JAWAB ASSET : </h4>
                                             <div class="form-group material-group-input" id="input-specification">
-                                                <label for="part_no" class="col-md-2 col-md-offset-1 col-form-label">Nama 2<sup style="color:red">*</sup></label>
+                                                <label for="part_no" class="col-md-2 col-md-offset-1 col-form-label">Nama<sup style="color:red">*</sup></label>
                                                 
                                                 <div class="col-md-8">
                                                     <input type="text" class="form-control input-sm attr-material-group" name="asset_pic_name" id="asset_pic_name">
                                                 </div>
                                             </div>
                                             <div class="form-group material-group-input" id="input-specification">
-                                                <label for="part_no" class="col-md-2 col-md-offset-1 col-form-label">Jabatan 2<sup style="color:red">*</sup></label>
+                                                <label for="part_no" class="col-md-2 col-md-offset-1 col-form-label">Jabatan<sup style="color:red">*</sup></label>
 
                                                 <div class="col-md-8">
                                                     <input type="text" class="form-control input-sm attr-material-group" name="asset_pic_level" id="asset_pic_level">
@@ -896,7 +896,7 @@
                                 message: result.message
                             });
                             
-                            setTimeout(reload_page, 2000);
+                            //setTimeout(reload_page, 2000);
 
                         } else {
                             notify({
