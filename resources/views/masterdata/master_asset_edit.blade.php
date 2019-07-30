@@ -565,9 +565,9 @@
                     <div class="xvisible-print text-center">      
 
                         <!--img src="data:image/png;base64, {!! base64_encode(QrCode::format('png')->size(250)->generate('$qrcode')) !!} "-->
-                        {!! QrCode::size(250)->generate('$qrcode'); !!}
+                        <?php echo QrCode::size(250)->generate(''.$qrcode.''); ?>
 
-                        <a href="data:image/png;base64, {!! base64_encode(QrCode::format('png')->size(350)->generate('$qrcode')) !!}" target="_blank" download="{!! $data['id'].'.png' !!}"><button type="button" class="btn bg-navy btn-flat margin"><i class="fa fa-download"></i> DOWNLOAD </button></a>
+                        <a href="data:image/png;base64, <?php echo base64_encode(QrCode::format('png')->size(350)->generate(''.$qrcode.'')); ?>" target="_blank" download="{!! $data['id'].'.png' !!}"><button type="button" class="btn bg-navy btn-flat margin"><i class="fa fa-download"></i> DOWNLOAD </button></a>
                     </div>
                 </div>
             </div>
