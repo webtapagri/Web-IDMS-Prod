@@ -248,6 +248,8 @@ Route::match(['get', 'post'], 'grid-master-asset', [
 ]);
 //Route::get('/master-asset/edit/', 'MasterAssetController@show');
 Route::get('/master-asset/edit-data/{id}', 'MasterAssetController@show_edit');
+Route::get('/master-asset/show_qrcode/{ams}', 'MasterAssetController@show_qrcode')->name('ams');
+Route::get('/test_qrcode', 'MasterAssetController@test_qrcode');
 
 /* REQUEST ASET LAINNYA */
 Route::resource('/request', 'RequestAsetLainController');

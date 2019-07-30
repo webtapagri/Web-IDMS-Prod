@@ -151,6 +151,7 @@ class MasterAssetController extends Controller
 
     public function show_edit($id)
     {
+        $id = base64_decode($id);
         //echo $id; die();
         if (empty(Session::get('authenticated')))
             return redirect('/login');
@@ -518,4 +519,34 @@ class MasterAssetController extends Controller
             return response()->json(['status' => false, "message" => $e->getMessage()]);
         }
     }
+
+    function show_qrcode($amscode)
+    {
+        
+        //include(app_path().'\Providers\qrcode\libs\phpqrcode\phpqrcode.php');
+        //echo $amscode;
+        //echo url($amscode); die();
+        $tempDir = 'public/vendor/QRCode/temp/'; 
+        $codeContents = url('master-asset/edit-data/$amscode');
+        $filename = base64_decode($amscode);
+        //$qrcode = new QRcode;
+        //QRcode::png($codeContents, $tempDir.''.$filename.'.png', QR_ECLEVEL_L, 5);
+
+        $records = array(
+            "tempDir"=>$tempDir,
+            "codeContents"=>$codeContents,
+            "filename"=>$filename
+        );
+
+        echo json_encode($records);
+    }
+
+    public function test_qrcode()
+    {
+        $data["qrcode"] = 'METALLICA'; //QrCode::size(200)->generate('IRVAN TAZRIAN');
+        //return view('masterdata.master_asset')->with(compact('data'));
+        //echo "test_qrcode"; die();
+        return view('masterdata.test_qrcode')->with(compact('data'));
+    }
+
 }

@@ -1,10 +1,16 @@
 <?php 
 	//echo "2<pre>"; print_r($data['content']);die();
+  $qrcode = url('master-asset/edit-data/'.base64_encode($data['id']).'');
+  //echo  "3<br/>".$qrcode; die();
 ?>
 
 @extends('adminlte::page')
 @section('title', 'Edit Data - Master Asset')
 @section('content')
+
+<style>
+.show_qrcode{cursor:pointer;}
+</style>
 
 <div class="row">
 <section class="content-header" style="margin-top:-3%">
@@ -27,6 +33,7 @@
 
     <div class="box-header with-border">
       <h3 class="box-title"><span class="direct-chat-text" style="margin-left:0%">KODE ASSET AMS : <b>{{ $data['id'] }}</b></span></h3>
+      <span class="xpull-right badge bg-green show_qrcode" OnClick="show_qrcode('{{ $data['id'] }}')"><i class="fa fa-fw fa-barcode"></i> SHOW QR CODE</span>
 
       <div class="box-tools pull-right">
         <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
@@ -37,6 +44,7 @@
     <div class="box-body">
 
       <div class="row">
+
         <div class="col-md-6">
 
             <div class="form-group">
@@ -544,9 +552,77 @@
 
 </div>
 
+<div id="qrcode-modal" class="modal fade" role="dialog" aria-labelledby="largeModal" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+                <h4 class="modal-title"></h4>
+            </div>
+            <div class="modal-body">
+                <div class="xbox-body">
+                    <!--div class="generate-qrcode text-center"></div-->
+                    <div class="xvisible-print text-center">      
+
+                        <!--img src="data:image/png;base64, {!! base64_encode(QrCode::format('png')->size(250)->generate('$qrcode')) !!} "-->
+                        {!! QrCode::size(250)->generate('$qrcode'); !!}
+
+                        <a href="data:image/png;base64, {!! base64_encode(QrCode::format('png')->size(350)->generate('$qrcode')) !!}" target="_blank" download="{!! $data['id'].'.png' !!}"><button type="button" class="btn bg-navy btn-flat margin"><i class="fa fa-download"></i> DOWNLOAD </button></a>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-flat btn-default" data-dismiss="modal">Close</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 @stop
 @section('js')
 <script type="text/javascript">
-	
+
+$(document).ready(function() 
+{
+    //alert("modal");
+    $('#qrcode-modal').on('show.bs.modal', function () {
+           $(this).find('.modal-body').css({
+                  width:'auto', //probably not needed
+                  height:'auto', //probably not needed 
+                  'max-height':'100%'
+           });
+    });
+});
+
+
+function show_qrcode(amscode)
+{
+    //alert(amscode);
+
+    var ams = btoa(amscode);
+
+    $.ajax({
+        type: 'GET',
+        url: "{{ url('/master-asset/show_qrcode') }}/"+ams,
+        data: "",
+        //async: false,
+        dataType: 'json',
+        success: function(data) 
+        {
+            //alert(data.filename);
+            $("#qrcode-modal .generate-qrcode").html("<span='bg-green'>"+data.filename+"</span>");
+            $("#qrcode-modal .modal-title").html("<i class='fa fa-edit'></i>  QR Code AMS - <span style='color:#dd4b39'>"+amscode+"</span>");
+            $('#qrcode-modal').modal('show');
+        },
+        error: function(x) 
+        {                           
+            alert("Error: "+ "\r\n\r\n" + x.responseText);
+        }
+    }); 
+
+    
+}
+
 </script>
 @stop

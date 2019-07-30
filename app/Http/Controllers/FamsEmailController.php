@@ -18,8 +18,11 @@ class FamsEmailController extends Controller
 		$no_registrasi = $req['noreg'];
 		$document_code = str_replace("-", "/", $no_registrasi); 
 	
-		// 1. DATA ASSET 
-		$sql = " SELECT * FROM v_email_approval WHERE document_code = '{$document_code}' ";
+		// 1. DATA ASSET
+		$sql = " SELECT distinct(document_code) as document_code, KODE_MATERIAL, NAMA_MATERIAL, LOKASI_BA_CODE 
+					FROM v_email_approval WHERE document_code = '{$document_code}'
+					order by nama_material "; 
+		//$sql = " SELECT * FROM v_email_approval WHERE document_code = '{$document_code}' ";
 		$dt = DB::SELECT($sql);
 
 		// 2. HISTORY APPROVAL 
