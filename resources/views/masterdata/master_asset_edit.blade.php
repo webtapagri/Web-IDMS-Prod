@@ -1,7 +1,5 @@
 <?php 
-	//echo "2<pre>"; print_r($data['content']);die();
   $qrcode = url('master-asset/edit-data/'.base64_encode($data['id']).'');
-  //echo  "3<br/>".$qrcode; die();
 ?>
 
 @extends('adminlte::page')
