@@ -19,18 +19,14 @@ class ApprovalController extends Controller
         if (empty(Session::get('authenticated')))
             return redirect('/login');
 
-        /*
-        if (AccessRight::granted() == false)
-            return response(view('errors.403'), 403);
-        */
+        /*if (AccessRight::granted() == false)
+            return response(view('errors.403'), 403);*/
 
-        //echo "2<pre>"; print_r($_GET); die();
         if( !empty($_GET) )
         {
             $role_id = Session::get('role_id');
             $noreg = base64_decode($_GET['noreg']);
             $noreg = str_replace("-", "/", $noreg);
-            //echo "3<pre>"; print_r($noreg); die();
             $data['outstanding'] = $this->validasi_outstanding($noreg,$role_id);
         }
         else
@@ -743,7 +739,8 @@ WHERE a.NO_REG = '{$no_registrasi}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KO
                 $no_registrasi = str_replace("-", "/", $noreg);
                 $user_id = Session::get('user_id');
                 $note = $request->parNote;
-                $role_id = Session::get('role_id'); //get role id user
+                $role_id = Session::get('role_id');
+                $role_name = Session::get('role'); //get role id user
                 $asset_controller = ''; //get asset controller 
                 //echo $note;die();
 
@@ -755,7 +752,7 @@ WHERE a.NO_REG = '{$no_registrasi}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KO
                     
                     try 
                     {
-                        DB::SELECT('CALL update_approval("'.$no_registrasi.'", "'.$user_id.'","'.$status.'", "'.$note.'", "'.$role_id.'", "'.$asset_type.'")');
+                        DB::SELECT('CALL update_approval("'.$no_registrasi.'", "'.$user_id.'","'.$status.'", "'.$note.'", "'.$role_name.'", "'.$asset_type.'")');
                         DB::commit();
                         return response()->json(['status' => true, "message" => 'Data is successfully ' . ($no_registrasi ? 'updated' : 'update'), "new_noreg"=>$no_registrasi]);
                     } 
@@ -849,6 +846,7 @@ WHERE a.NO_REG = '{$no_registrasi}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KO
                 $user_id = Session::get('user_id');
                 $note = $request->parNote;
                 $role_id = Session::get('role_id'); //get role id user
+                $role_name = Session::get('role');
                 $asset_controller = ''; //get asset controller 
                 //echo $note;die();
 
@@ -862,7 +860,7 @@ WHERE a.NO_REG = '{$no_registrasi}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KO
                     
                     try 
                     {
-                        DB::SELECT('CALL update_approval("'.$no_registrasi.'", "'.$user_id.'","'.$status.'", "'.$note.'", "'.$role_id.'", "'.$asset_type.'")');
+                        DB::SELECT('CALL update_approval("'.$no_registrasi.'", "'.$user_id.'","'.$status.'", "'.$note.'", "'.$role_name.'", "'.$asset_type.'")');
                         DB::commit();
                         return response()->json([ 'status' => true, "message" => 'Data is successfully ' . ($no_registrasi ? 'updated' : 'update'), "new_noreg"=>$no_registrasi ]);
                     } 
