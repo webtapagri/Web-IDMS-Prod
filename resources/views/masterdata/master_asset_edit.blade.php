@@ -8,6 +8,27 @@
 
 <style>
 .show_qrcode{cursor:pointer;}
+@media screen {
+  #printSection {
+      display: none;
+  }
+}
+
+@media print 
+{
+  body * {
+    visibility:hidden;
+  }
+  #printSection, #printSection * {
+    visibility:visible;
+  }
+  #printSection 
+  {
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, 0);
+  }
+}
 </style>
 
 <div class="row">
@@ -31,7 +52,7 @@
 
     <div class="box-header with-border">
       <h3 class="box-title"><span class="direct-chat-text" style="margin-left:0%">KODE ASSET AMS : <b>{{ $data['id'] }}</b></span></h3>
-      <span class="xpull-right badge bg-green show_qrcode" OnClick="show_qrcode('{{ $data['id'] }}')"><i class="fa fa-fw fa-barcode"></i> SHOW QR CODE</span>
+      <span class="xpull-right badge bg-green show_qrcode" OnClick="show_qrcode('{{$data['id']}}','{{@$data['content']->BA_PEMILIK_ASSET}}','{{@$data['content']->LOKASI_BA_DESCRIPTION}}','{{@$data['content']->CODE_ASSET_CONTROLLER}}')"><i class="fa fa-fw fa-barcode"></i> SHOW QR CODE</span>
 
       <div class="box-tools pull-right">
         <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
@@ -563,9 +584,14 @@
                     <div class="xvisible-print text-center">      
 
                         <!--img src="data:image/png;base64, {!! base64_encode(QrCode::format('png')->size(250)->generate('$qrcode')) !!} "-->
-                        <?php echo QrCode::size(250)->generate(''.$qrcode.''); ?>
+                        <div id="print-qr-code">
+                            <?php echo QrCode::size(250)->generate(''.$qrcode.''); ?>
+                            <div class="qrcode-modal-info text-center" style="margin-top:-2%;font-weight:bold"></div>
+                        </div>
 
                         <a href="data:image/png;base64, <?php echo base64_encode(QrCode::format('png')->size(350)->generate(''.$qrcode.'')); ?>" target="_blank" download="{!! $data['id'].'.png' !!}"><button type="button" class="btn bg-navy btn-flat margin"><i class="fa fa-download"></i> DOWNLOAD </button></a>
+
+                        <button type="button" id="btnPrint" class="btn bg-navy btn-flat margin"><i class="fa fa-print"></i> PRINT </button>
                     </div>
                 </div>
             </div>
@@ -591,10 +617,42 @@ $(document).ready(function()
                   'max-height':'100%'
            });
     });
+
+    document.getElementById("btnPrint").onclick = function() {
+        printElement(document.getElementById("print-qr-code"));
+        window.print();
+    }
 });
 
+function printElement(elem, append, delimiter) 
+{
+    var domClone = elem.cloneNode(true);
 
-function show_qrcode(amscode)
+    var $printSection = document.getElementById("printSection");
+
+    if (!$printSection) {
+        var $printSection = document.createElement("div");
+        $printSection.id = "printSection";
+        document.body.appendChild($printSection);
+    }
+
+    if (append !== true) {
+        $printSection.innerHTML = "";
+    }
+
+    else if (append === true) {
+        if (typeof(delimiter) === "string") {
+            $printSection.innerHTML += delimiter;
+        }
+        else if (typeof(delimiter) === "object") {
+            $printSection.appendChlid(delimiter);
+        }
+    }
+
+    $printSection.appendChild(domClone);
+}
+
+function show_qrcode(amscode,milik,lokasi,code_asset_controller)
 {
     //alert(amscode);
 
@@ -609,7 +667,13 @@ function show_qrcode(amscode)
         success: function(data) 
         {
             //alert(data.filename);
+            var item = "<span='bg-green'>"+data.filename+"</span><br/>";
+                item += "MILIK : "+milik+" <br/>";
+                item += "LOKASI : "+lokasi+" <br/>";
+                item += code_asset_controller;
+
             $("#qrcode-modal .generate-qrcode").html("<span='bg-green'>"+data.filename+"</span>");
+            $("#qrcode-modal .qrcode-modal-info").html(item);
             $("#qrcode-modal .modal-title").html("<i class='fa fa-edit'></i>  QR Code AMS - <span style='color:#dd4b39'>"+amscode+"</span>");
             $('#qrcode-modal').modal('show');
         },
