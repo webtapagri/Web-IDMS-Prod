@@ -27,7 +27,7 @@
                 <div class="box-body">
                     <div class="box-body">
                         <div class="form-group">
-                            <label for="plant" class="col-md-3">TIPE TRANSAKSI 100<sup style="color:red">*</sup></label>
+                            <label for="plant" class="col-md-3">TIPE TRANSAKSI<sup style="color:red">*</sup></label>
                             <div class="col-md-6">
                                 <select class="form-control input-sm" name="transaction_type" id="transaction_type" required>
                                     <option></option>

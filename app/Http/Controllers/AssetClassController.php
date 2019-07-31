@@ -162,11 +162,30 @@ class AssetClassController extends Controller
 
     public function store_subgroup_asset(Request $request)
     {
+        $req = $request->all();
+        $asset_code_val = explode('-',$req['sgc_jenis_asset_code']);
+        $jenis_asset_code = $asset_code_val[0];
+        //echo "<pre>"; print_r($req);die();
+        /*
+            Array
+            (
+                [sgc_jenis_asset_code] => 1010-TANAH
+                [sgc_group_code] => G100-TANAH SERIBU
+                [sgc_subgroup_code] => 1
+                [sgc_subgroup_description] => 2
+                [edit_sgc_id] => 
+                [val_jenis_asset_code] => 
+                [val_jenis_asset_code_name] => 
+                [val_group_code] => G100
+                [val_group_code_name] => TANAH SERIBU
+                [edit_sgc_group_code] => G100
+            )
+        */
         try 
         {
             if ( $request->edit_sgc_id != "" ) 
             {
-                $sql = "UPDATE TM_SUBGROUP_ASSET SET subgroup_description = '".$request->sgc_subgroup_description."' WHERE id = ".$request->edit_sgc_id."";
+                $sql = "UPDATE TM_SUBGROUP_ASSET SET subgroup_code = '".$request->sgc_subgroup_code."', subgroup_description = '".$request->sgc_subgroup_description."' WHERE id = ".$request->edit_sgc_id."";
                 DB::UPDATE($sql);
             } 
             else 
@@ -176,6 +195,7 @@ class AssetClassController extends Controller
                 $data->subgroup_code = $request->sgc_subgroup_code;
                 $data->subgroup_description = $request->sgc_subgroup_description;
                 $data->group_code = $request->edit_sgc_group_code;
+                $data->jenis_asset_code = $jenis_asset_code;
                 $data->save();
             }
 
@@ -187,16 +207,37 @@ class AssetClassController extends Controller
 
     public function store_asset_map(Request $request)
     {
+        //$req = $request->all();
+        //echo "<pre>"; print_r($req); die();
+        /*
+        Array
+            (
+                [map_code] => 
+                [acm_jenis_asset_code] => 1010-TANAH
+                [edit_map_code_id] => 
+                [edit_acm_jenis_asset_code] => 1010
+                [edit_acm_jenis_asset_code_val] => TANAH
+                [acm_group_code] => G100-TANAH SERIBU
+                [edit_acm_group_code] => G100
+                [edit_acm_group_code_val] => TANAH SERIBU
+                [acm_subgroup_code] => 11-22
+                [edit_acm_subgroup_code] => 11
+                [edit_acm_subgroup_code_val] => 22
+                [acm_asset_ctrl_code] => HC
+                [acm_asset_ctrl_description] => Mill
+                [acm_mandatory_kode_asset_controller] => X
+            )
+        */
         try 
         {
             $asset_ctrl_description = $this->get_asset_ctrl_description($request->acm_asset_ctrl_code);
-            $new_map_code = $request->acm_jenis_asset_code.$request->acm_group_code.$request->acm_subgroup_code.$request->acm_asset_ctrl_code;
+            $new_map_code = $request->edit_acm_jenis_asset_code.$request->edit_acm_group_code.$request->edit_acm_subgroup_code.$request->acm_asset_ctrl_code;
             //echo "====".$asset_ctrl_description; die();
 
             if ( $request->edit_map_code_id != "" ) 
             {
                 $data = TM_ASSET_CONTROLLER_MAP::find($request->edit_map_code_id);
-                $sql = "UPDATE TM_ASSET_CONTROLLER_MAP SET asset_ctrl_code = '".$request->acm_asset_ctrl_code."', asset_ctrl_description = '".$asset_ctrl_description."', mandatory_kode_asset_controller = '".$request->acm_mandatory_kode_asset_controller."' WHERE id = ".$request->edit_map_code_id."";
+                $sql = "UPDATE TM_ASSET_CONTROLLER_MAP SET map_code = '".$new_map_code."', asset_ctrl_code = '".$request->acm_asset_ctrl_code."', asset_ctrl_description = '".$asset_ctrl_description."', mandatory_kode_asset_controller = '".$request->acm_mandatory_kode_asset_controller."' WHERE id = ".$request->edit_map_code_id."";
                 DB::UPDATE($sql);
             } 
             else 
@@ -204,11 +245,12 @@ class AssetClassController extends Controller
 
                 $data = new TM_ASSET_CONTROLLER_MAP();
                 $data->map_code = $new_map_code;
-                $data->jenis_asset_code = $request->acm_jenis_asset_code;
-                $data->group_code = $request->acm_group_code;
-                $data->subgroup_code = $request->acm_subgroup_code;
+                $data->jenis_asset_code = $request->edit_acm_jenis_asset_code;
+                $data->group_code = $request->edit_acm_group_code;
+                $data->subgroup_code = $request->edit_acm_subgroup_code;
                 $data->asset_ctrl_code = $request->acm_asset_ctrl_code;
                 $data->asset_ctrl_description = $asset_ctrl_description;
+                $data->mandatory_kode_asset_controller = $request->acm_mandatory_kode_asset_controller;
                 $data->save();
             }
 
@@ -398,12 +440,14 @@ class AssetClassController extends Controller
     {
         //echo "<pre>"; print_r($request->id); die();
         $req_id = $request->id;
+        $req_jenis_asset_code = $request->id_jenis_asset_code;
+
         $orderColumn = $request->order[0]["column"];
         $dirColumn = $request->order[0]["dir"];
         $sortColumn = "";
         $selectedColumn[] = "";
 
-        $selectedColumn = ['a.id','a.subgroup_code', 'a.subgroup_description', 'a.group_code'];
+        $selectedColumn = ['a.id','a.jenis_asset_code','a.subgroup_code', 'a.subgroup_description', 'a.group_code'];
 
         if ($orderColumn) {
             $order = explode("as", $selectedColumn[$orderColumn]);
@@ -417,8 +461,9 @@ class AssetClassController extends Controller
         $sql = '
             SELECT ' . implode(", ", $selectedColumn) . '
                 FROM TM_SUBGROUP_ASSET a 
-                WHERE a.group_code = "'.$req_id.'"
+                WHERE a.group_code = "'.$req_id.'" AND a.jenis_asset_code = "'.$req_jenis_asset_code.'"
         ';
+        //echo $sql; die();
 
         if ($request->subgroup_code)
         $sql .= " AND a.subgroup_code like'%" . $request->subgroup_code . "%'";

@@ -225,7 +225,7 @@ Route::get('/asset-class/edit-group-asset/', 'AssetClassController@show_group_as
 Route::get('/asset-class/edit-subgroup-asset/', 'AssetClassController@show_subgroup_asset');
 Route::get('/asset-class/edit-asset-map/', 'AssetClassController@show_asset_map');
 Route::post('grid-ac-group-asset/{id}', 'AssetClassController@dataGridGroupAsset')->name('grid-ac-group-asset/{id}');
-Route::post('grid-ac-subgroup-asset/{id}', 'AssetClassController@dataGridSubGroupAsset')->name('grid-ac-subgroup-asset/{id}');
+Route::post('grid-ac-subgroup-asset/{id}/{id_jenis_asset_code}', 'AssetClassController@dataGridSubGroupAsset')->name('grid-ac-subgroup-asset/{id}/{id_jenis_asset_code}');
 Route::post('grid-ac-asset-map/{id}', 'AssetClassController@dataGridAssetMap')->name('grid-ac-asset-map/{id}');
 
 /* SETTING - ROLE MAP */

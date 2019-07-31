@@ -120,10 +120,41 @@ class Select2Controller extends Controller
         return response()->json(array('data' => $arr));
     }
 
-    public function assetsubgroup(Request $request) {
-        $data = DB::table( 'TM_SUBGROUP_ASSET')
-        ->select('SUBGROUP_CODE as id', 'SUBGROUP_DESCRIPTION as text')
-        ->where( "GROUP_CODE", $request->group)
+    public function assetsubgroup(Request $request) 
+    {
+        $data = DB::table( 'TM_SUBGROUP_ASSET AS SUBGROUP')
+        ->select('SUBGROUP.SUBGROUP_CODE AS id', 'SUBGROUP.SUBGROUP_DESCRIPTION AS text')
+        //->join('TM_GROUP_ASSET AS GROUP', 'SUBGROUP.GROUP_CODE', '=', 'GROUP.ID')
+        ->where( 
+                array(
+                    "SUBGROUP.GROUP_CODE" => $request->group
+                )
+            )
+        ->get();
+
+        $arr = array();
+        $arr[] = array("id"=>"","text"=>"");
+        foreach ($data as $row) {
+            $arr[] = array(
+                "id" => $row->id,
+                "text" => $row->id.'-'.$row->text
+            );
+        }
+        //echo "<pre>"; print_r($arr); die();
+
+        return response()->json(array('data' => $arr));
+    }
+
+    /*
+    public function assetsubgroup_v1(Request $request) 
+    {
+        $data = DB::table( 'TM_SUBGROUP_ASSET AS SUBGROUP')
+        ->select('SUBGROUP.SUBGROUP_CODE AS id', 'SUBGROUP.SUBGROUP_DESCRIPTION AS text')
+        ->where( 
+                array(
+                    "SUBGROUP.GROUP_CODE" => $request->group
+                )
+            )
         ->get();
 
         $arr = array();
@@ -137,4 +168,5 @@ class Select2Controller extends Controller
 
         return response()->json(array('data' => $arr));
     }
+    */
 }

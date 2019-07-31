@@ -68,7 +68,7 @@
             <div id="row-subgroup-asset" style="margin-top:10px;display:none">
                 <div class="callout callout-info">
                     <h4>SUBGROUP ASSET</h4>
-                    <p>GROUP CODE : <span id="id_group_code"></span> </p>
+                    <p>JENIS ASSET CODE : <span id="id_jenis_asset_code"></span> / GROUP CODE : <span id="id_group_code"></span> </p>
                 </div>
                 <div class="table-container">
                      <div class="xtable-actions-wrapper pull-right">
@@ -81,12 +81,14 @@
                         <thead>
                             <tr role="row" class="heading">
                                 <th>ID</th>
+                                <th>JENIS ASSET</th>
                                 <th>SUBGROUP CODE</th>
                                 <th>SUBGROUP DESCRIPTION</th>
                                 <th width="8%">ACTION</th>
                             </tr>
                             <tr role="row" class="filter">
                                 <th></th>
+                                 <th><input type="text" class="form-control input-xs form-filter" name="jenis_asset_code" autocomplete="off"></th>
                                 <th><input type="text" class="form-control input-xs form-filter" name="subgroup_code" autocomplete="off"></th>
                                 <th><input type="text" class="form-control input-xs form-filter" name="subgroup_description" autocomplete="off"></th>
                                 <th></th>
@@ -185,6 +187,10 @@
                 <div class="modal-body">
                     <div class="box-body">
                         <div class="col-xs-12">
+                            <label class="control-label" for="">Jenis Asset</label>
+                            <input type="text" class="form-control" name='ga_jenis_asset_code' id="ga_jenis_asset_code" readonly="readonly">
+                        </div>
+                        <div class="col-xs-12">
                             <label class="control-label" for="">Group Code</label>
                             <input class="form-control" name='ga_group_code' id="ga_group_code" requried>
                         </div>
@@ -193,6 +199,7 @@
                             <input class="form-control" name='ga_group_description' id="ga_group_description" maxlength="400" requried>
                             <input type="hidden" name='edit_ga_id' id="edit_ga_id">
                             <input type="hidden" name='val_jenis_asset_code' id="val_jenis_asset_code" value="">
+                            <input type="hidden" name='val_jenis_asset_code_name' id="val_jenis_asset_code_name" value="">
                             <input type="hidden" name='edit_ga_jenis_asset_code' id="edit_ga_jenis_asset_code" value="">
                         </div>
                     </div>
@@ -216,6 +223,14 @@
                 <div class="modal-body">
                     <div class="box-body">
                         <div class="col-xs-12">
+                            <label class="control-label" for="">JENIS ASSET CODE</label>
+                            <input class="form-control" name='sgc_jenis_asset_code' id="sgc_jenis_asset_code" readonly>
+                        </div>
+                        <div class="col-xs-12">
+                            <label class="control-label" for="">GROUP CODE</label>
+                            <input class="form-control" name='sgc_group_code' id="sgc_group_code" readonly>
+                        </div>
+                        <div class="col-xs-12">
                             <label class="control-label" for="">SUBGROUP CODE</label>
                             <input class="form-control" name='sgc_subgroup_code' id="sgc_subgroup_code" requried>
                         </div>
@@ -223,7 +238,10 @@
                             <label class="control-label" for="">SUBGROUP DESCRIPTION</label>
                             <input class="form-control" name='sgc_subgroup_description' id="sgc_subgroup_description" maxlength="400" requried>
                             <input type="hidden" name='edit_sgc_id' id="edit_sgc_id">
+                            <input type="hidden" name='val_jenis_asset_code' id="val_jenis_asset_code" value="">
+                            <input type="hidden" name='val_jenis_asset_code_name' id="val_jenis_asset_code_name" value="">
                             <input type="hidden" name='val_group_code' id="val_group_code" value="">
+                            <input type="hidden" name='val_group_code_name' id="val_group_code_name" value="">
                             <input type="hidden" name='edit_sgc_group_code' id="edit_sgc_group_code" value="">
                         </div>
                     </div>
@@ -251,17 +269,23 @@
                             <input class="form-control" name='map_code' id="map_code" requried readonly="readonly">
                         </div>
                         <div class="col-xs-12">
-                            <label class="control-label" for="">JENIS ASSET CODE</label>
+                            <label class="control-label" for="">JENIS ASSET CODE 8</label>
                             <input class="form-control" name='acm_jenis_asset_code' id="acm_jenis_asset_code" maxlength="400" requried readonly="readonly">
                             <input type="hidden" name='edit_map_code_id' id="edit_map_code_id">
+                            <input type="hidden" name='edit_acm_jenis_asset_code' id="edit_acm_jenis_asset_code">
+                            <input type="hidden" name='edit_acm_jenis_asset_code_val' id="edit_acm_jenis_asset_code_val">
                         </div>
                         <div class="col-xs-12">
                             <label class="control-label" for="">GROUP CODE</label>
-                            <input class="form-control" name='acm_group_code' id="acm_group_code" maxlength="400" requried>
+                            <input class="form-control" name='acm_group_code' id="acm_group_code" maxlength="400" requried readonly="readonly">
+                            <input type="hidden" name='edit_acm_group_code' id="edit_acm_group_code">
+                            <input type="hidden" name='edit_acm_group_code_val' id="edit_acm_group_code_val">
                         </div>
                         <div class="col-xs-12">
                             <label class="control-label" for="">SUB GROUP CODE</label>
-                            <input class="form-control" name='acm_subgroup_code' id="acm_subgroup_code" maxlength="400" requried>
+                            <input class="form-control" name='acm_subgroup_code' id="acm_subgroup_code" maxlength="400" requried readonly="readonly">
+                            <input type="hidden" name='edit_acm_subgroup_code' id="edit_acm_subgroup_code">
+                            <input type="hidden" name='edit_acm_subgroup_code_val' id="edit_acm_subgroup_code_val">
                         </div>
                          <div class="col-xs-12">
                             <label class="control-label" for="">ASSET CONTROLLER</label>
@@ -337,7 +361,7 @@
                             if (update == 1) 
                             {
                                 content += '<button class="btn btn-flat btn-xs btn-danger btn-action btn-edit" title="edit data ' + row.id + '" onClick="edit(' + row.id + ')"><i class="fa fa-pencil"></i></button>';
-                                content += '<button class="btn btn-flat btn-xs btn-danger btn-action btn-view" title="detail data ' + row.id + '" onClick="group_asset(\''+row.jenis_asset_code+'\',\'a\')"><i class="fa fa-clone"></i></button>';
+                                content += '<button class="btn btn-flat btn-xs btn-danger btn-action btn-view" title="detail data ' + row.id + '" onClick="group_asset(\''+row.jenis_asset_code+'\',\''+row.jenis_asset_description+'\')"><i class="fa fa-clone"></i></button>';
                             }
                             
                             /*
@@ -421,6 +445,7 @@
             allowClear: true
         });
 
+        /*
         var role_jenis_asset_code = jQuery.parseJSON(JSON.stringify(dataJson('{!! route("get.select_jenis_asset_code") !!}')));
         $('input[name="acm_jenis_asset_code"], #acm_jenis_asset_code').select2({
             data: role_jenis_asset_code,
@@ -438,7 +463,7 @@
             });
             $("#acm_group_code").trigger('change');
         });
-
+        
         var role_group_code = jQuery.parseJSON(JSON.stringify(dataJson('{!! route("get.select_group_code") !!}')));
         $('input[name="acm_group_code"], #acm_group_code').select2({
             data: role_group_code,
@@ -466,6 +491,7 @@
             allowClear: true,
             readonly: true,
         });
+        */
 
         var role_asset_controller = jQuery.parseJSON(JSON.stringify(dataJson('{!! route("get.select_asset_controller") !!}')));
         $('input[name="acm_asset_ctrl_code"], #acm_asset_ctrl_code').select2({
@@ -504,6 +530,7 @@
             $('#role_id').prop('disabled', false);
             $("#edit_ga_id").val("");
             $("#edit_ga_jenis_asset_code").val($("#val_jenis_asset_code").val());
+            $("#ga_jenis_asset_code").val($("#val_jenis_asset_code").val()+'-'+$("#val_jenis_asset_code_name").val());
             $("#font-awesome-result").removeClass();
             $("#add-data-modal-group-asset").modal({
                 backdrop: 'static',
@@ -516,8 +543,12 @@
         $('.btn-add-subgroup-code').on('click', function() 
         {
             document.getElementById("data-form-subgroup-code").reset();
+            
             $("#edit_sgc_id").val("");
             $("#edit_sgc_group_code").val($("#val_group_code").val());
+            $("#sgc_jenis_asset_code").val($("#val_jenis_asset_code").val()+'-'+$("#val_jenis_asset_code_name").val());
+            $("#sgc_group_code").val($("#val_group_code").val()+'-'+$("#val_group_code_name").val());
+            
             $("#font-awesome-result").removeClass();
             $("#add-data-modal-subgroup-code").modal({
                 backdrop: 'static',
@@ -534,12 +565,12 @@
 
             //$("#map_code").hide();
             $("#edit_map_code_id").val("");
-            $("#acm_jenis_asset_code").val("0");
-            $("#acm_jenis_asset_code").trigger("change");
-            $("#acm_group_code").val("");
-            $("#acm_group_code").trigger("change");
-            $("#acm_subgroup_code").val("");
-            $("#acm_subgroup_code").trigger("change");
+            $("#acm_jenis_asset_code").val($("#edit_acm_jenis_asset_code").val()+'-'+$("#edit_acm_jenis_asset_code_val").val());
+            //$("#acm_jenis_asset_code").trigger("change");
+            $("#acm_group_code").val($("#edit_acm_group_code").val()+'-'+$("#edit_acm_group_code_val").val());
+            //$("#acm_group_code").trigger("change");
+            $("#acm_subgroup_code").val($("#edit_acm_subgroup_code").val()+'-'+$("#edit_acm_subgroup_code_val").val());
+            //$("#acm_subgroup_code").trigger("change");
             $("#acm_asset_ctrl_code").val("");
             $("#acm_asset_ctrl_code").trigger("change");
             $("#font-awesome-result").removeClass();
@@ -848,8 +879,9 @@
         $("#row-group-asset").fadeOut();
         $("#row-subgroup-asset").hide();
         
-        $("#jenis-asset-code").html(id);
+        $("#jenis-asset-code").html(id+'-'+name);
         $("#val_jenis_asset_code").val(id);
+        $("#val_jenis_asset_code_name").val(name);
         //$("#workflow-code-name").html('('+name+')');
         $("#row-group-asset").fadeIn();
 
@@ -899,8 +931,8 @@
                                 var content = '';
                                 if (update == 1) 
                                 {
-                                    content += '<button class="btn btn-flat btn-xs btn-danger btn-action btn-edit-detail" title="edit data detail : ' + row.id + '" onClick="edit_group_asset(' + row.id + ')"><i class="fa fa-pencil"></i></button>';
-                                    content += '<button class="btn btn-flat btn-xs btn-danger btn-action btn-view-detail" title="detail data ' + row.group_code + '" onClick="detail_subgroup_asset(\''+id+'\',\''+row.group_code+'\')"><i class="fa fa-clone"></i></button>';
+                                    content += '<button class="btn btn-flat btn-xs btn-danger btn-action btn-edit-detail" title="edit data detail : ' + row.id + '" onClick="edit_group_asset('+row.id+',\''+name+'\')"><i class="fa fa-pencil"></i></button>';
+                                    content += '<button class="btn btn-flat btn-xs btn-danger btn-action btn-view-detail" title="detail data ' + row.group_code + '" onClick="detail_subgroup_asset(\''+id+'\',\''+row.group_code+'\',\''+row.group_description+'\',\''+name+'\')"><i class="fa fa-clone"></i></button>';
                                 }
                                 
                                 /*
@@ -939,7 +971,7 @@
         //}
     }
 
-    function edit_group_asset(id) 
+    function edit_group_asset(id,jenis_asset_name) 
     {
         //alert(id); return false;
         document.getElementById("data-form-group-asset").reset();
@@ -949,20 +981,25 @@
         $("#edit_ga_id").val(result.ID);
         $("#ga_group_code").val(result.GROUP_CODE);
         $("#ga_group_description").val(result.GROUP_DESCRIPTION);
+        $("#ga_jenis_asset_code").val(result.JENIS_ASSET_CODE+"-"+jenis_asset_name);
 
         $("#add-data-modal-group-asset .modal-title").html("<i class='fa fa-edit'></i> UPDATE DATA - GROUP ASSET "+result.GROUP_CODE+" : " + result.GROUP_DESCRIPTION);
         $("#add-data-modal-group-asset").modal("show");
     }
 
-    function detail_subgroup_asset(id_jenis_asset_code,id_group_code)
+    function detail_subgroup_asset(id_jenis_asset_code,id_group_code, name_group_code, name_jenis_asset_code)
     {
         //alert(id_jenis_asset_code+"~"+id_group_code); return false;
         $("#data-table-subgroup-asset").DataTable().destroy()
 
         //alert(id);
         $("#row-subgroup-asset").fadeOut();
-        $("#id_group_code").html(id_group_code);
+        $("#id_jenis_asset_code").html(id_jenis_asset_code+'-'+name_jenis_asset_code);
+        $("#id_group_code").html(id_group_code+'-'+name_group_code);
+        $("#val_jenis_asset_code").val(id_jenis_asset_code);
+        $("#val_jenis_asset_code_name").val(name_jenis_asset_code);
         $("#val_group_code").val(id_group_code);
+        $("#val_group_code_name").val(name_group_code);
         //$("#workflow-code-name").html('('+name+')');
         $("#row-subgroup-asset").fadeIn();
 
@@ -990,12 +1027,16 @@
                     ],
                     "pageLength": 10,
                     "ajax": {
-                        url: '{{ url("grid-ac-subgroup-asset/") }}'+'/'+id_group_code
+                        url: '{{ url("grid-ac-subgroup-asset/") }}'+'/'+id_group_code+'/'+id_jenis_asset_code
                     },
                     columns: [
                         {
                             data: 'id',
                             name: 'id'
+                        },
+                        {
+                            data: 'jenis_asset_code',
+                            name: 'jenis_asset_code'
                         },
                         {
                             data: 'subgroup_code',
@@ -1012,8 +1053,8 @@
                                 var content = '';
                                 if (update == 1) 
                                 {
-                                    content += '<button class="btn btn-flat btn-xs btn-danger btn-action btn-edit-detail-job" title="Edit Data - SubGroup Asset : ' + row.id + '" onClick="edit_subgroup_code(' + row.id + ')"><i class="fa fa-pencil"></i></button>';
-                                    content += '<button class="btn btn-flat btn-xs btn-danger btn-action btn-view-detail" title="detail data ' + row.group_code + '" onClick="detail_asset_map(\''+id_jenis_asset_code+'\',\''+id_group_code+'\',\''+row.subgroup_code+'\')"><i class="fa fa-clone"></i></button>';
+                                    content += '<button class="btn btn-flat btn-xs btn-danger btn-action btn-edit-detail-job" title="Edit Data - SubGroup Asset : ' + row.id + '" onClick="edit_subgroup_code('+ row.id+',\''+id_jenis_asset_code+'\',\''+name_jenis_asset_code+'\',\''+id_group_code+'\',\''+name_group_code+'\')"><i class="fa fa-pencil"></i></button>';
+                                    content += '<button class="btn btn-flat btn-xs btn-danger btn-action btn-view-detail" title="detail data ' + row.group_code + '" onClick="detail_asset_map(\''+id_jenis_asset_code+'\',\''+id_group_code+'\',\''+row.subgroup_code+'\',\''+name_jenis_asset_code+'\',\''+name_group_code+'\',\''+row.subgroup_description+'\')"><i class="fa fa-clone"></i></button>';
                                 }
 
                                 return content;
@@ -1033,7 +1074,7 @@
         //}
     }
 
-    function edit_subgroup_code(id) 
+    function edit_subgroup_code(id,id_jenis_asset_code,name_jenis_asset_code,id_group_code,name_group_code) 
     {
         //alert(id); return false;
         document.getElementById("data-form-subgroup-code").reset();
@@ -1042,6 +1083,9 @@
         var result = jQuery.parseJSON(JSON.stringify(dataJson("{{ url('asset-class/edit-subgroup-asset/?id=') }}" + id)));
         
         $("#edit_sgc_id").val(result.ID);
+
+        $("#sgc_jenis_asset_code").val(id_jenis_asset_code+"-"+name_jenis_asset_code);
+        $("#sgc_group_code").val(id_group_code+"-"+name_group_code);
         $("#sgc_subgroup_code").val(result.SUBGROUP_CODE);
         $("#sgc_subgroup_description").val(result.SUBGROUP_DESCRIPTION);
 
@@ -1063,13 +1107,13 @@
         $("#map_code").val(result.MAP_CODE);
         
         $("#acm_jenis_asset_code").val(result.JENIS_ASSET_CODE);
-        $("#acm_jenis_asset_code").trigger("change");
+        //$("#acm_jenis_asset_code").trigger("change");
 
         $("#acm_group_code").val(result.GROUP_CODE);
-        $("#acm_group_code").trigger("change");
+        //$("#acm_group_code").trigger("change");
 
         $("#acm_subgroup_code").val(result.SUBGROUP_CODE);
-        $("#acm_subgroup_code").trigger("change");
+        //$("#acm_subgroup_code").trigger("change");
 
         $("#acm_asset_ctrl_code").val(result.ASSET_CTRL_CODE);
         $("#acm_asset_ctrl_code").trigger("change");
@@ -1077,13 +1121,13 @@
         $("#acm_asset_ctrl_description").val(result.ASSET_CTRL_DESCRIPTION);
 
         $("#acm_mandatory_kode_asset_controller").val(result.MANDATORY_KODE_ASSET_CONTROLLER);
-        $("#acm_mandatory_kode_asset_controller").trigger("change");
+        $//("#acm_mandatory_kode_asset_controller").trigger("change");
 
         $("#add-data-modal-asset-map .modal-title").html("<i class='fa fa-edit'></i> UPDATE DATA - ASSET CONTROLLER MAP "+result.MAP_CODE);
         $("#add-data-modal-asset-map").modal("show");
     }
 
-    function detail_asset_map(id_jenis_asset_code,id_group_code,id_subgroup_code)
+    function detail_asset_map(id_jenis_asset_code,id_group_code,id_subgroup_code, name_jenis_asset_code, name_group_code, subgroup_description)
     {
         var map_code = id_jenis_asset_code+id_group_code+id_subgroup_code;
         var idvar = id_jenis_asset_code+'__'+id_group_code+'__'+id_subgroup_code;
@@ -1093,11 +1137,17 @@
 
         //alert(id);
         $("#row-asset-map").fadeOut();
+
         $("#id_jenis_asset_code").html(id_jenis_asset_code);
         $("#id_group_code").html(id_group_code);
         $("#id_subgroup_code").html(id_subgroup_code);
-        
         $("#id_map_code").html(map_code);
+        $("#edit_acm_jenis_asset_code").val(id_jenis_asset_code);
+        $("#edit_acm_jenis_asset_code_val").val(name_jenis_asset_code);
+        $("#edit_acm_group_code").val(id_group_code);
+        $("#edit_acm_group_code_val").val(name_group_code);
+        $("#edit_acm_subgroup_code").val(id_subgroup_code);
+        $("#edit_acm_subgroup_code_val").val(subgroup_description);
 
         /* FOR ADD BUTTON */
         $("#map_code").val(map_code);        
