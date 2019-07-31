@@ -127,7 +127,8 @@ class Select2Controller extends Controller
         //->join('TM_GROUP_ASSET AS GROUP', 'SUBGROUP.GROUP_CODE', '=', 'GROUP.ID')
         ->where( 
                 array(
-                    "SUBGROUP.GROUP_CODE" => $request->group
+                    "SUBGROUP.GROUP_CODE" => $request->group,
+                    "SUBGROUP.JENIS_ASSET_CODE" => $request->jenis_asset_code
                 )
             )
         ->get();

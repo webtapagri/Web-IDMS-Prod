@@ -568,7 +568,7 @@
 
         $("#asset_group").on('change', function() 
         {
-            var assetsubgroup = jQuery.parseJSON(JSON.stringify(dataJson('{!! route("get.assetsubgroup") !!}?group=' + jQuery(this).val())));
+            var assetsubgroup = jQuery.parseJSON(JSON.stringify(dataJson('{!! route("get.assetsubgroup") !!}?group='+$(this).val()+'&jenis_asset_code='+$("#asset_type").val() )));
             $("#asset_sub_group").empty().select2({
                 data: assetsubgroup,
                 width: "100%",
