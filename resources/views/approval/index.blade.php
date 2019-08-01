@@ -841,9 +841,9 @@
 
                     item += "<div class='col-md-6'>";
                     
-                    item += " <div class='form-group'><label for='plant' class='col-md-4'>JENIS ASET</label><div class='col-md-8'><input type='text' class='form-control input-sm select-jenis-aset' name='jenis_asset-"+val.no_reg_item+"' value='"+val.jenis_asset+"' id='jenis_asset-"+val.no_reg_item+"' autocomplete='off'></div></div>";
+                    item += " <div class='form-group'><label for='plant' class='col-md-4'>JENIS ASET</label><div class='col-md-8'><input type='text' class='form-control input-sm select-jenis-aset' name='jenis_asset-"+val.no_reg_item+"' value='"+val.jenis_asset+"' id='jenis_asset-"+val.no_reg_item+"' autocomplete='off' onChange='get_group("+val.no_reg_item+")'></div></div>";
 
-                    item += " <div class='form-group'><label for='plant' class='col-md-4'>GROUP</label><div class='col-md-8'><input type='text' class='form-control input-sm' id='jenis_asset_group-"+val.no_reg_item+"' name='jenis_asset_group-"+val.no_reg_item+"' value='"+val.group+"' id='' autocomplete='off'></div></div>";
+                    item += " <div class='form-group'><label for='plant' class='col-md-4'>GROUP</label><div class='col-md-8'><input type='text' class='form-control input-sm' id='jenis_asset_group-"+val.no_reg_item+"' name='jenis_asset_group-"+val.no_reg_item+"' value='"+val.group+"' id='' autocomplete='off' onChange='get_subgroup("+val.no_reg_item+")'></div></div>";
                     
                     item += " <div class='form-group'><label for='plant' class='col-md-4'>SUB GROUP</label><div class='col-md-8'><input type='text' class='form-control input-sm' id='jenis_asset_subgroup-"+val.no_reg_item+"' name='jenis_asset_subgroup-"+val.no_reg_item+"' value='"+val.sub_group+"' id='' autocomplete='off'></div></div>";
                     item += " <div class='form-group'><label for='plant' class='col-md-4'>MERK</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='' value='"+val.merk+"' id='' autocomplete='off' readonly></div></div>";
@@ -1072,7 +1072,7 @@
                 <?php if( $user_role == 'AMS' ){ ?>
                 $.each(data, function(key, val) 
                 {
-                    trigger_edit_asset(val.no_reg_item,val.jenis_asset,val.group);
+                    trigger_edit_asset(val.no_reg_item,val.jenis_asset,val.group,val.sub_group);
                 });
                 <?php } ?>
             },
@@ -1086,19 +1086,21 @@
 
     function trigger_edit_asset(no,jenis_asset,group,sub_group)
     {
-        //alert(jenis_asset); //return false;
+        //alert(sub_group); //return false;
         
+        var jenis_asset_code = jenis_asset.split('-');
         var role_jenis_asset_code = $.parseJSON(JSON.stringify(dataJson('{!! route("get.select_jenis_asset_code") !!}')));
         //$('#jenis_asset-'+no+'').select2({
         $('input[name="jenis_asset-'+no+'"]').select2({    
             data: role_jenis_asset_code,
             width: '100%',
-            placeholder: ' ',
+            placeholder: '',
             allowClear: true,
             //readonly: true,
         });
-        $('input[name="jenis_asset-'+no+'"]').val(jenis_asset).trigger('change');
+        $('input[name="jenis_asset-'+no+'"]').val(jenis_asset_code[0]).trigger('change');
 
+        var ja_group = group.split('-'); 
         //var assetgroup = jQuery.parseJSON(JSON.stringify(dataJson('{!! route("get.assetgroup") !!}?type=' + jenis_asset )));
         var assetgroup = $.parseJSON(JSON.stringify(dataJson('{!! route("get.select_group_code") !!}' )));
         $('input[name="jenis_asset_group-'+no+'"]').select2({
@@ -1107,17 +1109,19 @@
             allowClear: true,
             placeholder: ' '
         });
-        $('input[name="jenis_asset_group-'+no+'"]').val(group).trigger('change');
+        $('input[name="jenis_asset_group-'+no+'"]').val(ja_group[0]).trigger('change');
 
+        var ja_subgroup = sub_group.split('-');
         //var assetsubgroup = $.parseJSON(JSON.stringify(dataJson('{!! route("get.assetsubgroup") !!}?group=' + group )));
         var assetsubgroup = $.parseJSON(JSON.stringify(dataJson('{!! route("get.select_subgroup_code") !!}' )));
-            $('input[name="jenis_asset_subgroup-'+no+'"]').empty().select2({
+            //$('input[name="jenis_asset_subgroup-'+no+'"]').empty().select2({
+            $('input[name="jenis_asset_subgroup-'+no+'"]').select2({
                 data: assetsubgroup,
                 width: "100%",
                 allowClear: true,
                 placeholder: ' '
             });
-        $('input[name="jenis_asset_subgroup-'+no+'"]').val(sub_group).trigger('change');
+        $('input[name="jenis_asset_subgroup-'+no+'"]').val(ja_subgroup[0]).trigger('change');
 
     }
 
@@ -1720,6 +1724,32 @@
                 jQuery('.loading-event').fadeOut();
             }
         }); 
+    }
+
+    function get_group(no)
+    {
+        var jenis_asset_code = $('input[name="jenis_asset-'+no+'"]').val();
+        //alert(jenis_asset_code);
+        var assetgroup = jQuery.parseJSON(JSON.stringify(dataJson('{!! route("get.assetgroup") !!}?type='+jenis_asset_code )));
+        $('input[name="jenis_asset_group-'+no+'"]').empty().select2({
+            data: assetgroup,
+            width: "100%",
+            allowClear: true,
+            placeholder: ' '
+        });
+    }
+
+    function get_subgroup(no)
+    {
+        var jenis_asset_code = $('input[name="jenis_asset-'+no+'"]').val();
+        var group = $('input[name="jenis_asset_group-'+no+'"]').val();
+        var assetsubgroup = jQuery.parseJSON(JSON.stringify(dataJson('{!! route("get.assetsubgroup") !!}?group='+group+'&jenis_asset_code='+jenis_asset_code )));
+            $('input[name="jenis_asset_subgroup-'+no+'"]').empty().select2({
+                data: assetsubgroup,
+                width: "100%",
+                allowClear: true,
+                placeholder: ' '
+            });
     }
 
 </script>

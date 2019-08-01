@@ -664,7 +664,10 @@ class AssetClassController extends Controller
     public function select_jenis_asset_code()
     {
         $data = DB::table('TM_JENIS_ASSET')
-        ->select('jenis_asset_code as id', 'jenis_asset_description as text')
+        //->select('jenis_asset_code as id', 'jenis_asset_description as text')
+        ->select('jenis_asset_code as id',
+                    DB::raw('CONCAT(jenis_asset_code,"-",jenis_asset_description) as text')
+        )
         //->where('deleted', 0)
         ->orderby('jenis_asset_description', 'asc')
         ->get();
@@ -683,7 +686,8 @@ class AssetClassController extends Controller
     public function select_group_code()
     {
         $data = DB::table('TM_GROUP_ASSET')
-        ->select('group_code as id', 'group_description as text')
+        ->select('group_code as id',DB::raw('CONCAT(group_code,"-",group_description) as text'))
+        //->select('group_code as id', 'group_description as text')
         //->where('deleted', 0)
         ->orderby('group_description', 'asc')
         ->get();
@@ -693,7 +697,8 @@ class AssetClassController extends Controller
     public function select_subgroup_code()
     {
         $data = DB::table('TM_SUBGROUP_ASSET')
-        ->select('subgroup_code as id', 'subgroup_description as text')
+        ->select('subgroup_code as id',DB::raw('CONCAT(subgroup_code,"-",subgroup_description) as text'))
+        //->select('subgroup_code as id', 'subgroup_description as text')
         //->where('deleted', 0)
         ->orderby('subgroup_description', 'asc')
         ->get();
