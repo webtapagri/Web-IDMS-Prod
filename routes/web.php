@@ -80,6 +80,7 @@ Route::match(['get', 'post'], 'grid-approval-history', [
     'as' => 'get.approval_grid_history',
     'uses' => 'ApprovalController@dataGridHistory'
 ]);
+Route::get('/approval/berkas-amp/{no_reg}', 'ApprovalController@berkas_amp')->name('no_reg');
 
 Route::resource('/mutasi', 'MutasiController');
 Route::get('/mutasi/create/{type}', 'MutasiController@create')->name('type');

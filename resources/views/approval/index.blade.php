@@ -396,11 +396,13 @@
                             return content;
                         }
                     }, {
-                        "render": function(data, type, row) {
+                        "render": function(data, type, row) 
+                        {
+                            var no_registrasi= btoa(row.NO_REG);
                             if (row.PO_TYPE == 0) {
                                 var content = '<span class="label label-primary">SAP</span>';
                             } else if (row.PO_TYPE == 1) {
-                                var content = '<span class="label label-danger">AMP</span>';
+                                var content = '<span class="label label-danger">AMP</span><br/><a href="{{ url("approval/berkas-amp") }}/'+no_registrasi+'" target="_blank"><span class="label label-default"><i class="fa fa-download"></i> BERKAS</span></a>';
                             }
 
                             return content;
@@ -1249,6 +1251,16 @@
         var param = '';//$("#request-form-detail-asset-sap").serialize();
         //alert(capitalized_on);
 
+        // VALIDASI QUANTITY ONLY NUMBER
+        if(!checkNumericValue(quantity))
+        {
+            notify({
+                type: 'warning',
+                message: " Quantity is Numberic value & min 0 "
+            });
+            return false;
+        }
+
         // VALIDASI COST CENTER HARUS 10 CHAR
         if( $.trim(cost_center).length < 10 )
         {
@@ -1750,6 +1762,19 @@
                 allowClear: true,
                 placeholder: ' '
             });
+    }
+
+    function checkNumericValue(num)
+    {
+        if(num.indexOf('-') != 0)
+        { 
+            var objRegExp  =  /(^-?\d\d*\.\d*$)|(^-?\d\d*$)|(^-?\.\d\d*$)/;
+            return objRegExp.test(num);
+        }
+        else
+        {
+            return false;
+        }
     }
 
 </script>
