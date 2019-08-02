@@ -1,5 +1,7 @@
 <?php 
+  //echo "3".$data['content']->NO_REG; die();
   $qrcode = url('master-asset/edit-data/'.base64_encode($data['id']).'');
+  $code_ams = base64_encode($data['id']);
 ?>
 
 @extends('adminlte::page')
@@ -52,7 +54,7 @@
 
     <div class="box-header with-border">
       <h3 class="box-title"><span class="direct-chat-text" style="margin-left:0%">KODE ASSET AMS : <b>{{ $data['id'] }}</b></span></h3>
-      <span class="xpull-right badge bg-green show_qrcode" OnClick="show_qrcode('{{$data['id']}}','{{@$data['content']->BA_PEMILIK_ASSET}}','{{@$data['content']->LOKASI_BA_DESCRIPTION}}','{{@$data['content']->CODE_ASSET_CONTROLLER}}')"><i class="fa fa-fw fa-barcode"></i> SHOW QR CODE</span>
+      <span class="xpull-right badge bg-green show_qrcode" OnClick="show_qrcode('{{$data['id']}}','{{@$data['content']->BA_PEMILIK_ASSET}}','{{@$data['content']->LOKASI_BA_DESCRIPTION}}','{{@$data['content']->KODE_ASSET_CONTROLLER}}')"><i class="fa fa-fw fa-barcode"></i> SHOW QR CODE</span>
 
       <div class="box-tools pull-right">
         <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
@@ -380,7 +382,7 @@
               <label for="" class="col-sm-4 control-label">Kode Asset Controller</label>
 
               <div class="col-sm-8">
-                <input type="text" class="form-control" id="kode_asset_controller" placeholder="Kode Asset Controller" value="{{@$data['content']->CODE_ASSET_CONTROLLER}}" readonly="1">
+                <input type="text" class="form-control" id="kode_asset_controller" placeholder="Kode Asset Controller" value="{{@$data['content']->KODE_ASSET_CONTROLLER}}" readonly="1">
               </div>
             </div>
         	
@@ -585,13 +587,52 @@
 
                         <!--img src="data:image/png;base64, {!! base64_encode(QrCode::format('png')->size(250)->generate('$qrcode')) !!} "-->
                         <div id="print-qr-code">
-                            <?php echo QrCode::size(250)->generate(''.$qrcode.''); ?>
+                            <?php 
+                            $string = 'BARCODE';  
+                            $string2 = 'OKESIP';
+                            $width  = 250;
+                            $height = 350;
+                            $font = 12;
+                            $im = @imagecreate ($width, $height);
+                            $text_color = imagecolorallocate ($im, 0, 0, 0); //black text
+                            // white background
+                            // $background_color = imagecolorallocate ($im, 255, 255, 255);
+                            // transparent background
+                            $transparent = imagecolorallocatealpha($im, 0, 0, 0, 127);
+                            imagefill($im, 0, 0, $transparent);
+                            imagesavealpha($im, true);
+                            imagestring ($im, $font, 40, 130, $string, $text_color);
+                            imagestring ($im, $font, 50, 140, $string2, $text_color);
+                            ob_start();
+                            imagepng($im);
+                            $imstr = base64_encode(ob_get_clean());
+                            imagedestroy($im);
+
+                            // Save Image in folder from string base64
+                            $img = 'data:image/png;base64,'.$imstr;
+                            $image_parts = explode(";base64,", $img);
+                            $image_type_aux = explode("image/", $image_parts[0]);
+                            $image_type = $image_type_aux[1];
+                            $image_base64 = base64_decode($image_parts[1]);
+                            $folderPath = app_path();
+                            $file = $folderPath . '/qrcode.jpg';
+                            // MOve to folder
+                            file_put_contents($file, $image_base64);
+
+                            // Generate QRCode PNG and save put image above with merge funtion 
+                            $pathDirectory = storage_path('app/'.$data['id'].'.png');
+                            QrCode::format('png')->margin(10)->merge($file, 1, true)->size(200)->generate('hallo', $pathDirectory);
+
+                                echo QrCode::margin(0)->size(250)->generate(''.$qrcode.''); 
+                            ?>
                             <div class="qrcode-modal-info text-center" style="margin-top:-2%;font-weight:bold"></div>
                         </div>
 
                         <a href="data:image/png;base64, <?php echo base64_encode(QrCode::format('png')->size(350)->generate(''.$qrcode.'')); ?>" target="_blank" download="{!! $data['id'].'.png' !!}"><button type="button" class="btn bg-navy btn-flat margin"><i class="fa fa-download"></i> DOWNLOAD </button></a>
 
-                        <button type="button" id="btnPrint" class="btn bg-navy btn-flat margin"><i class="fa fa-print"></i> PRINT </button>
+                        <a href="<?php echo url('master-asset/print-qrcode').'/'.$code_ams; ?>" target="_blank">
+                        <button type="button" id="btnPrint" class="btn bg-navy btn-flat margin"><i class="fa fa-print"></i> PRINT</button></a>
+
                     </div>
                 </div>
             </div>
@@ -618,10 +659,13 @@ $(document).ready(function()
            });
     });
 
-    document.getElementById("btnPrint").onclick = function() {
+    /*
+    document.getElementById("btnPrint").onclick = function() 
+    {
         printElement(document.getElementById("print-qr-code"));
         window.print();
     }
+    */
 });
 
 function printElement(elem, append, delimiter) 
