@@ -273,7 +273,7 @@
                                                     <h4>ASSET CLASS</h4>
                                                 </label>
                                                 <div class="col-md-9">
-                                                    <h4>E4010</h4>
+                                                    <?php /* <h4>E4010</h4> */ ?>
                                                 </div>
                                             </div>
                                             <div class="form-group material-group-input" id="input-description">
@@ -391,7 +391,7 @@
                                                 </div>
                                             </div>
                                             <div class="form-group">
-                                                <label class="col-md-2 col-md-offset-1 ">Foto No msin / IMEI</label>
+                                                <label class="col-md-2 col-md-offset-1 ">Foto No mesin / IMEI</label>
                                                 <div class="col-md-9">
                                                     <div id="filesContainer">
                                                         <div class="col-md-4" id="panel-image-1">

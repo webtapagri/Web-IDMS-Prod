@@ -223,11 +223,27 @@ class RequestAsetLainController extends Controller
         //$req = $request->all();
         //echo "<pre>"; print_r($req);die();
         //return response()->json(["status"=>true, "message"=>"Document Created!", "new_noreg"=>"ini noreg"]);
+        $req = $request->all();
+        $asset_type = "";
         
         DB::beginTransaction();
 
        try 
        {
+
+            //1 VALIDASI JENIS ASSET, GROUP, SUBGROUP HARUS SERAGAM IT@250719
+            $validasi_asset_controller = $this->validasi_asset_controller($req);
+            //echo "4<pre>"; print_r($validasi_asset_controller); die();
+
+            if( $validasi_asset_controller['status'] == false )
+            {
+                return response()->json(['status' => false, "message" => "Create document gagal, Asset Controller tidak sama"]);
+            }
+            else
+            {
+                $asset_type = $validasi_asset_controller['message'];
+            }
+
             //$reg_no = rand(0, 1000000);
             $reg_no = $this->get_reg_no();
             $user_id = Session::get('user_id');
@@ -237,7 +253,7 @@ class RequestAsetLainController extends Controller
             $po_type = $request->po_type;
             //if($po_type == 0){ $menu_code = 'P1'; }else{ $menu_code = 'P2'; }
             //DB::SELECT('call create_approval("'.$menu_code.'", "'.$request->business_area.'","","'.$reg_no.'","'.$user_id.'")');
-            DB::SELECT('call create_approval("P3", "'.$request->business_area.'","","'.$reg_no.'","'.$user_id.'")');
+            DB::SELECT('call create_approval("P3", "'.$request->business_area.'","","'.$reg_no.'","'.$user_id.'","'.$asset_type.'")');
             //die();
 
             $asset_id = DB::table('TR_REG_ASSET')->insertGetId([
@@ -486,5 +502,60 @@ class RequestAsetLainController extends Controller
         
         return response()->json(array('data' => $data));
         
+    }
+
+    function validasi_asset_controller($req)
+    {
+        //echo "1<pre>"; print_r($req); die();
+
+        $ac = array();
+        $vv = "";
+        
+        if( $req['asset'] ) 
+        {
+            foreach ( $req['asset'] as $row ) 
+            {
+                //echo "2"; count($row["detail"]); die();
+                if ($row["name"]) 
+                {
+                    $detail = $row["detail"];
+
+                    for ($i = 0; $i < count($detail); $i++) 
+                    {
+                        $sql = " SELECT ASSET_CTRL_CODE FROM TM_ASSET_CONTROLLER_MAP WHERE JENIS_ASSET_CODE = '".$detail[$i]["asset_type"]."' AND GROUP_CODE = '".$detail[$i]["asset_group"]."' AND SUBGROUP_CODE = '".$detail[$i]["asset_sub_group"]."' "; //echo $sql; die();
+                        $data = DB::SELECT($sql); 
+                        //echo "1<pre>"; print_r($data); die();
+                        if(!empty($data))
+                        {
+                            foreach($data as $k => $v)
+                            {
+                                //echo "1<pre>"; print_r($v);
+                                $vv = $v->ASSET_CTRL_CODE.","; 
+                            }
+                            array_push($ac,rtrim($vv,","));
+                            //die();
+                        }
+                    }
+                }
+            }
+        }
+
+        if (count(array_unique($ac)) === 1) 
+        {
+            $result = array("status"=>true, "message"=> $ac[0]);
+        }
+        else
+        {
+            if(!empty( $ac ))
+            {
+                $result = array("status"=>false, "message"=> "Aset Controller tidak sama / belum disetting");
+            }
+            else
+            {
+                $result = array("status"=>true, "message"=> "");
+            }
+        }
+
+        return $result;
     }
 }

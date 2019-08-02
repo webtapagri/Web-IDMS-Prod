@@ -33,7 +33,7 @@ function print_document()
 
     	echo QrCode::margin(0)->size(250)->generate(''.$qrcode.'').'<br/>'; 
 
-    	//echo "1<pre>"; print_r($data['data']);
+    	//echo "2<pre>"; print_r($data['data']);
 
     	if(!empty($data['data']))
     	{
