@@ -34,9 +34,10 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="plant" class="col-md-3">BUSINESS AREA <sup style="color:red">*</sup></label>
+                            <label for="plant" class="col-md-3">BUSINESS AREA<sup style="color:red">*</sup></label>
                             <div class="col-md-4">
-                                <select class="form-control input-sm" name="business_area" id="business_area" required readonly></select>
+                                <input type="text" class="form-control input-sm" name="business_area" id="business_area" value="1211-HO - AMP" autocomplete="off" readonly="readonly">
+                                <?php /*<select class="form-control input-sm" name="business_area" id="business_area" required readonly></select>*/?>
                             </div>
                         </div>
                         <div class="form-group">
@@ -509,7 +510,7 @@
         });
 
         var plant = jQuery.parseJSON(JSON.stringify(dataJson('{!! route("get.generaldataplant") !!}')));
-        jQuery("#business_area,  #asset_location").select2({
+        jQuery("#xbusiness_area,  #asset_location").select2({
             data: plant,
             width: "100%",
             allowClear: true,
@@ -517,7 +518,7 @@
             enable: false
         });
 
-        jQuery('#business_area').val('1211');
+        jQuery('#business_area').val('1211-HO - AMP');
         jQuery('#business_area').trigger('change');
         jQuery('#business_area').attr('disabled', 'disabled');;
 
