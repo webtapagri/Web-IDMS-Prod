@@ -863,8 +863,10 @@
                             //alert(total_tab);
                             //$(".button-delete").hide(); 
 
+                            //alert(val.no_po); return false; //EST/AMP-NPN/JKTO/07/14/0186
+
                             <?php if( $user_role == 'AMS' ){ if($data['outstanding'] != 0 ){ ?>
-                                item += "<div class='form-group' align='right'><div class='btn btn-warning btn-sm' value='Save' OnClick='saveItemDetail("+val.id+","+val.no_po+","+val.no_reg_item+")' style='margin-right:5px;xmargin-top:5px'><i class='fa fa-save'></i> SAVE</div><button type='button' class='btn btn-warning btn-sm' OnClick='delAsset("+val.id+")' style='margin-right: 15px' disabled><i class='fa fa-trash'></i> DELETE</button></div>";
+                                item += "<div class='form-group' align='right'><div class='btn btn-warning btn-sm' value='Save' OnClick='saveItemDetail("+val.id+",\""+val.no_po+"\","+val.no_reg_item+")' style='margin-right:5px;xmargin-top:5px'><i class='fa fa-save'></i> SAVE</div><button type='button' class='btn btn-warning btn-sm' OnClick='delAsset("+val.id+")' style='margin-right: 15px' disabled><i class='fa fa-trash'></i> DELETE</button></div>";
                             <?php } }else{ if($data['outstanding'] != 0 ){ ?>
                                 item += "<div class='form-group' align='right'><button type='button' class='btn btn-warning btn-sm' OnClick='delAsset("+val.id+")' style='margin-right: 15px' disabled><i class='fa fa-trash'></i> DELETE</button></div>";
                             <?php } }  ?>
@@ -872,7 +874,7 @@
                         else
                         {
                             <?php if( $user_role == 'AMS' ){ if($data['outstanding'] != 0 ){ ?>
-                                item += "<div class='form-group' align='right'><div class='btn btn-warning btn-sm' value='Save' OnClick='saveItemDetail("+val.id+","+val.no_po+","+val.no_reg_item+")' style='margin-right:5px;xmargin-top:5px'><i class='fa fa-save'></i> SAVE</div><div class='btn btn-warning btn-sm button-delete' value='Delete' OnClick='delAsset("+val.id+")' style='margin-right:15px'><i class='fa fa-trash'></i> DELETE</div></div>";
+                                item += "<div class='form-group' align='right'><div class='btn btn-warning btn-sm' value='Save' OnClick='saveItemDetail("+val.id+",\""+val.no_po+"\","+val.no_reg_item+")' style='margin-right:5px;xmargin-top:5px'><i class='fa fa-save'></i> SAVE</div><div class='btn btn-warning btn-sm button-delete' value='Delete' OnClick='delAsset("+val.id+")' style='margin-right:15px'><i class='fa fa-trash'></i> DELETE</div></div>";
                             <?php } }else{ if($data['outstanding'] != 0 ){ ?>
                                 item += "<div class='form-group' align='right'><div class='btn btn-warning btn-sm button-delete' value='Delete' OnClick='delAsset("+val.id+")' style='margin-right:15px'><i class='fa fa-trash'></i> DELETE</div></div>";
                             <?php } } ?>
@@ -1174,6 +1176,7 @@
 
     function saveItemDetail(id,no_po,no_reg_item)
     {
+        //alert(no_po); die();
         if(confirm('Confirm Save Rincian Informasi Asset ?'))
         {
             var getnoreg = $("#getnoreg").val();

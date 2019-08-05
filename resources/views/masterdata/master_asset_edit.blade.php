@@ -5,7 +5,7 @@
   $code_ams = base64_encode($data['id']);
 
   //#### GENERATE PNG IMAGE
-  $string = @$data['content']->KODE_ASSET_SAP; 
+  $string = @$data['content']->KODE_ASSET_AMS; 
   $string2 = 'MILIK : '.@$data['content']->BA_PEMILIK_ASSET;
   $string3 = 'LOKASI : '.@$data['content']->LOKASI_BA_DESCRIPTION;
   $string4 = @$data['content']->KODE_ASSET_CONTROLLER;
@@ -650,7 +650,7 @@
                         <div id="print-qr-code">
                             <?php 
                               echo QrCode::margin(0)->size(250)->generate(''.$qrcode.''); 
-                              $pathfile = app_path('40100136.png');
+                              //$pathfile = app_path('40100136.png');
                               //echo QrCode::format('png')->merge('\app\qrcode.jpg', .3)->generate(''.$qrcode.'');
                             ?>
                             <div class="qrcode-modal-info text-center" style="margin-top:-2%;font-weight:bold"></div>
