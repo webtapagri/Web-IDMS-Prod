@@ -1,4 +1,5 @@
 <?php 
+  //echo "<pre>".PHP_OS; die();
   //echo "5<pre>"; print_r($data['content']); die();
   $qrcode = url('master-asset/edit-data/'.base64_encode($data['id']).'');
   $code_ams = base64_encode($data['id']);
@@ -49,6 +50,19 @@
   // MOve to folder
   file_put_contents($file, $image_base64);
   //#### END GENERATE PNG IMAGE
+
+
+  //CHECK OPERATING SYSTEM
+  $os = PHP_OS; 
+  if( $os != "WINNT" )
+  {
+      $file_qrcode = '/app/qrcode_temp.png';
+  }
+  else
+  {
+      $file_qrcode = '\app\qrcode_temp.png';
+  }
+
 ?>
 
 @extends('adminlte::page')
@@ -101,7 +115,7 @@
 
     <div class="box-header with-border">
       <h3 class="box-title"><span class="direct-chat-text" style="margin-left:0%">KODE ASSET AMS : <b>{{ $data['id'] }}</b></span></h3>
-      <span class="xpull-right badge bg-green show_qrcode" OnClick="show_qrcode('{{$data['id']}}','{{@$data['content']->BA_PEMILIK_ASSET}}','{{@$data['content']->LOKASI_BA_DESCRIPTION}}','{{@$data['content']->KODE_ASSET_CONTROLLER}}')"><i class="fa fa-fw fa-barcode"></i> SHOW QR CODE</span>
+      <span class="xpull-right badge bg-green show_qrcode" OnClick="show_qrcode('{{$data['id']}}','{{@$data['content']->BA_PEMILIK_ASSET}}','{{@$data['content']->LOKASI_BA_DESCRIPTION}}','{{@$data['content']->KODE_ASSET_CONTROLLER}}','{{@$data['content']->KODE_ASSET_AMS}}')"><i class="fa fa-fw fa-barcode"></i> SHOW QR CODE</span>
 
       <div class="box-tools pull-right">
         <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
@@ -642,7 +656,7 @@
                             <div class="qrcode-modal-info text-center" style="margin-top:-2%;font-weight:bold"></div>
                         </div>
 
-                        <a href="data:image/png;base64, <?php echo base64_encode(QrCode::format('png')->merge('\app\qrcode_temp.png', 1)->margin(15)->size(450)->generate(''.$qrcode.'')); ?>" target="_blank" download="{!! $data['id'].'.png' !!}"><button type="button" class="btn bg-navy btn-flat margin"><i class="fa fa-download"></i> DOWNLOAD </button></a>
+                        <a href="data:image/png;base64, <?php echo base64_encode(QrCode::format('png')->merge(''.$file_qrcode.'', 1)->margin(15)->size(450)->generate(''.$qrcode.'')); ?>" target="_blank" download="{!! $data['id'].'.png' !!}"><button type="button" class="btn bg-navy btn-flat margin"><i class="fa fa-download"></i> DOWNLOAD </button></a>
 
                         <a href="<?php echo url('master-asset/print-qrcode').'/'.$code_ams; ?>" target="_blank">
                         <button type="button" id="btnPrint" class="btn bg-navy btn-flat margin"><i class="fa fa-print"></i> PRINT</button></a>
@@ -710,7 +724,7 @@ function printElement(elem, append, delimiter)
     $printSection.appendChild(domClone);
 }
 
-function show_qrcode(amscode,milik,lokasi,kode_asset_controller)
+function show_qrcode(amscode,milik,lokasi,kode_asset_controller,kode_asset_ams)
 {
     //alert(amscode);
 

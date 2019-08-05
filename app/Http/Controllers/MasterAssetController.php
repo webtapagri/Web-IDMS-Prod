@@ -563,7 +563,7 @@ class MasterAssetController extends Controller
     {
         //echo "2 "; echo base64_decode($code_ams); die();
         
-        $sql = " SELECT a.BA_PEMILIK_ASSET,a.KODE_ASSET_SAP,a.LOKASI_BA_DESCRIPTION,a.KODE_ASSET_CONTROLLER, b.DESCRIPTION AS BA_PEMILIK_ASSET_DESCRIPTION 
+        $sql = " SELECT a.BA_PEMILIK_ASSET,a.KODE_ASSET_SAP,a.LOKASI_BA_DESCRIPTION,a.KODE_ASSET_CONTROLLER, b.DESCRIPTION AS BA_PEMILIK_ASSET_DESCRIPTION, a.KODE_ASSET_AMS 
                     FROM TM_MSTR_ASSET a LEFT JOIN TM_GENERAL_DATA b ON a.BA_PEMILIK_ASSET = b.DESCRIPTION_CODE AND b.GENERAL_CODE = 'plant' 
                         WHERE a.KODE_ASSET_SAP = ".base64_decode($code_ams)." ";
 
