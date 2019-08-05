@@ -656,7 +656,7 @@
                             <div class="qrcode-modal-info text-center" style="margin-top:-2%;font-weight:bold"></div>
                         </div>
 
-                        <a href="data:image/png;base64, <?php echo base64_encode(QrCode::format('png')->merge('\app\qrcode_temp.png', 1)->margin(15)->size(450)->generate(''.$qrcode.'')); ?>" target="_blank" download="{!! $data['id'].'.png' !!}"><button type="button" class="btn bg-navy btn-flat margin"><i class="fa fa-download"></i> DOWNLOAD </button></a>
+                        <a href="data:image/png;base64, <?php echo base64_encode(QrCode::format('png')->merge(''.$file_qrcode.'', 1)->margin(15)->size(450)->generate(''.$qrcode.'')); ?>" target="_blank" download="{!! $data['id'].'.png' !!}"><button type="button" class="btn bg-navy btn-flat margin"><i class="fa fa-download"></i> DOWNLOAD </button></a>
 
                         <a href="<?php echo url('master-asset/print-qrcode').'/'.$code_ams; ?>" target="_blank">
                         <button type="button" id="btnPrint" class="btn bg-navy btn-flat margin"><i class="fa fa-print"></i> PRINT</button></a>
