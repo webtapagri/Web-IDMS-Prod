@@ -738,7 +738,6 @@ function show_qrcode(amscode,milik,lokasi,kode_asset_controller,kode_asset_ams)
         dataType: 'json',
         success: function(data) 
         {
-            //alert(data.filename);
             var item = "<span='bg-green'>"+kode_asset_ams+"</span><br/>";
                 item += "MILIK : "+milik+" <br/>";
                 item += "LOKASI : "+lokasi+" <br/>";

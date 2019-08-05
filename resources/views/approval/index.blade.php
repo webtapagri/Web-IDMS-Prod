@@ -1176,7 +1176,6 @@
 
     function saveItemDetail(id,no_po,no_reg_item)
     {
-        //alert(no_po); die();
         if(confirm('Confirm Save Rincian Informasi Asset ?'))
         {
             var getnoreg = $("#getnoreg").val();
