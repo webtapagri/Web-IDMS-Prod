@@ -40,8 +40,8 @@ function print_document()
     		foreach( $data['data'] as $k => $v )
     		{
     			echo '<b>'.$v->KODE_ASSET_AMS.'</b><br/>';
-    			echo '<b>MILIK : '.$v->BA_PEMILIK_ASSET.'-'.$v->BA_PEMILIK_ASSET_DESCRIPTION.'</b><br/>';
-    			echo '<b>LOKASI : '.$v->LOKASI_BA_DESCRIPTION.'</b><br/>';
+    			echo '<b>MILIK : '.$v->BA_PEMILIK_ASSET.' ('.$v->BA_PEMILIK_ASSET_DESCRIPTION.')</b><br/>';
+    			echo '<b>LOKASI : '.$v->LOKASI_BA_CODE.' ('.$v->LOKASI_BA_DESCRIPTION.')</b><br/>';
     			echo '<b>'.$v->KODE_ASSET_CONTROLLER.'</b><br/>';
 
     			//echo "1<pre>"; print_r($v);

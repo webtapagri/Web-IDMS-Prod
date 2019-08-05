@@ -195,7 +195,14 @@ class MasterAssetController extends Controller
 
         $result = array();
 
-        $sql = " SELECT * FROM TM_MSTR_ASSET WHERE KODE_ASSET_AMS = $id ";
+        //$sql = " SELECT * FROM TM_MSTR_ASSET WHERE KODE_ASSET_AMS = $id ";
+        
+        $sql = " SELECT a.*, b.DESCRIPTION AS BA_PEMILIK_ASSET_DESCRIPTION, c.DESCRIPTION AS LOKASI_BA_DESCRIPTION 
+                    FROM TM_MSTR_ASSET a 
+                        LEFT JOIN TM_GENERAL_DATA b ON a.BA_PEMILIK_ASSET = b.DESCRIPTION_CODE AND b.GENERAL_CODE = 'plant' 
+                        LEFT JOIN TM_GENERAL_DATA c ON a.LOKASI_BA_CODE = c.DESCRIPTION_CODE AND c.GENERAL_CODE = 'plant' 
+                    WHERE a.KODE_ASSET_AMS = ".$id." ";
+
         $data = DB::SELECT($sql);
 
         if(!empty($data))
@@ -209,7 +216,7 @@ class MasterAssetController extends Controller
 
         return $result;
 
-        //echo "<pre>"; print_r($data);
+        //echo "1<pre>"; print_r($data); die();
         /*
             Array
             (
@@ -561,9 +568,11 @@ class MasterAssetController extends Controller
 
     function get_data_qrcode( $code_ams )
     {   
-        $sql = " SELECT a.BA_PEMILIK_ASSET,a.KODE_ASSET_SAP,a.LOKASI_BA_DESCRIPTION,a.KODE_ASSET_CONTROLLER, b.DESCRIPTION AS BA_PEMILIK_ASSET_DESCRIPTION, a.KODE_ASSET_AMS 
-                    FROM TM_MSTR_ASSET a LEFT JOIN TM_GENERAL_DATA b ON a.BA_PEMILIK_ASSET = b.DESCRIPTION_CODE AND b.GENERAL_CODE = 'plant' 
-                        WHERE a.KODE_ASSET_AMS = ".base64_decode($code_ams)." ";
+        $sql = " SELECT a.BA_PEMILIK_ASSET,a.KODE_ASSET_SAP,a.LOKASI_BA_CODE,a.KODE_ASSET_CONTROLLER, b.DESCRIPTION AS BA_PEMILIK_ASSET_DESCRIPTION, a.KODE_ASSET_AMS, c.DESCRIPTION AS LOKASI_BA_DESCRIPTION 
+                    FROM TM_MSTR_ASSET a 
+                        LEFT JOIN TM_GENERAL_DATA b ON a.BA_PEMILIK_ASSET = b.DESCRIPTION_CODE AND b.GENERAL_CODE = 'plant' 
+                        LEFT JOIN TM_GENERAL_DATA c ON a.LOKASI_BA_CODE = c.DESCRIPTION_CODE AND c.GENERAL_CODE = 'plant' 
+                    WHERE a.KODE_ASSET_AMS = ".base64_decode($code_ams)." ";
 
         $data = DB::SELECT($sql);
         return $data;

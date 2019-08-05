@@ -1,18 +1,18 @@
 <?php 
   //echo "<pre>".PHP_OS; die();
-  //echo "5<pre>"; print_r($data['content']); die();
+  //echo "6<pre>"; print_r($data['content']); die();
   $qrcode = url('master-asset/edit-data/'.base64_encode($data['id']).'');
   $code_ams = base64_encode($data['id']);
 
   //#### GENERATE PNG IMAGE
   $string = @$data['content']->KODE_ASSET_AMS; 
-  $string2 = 'MILIK : '.@$data['content']->BA_PEMILIK_ASSET;
-  $string3 = 'LOKASI : '.@$data['content']->LOKASI_BA_DESCRIPTION;
+  $string2 = 'MILIK : '.@$data['content']->BA_PEMILIK_ASSET.' ('.@$data['content']->BA_PEMILIK_ASSET_DESCRIPTION.')';
+  $string3 = 'LOKASI : '.@$data['content']->LOKASI_BA_CODE.' ('.@$data['content']->LOKASI_BA_DESCRIPTION.')';
   $string4 = @$data['content']->KODE_ASSET_CONTROLLER;
 
   $width  = 350;
   $height = 450;
-  $font = 10;
+  $font = 2;
   $im = @imagecreate ($width, $height);
   $text_color = imagecolorallocate($im, 0, 0, 0); //black text
   // white background
@@ -115,7 +115,7 @@
 
     <div class="box-header with-border">
       <h3 class="box-title"><span class="direct-chat-text" style="margin-left:0%">KODE ASSET AMS : <b>{{ $data['id'] }}</b></span></h3>
-      <span class="xpull-right badge bg-green show_qrcode" OnClick="show_qrcode('{{$data['id']}}','{{@$data['content']->BA_PEMILIK_ASSET}}','{{@$data['content']->LOKASI_BA_DESCRIPTION}}','{{@$data['content']->KODE_ASSET_CONTROLLER}}','{{@$data['content']->KODE_ASSET_AMS}}')"><i class="fa fa-fw fa-barcode"></i> SHOW QR CODE</span>
+      <span class="xpull-right badge bg-green show_qrcode" OnClick="show_qrcode('{{$data['id']}}','{{@$data['content']->BA_PEMILIK_ASSET}}','{{@$data['content']->LOKASI_BA_CODE}}','{{@$data['content']->KODE_ASSET_CONTROLLER}}','{{@$data['content']->KODE_ASSET_AMS}}','<?php echo @$data['content']->BA_PEMILIK_ASSET_DESCRIPTION; ?>','<?php echo @$data['content']->LOKASI_BA_DESCRIPTION; ?>')"><i class="fa fa-fw fa-barcode"></i> SHOW QR CODE</span>
 
       <div class="box-tools pull-right">
         <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
@@ -724,9 +724,9 @@ function printElement(elem, append, delimiter)
     $printSection.appendChild(domClone);
 }
 
-function show_qrcode(amscode,milik,lokasi,kode_asset_controller,kode_asset_ams)
+function show_qrcode(amscode,milik,lokasi_code,kode_asset_controller,kode_asset_ams, milik_desc, lokasi_desc)
 {
-    //alert(amscode);
+    //alert(test);
 
     var ams = btoa(amscode);
 
@@ -739,8 +739,8 @@ function show_qrcode(amscode,milik,lokasi,kode_asset_controller,kode_asset_ams)
         success: function(data) 
         {
             var item = "<span='bg-green'>"+kode_asset_ams+"</span><br/>";
-                item += "MILIK : "+milik+" <br/>";
-                item += "LOKASI : "+lokasi+" <br/>";
+                item += "MILIK : "+milik+" ("+milik_desc+") <br/>";
+                item += "LOKASI : "+lokasi_code+" ("+lokasi_desc+") <br/>";
                 item += kode_asset_controller;
 
             $("#qrcode-modal .generate-qrcode").html("<span='bg-green'>"+data.filename+"</span>");
