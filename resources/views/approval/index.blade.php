@@ -945,7 +945,7 @@
                         });
 
                         //alert(val.file.length);
-                        alert(print_kategori);
+                        //alert(print_kategori);
 
                         //if( print_kategori != 'asset' )
                         if( print_kategori.includes("asset") == false )
