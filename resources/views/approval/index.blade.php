@@ -63,6 +63,7 @@
                                 <th>TGL PO</th>
                                 <th>KODE VENDOR</th>
                                 <th>NAMA VENDOR</th>
+                                <th>BERKAS</th>
                             </tr>
                             <tr role="row" class="filter">
                                 <th><input type="text" class="form-control input-xs form-filter" name="NO_REG" id="NO_REG"></th>
@@ -82,6 +83,7 @@
                                 <th><input type="text" class="form-control input-xs form-filter datepicker" name="PO_DATE" id="PO_DATE" autocomplete="off"></th>
                                 <th><input type="text" class="form-control input-xs form-filter" name="VENDOR_CODE"></th>
                                 <th><input type="text" class="form-control input-xs form-filter" name="VENDOR_NAME"></th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody></tbody>
@@ -122,7 +124,7 @@
                                 <th><input type="text" class="form-control input-xs form-filter" name="status_dokumen"></th>
                                 <th><input type="text" class="form-control input-xs form-filter" name="status_approval"></th>
                                 <?php /*<th><input type="text" class="form-control input-xs form-filter" name="notes"></th>*/ ?>
-                                <th><input type="text" class="form-control input-xs form-filter datepicker" name="date_history" id="date_history" autocomplete="off" onkeyup="pilihdate()"></th>
+                                <th><input type="text" class="form-control input-xs form-filter datepicker" name="date_history" id="date_history" autocomplete="off"></th>
                                 
                             </tr>
                         </thead>
@@ -386,6 +388,7 @@
                     }, {
                         "render": function(data, type, row) 
                         {
+
                             if (row.TYPE == 1) {
                                 var content = 'Barang'
                             } else if (row.TYPE == 2) {
@@ -399,11 +402,11 @@
                     }, {
                         "render": function(data, type, row) 
                         {
-                            var no_registrasi= btoa(row.NO_REG);
+                            
                             if (row.PO_TYPE == 0) {
                                 var content = '<span class="label label-primary">SAP</span>';
                             } else if (row.PO_TYPE == 1) {
-                                var content = '<span class="label label-danger">AMP</span><br/><a href="{{ url("approval/berkas-amp") }}/'+no_registrasi+'" target="_blank"><span class="label label-default"><i class="fa fa-download"></i> BERKAS</span></a>';
+                                var content = '<span class="label label-danger">AMP</span>';
                             }
 
                             return content;
@@ -432,6 +435,24 @@
                     {
                         data: 'VENDOR_NAME',
                         name: 'VENDOR_NAME'
+                    }, 
+                    {
+                        "render": function(data, type, row) 
+                        {
+                            var content = '';
+                            var no_registrasi= btoa(row.NO_REG);
+
+                            if (row.PO_TYPE == 1) 
+                            {
+                                content += '<a href="{{ url("approval/berkas-amp") }}/'+no_registrasi+'" target="_blank"><span class="label label-default"><i class="fa fa-download"></i></span></a>';
+                            }
+                            else
+                            {
+                                content += '-';
+                            }
+
+                            return content;
+                        }
                     }
                 ],
                 columnDefs: [
@@ -904,9 +925,9 @@
                     if (val.file === undefined || val.file.length == 0) 
                     {
                         //item += "<div class='callout callout-danger'><h4>Warning!</h4><p>Belum ada file asset</p></div>";
-                        item += "<div class='col-md-4'><b>ASET</b><br/> <img id='foto_thumb' name='foto_thumb' data-status='0' title='' class='img-responsive' src='{{ url('img/default-img.png') }}' width='200'><br/></div>";
-                        item += "<div class='col-md-4'><b>NO. SERI</b><br/> <img id='foto_thumb' name='foto_thumb' data-status='0' title='' class='img-responsive' src='{{ url('img/default-img.png') }}' width='200'><br/></div>";
-                        item += "<div class='col-md-4'><b>IMEI</b><br/> <img id='foto_thumb' name='foto_thumb' data-status='0' title='' class='img-responsive' src='{{ url('img/default-img.png') }}' width='200'><br/></div>";
+                        item += "<div class='col-md-4'><b>aset</b><br/> <img id='foto_thumb' name='foto_thumb' data-status='0' title='' class='img-responsive' src='{{ url('img/default-img.png') }}' width='200'><br/></div>";
+                        item += "<div class='col-md-4'><b>no seri / no rangka</b><br/> <img id='foto_thumb' name='foto_thumb' data-status='0' title='' class='img-responsive' src='{{ url('img/default-img.png') }}' width='200'><br/></div>";
+                        item += "<div class='col-md-4'><b>imei / no mesin</b><br/> <img id='foto_thumb' name='foto_thumb' data-status='0' title='' class='img-responsive' src='{{ url('img/default-img.png') }}' width='200'><br/></div>";
                     }
                     else
                     {
@@ -919,11 +940,30 @@
                             {   
                                 //alert(kategori[k]);
                                 item += "<div class='col-md-4'><b>"+v.file_category+"</b><br/> <img id='foto_thumb' name='foto_thumb' data-status='0' title='' class='img-responsive' src='"+v.file_thumb+"'></div>";
-                                print_kategori.push(kategori[k]);
+                                print_kategori.push(v.file_category);
                             }
                         });
 
-                        //alert(print_kategori);
+                        //alert(val.file.length);
+                        alert(print_kategori);
+
+                        //if( print_kategori != 'asset' )
+                        if( print_kategori.includes("asset") == false )
+                        {
+                            item += "<div class='col-md-4'><b>aset</b><br/> <img id='foto_thumb' name='foto_thumb' data-status='0' title='' class='img-responsive' src='{{ url('img/default-img.png') }}' width='200'><br/></div>";
+                        }
+
+                        //if( print_kategori != 'no seri' )
+                        if( print_kategori.includes("no seri") == false )
+                        {
+                            item += "<div class='col-md-4'><b>no seri / no rangka</b><br/> <img id='foto_thumb' name='foto_thumb' data-status='0' title='' class='img-responsive' src='{{ url('img/default-img.png') }}' width='200'><br/></div>";
+                        }
+
+                        //if( print_kategori != 'imei' )
+                        if( print_kategori.includes("imei") == false )
+                        {
+                            item += "<div class='col-md-4'><b>imei / no mesin</b><br/> <img id='foto_thumb' name='foto_thumb' data-status='0' title='' class='img-responsive' src='{{ url('img/default-img.png') }}' width='200'><br/></div>";
+                        }
                     }
                     
                     item += "</div></div>";
