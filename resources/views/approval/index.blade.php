@@ -108,9 +108,10 @@
                             <tr role="row" class="filter">
                                 <th><input type="text" class="form-control input-xs form-filter" name="document_code"></th>
                                 <th>
-                                    <select type="text" class="form-control input-xs form-filter" name="area_code" id="area_code">
+                                    <!--select type="text" class="form-control input-xs form-filter" name="area_code" id="area_code">
                                         <option></option>
-                                    </select>
+                                    </select-->
+                                    <input type="text" class="form-control input-xs form-filter" name="area_code">
                                 </th>
                                 <!--th>
                                     <select class="form-control input-xs form-filter" name="user_id" id="user_id">
@@ -121,7 +122,7 @@
                                 <th><input type="text" class="form-control input-xs form-filter" name="status_dokumen"></th>
                                 <th><input type="text" class="form-control input-xs form-filter" name="status_approval"></th>
                                 <?php /*<th><input type="text" class="form-control input-xs form-filter" name="notes"></th>*/ ?>
-                                <th><input type="text" class="form-control input-xs form-filter datepicker" name="date" autocomplete="off"></th>
+                                <th><input type="text" class="form-control input-xs form-filter datepicker" name="date_history" id="date_history" autocomplete="off" onkeyup="pilihdate()"></th>
                                 
                             </tr>
                         </thead>
@@ -613,6 +614,14 @@
             maxDate: 'today'
         });
         //var get_kode_aset_data = [];
+
+        $("#date_history").datepicker({
+            format: "dd/mm/yyyy",
+            //autoclose: true,
+            //endDate: "today",
+            maxDate: 'today'
+        });
+
     });
 
     function approval(id)

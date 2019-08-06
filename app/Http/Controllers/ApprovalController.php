@@ -548,29 +548,20 @@ class ApprovalController extends Controller
         if ($request->document_code)
             $sql .= " AND document_code like '%".$request->document_code."%'";
 
-        if ($request->no_po)
-            $sql .= " AND asset.NO_PO  like '%" . $request->no_po . "%'";
+        if ($request->area_code)
+            $sql .= " AND area_code  like '%" . $request->area_code . "%'";
        
-        if ($request->requestor)
-            $sql .= " AND requestor.name  like '%" . $request->requestor . "%'";
+        if ($request->name)
+            $sql .= " AND name  like '%" . $request->name . "%'";
 
-        if ($request->vendor_code)
-            $sql .= " AND asset.KODE_VENDOR  like '%" . $request->vendor_code . "%'";
+        if ($request->status_dokumen)
+            $sql .= " AND status_dokumen  like '%" . $request->status_dokumen . "%'";
 
-        if ($request->vendor_name)
-            $sql .= " AND asset.NAMA_VENDOR  like '%" . $request->vendor_name . "%'";
+        if ($request->status_approval)
+            $sql .= " AND status_approval  like '%" . $request->status_approval . "%'";
 
-        if ($request->transaction_type)
-            $sql .= " AND asset.TYPE_TRANSAKSI  = " . $request->transaction_type;
-     
-        if($request->po_type !='')
-            $sql .= " AND asset.PO_TYPE  = " . $request->po_type;
-
-        if ($request->request_date)
-            $sql .= " AND DATE_FORMAT(asset.TANGGAL_REG, '%Y-%m-%d') = '" . DATE_FORMAT(date_create($request->request_date), 'Y-m-d'). "'";
-
-        if ($request->po_date)
-            $sql .= " AND DATE_FORMAT(asset.TANGGAL_PO, '%Y-%m-%d') = '" . DATE_FORMAT(date_create($request->po_date), 'Y-m-d') ."'";
+        if ($request->date_history)
+            $sql .= " AND DATE_FORMAT(date, '%d/%m/%Y') = '".$request->date_history."' ";
     
         if ($orderColumn != "") {
             $sql .= " ORDER BY " . $field[$orderColumn]['field'] . " " . $dirColumn;
