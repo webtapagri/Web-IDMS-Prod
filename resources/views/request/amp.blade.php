@@ -490,6 +490,13 @@
             maxDate: 'today'
         });
 
+        $("#asset_year").datepicker({
+            format: "yyyy",
+            autoclose: true,
+            viewMode: "years", 
+            minViewMode: "years"
+        });
+
         jQuery("#transaction_type").select2({
             data: [{
                     id: '1',

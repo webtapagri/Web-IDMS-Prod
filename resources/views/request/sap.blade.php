@@ -293,9 +293,9 @@
                                                 </div>
                                             </div>
                                             <div class="form-group material-group-input" id="input-specification">
-                                                <label for="part_no" class="col-md-2 col-md-offset-1 col-form-label">Tahun Asset <sup style="color:red">*</sup></label>
+                                                <label for="part_no" class="col-md-2 col-md-offset-1 col-form-label">Tahun Asset<sup style="color:red">*</sup></label>
                                                 <div class="col-md-8">
-                                                    <input type="text" class="form-control input-sm attr-material-group" name="asset_year" id="asset_year">
+                                                    <input type="number" class="form-control input-sm attr-material-group" name="asset_year" id="asset_year" maxlength="4">
                                                 </div>
                                             </div>
                                             <div class="form-group material-group-input" id="input-specification">
@@ -504,10 +504,13 @@
             }
         });
 
-        /*   jQuery("#request_date").datepicker({
-              format: "mm/dd/yyyy",
-              autoclose: true
-          }); */
+        $("#asset_year").datepicker({
+            format: "yyyy",
+            autoclose: true,
+            viewMode: "years", 
+            minViewMode: "years",
+            maxDate: "today"
+        });
 
         jQuery("#transaction_type").select2({
             data: [{
