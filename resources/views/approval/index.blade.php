@@ -106,6 +106,7 @@
                                 <th>STATUS APPROVAL</th>
                                 <?php /* <th>NOTES</th> */ ?>
                                 <th>DATE</th>
+                                <th>BERKAS</th>
                             </tr>
                             <tr role="row" class="filter">
                                 <th><input type="text" class="form-control input-xs form-filter" name="document_code"></th>
@@ -125,7 +126,7 @@
                                 <th><input type="text" class="form-control input-xs form-filter" name="status_approval"></th>
                                 <?php /*<th><input type="text" class="form-control input-xs form-filter" name="notes"></th>*/ ?>
                                 <th><input type="text" class="form-control input-xs form-filter datepicker" name="date_history" id="date_history" autocomplete="off"></th>
-                                
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody></tbody>
@@ -604,7 +605,28 @@
                     {
                         data: 'po_date',
                         name: 'po_date'
-                    }],
+                    }, 
+                    {
+                        "render": function(data, type, row) 
+                        {
+                            var content = '';
+                            var no_registrasi= btoa(row.document_code);
+
+                            //alert(row.po_type);
+
+                            if (row.po_type == 1 || row.po_type == 2) 
+                            {
+                                content += '<a href="{{ url("approval/berkas-amp") }}/'+no_registrasi+'" target="_blank"><span class="label label-default"><i class="fa fa-download"></i></span></a>';
+                            }
+                            else
+                            {
+                                content += '-';
+                            }
+
+                            return content;
+                        }
+                    }
+                    ],
                 columnDefs: [
                     {
                         targets: [0],

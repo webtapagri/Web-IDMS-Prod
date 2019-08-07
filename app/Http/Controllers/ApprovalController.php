@@ -523,6 +523,7 @@ class ApprovalController extends Controller
             array("index" => "4", "field" => "status_approval", "alias" => "status_approval"),
             //array("index" => "5", "field" => "notes", "alias" => "po_notes"),
             array("index" => "5", "field" => "DATE_FORMAT(date, '%d %b %Y')", "alias" => "po_date"),
+            array("index" => "6", "field" => "po_type", "alias" => "po_type"),
         );
 
         foreach ($field as $row) 
@@ -539,42 +540,43 @@ class ApprovalController extends Controller
         }
 
         $sql = '
-            SELECT user_id as user_id '.implode(", ", $selectedColumn).'
-                FROM v_history
-            WHERE user_id = '.$user_id.'
+            SELECT b.po_type AS po_type, a.user_id AS user_id '.implode(", ", $selectedColumn).'
+                FROM v_history a LEFT JOIN TR_REG_ASSET b ON a.document_code = b.no_reg
+            WHERE a.user_id = '.$user_id.'
         ';
 
         $total_data = DB::select(DB::raw($sql));
 
         if ($request->document_code)
-            $sql .= " AND document_code like '%".$request->document_code."%'";
+            $sql .= " AND a.document_code like '%".$request->document_code."%'";
 
         if ($request->area_code)
-            $sql .= " AND area_code  like '%" . $request->area_code . "%'";
+            $sql .= " AND a.area_code  like '%" . $request->area_code . "%'";
        
         if ($request->name)
-            $sql .= " AND name  like '%" . $request->name . "%'";
+            $sql .= " AND a.name  like '%" . $request->name . "%'";
 
         if ($request->status_dokumen)
-            $sql .= " AND status_dokumen  like '%" . $request->status_dokumen . "%'";
+            $sql .= " AND a.status_dokumen  like '%" . $request->status_dokumen . "%'";
 
         if ($request->status_approval)
-            $sql .= " AND status_approval  like '%" . $request->status_approval . "%'";
+            $sql .= " AND a.status_approval  like '%" . $request->status_approval . "%'";
 
         if ($request->date_history)
-            $sql .= " AND DATE_FORMAT(date, '%d/%m/%Y') = '".$request->date_history."' ";
+            $sql .= " AND a.DATE_FORMAT(date, '%d/%m/%Y') = '".$request->date_history."' ";
     
         if ($orderColumn != "") {
             $sql .= " ORDER BY " . $field[$orderColumn]['field'] . " " . $dirColumn;
         }
         else
         {
-            $sql .= " ORDER BY DOCUMENT_CODE DESC ";
+            $sql .= " ORDER BY a.DOCUMENT_CODE DESC ";
         }
 
         //echo $sql; die();
 
         $data = DB::select(DB::raw($sql));
+        //echo "<pre>"; print_r($data); die();
 
         $iTotalRecords = count($data);
         $iDisplayLength = intval($request->length);
