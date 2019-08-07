@@ -330,7 +330,7 @@
                                                 </div>
                                             </div>
                                             <div class="form-group">
-                                                <label class="col-md-2 col-md-offset-1 ">Foto aset</label>
+                                                <label class="col-md-2 col-md-offset-1 ">Foto Asset</label>
                                                 <div class="col-md-9">
                                                     <div id="filesContainer">
                                                         <div class="col-md-4" id="panel-image-1">
@@ -347,7 +347,7 @@
                                                 </div>
                                             </div>
                                             <div class="form-group">
-                                                <label class="col-md-2 col-md-offset-1 ">Foto no. seri / no rangka</label>
+                                                <label class="col-md-2 col-md-offset-1 ">Foto No Seri / No Rangka</label>
                                                 <div class="col-md-9">
                                                     <div id="filesContainer">
                                                         <div class="col-md-4" id="panel-image-1">
@@ -364,7 +364,7 @@
                                                 </div>
                                             </div>
                                             <div class="form-group">
-                                                <label class="col-md-2 col-md-offset-1 ">Foto No mesin / IMEI</label>
+                                                <label class="col-md-2 col-md-offset-1 ">Foto No Mesin / IMEI</label>
                                                 <div class="col-md-9">
                                                     <div id="filesContainer">
                                                         <div class="col-md-4" id="panel-image-1">
@@ -504,15 +504,7 @@
             }
         });
 
-        $("#asset_year").datepicker({
-            format: "yyyy",
-            autoclose: true,
-            viewMode: "years", 
-            minViewMode: "years",
-            maxDate: "today"
-        });
-
-        jQuery("#transaction_type").select2({
+        $("#transaction_type").select2({
             data: [{
                     id: '1',
                     text: 'Barang'
@@ -595,8 +587,17 @@
         {
             e.preventDefault();
 
-            //alert(JSON.stringify(request_item)); return false;
+            //alert(request_item); 
+            //alert(JSON.stringify(request_item)); //return false;
             //alert("submit gaes"); return false;
+
+            if(request_item.length == 0)
+            {
+                notify({
+                    type: 'warning',
+                    message: 'please, add an item'
+                });
+            }   
 
             if(validateQty(request_item))
             {
@@ -614,9 +615,11 @@
 
                     topFunction();
                     var items = [];
-                    jQuery.each(request_item, function(key, val) 
+                    //alert(items);
+
+                    $.each(request_item, function(key, val) 
                     {
-                        if (val) 
+                        if (val.id != undefined) 
                         {
                             items.push({
                                 id: val.id,
@@ -849,6 +852,11 @@
                 request_item[obj].detail[id].asset_condition = jQuery(this).val();
             }
         });
+        $('#asset_year').keypress(function(event){
+            console.log(event.which);
+        if(event.which != 8 && isNaN(String.fromCharCode(event.which))){
+            event.preventDefault();
+        }});
     });
 
     function save(status) 
@@ -945,13 +953,35 @@
     function validateSave() 
     {
         var valid = true;
+        var thisyear = <?php echo date('Y'); ?>
+
         $.each(request_item, function(i, field) 
         {
             if (field) 
             {
                 $.each(field.detail, function(key, val) 
                 {
-                    //alert(val.asset_group); return false;
+                    //alert(val.asset_year); valid = false;
+
+                    if( $.trim(val.asset_year).length != 4 )
+                    {
+                        notify({
+                            type: 'warning',
+                            message: 'Format Tahun masih salah pada asset ' + field.name + ' page ' + (key + 1) + ' '
+                        });
+                        valid = false;
+                        return false;
+                    }
+
+                    if( val.asset_year < 1945 || val.asset_year > thisyear )
+                    {
+                        notify({
+                            type: 'warning',
+                            message: 'Tahun masih belum benar / maksimal tahun '+thisyear+' pada asset ' + field.name + ' page ' + (key + 1) + ' '
+                        });
+                        valid = false;
+                        return false;
+                    }
 
                     if (val.asset_type === "" || val.asset_type == null  ) 
                     {
@@ -1007,8 +1037,8 @@
                         }
                     }
 
-                    if (val.asset_year === "") {
-
+                    if (val.asset_year === "") 
+                    {
                         notify({
                             type: 'warning',
                             message: 'Tahun pada asset  ' + field.name + ' page ' + (key + 1) + ' tidak boleh kosong!'
@@ -1286,11 +1316,17 @@
         return text;
     }
 
-    function remove(obj) {
+    function remove(obj) 
+    {
         var conf = confirm("Are you sure you want to delete this data?");
-        if (conf == true) {
+        
+        if (conf == true) 
+        {
             request_item[obj] = [];
             data_detail[obj] = [];
+
+            //delete request_item[obj];
+            //delete data_detail[obj];
 
             createItemRequestTable();
         }
@@ -1313,7 +1349,8 @@
         {
             $.each(request_item, function(key, val) 
             {
-                if (val) 
+                //alert(key+"~~~~~~~"+val.id);
+                if (val.id != undefined) 
                 {
                     item += "<tr>";
                     item += "<td>" + val.item_po + "</td>";
@@ -1327,7 +1364,7 @@
                     item += ' <div style="cursor:pointer" class="input-group-addon bg-gray" OnClick="plus(\'qty_' + val.id + '\');qtyEdit(\'' + val.id + '\')">+</div>';
                     item += '</td>';
                     item += "<td style='text-align:right'>" + val.outstanding_qty + "</td>";
-                    item += '<td width="30px" style="text-align:center;display:none"><button type="button" class="btn btn-flat btn-xs btn-danger" onClick="remove(\'' + val.id + '\');"><i class="fa fa-trash"></i></button></td>';
+                    item += '<td width="30px" style="text-align:center;xdisplay:none"><button type="button" class="btn btn-flat btn-xs btn-danger" onClick="remove(\'' + val.id + '\');"><i class="fa fa-trash"></i></button></td>';
                     item += "</tr>";
                 }
             });
@@ -1340,7 +1377,7 @@
         }
 
         item += "</table>";
-        jQuery("#request-item-table").html(item);
+        $("#request-item-table").html(item);
     }
 
     function qtyEdit(obj) {
@@ -1805,6 +1842,27 @@
                 jQuery('.loading-event').fadeOut();
             }
         }); 
+    }
+
+    function getdatepicker()
+    {
+        //alert("datepicker 7");
+        //$('#asset_year').on("keyup", function () {
+
+        $("#asset_year").datepicker({
+            format: "yyyy",
+            autoclose: true,
+            viewMode: "years", 
+            minViewMode: "years",
+            maxDate: "today"
+        });
+
+        //});
+
+        //alert(datechoice)
+
+        //$("#asset_year").val("100");
+
     }
 
 </script>

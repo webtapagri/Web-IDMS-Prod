@@ -972,7 +972,7 @@
                     /* END FILE UPLOAD */
 
                     //alert(val.po_type);
-                    if( val.po_type == 0 ){
+                    if( val.po_type == 0 || val.po_type == 2 ){
                         /* BOX DETAIL ASSET SAP */
                         item += "<div class='col-md-12'><div class='row'>";
                         item += "<span class='label bg-blue'><i class='fa fa-bars'></i> DETAIL ASET SAP</span><br/><br/>";
@@ -1123,6 +1123,12 @@
                     $("#box-detail-item-history").html(item);
                 }
                 //alert(noreg);
+
+                /*$('#quantity-'+val.no_reg_item+'').keypress(function(event){
+                    console.log(event.which);
+                if(event.which != 8 && isNaN(String.fromCharCode(event.which))){
+                    event.preventDefault();
+                }});*/
 
                 <?php if( $user_role == 'AMS' ){ ?>
                 $.each(data, function(key, val) 

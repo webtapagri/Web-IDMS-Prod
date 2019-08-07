@@ -336,7 +336,7 @@
                                                 </div>
                                             </div>
                                             <div class="form-group">
-                                                <label class="col-md-2 col-md-offset-1 ">Foto aset</label>
+                                                <label class="col-md-2 col-md-offset-1 ">Foto Asset</label>
                                                 <div class="col-md-9">
                                                     <div id="filesContainer">
                                                         <div class="col-md-4" id="panel-image-1">
@@ -353,7 +353,7 @@
                                                 </div>
                                             </div>
                                             <div class="form-group">
-                                                <label class="col-md-2 col-md-offset-1 ">Foto no. seri / no rangka</label>
+                                                <label class="col-md-2 col-md-offset-1 ">Foto No Seri / No Rangka</label>
                                                 <div class="col-md-9">
                                                     <div id="filesContainer">
                                                         <div class="col-md-4" id="panel-image-1">
@@ -370,7 +370,7 @@
                                                 </div>
                                             </div>
                                             <div class="form-group">
-                                                <label class="col-md-2 col-md-offset-1 ">Foto No mesin / IMEI</label>
+                                                <label class="col-md-2 col-md-offset-1 ">Foto No Mesin / IMEI</label>
                                                 <div class="col-md-9">
                                                     <div id="filesContainer">
                                                         <div class="col-md-4" id="panel-image-1">
@@ -490,12 +490,12 @@
             maxDate: 'today'
         });
 
-        $("#asset_year").datepicker({
+        /*$("#xasset_year").datepicker({
             format: "yyyy",
             autoclose: true,
             viewMode: "years", 
             minViewMode: "years"
-        });
+        });*/
 
         jQuery("#transaction_type").select2({
             data: [{
@@ -780,6 +780,11 @@
                 request_item[obj].detail[id].asset_condition = jQuery(this).val();
             }
         });
+        $('#asset_year').keypress(function(event){
+            console.log(event.which);
+        if(event.which != 8 && isNaN(String.fromCharCode(event.which))){
+            event.preventDefault();
+        }});
     });
 
     function save(status) {
@@ -847,6 +852,7 @@
     function validateSave() 
     {
         var valid = true;
+        var thisyear = <?php echo date('Y'); ?>
         
         jQuery.each(request_item, function(i, field) 
         {
@@ -854,6 +860,26 @@
             {
                 jQuery.each(field.detail, function(key, val) 
                 {
+                    if( $.trim(val.asset_year).length != 4 )
+                    {
+                        notify({
+                            type: 'warning',
+                            message: 'Format Tahun masih salah pada asset ' + field.name + ' page ' + (key + 1) + ' '
+                        });
+                        valid = false;
+                        return false;
+                    }
+
+                    if( val.asset_year < 1945 || val.asset_year > thisyear )
+                    {
+                        notify({
+                            type: 'warning',
+                            message: 'Tahun masih belum benar / maksimal tahun '+thisyear+' pada asset ' + field.name + ' page ' + (key + 1) + ' '
+                        });
+                        valid = false;
+                        return false;
+                    }
+
                     if (val.asset_type === "" || val.asset_type == null  ) 
                     {
                         notify({
