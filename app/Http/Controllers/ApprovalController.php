@@ -207,7 +207,8 @@ class ApprovalController extends Controller
 
             $po_type = array(
                 0 => 'SAP',
-                1 => 'AMP'
+                1 => 'AMP',
+                2 => 'Asset Lainnya'
             );
 
             foreach ($data as $k => $v) 
