@@ -1187,7 +1187,8 @@
             $('.select-item-panel').addClass("hide");
             notify({
                 type: 'warning',
-                message: "PO number is not found!"
+                //message: "PO number is not found!"
+                message: "PO number belum di GR / belum ada di SAP"
             });
         }
         jQuery('.loading-event').fadeOut();
