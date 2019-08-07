@@ -407,6 +407,8 @@
                                 var content = '<span class="label label-primary">SAP</span>';
                             } else if (row.PO_TYPE == 1) {
                                 var content = '<span class="label label-danger">AMP</span>';
+                            }else if (row.PO_TYPE == 2) {
+                                var content = '<span class="label label-warning">Asset Lain</span>';
                             }
 
                             return content;
@@ -442,7 +444,7 @@
                             var content = '';
                             var no_registrasi= btoa(row.NO_REG);
 
-                            if (row.PO_TYPE == 1) 
+                            if (row.PO_TYPE == 1 || row.PO_TYPE == 2) 
                             {
                                 content += '<a href="{{ url("approval/berkas-amp") }}/'+no_registrasi+'" target="_blank"><span class="label label-default"><i class="fa fa-download"></i></span></a>';
                             }
