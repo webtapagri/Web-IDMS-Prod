@@ -103,7 +103,7 @@
                                 <th>AREA CODE</th>
                                 <th>ROLE NAME</th>
                                 <th>STATUS DOCUMENT</th>
-                                <th>STATUS APPROVAL</th>
+                                <?php /* <th>STATUS APPROVAL</th> */ ?>
                                 <?php /* <th>NOTES</th> */ ?>
                                 <th>DATE</th>
                                 <th>BERKAS</th>
@@ -409,7 +409,7 @@
                             } else if (row.PO_TYPE == 1) {
                                 var content = '<span class="label label-danger">AMP</span>';
                             }else if (row.PO_TYPE == 2) {
-                                var content = '<span class="label label-warning">Asset Lain</span>';
+                                var content = '<span class="label label-warning">ASSET LAIN</span>';
                             }
 
                             return content;
@@ -594,11 +594,11 @@
                         data: 'status_dokumen',
                         name: 'status_dokumen'
                     },
-                    {
+                    /*{
                         data: 'status_approval',
                         name: 'status_approval'
                     },
-                    /*{
+                    {
                         data: 'po_notes',
                         name: 'po_notes'
                     },*/
@@ -855,6 +855,7 @@
                 }
 
                 item += "<ul class='nav nav-tabs'>";
+                
                 for(i=0;i<total_tab;i++)
                 {
                     var active = '';
