@@ -1351,22 +1351,26 @@
             $.each(request_item, function(key, val) 
             {
                 //alert(key+"~~~~~~~"+val.id);
-                if (val.id != undefined) 
+                //if (val.id != undefined)
+                if(val) 
                 {
-                    item += "<tr>";
-                    item += "<td>" + val.item_po + "</td>";
-                    item += "<td>" + val.code + "</td>";
-                    item += "<td>" + val.name + "</td>";
-                    item += "<td style='text-align:right'>" + val.qty + "</td>";
-                    item += '<td class="text-center">';
-                    item += '<div class="input-group">';
-                    item += ' <div style="cursor:pointer" class="input-group-addon bg-gray"  OnClick="min(\'qty_' + val.id + '\');qtyEdit(\'' + val.id + '\')">-</div>';
-                    item += '<input type="text" class="form-control input-sm text-center" value=' + val.request_qty + ' id="qty_' + val.id + '" maxlength="6" max="' + val.outstanding_qty + '">';
-                    item += ' <div style="cursor:pointer" class="input-group-addon bg-gray" OnClick="plus(\'qty_' + val.id + '\');qtyEdit(\'' + val.id + '\')">+</div>';
-                    item += '</td>';
-                    item += "<td style='text-align:right'>" + val.outstanding_qty + "</td>";
-                    item += '<td width="30px" style="text-align:center;xdisplay:none"><button type="button" class="btn btn-flat btn-xs btn-danger" onClick="remove(\'' + val.id + '\');"><i class="fa fa-trash"></i></button></td>';
-                    item += "</tr>";
+                    if (val.id != undefined)
+                    {   
+                        item += "<tr>";
+                        item += "<td>" + val.item_po + "</td>";
+                        item += "<td>" + val.code + "</td>";
+                        item += "<td>" + val.name + "</td>";
+                        item += "<td style='text-align:right'>" + val.qty + "</td>";
+                        item += '<td class="text-center">';
+                        item += '<div class="input-group">';
+                        item += ' <div style="cursor:pointer" class="input-group-addon bg-gray"  OnClick="min(\'qty_' + val.id + '\');qtyEdit(\'' + val.id + '\')">-</div>';
+                        item += '<input type="text" class="form-control input-sm text-center" value=' + val.request_qty + ' id="qty_' + val.id + '" maxlength="6" max="' + val.outstanding_qty + '">';
+                        item += ' <div style="cursor:pointer" class="input-group-addon bg-gray" OnClick="plus(\'qty_' + val.id + '\');qtyEdit(\'' + val.id + '\')">+</div>';
+                        item += '</td>';
+                        item += "<td style='text-align:right'>" + val.outstanding_qty + "</td>";
+                        item += '<td width="30px" style="text-align:center;xdisplay:none"><button type="button" class="btn btn-flat btn-xs btn-danger" onClick="remove(\'' + val.id + '\');"><i class="fa fa-trash"></i></button></td>';
+                        item += "</tr>";
+                    }
                 }
             });
         } 
