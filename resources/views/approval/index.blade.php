@@ -942,7 +942,8 @@
 
                     if(tipe==1)
                     {
-                        if( total_tab == 1 )
+                        //if( total_tab == 1 )
+                        if( val.total_asset == 1 )
                         {
                             //alert(total_tab);
                             //$(".button-delete").hide(); 

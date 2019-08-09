@@ -362,7 +362,8 @@ class ApprovalController extends Controller
                     'kode_asset_ams' => trim($v->KODE_ASSET_AMS),
                     'po_type' => trim($v->PO_TYPE),
                     'gi_number' => trim($v->GI_NUMBER),
-                    'gi_year' => trim($v->GI_YEAR)
+                    'gi_year' => trim($v->GI_YEAR),
+                    'total_asset' => $this->get_validasi_delete_asset($noreg)
                 );
             }
         }
@@ -1772,7 +1773,8 @@ WHERE a.NO_REG = '{$noreg}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KODE_ASSET
                 //return response()->json(['status' => true, "message" => "Synchronize SAP Success "]);
             }
 
-            return response()->json(['status' => true, "message" => "Synchronize SAP success"]);
+            //return response()->json(['status' => true, "message" => "Synchronize SAP success"]);
+            return response()->json(['status' => true, "message" => "Synchronize success"]);
 
             /* SKIP IT@150719
             #### PROSES CREATE KODE ASSET AMS 
@@ -1795,7 +1797,8 @@ WHERE a.NO_REG = '{$noreg}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KODE_ASSET
         {
             $sql = " UPDATE TR_REG_ASSET_DETAIL SET KODE_ASSET_SAP = '' WHERE NO_REG = '{$no_reg}' "; 
                 DB::UPDATE($sql);
-            return response()->json(['status' => false, "message" => "Synchronize SAP failed, data not found"]);
+            //return response()->json(['status' => false, "message" => "Synchronize SAP failed, data not found"]);
+                return response()->json(['status' => false, "message" => "Synchronize failed, data not found"]);
         }
     }
 
@@ -1814,12 +1817,14 @@ WHERE a.NO_REG = '{$noreg}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KODE_ASSET
             {
                 if( !$this->execute_amp_create_kode_asset_ams($no_reg, $v) )
                 {
-                    return response()->json(['status' => false, "message" => "Synchronize AMP failed"]);
+                    //return response()->json(['status' => false, "message" => "Synchronize AMP failed"]);
+                    return response()->json(['status' => false, "message" => "Synchronize failed"]);
                     die();
                 }
             }
 
-            return response()->json(['status' => true, "message" => "Synchronize AMP berhasil"]);
+            return response()->json(['status' => true, "message" => "Synchronize berhasil"]);
+            //return response()->json(['status' => true, "message" => "Synchronize AMP berhasil"]);
             //die();
         }
         else
@@ -2208,5 +2213,14 @@ WHERE a.NO_REG = '{$noreg}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KODE_ASSET
                 return "ASET LAIN SUDAH DI SYNC";
             }
         }
+    }
+
+    function get_validasi_delete_asset($noreg)
+    {
+        //echo "<pre>"; print_r($noreg); die();
+        $sql = " SELECT COUNT(*) AS TOTAL FROM TR_REG_ASSET_DETAIL a WHERE a.NO_REG = '{$noreg}' AND (a.DELETED is null OR a.DELETED = '') ";
+        $data = DB::SELECT($sql);
+        //echo "1<pre>"; print_r($data);die();
+        return $data[0]->TOTAL;
     }
 }
