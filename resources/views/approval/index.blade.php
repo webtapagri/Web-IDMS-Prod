@@ -1132,8 +1132,8 @@
                     }
                     /* END BOX KODE ASET CONTROLLER */
 
-                    /* FOR AMP */
-                    if( val.po_type == 1 )
+                    /* FOR AMP & ASET LAIN */
+                    if( val.po_type == 1 || val.po_type == 2 )
                     {
                         item += "<div class='col-md-12 box-kode-asset-controller'><div class='row'>";
                         item += "<span class='label bg-blue'><i class='fa fa-bars'></i> KODE ASET</span><br/><br/>";

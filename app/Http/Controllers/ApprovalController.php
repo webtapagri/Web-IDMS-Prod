@@ -687,8 +687,22 @@ WHERE a.NO_REG = '{$no_registrasi}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KO
                 $asset_type = $validasi_asset_controller['message'];
             }
         }
+
+        // VALIDASI PROSES CHANGE STATUS ASSET LAIN IT@090819
+        if( $jenis_dokumen == 'Asset Lainnya' )
+        {
+            $cek_sap = $this->get_sinkronisasi_sap($noreg);
+            if($cek_sap != "")
+            { 
+                $jenis_dokumen = 'SAP'; 
+            }
+            else
+            {
+                $jenis_dokumen = 'AMP';
+            }
+        }
         
-        if( $jenis_dokumen == 'AMP' || $jenis_dokumen == 'Asset Lainnya' )
+        if( $jenis_dokumen == 'AMP' )
         {
             if($status != 'R')
             {
