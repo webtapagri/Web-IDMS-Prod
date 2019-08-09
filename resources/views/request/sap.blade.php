@@ -619,12 +619,16 @@
 
                     $.each(request_item, function(key, val) 
                     {
-                        if (val.id != undefined) 
+                        
+                        if (val) 
                         {
-                            items.push({
-                                id: val.id,
-                                text: val.code + ' - ' + val.name
-                            })
+                            if (val.id != undefined) 
+                            {
+                                items.push({
+                                    id: val.id,
+                                    text: val.code + ' - ' + val.name
+                                })
+                            }
                         }
                     });
 
