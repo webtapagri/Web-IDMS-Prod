@@ -123,7 +123,7 @@
                                 </th-->
                                 <th><input type="text" class="form-control input-xs form-filter" name="name"></th>
                                 <th><input type="text" class="form-control input-xs form-filter" name="status_dokumen"></th>
-                                <th><input type="text" class="form-control input-xs form-filter" name="status_approval"></th>
+                                <?php /* <th><input type="text" class="form-control input-xs form-filter" name="status_approval"></th> */ ?>
                                 <?php /*<th><input type="text" class="form-control input-xs form-filter" name="notes"></th>*/ ?>
                                 <th><input type="text" class="form-control input-xs form-filter datepicker" name="date_history" id="date_history" autocomplete="off"></th>
                                 <th></th>
@@ -638,7 +638,7 @@
                     },
                     {
                         targets: [2],
-                        width: '8%'
+                        //width: '8%'
                     }
                 ],
                 oLanguage: {
@@ -712,6 +712,35 @@
                         $("#create-button-sync-sap").hide();
                         $("#button-approve").show();
                         //$(".button-reject").attr("disabled", true); 
+                        $(".button-reject").hide(); 
+                    }
+                }
+                else if( data.po_type == 'Asset Lainnya' )
+                {
+                    //alert(data.po_type);
+                    //VALIDASI SYNC ASET LAIN IT@080819
+                    if(data.sync_lain == 'SAP')
+                    {
+                        $("#create-button-sync-sap").show();
+                        $("#create-button-sync-sap").html('<button type="button" class="btn btn-flat label-danger" OnClick="sinkronisasi()" style="margin-right: 5px;">SYNC ASSET LAIN (SAP)</button>');
+                        <?php if( $user_role == 'AC' ){ ?>
+                            $("#button-approve").hide();
+                            $(".button-reject").attr("disabled", false); 
+                        <?php } ?>
+                    }
+                    else if(data.sync_lain == 'AMP')
+                    {
+                        $("#create-button-sync-sap").show();
+                        $("#create-button-sync-sap").html('<button type="button" class="btn btn-flat label-danger" OnClick="sinkronisasi_amp()" style="margin-right: 5px;">SYNC ASSET LAIN</button>');
+                        <?php if( $user_role == 'AC' ){ ?>
+                            $("#button-approve").hide();
+                            $(".button-reject").attr("disabled", false); 
+                        <?php } ?>
+                    }
+                    else
+                    {
+                        $("#create-button-sync-sap").hide();
+                        $("#button-approve").show();
                         $(".button-reject").hide(); 
                     }
                 }
@@ -995,7 +1024,8 @@
                     /* END FILE UPLOAD */
 
                     //alert(val.po_type);
-                    if( val.po_type == 0 || val.po_type == 2 ){
+                    if( val.po_type == 0 || val.po_type == 2 )
+                    {
                         /* BOX DETAIL ASSET SAP */
                         item += "<div class='col-md-12'><div class='row'>";
                         item += "<span class='label bg-blue'><i class='fa fa-bars'></i> DETAIL ASET SAP</span><br/><br/>";
@@ -1047,7 +1077,7 @@
                         if(val.kode_asset_sap == '')
                         {
                             <?php if( $user_role == 'AMS' ){ ?>
-                                item += "<div class='form-group' align='right'><div class='btn btn-warning btn-sm' value='Save' OnClick='saveAssetSap("+val.id+","+val.no_po+","+val.no_reg_item+")' style='margin-right:25px;margin-top:5px'><i class='fa fa-save'></i> SAVE</div></div>";
+                                item += "<div class='form-group' align='right'><div class='btn btn-warning btn-sm' value='Save' OnClick='saveAssetSap("+val.id+",\""+val.no_po+"\","+val.no_reg_item+")' style='margin-right:25px;margin-top:5px'><i class='fa fa-save'></i> SAVE</div></div>";
                             <?php } ?>
                         }
 

@@ -225,7 +225,8 @@ class ApprovalController extends Controller
                     'tanggal_reg' => trim($v->TANGGAL_REG),
                     'item_detail' => $this->get_item_detail($noreg),
                     'sync_sap' => $this->get_sinkronisasi_sap($noreg),
-                    'sync_amp' => $this->get_sinkronisasi_amp($noreg)
+                    'sync_amp' => $this->get_sinkronisasi_amp($noreg),
+                    'sync_lain' => $this->get_sinkronisasi_lain($noreg)
                 );
 
             }
@@ -668,6 +669,8 @@ WHERE a.NO_REG = '{$no_registrasi}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KO
     {
         $req = $request->all();
         $jenis_dokumen = $req['po-type'];
+        //echo $jenis_dokumen; die(); //Asset Lainnya
+
         $rolename = Session::get('role');
         $asset_type = "";
 
@@ -685,7 +688,7 @@ WHERE a.NO_REG = '{$no_registrasi}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KO
             }
         }
         
-        if($jenis_dokumen == 'AMP')
+        if( $jenis_dokumen == 'AMP' || $jenis_dokumen == 'Asset Lainnya' )
         {
             if($status != 'R')
             {
@@ -2163,5 +2166,33 @@ WHERE a.NO_REG = '{$noreg}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KODE_ASSET
         echo $l; 
 
         //return $datax;
+    }
+
+    function get_sinkronisasi_lain($noreg)
+    {
+
+        //$cek_amp = $this->get_sinkronisasi_amp($noreg);
+        //echo "1<pre>"; print_r($cek_amp);die();
+
+        #1 CEK SYNC SAP / TIDAK 
+        $cek_sap = $this->get_sinkronisasi_sap($noreg);
+        //echo "1<pre>"; print_r($cek_sap);die();
+        if($cek_sap != "")
+        { 
+            return "SAP"; 
+        }
+        else
+        {
+            $cek_amp = $this->get_sinkronisasi_amp($noreg);
+            //echo $cek_amp; die();
+            if($cek_amp!=0)
+            {
+                return "AMP";
+            }  
+            else
+            {
+                return "ASET LAIN SUDAH DI SYNC";
+            }
+        }
     }
 }
