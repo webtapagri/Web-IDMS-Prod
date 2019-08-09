@@ -1106,7 +1106,7 @@
 
                         item += "</div></div>";
 
-                        if( val.po_type == 0 )
+                        if( val.po_type == 0 || val.po_type == 2 )
                         { //TIDAK JADI IT@250719  ~ HIDE KRN AMP JG MENGINPUT GI IT@170619
                                 
                             <?php if( $user_role == 'PGA' ){ ?>
