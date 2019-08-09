@@ -595,7 +595,7 @@
                 placeholder: ' '
             });
             //$("#asset_sub_group").empty();
-            $("#asset_group").trigger('change');
+            //$("#asset_group").trigger('change');
         });
 
         jQuery("#asset_group").on('change', function() {
