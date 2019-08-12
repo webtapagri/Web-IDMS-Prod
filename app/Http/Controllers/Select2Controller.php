@@ -170,4 +170,14 @@ class Select2Controller extends Controller
         return response()->json(array('data' => $arr));
     }
     */
+
+    public function select_uom()
+    {
+        $data = DB::table('TM_GENERAL_DATA')
+        ->select('description_code as id', 'description as text')
+        ->where('general_code', 'uom')
+        ->orderby('description', 'asc')
+        ->get();
+        return response()->json(array("data"=>$data));
+    }
 }

@@ -180,6 +180,7 @@ Route::get('get-select_asset_controller', ['as' => 'get.select_asset_controller'
 Route::get('get-generaldata-assetcontroller', ['as' => 'get.generaldata_assetcontroller', 'uses' => 'Select2Controller@generaldata_assetcontroller']);
 Route::get('get-select_role_idname', ['as' => 'get.select_role_idname', 'uses' => 'RolesController@select_role']);
 Route::get('get-select_user', ['as' => 'get.select_user', 'uses' => 'UsersController@select2']);
+Route::get('get-select_uom', ['as' => 'get.select_uom', 'uses' => 'Select2Controller@select_uom']);
 
 /* WORKFLOW SETTING */
 Route::resource('/setting/workflow', 'WorkflowController');

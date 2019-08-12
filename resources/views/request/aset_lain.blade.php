@@ -803,11 +803,41 @@
                 request_item[obj].detail[id].asset_condition = jQuery(this).val();
             }
         });
+        
         $('#asset_year').keypress(function(event){
             console.log(event.which);
         if(event.which != 8 && isNaN(String.fromCharCode(event.which))){
             event.preventDefault();
         }});
+
+        $('#asset_serie_no').keypress(function(e){
+            var regex = new RegExp("^[a-zA-Z12345678910-]+$");
+            var str = String.fromCharCode(!e.charCode ? e.which : e.charCode);
+            if (regex.test(str)) {
+                return true;
+            }
+            else
+            {
+                e.preventDefault();
+                //alert('Please Enter Alphabate');
+                return false;
+            }
+        });
+
+        $('#asset_imei').keypress(function(e){
+            var regex = new RegExp("^[a-zA-Z12345678910-]+$");
+            var str = String.fromCharCode(!e.charCode ? e.which : e.charCode);
+            if (regex.test(str)) {
+                return true;
+            }
+            else
+            {
+                e.preventDefault();
+                //alert('Please Enter Alphabate');
+                return false;
+            }
+        });
+        
     });
 
     function save(status) {
@@ -914,7 +944,7 @@
                     }
                     
                     //IF JENIS ASSET TYPE = 4030-KENDARAAN & ALAT BERAT
-                    if( val.asset_type == 4030 || val.asset_type == 4010 )
+                    if( val.asset_type == 'U4010' || val.asset_type == 'M4010' || val.asset_type == 'A4010' || val.asset_type == 'E4010' || val.asset_type == 'E4030' || val.asset_type == 4030 || val.asset_type == 4010 )
                     {
                         if (val.asset_imei === "") {
                             notify({
@@ -922,6 +952,16 @@
                                 message: 'No Mesin / IMEI pada asset ' + field.name + ' page ' + (key + 1) + ' tidak boleh kosong!'
                             });
 
+                            valid = false;
+                            return false;
+                        }
+
+                        if( $.trim(val.asset_imei).length < 3 )
+                        {
+                            notify({
+                                type: 'warning',
+                                message: 'No Mesin / IMEI minimal 3 char pada asset ' + field.name + ' page ' + (key + 1) + ' '
+                            });
                             valid = false;
                             return false;
                         }
@@ -934,6 +974,16 @@
 
                             valid = false;
                             return false
+                        }
+
+                        if( $.trim(val.asset_serie_no).length < 3 )
+                        {
+                            notify({
+                                type: 'warning',
+                                message: 'No Seri / Rangka minimal 3 char pada asset ' + field.name + ' page ' + (key + 1) + ' '
+                            });
+                            valid = false;
+                            return false;
                         }
                     }
 
@@ -1444,7 +1494,7 @@
         var item = request.detail[obj];
         var valid = true;
 
-        if( item.asset_type == 4030 || item.asset_type == 4010 )
+        if( item.asset_type == 'U4010' || item.asset_type == 'M4010' || item.asset_type == 'A4010' || item.asset_type == 'E4010' || item.asset_type == 'E4030' || item.asset_type == 4030 || item.asset_type == 4010 )
         {
             if (item.asset_imei === "") {
                 valid = false;
@@ -1453,6 +1503,18 @@
                     type: 'warning',
                     message: 'No Mesin / IMEI tidak boleh kosong!'
                 });
+            }
+
+            if( $.trim(item.asset_imei).length < 3 )
+            {
+                valid = false;
+                $('#asset_imei').parent().closest('div').addClass('has-warning');
+                notify({
+                    type: 'warning',
+                    message: 'No Mesin / IMEI minimal 3 char pada asset ' + field.name + ' page ' + (key + 1) + ' '
+                });
+            }else {
+                $('#asset_imei').parent().closest('div').removeClass('has-warning');
             }
 
             if (item.asset_serie_no === "") {
@@ -1464,6 +1526,18 @@
                 });
             } else {
                 jQuery('#asset_serie_no').parent().closest('div').removeClass('has-warning');
+            }
+
+            if( $.trim(item.asset_serie_no).length < 3 )
+            {
+                valid = false;
+                $('#asset_serie_no').parent().closest('div').addClass('has-warning');
+                notify({
+                    type: 'warning',
+                    message: 'No Seri / Rangka minimal 3 char pada asset ' + field.name + ' page ' + (key + 1) + ' '
+                });
+            }else {
+                $('#asset_serie_no').parent().closest('div').removeClass('has-warning');
             }
         }
 

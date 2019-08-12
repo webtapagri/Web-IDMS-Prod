@@ -1187,7 +1187,7 @@
                 <?php if( $user_role == 'AMS' ){ ?>
                 $.each(data, function(key, val) 
                 {
-                    trigger_edit_asset(val.no_reg_item,val.jenis_asset,val.group,val.sub_group);
+                    trigger_edit_asset(val.no_reg_item,val.jenis_asset,val.group,val.sub_group,val.uom_asset_sap);
                 });
                 <?php } ?>
             },
@@ -1199,7 +1199,7 @@
         
     }
 
-    function trigger_edit_asset(no,jenis_asset,group,sub_group)
+    function trigger_edit_asset(no,jenis_asset,group,sub_group,uom)
     {
         //alert(sub_group); //return false;
         
@@ -1238,6 +1238,15 @@
             });
         $('input[name="jenis_asset_subgroup-'+no+'"]').val(ja_subgroup[0]).trigger('change');
 
+         var uom = $.parseJSON(JSON.stringify(dataJson('{!! route("get.select_uom") !!}' )));
+            //$('input[name="jenis_asset_subgroup-'+no+'"]').empty().select2({
+            $('input[name="uom-'+no+'"]').select2({
+                data: uom,
+                width: "100%",
+                allowClear: true,
+                placeholder: ' '
+            });
+        $('input[name="uom-'+no+'"]').val(uom).trigger('change');
     }
 
     function delAsset(id)
