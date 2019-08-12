@@ -1088,7 +1088,7 @@
                     }
 
                     /* BOX KODE ASET CONTROLLER */
-                    if( val.kode_asset_sap != '' )
+                    if( val.kode_asset_sap != '' && val.po_type == 0 )
                     {
                         item += "<div class='col-md-12 box-kode-asset-controller'><div class='row'>";
                         item += "<span class='label bg-blue'><i class='fa fa-bars'></i> KODE ASET</span><br/><br/>";

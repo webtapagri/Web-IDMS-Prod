@@ -36,7 +36,6 @@
     {
         text-decoration: none;
         padding-right: 5px;
-        xmargin-top: -12px;
         font-size: 12px;
     }
 </style>
