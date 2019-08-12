@@ -693,6 +693,8 @@ WHERE a.NO_REG = '{$no_registrasi}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KO
         if( $jenis_dokumen == 'Asset Lainnya' )
         {
             $cek_sap = $this->get_sinkronisasi_sap($noreg);
+            //echo "3".$cek_sap; die();
+            
             if($cek_sap != "")
             { 
                 $jenis_dokumen = 'SAP'; 
@@ -702,6 +704,7 @@ WHERE a.NO_REG = '{$no_registrasi}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KO
                 $jenis_dokumen = 'AMP';
             }
         }
+        //echo "4-".$jenis_dokumen;die();
         
         if( $jenis_dokumen == 'AMP' )
         {
@@ -1692,10 +1695,12 @@ WHERE a.NO_REG = '{$noreg}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KODE_ASSET
 
     function get_sinkronisasi_sap($noreg)
     {
+        $noreg = str_replace("-", "/", $noreg);
         $request = array();
         $datax = '';
         $sql = " SELECT a.kode_material FROM v_kode_asset_sap a WHERE a.no_reg = '{$noreg}' ";
         $data = DB::SELECT($sql);
+        //echo "2<pre>"; print_r($sql); die();
 
         if($data)
         {
@@ -1708,7 +1713,7 @@ WHERE a.NO_REG = '{$noreg}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KODE_ASSET
                 );
             }
         }
-
+        //echo "25".$datax; die();
         return $datax;
     }
 
@@ -2222,5 +2227,30 @@ WHERE a.NO_REG = '{$noreg}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KODE_ASSET
         $data = DB::SELECT($sql);
         //echo "1<pre>"; print_r($data);die();
         return $data[0]->TOTAL;
+    }
+
+     function update_kode_vendor_aset_lain(Request $request)
+    {
+        $user_id = Session::get('user_id');
+
+        DB::beginTransaction();
+
+        try 
+        {
+
+            $sql = " UPDATE TR_REG_ASSET a
+                        SET 
+                            a.kode_vendor = '{$request->new_kode_vendor}',
+                            a.updated_by = '{$user_id}',
+                            a.updated_at = current_timestamp()
+                    WHERE a.NO_REG = '{$request->getnoreg}' AND a.NO_PO = {$request->no_po} ";
+            DB::UPDATE($sql);    
+
+            DB::commit();
+            return response()->json(['status' => true, "message" => 'Data is successfully updated']);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json(['status' => false, "message" => $e->getMessage()]);
+        }
     }
 }

@@ -29,9 +29,11 @@
                         <div class="form-group">
                             <label for="plant" class="col-md-3">TIPE TRANSAKSI<sup style="color:red">*</sup></label>
                             <div class="col-md-6">
+                                <?php /*
                                 <select class="form-control input-sm" name="transaction_type" id="transaction_type" required>
                                     <option></option>
-                                </select>
+                                </select> */ ?>
+                                <input type="text" class="form-control input-sm" name="transaction_type" id="transaction_type" value="BARANG" autocomplete="off" readonly="readonly">
                             </div>
                         </div>
                         <div class="form-group">
@@ -504,7 +506,7 @@
             }
         });
 
-        $("#transaction_type").select2({
+        /*$("#transaction_type").select2({
             data: [{
                     id: '1',
                     text: 'Barang'
@@ -521,7 +523,7 @@
             width: "100%",
             allowClear: true,
             placeholder: ' '
-        });
+        });*/
 
         var plant = jQuery.parseJSON(JSON.stringify(dataJson('{!! route("get.businessarea") !!}')));
         jQuery("#business_area").select2({

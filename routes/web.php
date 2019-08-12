@@ -70,6 +70,7 @@ Route::get('/approval/log_history/{no_reg}', 'ApprovalController@log_history')->
 Route::post('/approval/synchronize_sap', 'ApprovalController@synchronize_sap');
 Route::post('/approval/synchronize_amp', 'ApprovalController@synchronize_amp');
 Route::post('/approval/update_ka_con_temp', 'ApprovalController@update_ka_con_temp');
+Route::post('/approval/update_kode_vendor_aset_lain','ApprovalController@update_kode_vendor_aset_lain');
 //Route::get('grid-approval', ['as' => 'get.approval_grid', 'uses' => 'ApprovalController@dataGrid']);
 //Route::get('grid-approval-history', ['as' => 'get.approval_grid_history', 'uses' => 'ApprovalController@dataGridHistory']);
 Route::match(['get', 'post'], 'grid-approval', [
@@ -180,6 +181,7 @@ Route::get('get-select_asset_controller', ['as' => 'get.select_asset_controller'
 Route::get('get-generaldata-assetcontroller', ['as' => 'get.generaldata_assetcontroller', 'uses' => 'Select2Controller@generaldata_assetcontroller']);
 Route::get('get-select_role_idname', ['as' => 'get.select_role_idname', 'uses' => 'RolesController@select_role']);
 Route::get('get-select_user', ['as' => 'get.select_user', 'uses' => 'UsersController@select2']);
+Route::get('get-select_uom', ['as' => 'get.select_uom', 'uses' => 'Select2Controller@select_uom']);
 Route::get('get-select_uom', ['as' => 'get.select_uom', 'uses' => 'Select2Controller@select_uom']);
 
 /* WORKFLOW SETTING */

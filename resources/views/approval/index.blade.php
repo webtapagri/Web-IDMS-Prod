@@ -1064,7 +1064,20 @@
 
                         item += "<div class='form-group'><label for='' class='col-md-4'>PLANT</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='plant-"+val.no_reg_item+"' value='"+val.business_area+"' id='plant-"+val.no_reg_item+"' autocomplete='off' readonly></div></div>";
 
-                        item += "<div class='form-group'><label for='' class='col-md-4'>VENDOR</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='vendor-"+val.no_reg_item+"' value='"+val.vendor+"' id='vendor-"+val.no_reg_item+"' autocomplete='off' readonly></div></div>";
+                        if( val.po_type == 2 )
+                        {
+                            <?php if( $user_role == 'AMS' ){ ?>
+
+                            var kode_vendor = val.vendor.split('-');
+                            //var jenis_asset_code = jenis_asset.split('-');
+
+                            item += "<div class='form-group'><label for='' class='col-md-4'>VENDOR</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='vendor-"+val.no_reg_item+"' value='"+kode_vendor[0]+"' id='vendor-"+val.no_reg_item+"' autocomplete='off' placeholder='Masukkan Kode Vendor'> <div class='btn btn-warning btn-sm' value='Update' OnClick='updateKodeVendor(\""+val.no_po+"\","+val.no_reg_item+")' style='margin-right:25px;margin-top:5px'><i class='fa fa-save'></i> UPDATE VENDOR</div></div></div>";
+                            <?php } ?>
+                        }
+                        else
+                        {
+                            item += "<div class='form-group'><label for='' class='col-md-4'>VENDOR</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='vendor-"+val.no_reg_item+"' value='"+val.vendor+"' id='vendor-"+val.no_reg_item+"' autocomplete='off' readonly></div></div>";
+                        }
 
                         item += "<div class='xform-group'><label for='' class='xcol-md-4'>DEPREC, AREAS</label><br/>";
                         item += "<table class='tabel table-bordered table-responsive table-condensed table-striped table-container'>";
@@ -1896,6 +1909,74 @@
         else
         {
             return false;
+        }
+    }
+
+    function updateKodeVendor(no_po,no_reg_item)
+    {
+        //alert(noreg); 
+        //alert(no_po); 
+        //alert(kode_vendor_update); //return false;
+
+        var getnoreg = $("#getnoreg").val(); //alert(getnoreg);
+        var no_registrasi= getnoreg.replace(/\//g, '-');
+        var new_kode_vendor = $("#vendor-"+no_reg_item+"").val();
+
+        //alert(id+"_"+no_po+"_"+no_reg_item+"_"+no_registrasi);
+
+        var param = '';//$("#request-form-detail-asset-sap").serialize();
+        //alert(capitalized_on);
+
+        // VALIDASI COST CENTER HARUS 10 CHAR
+        if( $.trim(new_kode_vendor) < 2 )
+        {
+            notify({
+                type: 'warning',
+                message: " Kode Vendor belum diisi (min 2 char)"
+            });
+            return false;
+        } 
+
+        if(confirm('Confirm Update Kode Vendor '+getnoreg+' ?'))
+        {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                url: "{{ url('approval/update_kode_vendor_aset_lain') }}",
+                method: "POST",
+                data: param+"&new_kode_vendor="+new_kode_vendor+"&getnoreg="+getnoreg+"&no_po="+no_po+"&no_reg_item="+no_reg_item,
+                beforeSend: function() {
+                    $('.loading-event').fadeIn();
+                },
+                success: function(result) 
+                {
+                    //alert(result.status);
+                    if (result.status) 
+                    {
+                        //$("#approve-modal").modal("hide");
+                        //$("#data-table").DataTable().ajax.reload();
+                        notify({
+                            type: 'success',
+                            message: result.message
+                        });
+                        //setTimeout(reload_page, 1000); 
+                    } 
+                    else 
+                    {
+                        notify({
+                            type: 'warning',
+                            message: result.message
+                        });
+                    }
+                    
+                },
+                complete: function() {
+                    jQuery('.loading-event').fadeOut();
+                }
+            }); 
         }
     }
 
