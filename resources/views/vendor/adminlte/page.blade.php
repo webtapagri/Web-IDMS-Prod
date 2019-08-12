@@ -15,19 +15,29 @@
 @section('body')
 
 <style>
-    .user-panel > .xinfo1
+    .info1
     {
-        xborder:1px solid red;
-        font-size: 80%;
-        xpadding: 5px 5px 5px 5px;
-        xline-height: 4;
-        xposition: relative;
-        xposition: static;
-        xleft: 55px;
-        xpadding-left:5px;
+        text-decoration: none;
+        padding-right: 5px;
+        font-size: 12px;
         color:white;
-        xfont-weight: 600;
-        xoverflow: auto
+        font-weight: bold;
+    }
+
+    .image > img 
+    {
+        width: 100%;
+        max-width: 45px;
+        height: auto;
+        margin-left:15px;
+    }
+
+    .info1 > a 
+    {
+        text-decoration: none;
+        padding-right: 5px;
+        xmargin-top: -12px;
+        font-size: 12px;
     }
 </style>
 
@@ -118,11 +128,11 @@
 
         <!-- sidebar: style can be found in sidebar.less -->
         <section class="sidebar">
-            <div class="user-panel">
-                <div class="pull-left image">
-                    <img src="{{ (Session::get('user_img') ? Session::get('user_img'):asset('img/user-default.png')) }}" class="img-circle" alt="User Image">
+            <div class="xuser-panel row">
+                <div class="col-xs-3 xpull-left image text-center" align="center" style="margin-top:10px">
+                    <img src="{{ (Session::get('user_img') ? Session::get('user_img'):asset('img/user-default.png')) }}" class="img-circle img-responsive" alt="User Image">
                 </div>
-                <div class="pull-left info xinfo1">
+                <div class="col-xs-9 xpull-left xinfo info1" style="margin-top:10px">
                     <p>{{ strtoupper(Session::get('name')) }}</p>
                     <a href="#">{{ strtoupper(Session::get('role')) }}</a>
                 </div>
