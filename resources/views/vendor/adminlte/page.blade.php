@@ -13,6 +13,24 @@
 ][config('adminlte.layout')] : '') . (config('adminlte.collapse_sidebar') ? ' sidebar-collapse ' : ''))
 
 @section('body')
+
+<style>
+    .user-panel > .xinfo1
+    {
+        xborder:1px solid red;
+        font-size: 80%;
+        xpadding: 5px 5px 5px 5px;
+        xline-height: 4;
+        xposition: relative;
+        xposition: static;
+        xleft: 55px;
+        xpadding-left:5px;
+        color:white;
+        xfont-weight: 600;
+        xoverflow: auto
+    }
+</style>
+
 <div class="loading-event"></div>
 <button onclick="topFunction()" id="scrToTop" title="Go to top"><i class="fa fa-chevron-up"></i></button>
 <div class="wrapper">
@@ -104,7 +122,7 @@
                 <div class="pull-left image">
                     <img src="{{ (Session::get('user_img') ? Session::get('user_img'):asset('img/user-default.png')) }}" class="img-circle" alt="User Image">
                 </div>
-                <div class="pull-left info">
+                <div class="pull-left info xinfo1">
                     <p>{{ strtoupper(Session::get('name')) }}</p>
                     <a href="#">{{ strtoupper(Session::get('role')) }}</a>
                 </div>

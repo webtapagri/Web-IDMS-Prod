@@ -967,26 +967,6 @@
                 {
                     //alert(val.asset_year); valid = false;
 
-                    if( $.trim(val.asset_year).length != 4 )
-                    {
-                        notify({
-                            type: 'warning',
-                            message: 'Format Tahun masih salah pada asset ' + field.name + ' page ' + (key + 1) + ' '
-                        });
-                        valid = false;
-                        return false;
-                    }
-
-                    if( val.asset_year < 1945 || val.asset_year > thisyear )
-                    {
-                        notify({
-                            type: 'warning',
-                            message: 'Tahun masih belum benar / maksimal tahun '+thisyear+' pada asset ' + field.name + ' page ' + (key + 1) + ' '
-                        });
-                        valid = false;
-                        return false;
-                    }
-
                     if (val.asset_type === "" || val.asset_type == null  ) 
                     {
                         notify({
@@ -1046,6 +1026,26 @@
                         notify({
                             type: 'warning',
                             message: 'Tahun pada asset  ' + field.name + ' page ' + (key + 1) + ' tidak boleh kosong!'
+                        });
+                        valid = false;
+                        return false;
+                    }
+
+                    if( $.trim(val.asset_year).length != 4 )
+                    {
+                        notify({
+                            type: 'warning',
+                            message: 'Format Tahun masih salah pada asset ' + field.name + ' page ' + (key + 1) + ' '
+                        });
+                        valid = false;
+                        return false;
+                    }
+
+                    if( val.asset_year < 1945 || val.asset_year > thisyear )
+                    {
+                        notify({
+                            type: 'warning',
+                            message: 'Tahun masih belum benar / maksimal tahun '+thisyear+' pada asset ' + field.name + ' page ' + (key + 1) + ' '
                         });
                         valid = false;
                         return false;
