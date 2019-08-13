@@ -19,7 +19,7 @@ class FamsEmailController extends Controller
 		$document_code = str_replace("-", "/", $no_registrasi); 
 	
 		// 1. DATA ASSET
-		$sql = " SELECT distinct(document_code) as document_code, KODE_MATERIAL, NAMA_MATERIAL, LOKASI_BA_CODE 
+		$sql = " SELECT distinct(document_code) as document_code, KODE_MATERIAL, NAMA_MATERIAL, LOKASI_BA_CODE, PO_TYPE, NO_PO, BA_PEMILIK_ASSET   
 					FROM v_email_approval WHERE document_code = '{$document_code}'
 					order by nama_material "; 
 		//$sql = " SELECT * FROM v_email_approval WHERE document_code = '{$document_code}' ";

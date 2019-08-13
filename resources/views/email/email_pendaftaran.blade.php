@@ -4,9 +4,13 @@
 	{
 		$TYPE_OF_SUBMISSION = 'PO SAP';
 	}
-	else
+	else if( $data->datax[0]->PO_TYPE == 1 )
 	{
 		$TYPE_OF_SUBMISSION = 'PO AMP';
+	}
+	else
+	{
+		$TYPE_OF_SUBMISSION = 'PO ASET LAIN';
 	}
 
 	$document_code = $data->datax[0]->document_code;
