@@ -522,7 +522,7 @@ class ApprovalController extends Controller
             array("index" => "1", "field" => "area_code ", "alias" => "area_code"),
             array("index" => "2", "field" => "name", "alias" => "name"),
             array("index" => "3", "field" => "status_dokumen", "alias" => "status_dokumen"),
-            array("index" => "4", "field" => "status_approval", "alias" => "status_approval"),
+            //array("index" => "4", "field" => "status_approval", "alias" => "status_approval"),
             //array("index" => "5", "field" => "notes", "alias" => "po_notes"),
             array("index" => "5", "field" => "DATE_FORMAT(date, '%d %b %Y')", "alias" => "po_date"),
             array("index" => "6", "field" => "po_type", "alias" => "po_type"),
@@ -565,7 +565,7 @@ class ApprovalController extends Controller
             $sql .= " AND a.status_approval  like '%" . $request->status_approval . "%'";
 
         if ($request->date_history)
-            $sql .= " AND a.DATE_FORMAT(date, '%d/%m/%Y') = '".$request->date_history."' ";
+            $sql .= " AND DATE_FORMAT(a.date, '%d/%m/%Y') = '".$request->date_history."' ";
     
         if ($orderColumn != "") {
             $sql .= " ORDER BY " . $field[$orderColumn]['field'] . " " . $dirColumn;
@@ -693,7 +693,6 @@ WHERE a.NO_REG = '{$no_registrasi}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KO
         if( $jenis_dokumen == 'Asset Lainnya' )
         {
             $cek_sap = $this->get_sinkronisasi_sap($noreg);
-            //echo "3".$cek_sap; die();
             
             if($cek_sap != "")
             { 
@@ -704,7 +703,8 @@ WHERE a.NO_REG = '{$no_registrasi}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KO
                 $jenis_dokumen = 'AMP';
             }
         }
-        //echo "4-".$jenis_dokumen;die();
+
+        //echo "4-".$jenis_dokumen."=====1-".$req['po-type'];die();
         
         if( $jenis_dokumen == 'AMP' )
         {
@@ -889,7 +889,15 @@ WHERE a.NO_REG = '{$no_registrasi}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KO
                 {
                     //echo "3<pre>"; print_r($request->all()); die();
 
-                    $validasi_check_gi = $this->get_validasi_check_gi($request,$no_registrasi);
+                    if( $req['po-type'] == 'Asset Lainnya' )
+                    {
+                        $validasi_check_gi['status'] = 'success';
+                    }
+                    else
+                    {
+                        $validasi_check_gi = $this->get_validasi_check_gi($request,$no_registrasi);
+                    }
+                    
                     //echo "1<pre>"; print_r($validasi_check_gi); die();
 
                     if($validasi_check_gi['status']=='success')
@@ -1337,7 +1345,7 @@ WHERE a.NO_REG = '{$noreg}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KODE_ASSET
             {
                 foreach( $request_ka as $k => $v )
                 {
-                    $proses = $this->validasi_io_proses_v2($noreg,$v);
+                    $proses = $this->validasi_io_proses_v2($noreg,$v,$jenis_dokumen);
 
                     if($proses['status']=='error')
                     {
@@ -1394,6 +1402,7 @@ WHERE a.NO_REG = '{$noreg}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KODE_ASSET
     {
         $req = $request->all();
         $noreg = $req['no-reg'];
+        $po_type = $req['po-type'];
 
         //#1 VALIDASI MAPPING INPUT KODE ASSET / IO
         $sql = " SELECT a.KODE_ASSET_SAP AS KODE_ASSET_SAP, b.mandatory_kode_asset_controller FROM TR_REG_ASSET_DETAIL a 
@@ -1411,7 +1420,7 @@ WHERE a.NO_REG = '{$noreg}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KODE_ASSET
             {
                 foreach( $request_ka as $k => $v )
                 {
-                    $proses = $this->validasi_io_proses_amp($noreg, $v);
+                    $proses = $this->validasi_io_proses_amp($noreg, $v, $po_type);
                 
                     if($proses['status']=='error')
                     {
@@ -1437,12 +1446,32 @@ WHERE a.NO_REG = '{$noreg}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KODE_ASSET
         
     }
 
-    function validasi_io_proses_amp($noreg, $data)
+    function validasi_io_proses_amp($noreg, $data, $po_type)
     {
         $ka_con = $data->kode_aset_controller;
         $ka_sap = $data->kode_aset_sap;
         $user_id = Session::get('user_id');
         //echo "2<br/>".$noreg.'====='.$ka_sap.'===='.$ka_con;
+
+        if( $po_type == 'Asset Lainnya' )
+        {
+            // JIKA ASET LAIN MAKA SKIP CHECK IO SAP IT@130819
+            DB::beginTransaction();
+            try 
+            {   
+                $sql = " UPDATE TR_REG_ASSET_DETAIL SET KODE_ASSET_CONTROLLER = '{$ka_con}', UPDATED_AT = current_timestamp(), UPDATED_BY = '{$user_id}' WHERE NO_REG = '{$noreg}' AND KODE_ASSET_AMS = '{$ka_sap}' ";
+                DB::UPDATE($sql);
+                DB::commit();
+
+                $result = array('status'=>'success','message'=> "SUKSES UPDATE KODE ASET");
+            }
+            catch (\Exception $e) 
+            {
+                DB::rollback();
+                $result = array('status'=>'error','message'=>$e->getMessage());
+            }
+            return $result; 
+        }
         
         $service = API::exec(array(
             'request' => 'GET',
@@ -1480,7 +1509,7 @@ WHERE a.NO_REG = '{$noreg}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KODE_ASSET
         return $result;
     }
 
-    function validasi_io_proses_v2($noreg, $data)
+    function validasi_io_proses_v2($noreg, $data, $po_type)
     {
         //echo "<pre>"; print_r($data); die();
         /*
@@ -1497,6 +1526,27 @@ WHERE a.NO_REG = '{$noreg}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KODE_ASSET
 
         $user_id = Session::get('user_id');
         //echo "1".$nore.'====='.$ka_sap.'===='.$ka_con;
+
+        if( $po_type == 'Asset Lainnya' )
+        {
+            // SKIP VALIDASI CHECK IO SAP JIKA ASSET LAINNYA
+            DB::beginTransaction();
+            try 
+            {   
+                $sql = " UPDATE TR_REG_ASSET_DETAIL SET KODE_ASSET_CONTROLLER = '{$ka_con}', UPDATED_AT = current_timestamp(), UPDATED_BY = '{$user_id}' WHERE NO_REG = '{$noreg}' AND KODE_ASSET_AMS = '{$ka_sap}' ";
+                //echo $sql; die();
+                DB::UPDATE($sql);
+                DB::commit();
+
+                $result = array('status'=>'success','message'=> "SUKSES UPDATE KODE ASET");
+            }
+            catch (\Exception $e) 
+            {
+                DB::rollback();
+                $result = array('status'=>'error','message'=>$e->getMessage());
+            }
+            return $result;   
+        }
         
         $service = API::exec(array(
             'request' => 'GET',
@@ -1721,7 +1771,7 @@ WHERE a.NO_REG = '{$noreg}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KODE_ASSET
     {
         $request = array();
         $datax = '';
-        $sql = " SELECT COUNT(*) AS TOTAL FROM TR_REG_ASSET_DETAIL a WHERE a.no_reg = '{$noreg}' AND (a.KODE_ASSET_AMS IS NULL OR a.KODE_ASSET_AMS = '')  ";
+        $sql = " SELECT COUNT(*) AS TOTAL FROM TR_REG_ASSET_DETAIL a WHERE a.no_reg = '{$noreg}' AND (a.KODE_ASSET_AMS IS NULL OR a.KODE_ASSET_AMS = '') AND (a.DELETED is null OR a.DELETED = '') ";
         $data = DB::SELECT($sql);
         //echo "<pre>"; print_r($data); die();
 
@@ -2203,7 +2253,28 @@ WHERE a.NO_REG = '{$noreg}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KODE_ASSET
         //echo "1<pre>"; print_r($cek_sap);die();
         if($cek_sap != "")
         { 
-            return "SAP"; 
+            $datax = '';
+            $sql = " SELECT COUNT(*) AS TOTAL FROM TR_REG_ASSET_DETAIL a WHERE a.no_reg = '{$noreg}' AND (a.KODE_ASSET_SAP IS NULL OR a.KODE_ASSET_SAP = '') AND (a.DELETED is null OR a.DELETED = '') "; //echo $sql."<br/>";
+            $data = DB::SELECT($sql);
+            //echo "2<pre>"; print_r($data); die();
+
+            if( $data )
+            {
+                $datax .= $data[0]->TOTAL;
+            }
+            else
+            {
+                $datax .= 0;
+            }
+
+            if( $datax > 0 )
+            {
+                return "SAP";
+            }
+            else
+            {
+                return "ASET SAP SUDAH DI SYNC";    
+            }
         }
         else
         {

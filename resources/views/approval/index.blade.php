@@ -48,7 +48,7 @@
       <div class="tab-pane active" id="tab_1">
             <div class="small table-container">
                     <div class="table-actions-wrapper">
-                        <button class="btn btn-flat btn-sm btn-flat label-danger btn-refresh"><i class="glyphicon glyphicon-refresh" title="Refresh"></i></button><?php /* <div OnClick="approval('19.06/AMS/PDFA/00027')">test</div>*/ ?>
+                        <button class="btn btn-flat btn-sm btn-flat label-danger btn-refresh refresh-outstanding"><i class="glyphicon glyphicon-refresh" title="Refresh"></i></button><?php /* <div OnClick="approval('19.06/AMS/PDFA/00027')">test</div>*/ ?>
                     </div>
 
                     <table id="data-table" class="table table-bordered table-condensed">
@@ -94,7 +94,7 @@
       <div class="tab-pane" id="tab_2">
         <div class="small table-container">
                     <div class="table-actions-wrapper">
-                        <button class="btn btn-flat btn-sm btn-flat label-danger btn-refresh"><i class="glyphicon glyphicon-refresh" title="Refresh"></i></button><?php /* <div OnClick="history('19.06/AMS/PDFA/00009')">test</div> */ ?>
+                        <button class="btn btn-flat btn-sm btn-flat label-danger btn-refresh refresh-history"><i class="glyphicon glyphicon-refresh" title="Refresh"></i></button><?php /* <div OnClick="history('19.06/AMS/PDFA/00009')">test</div> */ ?>
                     </div>
                     <table id="data-table-history" class="table table-bordered table-condensed">
                         <thead>
@@ -489,7 +489,11 @@
                 {
                     id: 1,
                     text: 'AMP'
-                }
+                },
+                {
+                    id: 2,
+                    text: 'ASET LAIN'
+                },
             ],
             width: '100%',
             placeholder: ' ',
@@ -665,6 +669,18 @@
             //autoclose: true,
             //endDate: "today",
             maxDate: 'today'
+        });
+
+        $(".refresh-outstanding").click(function()
+        {
+            //$('#data-table').DataTable().fnDestroy();
+            $("#data-table").DataTable().ajax.url("{!! route('get.approval_grid') !!}").load();
+        });
+
+        $(".refresh-history").click(function()
+        {
+            //$('#data-table-history').DataTable().fnDestroy();
+            $("#data-table-history").DataTable().ajax.url("{!! route('get.approval_grid_history') !!}").load();
         });
 
     });
@@ -1048,7 +1064,7 @@
                         
                         item += "<div class='form-group'><label for='' class='col-md-4'>QUANTITY</label><div class='col-md-8'><input type='number' class='form-control input-sm' name='quantity-"+val.no_reg_item+"' value='"+val.quantity_asset_sap+"' id='quantity-"+val.no_reg_item+"' autocomplete='off' required></div></div>";
                         
-                        item += "<div class='form-group'><label for='' class='col-md-4'>UOM (UNIT)</label><div class='col-md-3' style='display: inline-block'><input type='text' class='form-control input-sm' name='uom-"+val.no_reg_item+"' value='"+val.uom_asset_sap+"' id='uom-"+val.no_reg_item+"' autocomplete='off' required></div></div>";
+                        item += "<div class='form-group'><label for='' class='col-md-4'>UOM (UNIT) 2</label><div class='col-md-8' style='display: inline-block'><input type='text' class='form-control input-sm' name='uom-"+val.no_reg_item+"' value='"+val.uom_asset_sap+"' id='uom-"+val.no_reg_item+"' autocomplete='off' required></div></div>";
 
                         item += "<div class='form-group'><label for='' class='col-md-4'>CAPITALIZED</label><div class='col-md-8'><input type='text' class='form-control input-sm capitalized_on_date' name='capitalized_on-"+val.no_reg_item+"' value='"+val.capitalized_on+"' id='capitalized_on-"+val.no_reg_item+"' autocomplete='off' placeholder='yyyy-mm-dd' required></div></div>";
 
