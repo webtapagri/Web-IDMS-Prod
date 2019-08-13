@@ -4,12 +4,12 @@
 
 <section class="content">
     <div class="row">
-        <div class="col-xs-6">
+        <div class="col-md-6">
             <!-- Profile Image -->
             <div class="box box-success">
                 <div class="box-body box-profile">
                     <img class="profile-user-img img-responsive img-circle" src="{{ ($data['profile'][0]->img ? $data['profile'][0]->img:asset('img/user-default.png')) }}" alt="User profile picture">
-                    <h3 class="profile-username text-center">{{ $data["profile"][0]->name }}</h3>
+                    <h3 class="profile-username text-center">{{ $data["profile"][0]->name }} 1</h3>
 
                     <p class="text-muted text-center">{{ $data["profile"][0]->role_name }}</p>
 

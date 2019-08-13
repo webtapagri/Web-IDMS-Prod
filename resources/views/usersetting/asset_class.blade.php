@@ -122,6 +122,7 @@
                                 <th>ASSET CTRL CODE</th>
                                 <th>ASSET CTRL DESCRIPTION</th>
                                 <th>MANDATORY CODE AC</th>
+                                <th>MANDATORY CHECK IO SAP</th>
                                 <th width="8%">ACTION</th>
                             </tr>
                             <tr role="row" class="filter">
@@ -133,6 +134,7 @@
                                 <th><input type="text" class="form-control input-xs form-filter" name="asset_ctrl_code" autocomplete="off"></th>
                                 <th><input type="text" class="form-control input-xs form-filter" name="asset_ctrl_description" autocomplete="off"></th>
                                 <th><input type="text" class="form-control input-xs form-filter" name="mandatory_kode_asset_controller" autocomplete="off"></th>
+                                <th><input type="text" class="form-control input-xs form-filter" name="mandatory_check_io_sap" autocomplete="off"></th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -296,6 +298,11 @@
                             <label class="control-label" for="">MANDATORY KODE ASSET CONTROLLER</label>
                             <input class="form-control" name='acm_mandatory_kode_asset_controller' id="acm_mandatory_kode_asset_controller" maxlength="400" requried>
                         </div>
+                        <div class="col-xs-12">
+                            <label class="control-label" for="">MANDATORY CHECK IO SAP</label>
+                            <input class="form-control" name='acm_mandatory_check_io_sap' id="acm_mandatory_check_io_sap" maxlength="400" requried>
+                        </div>
+
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -1121,7 +1128,9 @@
         $("#acm_asset_ctrl_description").val(result.ASSET_CTRL_DESCRIPTION);
 
         $("#acm_mandatory_kode_asset_controller").val(result.MANDATORY_KODE_ASSET_CONTROLLER);
-        $//("#acm_mandatory_kode_asset_controller").trigger("change");
+        //$("#acm_mandatory_kode_asset_controller").trigger("change");
+
+        $("#acm_mandatory_check_io_sap").val(result.MANDATORY_CHECK_IO_SAP);
 
         $("#add-data-modal-asset-map .modal-title").html("<i class='fa fa-edit'></i> UPDATE DATA - ASSET CONTROLLER MAP "+result.MAP_CODE);
         $("#add-data-modal-asset-map").modal("show");
@@ -1212,6 +1221,10 @@
                         {
                             data: 'mandatory_kode_asset_controller',
                             name: 'mandatory_kode_asset_controller'
+                        },
+                        {
+                            data: 'mandatory_check_io_sap',
+                            name: 'mandatory_check_io_sap'
                         },
                         {
                             "render": function(data, type, row) {

@@ -1452,7 +1452,71 @@ WHERE a.NO_REG = '{$noreg}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KODE_ASSET
         $ka_sap = $data->kode_aset_sap;
         $user_id = Session::get('user_id');
         //echo "2<br/>".$noreg.'====='.$ka_sap.'===='.$ka_con;
+        
+        // VALIDASI MANDATORY CHECK IO SAP IT@130819
+        $sql = " SELECT a.KODE_ASSET_SAP AS KODE_ASSET_SAP, b.mandatory_kode_asset_controller FROM TR_REG_ASSET_DETAIL a 
+LEFT JOIN TM_ASSET_CONTROLLER_MAP b ON a.JENIS_ASSET = b.JENIS_ASSET_CODE AND a.GROUP = b.GROUP_CODE AND a.SUB_GROUP = b.SUBGROUP_CODE
+WHERE a.NO_REG = '{$noreg}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KODE_ASSET_CONTROLLER = '' ) AND (a.DELETED is null OR a.DELETED = '') AND (b.MANDATORY_CHECK_IO_SAP is not null AND b.MANDATORY_CHECK_IO_SAP != '') ";
+        $data = DB::SELECT($sql); 
 
+        if(!empty($data))
+        {
+             $service = API::exec(array(
+                'request' => 'GET',
+                'host' => 'ldap',
+                'method' => "check_io?AUFNR=$ka_con&AUFUSER3=$ka_sap", 
+            ));
+            
+            $data = $service;
+            //$data = 1;
+            //echo "<pre>"; print_r($data); die();
+
+            if( $data->TYPE == 'S' )
+            //if($data==1)
+            {
+                DB::beginTransaction();
+                try 
+                {   
+                    $sql = " UPDATE TR_REG_ASSET_DETAIL SET KODE_ASSET_CONTROLLER = '{$ka_con}', UPDATED_AT = current_timestamp(), UPDATED_BY = '{$user_id}' WHERE NO_REG = '{$noreg}' AND KODE_ASSET_AMS = '{$ka_sap}' ";
+                    DB::UPDATE($sql);
+                    DB::commit();
+
+                    $result = array('status'=>'success','message'=> "SUKSES UPDATE KODE ASET");
+                }
+                catch (\Exception $e) 
+                {
+                    DB::rollback();
+                    $result = array('status'=>'error','message'=>$e->getMessage());
+                }
+            }
+            else
+            {    
+                $result = array('status'=>'error','message'=> $data->MESSAGE.' (Kode Aset Controller:'.$ka_con.')');
+            }
+
+            return $result;
+        }
+        else
+        {
+            // JIKA ASET LAIN MAKA SKIP CHECK IO SAP IT@130819
+            DB::beginTransaction();
+            try 
+            {   
+                $sql = " UPDATE TR_REG_ASSET_DETAIL SET KODE_ASSET_CONTROLLER = '{$ka_con}', UPDATED_AT = current_timestamp(), UPDATED_BY = '{$user_id}' WHERE NO_REG = '{$noreg}' AND KODE_ASSET_AMS = '{$ka_sap}' ";
+                DB::UPDATE($sql);
+                DB::commit();
+
+                $result = array('status'=>'success','message'=> "SUKSES UPDATE KODE ASET");
+            }
+            catch (\Exception $e) 
+            {
+                DB::rollback();
+                $result = array('status'=>'error','message'=>$e->getMessage());
+            }
+            return $result;
+        }
+
+        /*
         if( $po_type == 'Asset Lainnya' )
         {
             // JIKA ASET LAIN MAKA SKIP CHECK IO SAP IT@130819
@@ -1472,41 +1536,7 @@ WHERE a.NO_REG = '{$noreg}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KODE_ASSET
             }
             return $result; 
         }
-        
-        $service = API::exec(array(
-            'request' => 'GET',
-            'host' => 'ldap',
-            'method' => "check_io?AUFNR=$ka_con&AUFUSER3=$ka_sap", 
-        ));
-        
-        $data = $service;
-        //$data = 1;
-        //echo "<pre>"; print_r($data); die();
-
-        if( $data->TYPE == 'S' )
-        //if($data==1)
-        {
-            DB::beginTransaction();
-            try 
-            {   
-                $sql = " UPDATE TR_REG_ASSET_DETAIL SET KODE_ASSET_CONTROLLER = '{$ka_con}', UPDATED_AT = current_timestamp(), UPDATED_BY = '{$user_id}' WHERE NO_REG = '{$noreg}' AND KODE_ASSET_AMS = '{$ka_sap}' ";
-                DB::UPDATE($sql);
-                DB::commit();
-
-                $result = array('status'=>'success','message'=> "SUKSES UPDATE KODE ASET");
-            }
-            catch (\Exception $e) 
-            {
-                DB::rollback();
-                $result = array('status'=>'error','message'=>$e->getMessage());
-            }
-        }
-        else
-        {    
-            $result = array('status'=>'error','message'=> $data->MESSAGE.' (Kode Aset Controller:'.$ka_con.')');
-        }
-
-        return $result;
+        */
     }
 
     function validasi_io_proses_v2($noreg, $data, $po_type)
@@ -1527,6 +1557,76 @@ WHERE a.NO_REG = '{$noreg}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KODE_ASSET
         $user_id = Session::get('user_id');
         //echo "1".$nore.'====='.$ka_sap.'===='.$ka_con;
 
+        // VALIDASI MANDATORY_CHECK_IO_SAP IT@130819
+        $sql = " SELECT a.KODE_ASSET_SAP AS KODE_ASSET_SAP, b.mandatory_kode_asset_controller FROM TR_REG_ASSET_DETAIL a 
+LEFT JOIN TM_ASSET_CONTROLLER_MAP b ON a.JENIS_ASSET = b.JENIS_ASSET_CODE AND a.GROUP = b.GROUP_CODE AND a.SUB_GROUP = b.SUBGROUP_CODE
+WHERE a.NO_REG = '{$noreg}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KODE_ASSET_CONTROLLER = '' ) AND (a.DELETED is null OR a.DELETED = '')  AND (b.MANDATORY_CHECK_IO_SAP is not null AND b.MANDATORY_CHECK_IO_SAP != '') ";
+        $data = DB::SELECT($sql); 
+
+        if(!empty($data))
+        {
+            $service = API::exec(array(
+                'request' => 'GET',
+                'host' => 'ldap',
+                'method' => "check_io?AUFNR=$ka_con&AUFUSER3=$ka_sap", 
+            ));
+            
+            $data = $service;
+            //$data = 1;
+            
+            //echo "<pre>"; print_r($data); die();
+
+            if( $data->TYPE == 'S' )
+            //if($data==1)
+            {
+                DB::beginTransaction();
+                try 
+                {   
+                    $sql = " UPDATE TR_REG_ASSET_DETAIL SET KODE_ASSET_CONTROLLER = '{$ka_con}', UPDATED_AT = current_timestamp(), UPDATED_BY = '{$user_id}' WHERE NO_REG = '{$noreg}' AND KODE_ASSET_AMS = '{$ka_sap}' ";
+                    //echo $sql; die();
+                    DB::UPDATE($sql);
+                    DB::commit();
+
+                    $result = array('status'=>'success','message'=> "SUKSES UPDATE KODE ASET");
+                }
+                catch (\Exception $e) 
+                {
+                    DB::rollback();
+                    $result = array('status'=>'error','message'=>$e->getMessage());
+                }
+
+            }
+            else
+            {
+                
+                $result = array('status'=>'error','message'=> $data->MESSAGE.' (Kode Aset Controller:'.$ka_con.')');
+            }
+            
+
+            return $result;
+        }
+        else
+        {
+            // SKIP VALIDASI CHECK IO SAP JIKA ASSET LAINNYA
+            DB::beginTransaction();
+            try 
+            {   
+                $sql = " UPDATE TR_REG_ASSET_DETAIL SET KODE_ASSET_CONTROLLER = '{$ka_con}', UPDATED_AT = current_timestamp(), UPDATED_BY = '{$user_id}' WHERE NO_REG = '{$noreg}' AND KODE_ASSET_AMS = '{$ka_sap}' ";
+                //echo $sql; die();
+                DB::UPDATE($sql);
+                DB::commit();
+
+                $result = array('status'=>'success','message'=> "SUKSES UPDATE KODE ASET");
+            }
+            catch (\Exception $e) 
+            {
+                DB::rollback();
+                $result = array('status'=>'error','message'=>$e->getMessage());
+            }
+            return $result;   
+        }
+
+        /* CANCEL IT@130819
         if( $po_type == 'Asset Lainnya' )
         {
             // SKIP VALIDASI CHECK IO SAP JIKA ASSET LAINNYA
@@ -1547,46 +1647,8 @@ WHERE a.NO_REG = '{$noreg}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KODE_ASSET
             }
             return $result;   
         }
-        
-        $service = API::exec(array(
-            'request' => 'GET',
-            'host' => 'ldap',
-            'method' => "check_io?AUFNR=$ka_con&AUFUSER3=$ka_sap", 
-        ));
-        
-        $data = $service;
-        //$data = 1;
-        
-        //echo "<pre>"; print_r($data); die();
-
-        if( $data->TYPE == 'S' )
-        //if($data==1)
-        {
-            DB::beginTransaction();
-            try 
-            {   
-                $sql = " UPDATE TR_REG_ASSET_DETAIL SET KODE_ASSET_CONTROLLER = '{$ka_con}', UPDATED_AT = current_timestamp(), UPDATED_BY = '{$user_id}' WHERE NO_REG = '{$noreg}' AND KODE_ASSET_AMS = '{$ka_sap}' ";
-                //echo $sql; die();
-                DB::UPDATE($sql);
-                DB::commit();
-
-                $result = array('status'=>'success','message'=> "SUKSES UPDATE KODE ASET");
-            }
-            catch (\Exception $e) 
-            {
-                DB::rollback();
-                $result = array('status'=>'error','message'=>$e->getMessage());
-            }
-
-        }
-        else
-        {
-            
-            $result = array('status'=>'error','message'=> $data->MESSAGE.' (Kode Aset Controller:'.$ka_con.')');
-        }
-        
-
-        return $result;
+        */
+           
     }
 
     /*
