@@ -1043,6 +1043,14 @@
                     //alert(val.po_type);
                     if( val.po_type == 0 || val.po_type == 2 )
                     {
+                        var nama_aset_2 = '';
+                        if( val.nama_asset_2 == '' ){nama_asset_2 = val.no_po;}else{nama_asset_2 = val.nama_asset_2;}
+
+                        var nama_aset_1 = '';
+                        var nama_aset_3 = '';
+                        if( val.nama_asset_1 == '' ){nama_asset_1 = val.nama_material}else{nama_asset_1=val.nama_asset_1;}
+                        if( val.nama_asset_3 == '' ){nama_asset_3 = val.nama_material}else{nama_asset_3=val.nama_asset_3;}
+
                         /* BOX DETAIL ASSET SAP */
                         item += "<div class='col-md-12'><div class='row'>";
                         item += "<span class='label bg-blue'><i class='fa fa-bars'></i> DETAIL ASET SAP</span><br/><br/>";
@@ -1050,11 +1058,11 @@
                         //item += "<form id='request-form-detail-asset-sap' class='form-horizontal' style=''>";
                         item += "<div class='col-md-6'> ";
 
-                        item += "<div class='form-group'><label for='' class='col-md-4'>DESCRIPTION</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='nama_asset_1-"+val.no_reg_item+"' value='"+val.nama_asset_1+"' id='nama_asset_1-"+val.no_reg_item+"' autocomplete='off' placeholder='Nama Asset 1' required></div></div>";
+                        item += "<div class='form-group'><label for='' class='col-md-4'>DESCRIPTION</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='nama_asset_1-"+val.no_reg_item+"' value='"+nama_asset_1+"' id='nama_asset_1-"+val.no_reg_item+"' autocomplete='off' placeholder='Nama Asset 1' required></div></div>";
                         
-                        item += "<div class='form-group'><label for='' class='col-md-4'></label><div class='col-md-8'><input type='text' class='form-control input-sm' name='nama_asset_2-"+val.no_reg_item+"' value='"+val.nama_asset_2+"' id='nama_asset_2-"+val.no_reg_item+"' autocomplete='off' placeholder='Nama Asset 2'></div></div>";
+                        item += "<div class='form-group'><label for='' class='col-md-4'></label><div class='col-md-8'><input type='text' class='form-control input-sm' name='nama_asset_2-"+val.no_reg_item+"' value='"+nama_asset_2+"' id='nama_asset_2-"+val.no_reg_item+"' autocomplete='off' placeholder='Nama Asset 2'></div></div>";
                         
-                        item += "<div class='form-group'><label for='' class='col-md-4'>ASET MAIN NO. TEXT</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='nama_asset_3-"+val.no_reg_item+"' value='"+val.nama_asset_3+"' id='nama_asset_3-"+val.no_reg_item+"' autocomplete='off' placeholder='Nama Asset 3' required></div></div>";
+                        item += "<div class='form-group'><label for='' class='col-md-4'>ASET MAIN NO. TEXT</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='nama_asset_3-"+val.no_reg_item+"' value='"+nama_asset_3+"' id='nama_asset_3-"+val.no_reg_item+"' autocomplete='off' placeholder='Nama Asset 3' required></div></div>";
 
                         item += "<div class='form-group'><label for='' class='col-md-4'>ACCT DETERMINATION</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='acct_determination-"+val.no_reg_item+"' value='"+val.jenis_asset+"' id='nama_asset_3-"+val.no_reg_item+"' autocomplete='off' placeholder='Acct Determination' readonly></div></div>";
 

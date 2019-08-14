@@ -363,7 +363,8 @@ class ApprovalController extends Controller
                     'po_type' => trim($v->PO_TYPE),
                     'gi_number' => trim($v->GI_NUMBER),
                     'gi_year' => trim($v->GI_YEAR),
-                    'total_asset' => $this->get_validasi_delete_asset($noreg)
+                    'total_asset' => $this->get_validasi_delete_asset($noreg),
+                    'nama_material' => trim($v->NAMA_MATERIAL)
                 );
             }
         }
