@@ -717,7 +717,7 @@
             dataType: 'json',
             success: function(data) 
             { 
-                //alert(data.no_reg);
+                //alert(data.cek_reject);
                 $("#request-form #no-reg").val(data.no_reg);
                 $("#request-form #type-transaksi").val(data.type_transaksi);
                 $("#request-form #po-type").val(data.po_type);
@@ -741,7 +741,7 @@
                     else
                     {
                         $("#create-button-sync-sap").hide();
-                        $("#button-approve").show();
+                        if(data.cek_reject==0){$("#button-approve").show();}
                         //$(".button-reject").attr("disabled", true); 
                         $(".button-reject").hide(); 
                     }
@@ -771,7 +771,7 @@
                     else
                     {
                         $("#create-button-sync-sap").hide();
-                        $("#button-approve").show();
+                        if(data.cek_reject==0){$("#button-approve").show();}
                         $(".button-reject").hide(); 
                     }
                 }
@@ -790,7 +790,7 @@
                     else
                     {
                         $("#create-button-sync-sap").hide();
-                        $("#button-approve").show();
+                        if(data.cek_reject==0){$("#button-approve").show();}
                         $(".button-reject").hide(); 
                     }
 
@@ -1087,7 +1087,7 @@
                         
                         item += "<div class='form-group'><label for='' class='col-md-4'>QUANTITY</label><div class='col-md-8'><input type='number' class='form-control input-sm' name='quantity-"+val.no_reg_item+"' value='"+val.quantity_asset_sap+"' id='quantity-"+val.no_reg_item+"' autocomplete='off' required></div></div>";
                         
-                        item += "<div class='form-group'><label for='' class='col-md-4'>UOM (UNIT) 2</label><div class='col-md-8' style='display: inline-block'><input type='text' class='form-control input-sm' name='uom-"+val.no_reg_item+"' value='"+val.uom_asset_sap+"' id='uom-"+val.no_reg_item+"' autocomplete='off' required></div></div>";
+                        item += "<div class='form-group'><label for='' class='col-md-4'>UOM</label><div class='col-md-8' style='display: inline-block'><input type='text' class='form-control input-sm' name='uom-"+val.no_reg_item+"' value='"+val.uom_asset_sap+"' id='uom-"+val.no_reg_item+"' autocomplete='off' required></div></div>";
 
                         item += "<div class='form-group'><label for='' class='col-md-4'>CAPITALIZED</label><div class='col-md-8'><input type='text' class='form-control input-sm capitalized_on_date' name='capitalized_on-"+val.no_reg_item+"' value='"+val.capitalized_on+"' id='capitalized_on-"+val.no_reg_item+"' autocomplete='off' placeholder='yyyy-mm-dd' required></div></div>";
 
@@ -1146,9 +1146,14 @@
                         item += "<span class='label bg-blue'><i class='fa fa-bars'></i> KODE ASET</span><br/><br/>";
                         
                         item += "<div class='col-md-4'> ";
-                        item += "<div class='form-group'><label for='' class='col-md-4'>KODE ASET CONTROLLER</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='kode_aset_controller-"+val.no_reg_item+"' value='"+val.kode_asset_controller+"' id='kode_aset_controller-"+val.no_reg_item+"' autocomplete='off' onkeyup='get_kode_aset("+val.no_reg_item+")'><input type='hidden' id='request_kode_aset_input' name='request_kode_aset_input'></div></div>";
-                        item += "</div>";
-                        
+                        <?php if( $user_role == 'AC' ){ ?>
+                            item += "<div class='form-group'><label for='' class='col-md-4'>KODE ASET CONTROLLER</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='kode_aset_controller-"+val.no_reg_item+"' value='"+val.kode_asset_controller+"' id='kode_aset_controller-"+val.no_reg_item+"' autocomplete='off' onkeyup='get_kode_aset("+val.no_reg_item+")'><input type='hidden' id='request_kode_aset_input' name='request_kode_aset_input'><div class='btn btn-warning btn-sm' OnClick='validasiKodeAssetController("+val.po_type+","+val.no_reg_item+")' style='margin-right:25px;margin-top:5px'><i class='fa fa-save'></i> SAVE</div></div></div>";
+                            item += "</div>";
+                        <?php }else{ ?>
+                            item += "<div class='form-group'><label for='' class='col-md-4'>KODE ASET CONTROLLER</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='kode_aset_controller-"+val.no_reg_item+"' value='"+val.kode_asset_controller+"' id='kode_aset_controller-"+val.no_reg_item+"' autocomplete='off' onkeyup='get_kode_aset("+val.no_reg_item+")'><input type='hidden' id='request_kode_aset_input' name='request_kode_aset_input'></div></div>";
+                            item += "</div>";
+                        <?php } ?>
+
                         item += "<div class='col-md-4'> ";
                         item += "<div class='form-group'><label for='' class='col-md-4'>KODE ASET SAP</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='kode_aset_sap-"+val.no_reg_item+"' value='"+val.kode_asset_sap+"' id='kode_aset_sap-"+val.no_reg_item+"' autocomplete='off' readonly='1'></div></div>";
                         item += "</div>";
@@ -1192,8 +1197,13 @@
                         item += "<span class='label bg-blue'><i class='fa fa-bars'></i> KODE ASET</span><br/><br/>";
                         
                         item += "<div class='col-md-4'> ";
-                        item += "<div class='form-group'><label for='' class='col-md-4'>KODE ASET CONTROLLER</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='kode_aset_controller-"+val.no_reg_item+"' value='"+val.kode_asset_controller+"' id='kode_aset_controller-"+val.no_reg_item+"' autocomplete='off' onkeyup='get_kode_aset_amp("+val.no_reg_item+")'><input type='hidden' class='form-control input-sm' name='kode_aset_ams-"+val.no_reg_item+"' value='"+val.kode_asset_ams+"' id='kode_aset_ams-"+val.no_reg_item+"'></div></div>";
-                        item += "</div>";
+                        <?php if( $user_role == 'AC' ){ ?>
+                            item += "<div class='form-group'><label for='' class='col-md-4'>KODE ASET CONTROLLER</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='kode_aset_controller-"+val.no_reg_item+"' value='"+val.kode_asset_controller+"' id='kode_aset_controller-"+val.no_reg_item+"' autocomplete='off' onkeyup='get_kode_aset_amp("+val.no_reg_item+")'><input type='hidden' class='form-control input-sm' name='kode_aset_ams-"+val.no_reg_item+"' value='"+val.kode_asset_ams+"' id='kode_aset_ams-"+val.no_reg_item+"'><div class='btn btn-warning btn-sm' OnClick='validasiKodeAssetController("+val.po_type+","+val.no_reg_item+")' style='margin-right:25px;margin-top:5px'><i class='fa fa-save'></i> SAVE</div></div></div>";
+                            item += "</div>";
+                        <?php }else{ ?>
+                            item += "<div class='form-group'><label for='' class='col-md-4'>KODE ASET CONTROLLER</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='kode_aset_controller-"+val.no_reg_item+"' value='"+val.kode_asset_controller+"' id='kode_aset_controller-"+val.no_reg_item+"' autocomplete='off' onkeyup='get_kode_aset_amp("+val.no_reg_item+")'><input type='hidden' class='form-control input-sm' name='kode_aset_ams-"+val.no_reg_item+"' value='"+val.kode_asset_ams+"' id='kode_aset_ams-"+val.no_reg_item+"'></div></div>";
+                            item += "</div>";
+                        <?php } ?>
                         
                         item += "<div class='col-md-4'> ";
                         item += "<div class='form-group'><label for='' class='col-md-4'>KODE ASET SAP</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='kode_aset_sap-"+val.no_reg_item+"' value='"+val.kode_asset_sap+"' id='kode_aset_sap-"+val.no_reg_item+"' autocomplete='off' readonly='1'></div></div>";
@@ -1539,6 +1549,7 @@
                     else 
                     {
                         request_check_gi = [];
+                        request_kode_aset_data = [];
                         //$(".md_year").val("");
                         notify({
                             type: 'warning',
@@ -1987,6 +1998,86 @@
                 url: "{{ url('approval/update_kode_vendor_aset_lain') }}",
                 method: "POST",
                 data: param+"&new_kode_vendor="+new_kode_vendor+"&getnoreg="+getnoreg+"&no_po="+no_po+"&no_reg_item="+no_reg_item,
+                beforeSend: function() {
+                    $('.loading-event').fadeIn();
+                },
+                success: function(result) 
+                {
+                    //alert(result.status);
+                    if (result.status) 
+                    {
+                        //$("#approve-modal").modal("hide");
+                        //$("#data-table").DataTable().ajax.reload();
+                        notify({
+                            type: 'success',
+                            message: result.message
+                        });
+                        //setTimeout(reload_page, 1000); 
+                    } 
+                    else 
+                    {
+                        notify({
+                            type: 'warning',
+                            message: result.message
+                        });
+                    }
+                    
+                },
+                complete: function() {
+                    jQuery('.loading-event').fadeOut();
+                }
+            }); 
+        }
+    }
+
+    function validasiKodeAssetController(po_type,no_reg_item)
+    {
+        //alert(po_type); return false(); 
+        //alert(no_po); 
+        //alert(kode_vendor_update); //return false;
+
+        var getnoreg = $("#getnoreg").val(); //alert(getnoreg);
+        var no_registrasi= getnoreg.replace(/\//g, '-');
+        var kode_asset_controller = $("#kode_aset_controller-"+no_reg_item+"").val();
+        
+        if(po_type == 1 || po_type == 2 )
+        {
+            // AMP & LAIN
+            var kode_asset_nilai = $("#kode_asset_ams-"+no_reg_item+"").val();
+        }
+        else
+        {
+            // SAP
+            var kode_asset_nilai = $("#kode_aset_sap-"+no_reg_item+"").val();
+        }
+        
+
+        //alert(id+"_"+no_po+"_"+no_reg_item+"_"+no_registrasi);
+
+        var param = '';//$("#request-form-detail-asset-sap").serialize();
+        //alert(capitalized_on);
+
+        // VALIDASI COST CENTER HARUS 10 CHAR
+        if( $.trim(kode_asset_controller) < 2 )
+        {
+            notify({
+                type: 'warning',
+                message: " Kode Asset Controller belum diisi (min 2 char)"
+            });
+            return false;
+        } 
+
+        if(confirm('Confirm Update Code Asset Controller '+getnoreg+' ?'))
+        {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                url: "{{ url('approval/update_kode_asset_controller') }}",
+                method: "POST",
+                data: param+"&kode_asset_controller="+kode_asset_controller+"&getnoreg="+getnoreg+"&kode_asset_nilai="+kode_asset_nilai+"&no_reg_item="+no_reg_item+"&po_type="+po_type,
                 beforeSend: function() {
                     $('.loading-event').fadeIn();
                 },
