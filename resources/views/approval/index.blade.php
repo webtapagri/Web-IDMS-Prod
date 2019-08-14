@@ -66,23 +66,23 @@
                                 <th>BERKAS</th>
                             </tr>
                             <tr role="row" class="filter">
-                                <th><input type="text" class="form-control input-xs form-filter" name="NO_REG" id="NO_REG"></th>
+                                <th><input type="text" data-column="1" class="form-control input-xs form-filter" name="NO_REG" id="NO_REG"></th>
                                 <th>
-                                    <select type="text" class="form-control input-xs form-filter" name="TYPE" id="TYPE">
+                                    <select data-column="2" class="form-control input-xs form-filter" name="TYPE" id="TYPE">
                                         <option></option>
                                     </select>
                                 </th>
                                 <th>
-                                    <select class="form-control input-xs form-filter" name="PO_TYPE" id="PO_TYPE">
+                                    <select data-column="3" class="form-control input-xs form-filter" name="PO_TYPE" id="PO_TYPE">
                                         <option></option>
                                     </select>
                                 </th>
-                                <th><input type="text" class="form-control input-xs form-filter" name="NO_PO" id="NO_PO"></th>
-                                <th><input type="text" class="form-control input-xs form-filter datepicker" name="REQUEST_DATE" id="REQUEST_DATE" autocomplete="off"></th>
-                                <th><input type="text" class="form-control input-xs form-filter" name="REQUESTOR"></th>
-                                <th><input type="text" class="form-control input-xs form-filter datepicker" name="PO_DATE" id="PO_DATE" autocomplete="off"></th>
-                                <th><input type="text" class="form-control input-xs form-filter" name="VENDOR_CODE"></th>
-                                <th><input type="text" class="form-control input-xs form-filter" name="VENDOR_NAME"></th>
+                                <th><input type="text" data-column="4" class="form-control input-xs form-filter" name="NO_PO" id="NO_PO"></th>
+                                <th><input type="text" data-column="5" class="form-control input-xs form-filter datepicker" name="REQUEST_DATE" id="REQUEST_DATE" autocomplete="off"></th>
+                                <th><input type="text" data-column="6" class="form-control input-xs form-filter" name="REQUESTOR"></th>
+                                <th><input type="text" data-column="7" class="form-control input-xs form-filter datepicker" name="PO_DATE" id="PO_DATE" autocomplete="off"></th>
+                                <th><input type="text" data-column="8" class="form-control input-xs form-filter" name="VENDOR_CODE"></th>
+                                <th><input type="text" data-column="9" class="form-control input-xs form-filter" name="VENDOR_NAME"></th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -478,8 +478,23 @@
                     sLoadingRecords: ""
                 },
                 "order": [],
-            }
+            },
+            //responsive: true,
+            //orderCellsTop: true
         });
+
+        /*
+        alert("99");
+        $('#data-table thead').on( 'click', '.form-control', function (e) {   // for text boxes
+           e.stopPropagation();
+        });
+        $('#data-table thead').on( 'keyup change', '.form-control', function (e) {   // for text boxes
+           var i = $(this).attr('data-column');  // getting column index
+           var v = $(this).val();  // getting search input value
+           var grid = $('#data-table').DataTable();
+           grid.columns(i).search(v).draw();
+        });
+        */   
 
         $("#PO_TYPE").select2({
             data: [{
