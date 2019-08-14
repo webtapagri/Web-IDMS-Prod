@@ -1356,17 +1356,37 @@ WHERE a.NO_REG = '{$noreg}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KODE_ASSET
                     }
                 }
                 //die();
+                //$result = array('status'=>true,'message'=> 'SUCCESS');
+                //return $result;
 
-                $result = array('status'=>true,'message'=> 'SUCCESS');
-                return $result;
+                //VALIDASI CEK IO JIKA MASIH ADA YANG KOSONG DI MASING2 ASET IT@140819
+                $sql = " SELECT KODE_ASSET_AMS,KODE_ASSET_SAP, KODE_ASSET_CONTROLLER FROM TR_REG_ASSET_DETAIL WHERE NO_REG = '{$noreg}' AND (KODE_ASSET_CONTROLLER is null OR KODE_ASSET_CONTROLLER = '' ) ";
+                $dt = DB::SELECT($sql);
+
+                if(!empty($dt))
+                {
+                    $message = '';
+                    foreach($dt as $k => $v)
+                    {
+                        $message .= $v->KODE_ASSET_SAP.",";
+                    }
+                    
+                    $result = array('status'=>false,'message'=> 'Kode IO Asset Controller belum diisi! ( Kode Asset SAP : '.rtrim($message,',').' )');
+                    return $result;
+                }
+                else
+                {
+                    $result = array('status'=>true,'message'=> 'Validasi IO PO SENDIRI Success');
+                    return $result;   
+                }
+                //END VALIDASI CEK IO JIKA MASIH ADA YANG KOSONG DI MASING2 ASET
             }
             else
             {
-                //Cek Data Jenis Asset harus kendaraan
-                
-                $sql = " SELECT * FROM TR_REG_ASSET_DETAIL WHERE NO_REG = '{$noreg}' AND (KODE_ASSET_AMS is not null OR KODE_ASSET_AMS != '' ) ";
+                $sql = " SELECT * FROM TR_REG_ASSET_DETAIL WHERE NO_REG = '{$noreg}' AND (KODE_ASSET_CONTROLLER is null OR KODE_ASSET_CONTROLLER = '' ) ";
 
                 /*hide it@071519
+                //Cek Data Jenis Asset harus kendaraan
                 $sql = " SELECT * FROM TR_REG_ASSET_DETAIL WHERE NO_REG = '".$noreg."' AND JENIS_ASSET IN ('E4030','4030', '4010') AND (KODE_ASSET_SAP != '' OR KODE_ASSET_SAP IS NOT NULL) ";
                 */
 
