@@ -966,11 +966,11 @@
 
                     item += "<div class='col-md-6'>";
                     
-                    item += " <div class='form-group'><label for='plant' class='col-md-4'>JENIS ASET</label><div class='col-md-8'><input type='text' class='form-control input-sm select-jenis-aset' name='jenis_asset-"+val.no_reg_item+"' value='"+val.jenis_asset+"' id='jenis_asset-"+val.no_reg_item+"' autocomplete='off' onChange='get_group("+val.no_reg_item+")'></div></div>";
+                    item += " <div class='form-group'><label for='plant' class='col-md-4'>JENIS ASET <sup style='color:red'>*</sup></label><div class='col-md-8'><input type='text' class='form-control input-sm select-jenis-aset' name='jenis_asset-"+val.no_reg_item+"' value='"+val.jenis_asset+"' id='jenis_asset-"+val.no_reg_item+"' autocomplete='off' onChange='get_group("+val.no_reg_item+")'></div></div>";
 
-                    item += " <div class='form-group'><label for='plant' class='col-md-4'>GROUP</label><div class='col-md-8'><input type='text' class='form-control input-sm' id='jenis_asset_group-"+val.no_reg_item+"' name='jenis_asset_group-"+val.no_reg_item+"' value='"+val.group+"' id='' autocomplete='off' onChange='get_subgroup("+val.no_reg_item+")'></div></div>";
+                    item += " <div class='form-group'><label for='plant' class='col-md-4'>GROUP <sup style='color:red'>*</sup></label><div class='col-md-8'><input type='text' class='form-control input-sm' id='jenis_asset_group-"+val.no_reg_item+"' name='jenis_asset_group-"+val.no_reg_item+"' value='"+val.group+"' id='' autocomplete='off' onChange='get_subgroup("+val.no_reg_item+")'></div></div>";
                     
-                    item += " <div class='form-group'><label for='plant' class='col-md-4'>SUB GROUP</label><div class='col-md-8'><input type='text' class='form-control input-sm' id='jenis_asset_subgroup-"+val.no_reg_item+"' name='jenis_asset_subgroup-"+val.no_reg_item+"' value='"+val.sub_group+"' id='' autocomplete='off'></div></div>";
+                    item += " <div class='form-group'><label for='plant' class='col-md-4'>SUB GROUP <sup style='color:red'>*</sup></label><div class='col-md-8'><input type='text' class='form-control input-sm' id='jenis_asset_subgroup-"+val.no_reg_item+"' name='jenis_asset_subgroup-"+val.no_reg_item+"' value='"+val.sub_group+"' id='' autocomplete='off'></div></div>";
                     item += " <div class='form-group'><label for='plant' class='col-md-4'>MERK</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='' value='"+val.merk+"' id='' autocomplete='off' readonly></div></div>";
                     item += " <div class='form-group'><label for='plant' class='col-md-4'>SPESIFIKASI/WARNA</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='' value='"+val.spesifikasi_or_warna+"' id='' autocomplete='off' readonly></div></div>";
                     item += " <div class='form-group'><label for='plant' class='col-md-4'>TAHUN</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='' value='"+val.tahun+"' id='' autocomplete='off' readonly></div></div>";
@@ -1093,9 +1093,9 @@
 
                         item += "<div class='form-group'><label for='' class='col-md-4'>INVENTORY NUMBER</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='inventory_number-"+val.no_reg_item+"' value='"+val.no_mesin_or_imei+"' id='inventory_number-"+val.no_reg_item+"' autocomplete='off' placeholder='Inventory Number' readonly></div></div>";
                         
-                        item += "<div class='form-group'><label for='' class='col-md-4'>QUANTITY</label><div class='col-md-8'><input type='number' class='form-control input-sm' name='quantity-"+val.no_reg_item+"' value='"+val.quantity_asset_sap+"' id='quantity-"+val.no_reg_item+"' autocomplete='off' required></div></div>";
+                        item += "<div class='form-group'><label for='' class='col-md-4'>QUANTITY <sup style='color:red'>*</sup></label><div class='col-md-8'><input type='number' class='form-control input-sm' name='quantity-"+val.no_reg_item+"' value='"+val.quantity_asset_sap+"' id='quantity-"+val.no_reg_item+"' autocomplete='off' required></div></div>";
                         
-                        item += "<div class='form-group'><label for='' class='col-md-4'>UOM</label><div class='col-md-8' style='display: inline-block'><input type='text' class='form-control input-sm' name='uom-"+val.no_reg_item+"' value='"+val.uom_asset_sap+"' id='uom-"+val.no_reg_item+"' xautocomplete='off' required></div></div>";
+                        item += "<div class='form-group'><label for='' class='col-md-4'>UOM <sup style='color:red'>*</sup></label><div class='col-md-8' style='display: inline-block'><input type='text' class='form-control input-sm' name='uom-"+val.no_reg_item+"' value='"+val.uom_asset_sap+"' id='uom-"+val.no_reg_item+"' xautocomplete='off' required></div></div>";
 
                         item += "<div class='form-group'><label for='' class='col-md-4'>CAPITALIZED</label><div class='col-md-8'><input type='text' class='form-control input-sm capitalized_on_date' name='capitalized_on-"+val.no_reg_item+"' value='"+val.capitalized_on+"' id='capitalized_on-"+val.no_reg_item+"' autocomplete='off' placeholder='yyyy-mm-dd' required></div></div>";
 
@@ -1107,7 +1107,7 @@
 
                         item += "<div class='form-group'><label for='' class='col-md-4'>BUSINESS AREA</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='business_area-"+val.no_reg_item+"' value='"+val.business_area+"' id='business_area-"+val.no_reg_item+"' autocomplete='off' readonly></div></div>";
 
-                        item += "<div class='form-group'><label for='' class='col-md-4'>COST CENTER</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='cost_center-"+val.no_reg_item+"' value='"+val.cost_center+"' id='cost_center-"+val.no_reg_item+"' autocomplete='off' minlength='10' maxlength='10' required></div></div>";
+                        item += "<div class='form-group'><label for='' class='col-md-4'>COST CENTER <sup style='color:red'>*</sup></label><div class='col-md-8'><input type='text' class='form-control input-sm' name='cost_center-"+val.no_reg_item+"' value='"+val.cost_center+"' id='cost_center-"+val.no_reg_item+"' autocomplete='off' minlength='10' maxlength='10' required></div></div>";
 
                         item += "<div class='form-group'><label for='' class='col-md-4'>PLANT</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='plant-"+val.no_reg_item+"' value='"+val.business_area+"' id='plant-"+val.no_reg_item+"' autocomplete='off' readonly></div></div>";
 
