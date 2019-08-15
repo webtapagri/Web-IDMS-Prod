@@ -1722,20 +1722,32 @@ WHERE a.NO_REG = '{$noreg}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KODE_ASSET
         $noreg = str_replace("-", "/", $noreg);
         $request = array();
         $datax = '';
-        $sql = " SELECT a.kode_material FROM v_kode_asset_sap a WHERE a.no_reg = '{$noreg}' ";
+        $sql = " SELECT a.KODE_MATERIAL, a.NAMA_MATERIAL FROM v_kode_asset_sap a WHERE a.NO_REG = '{$noreg}' ";
         $data = DB::SELECT($sql);
         //echo "2<pre>"; print_r($sql); die();
 
-        if($data)
+        if(!empty($data))
         {
-            $datax .= $data[0]->KODE_MATERIAL;
-            foreach( $data as $k => $v )
+            $material = '';//;
+
+            if( $data[0]->KODE_MATERIAL != '' )
+            {
+                $material = $data[0]->KODE_MATERIAL;
+            }else
+            {
+                $material = $data[0]->NAMA_MATERIAL;
+            }
+
+
+            $datax .= $material;
+            /*foreach( $data as $k => $v )
             {
                 $request[] = array
                 (
                     'kode_material' => trim($v->KODE_MATERIAL),
                 );
             }
+            */
         }
         //echo "25".$datax; die();
         return $datax;

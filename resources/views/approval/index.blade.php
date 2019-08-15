@@ -45,13 +45,16 @@
       <li class=""><a href="#tab_2" data-toggle="tab" aria-expanded="false">HISTORY</a></li>
     </ul>
     <div class="tab-content">
-      <div class="tab-pane active" id="tab_1">
+        <div class="tab-pane active" id="tab_1">
             <div class="small table-container">
-                    <div class="table-actions-wrapper">
-                        <button class="btn btn-flat btn-sm btn-flat label-danger btn-refresh refresh-outstanding"><i class="glyphicon glyphicon-refresh" title="Refresh"></i></button><?php /* <div OnClick="approval('19.06/AMS/PDFA/00027')">test</div>*/ ?>
-                    </div>
+                
+                <div class="table-scroll">
 
-                    <table id="data-table" class="table table-bordered table-condensed">
+                <div class="table-actions-wrapper">
+                    <button class="btn btn-flat btn-sm btn-flat label-danger btn-refresh refresh-outstanding"><i class="glyphicon glyphicon-refresh" title="Refresh"></i></button><?php /* <div OnClick="approval('19.06/AMS/PDFA/00027')">test</div>*/ ?>
+                </div>
+
+                <table id="data-table" class="table table-bordered table-condensed">
                         <thead>
                             <tr role="row" class="heading">
                                 <th>DOCUMENT CODE</th>
@@ -87,12 +90,16 @@
                             </tr>
                         </thead>
                         <tbody></tbody>
-                    </table>
+                </table>
+                
+                </div>
+
             </div>
-      </div>
+        </div>
       <!-- /.tab-pane -->
       <div class="tab-pane" id="tab_2">
-        <div class="small table-container">
+            <div class="small table-container">
+                <div class="table-scroll">
                     <div class="table-actions-wrapper">
                         <button class="btn btn-flat btn-sm btn-flat label-danger btn-refresh refresh-history"><i class="glyphicon glyphicon-refresh" title="Refresh"></i></button><?php /* <div OnClick="history('19.06/AMS/PDFA/00009')">test</div> */ ?>
                     </div>
@@ -131,6 +138,7 @@
                         </thead>
                         <tbody></tbody>
                     </table>
+                </div>
             </div>
       </div>
       <!-- /.tab-pane -->
@@ -220,7 +228,7 @@
                         <div id="box-detail-item"></div>
 
                         <!-- LOG HISTORY OUTSTANDING --> 
-                        <div id="log-history-box-outstanding"></div>
+                        <div id="log-history-box-outstanding" class="table-scroll"></div>
 
                         <div class="form-group">
                             <label class="col-md-2">NOTE</label>
@@ -321,7 +329,7 @@
                             </div>
 
                             <!-- LOG HISTORY -->
-                            <div id="log-history-box"></div>
+                            <div id="log-history-box" class="table-scroll"></div>
                         
                         </div><!-- ROW -->                        
                         

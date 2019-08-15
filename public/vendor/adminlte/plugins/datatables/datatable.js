@@ -73,7 +73,7 @@ var Datatable = function() {
 
                     "pagingType": "bootstrap_extended", // pagination type(bootstrap, bootstrap_full_number or bootstrap_extended)
                     "autoWidth": false, // disable fixed width and enable fluid table
-                    "responsive": true,
+                    "responsive": false,
                     "processing": true, // enable/disable display message box on record load
                     "serverSide": true, // enable/disable server side ajax loading
 

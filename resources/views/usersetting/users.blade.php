@@ -6,42 +6,44 @@
         <div class="box">
             <div class="box-body">
                 <div class="table-container">
-                    <div class="table-actions-wrapper">
-                        <span></span>
-                        <button class="btn btn-sm btn-flat btn-danger btn-refresh-data-table" title="refresh"><i class="glyphicon glyphicon-refresh"></i></button>
-                        @if($data['access']->create == 1)
-                        <button class="btn btn-sm btn-flat btn-danger btn-add"><i class="glyphicon glyphicon-plus" title="Add new data"></i></button>
-                        @endif
+                    <div class="table-scroll">
+                        <div class="table-actions-wrapper">
+                            <span></span>
+                            <button class="btn btn-sm btn-flat btn-danger btn-refresh-data-table" title="refresh"><i class="glyphicon glyphicon-refresh"></i></button>
+                            @if($data['access']->create == 1)
+                            <button class="btn btn-sm btn-flat btn-danger btn-add"><i class="glyphicon glyphicon-plus" title="Add new data"></i></button>
+                            @endif
+                        </div>
+                        <table id="data-table" class="table table-condensed" width="100%">
+                            <thead>
+                                <tr role="row" class="heading">
+                                    <th>img</th>
+                                    <th>Username</th>
+                                    <th>Role</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Job Code</th>
+                                    <th>NIK</th>
+                                    <th>Area Code</th>
+                                    <th>Active</th>
+                                    <th>Action</th>
+                                </tr>
+                                <tr role="row" class="filter">
+                                    <th></th>
+                                    <th><input type="text" class="form-control input-xs form-filter" name="username" autocomplete="off"></th>
+                                    <th><input type="text" class="form-control input-xs form-filter" name="role" id="flt_role" autocomplete="off"></th>
+                                    <th><input type="text" class="form-control input-xs form-filter" name="name" autocomplete="off"></th>
+                                    <th><input type="text" class="form-control input-xs form-filter" name="email" autocomplete="off"></th>
+                                    <th><input type="text" class="form-control input-xs form-filter" name="job_code" autocomplete="off"></th>
+                                    <th><input type="text" class="form-control input-xs form-filter" name="nik" autocomplete="off"></th>
+                                    <th><input type="text" class="form-control input-xs form-filter" name="area_code" autocomplete="off"></th>
+                                    <th><input type="text" class="form-control input-xs form-filter" name="status" autocomplete="off"></th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
                     </div>
-                    <table id="data-table" class="table table-condensed" width="100%">
-                        <thead>
-                            <tr role="row" class="heading">
-                                <th>img</th>
-                                <th>Username</th>
-                                <th>Role</th>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Job Code</th>
-                                <th>NIK</th>
-                                <th>Area Code</th>
-                                <th>Active</th>
-                                <th>Action</th>
-                            </tr>
-                            <tr role="row" class="filter">
-                                <th></th>
-                                <th><input type="text" class="form-control input-xs form-filter" name="username" autocomplete="off"></th>
-                                <th><input type="text" class="form-control input-xs form-filter" name="role" id="flt_role" autocomplete="off"></th>
-                                <th><input type="text" class="form-control input-xs form-filter" name="name" autocomplete="off"></th>
-                                <th><input type="text" class="form-control input-xs form-filter" name="email" autocomplete="off"></th>
-                                <th><input type="text" class="form-control input-xs form-filter" name="job_code" autocomplete="off"></th>
-                                <th><input type="text" class="form-control input-xs form-filter" name="nik" autocomplete="off"></th>
-                                <th><input type="text" class="form-control input-xs form-filter" name="area_code" autocomplete="off"></th>
-                                <th><input type="text" class="form-control input-xs form-filter" name="status" autocomplete="off"></th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
                 </div>
             </div>
             <!-- /.box-body -->

@@ -6,38 +6,40 @@
         <div class="box">
             <div class="box-body">
                 <div class="table-container">
-                    <div class="table-actions-wrapper">
-                        <span></span>
-                        <button class="btn btn-sm btn-flat btn-danger btn-refresh-data-table" title="refresh"><i class="glyphicon glyphicon-refresh"></i></button>
-                        @if($data['access']->create == 1)
-                        <button class="btn btn-sm btn-flat btn-danger btn-save" OnClick="save()" title="save"><i class="fa fa-save"></i></button>
-                        @endif
+                    <div class="table-scroll">
+                        <div class="table-actions-wrapper">
+                            <span></span>
+                            <button class="btn btn-sm btn-flat btn-danger btn-refresh-data-table" title="refresh"><i class="glyphicon glyphicon-refresh"></i></button>
+                            @if($data['access']->create == 1)
+                            <button class="btn btn-sm btn-flat btn-danger btn-save" OnClick="save()" title="save"><i class="fa fa-save"></i></button>
+                            @endif
+                        </div>
+                        <table id="data-table" class="table table-condensed" width="100%">
+                            <thead>
+                                <tr role="row" class="heading">
+                                    <th width="30%">Role</th>
+                                    <th>Module</th>
+                                    <th>Menu</th>
+                                    <th>C</th>
+                                    <th>R</th>
+                                    <th>U</th>
+                                    <th>D</th>
+                                    <th>All</th>
+                                </tr>
+                                <tr role="row" class="filter">
+                                    <td><input type="text" class="form-control input-sm form-filter" name="role"> </td>
+                                    <td><input type="text" class="form-control input-sm form-filter" name="module"> </td>
+                                    <td><input type="text" class="form-control input-sm form-filter" name="menu"> </td>
+                                    <td><input type="text" class="form-control input-sm form-filter" name="create"> </td>
+                                    <td><input type="text" class="form-control input-sm form-filter" name="read"> </td>
+                                    <td><input type="text" class="form-control input-sm form-filter" name="update"> </td>
+                                    <td><input type="text" class="form-control input-sm form-filter" name="delete"> </td>
+                                    <td class="text-center"><i class="fa fa-check"></i></td>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
                     </div>
-                    <table id="data-table" class="table table-condensed" width="100%">
-                        <thead>
-                            <tr role="row" class="heading">
-                                <th width="30%">Role</th>
-                                <th>Module</th>
-                                <th>Menu</th>
-                                <th>C</th>
-                                <th>R</th>
-                                <th>U</th>
-                                <th>D</th>
-                                <th>All</th>
-                            </tr>
-                            <tr role="row" class="filter">
-                                <td><input type="text" class="form-control input-sm form-filter" name="role"> </td>
-                                <td><input type="text" class="form-control input-sm form-filter" name="module"> </td>
-                                <td><input type="text" class="form-control input-sm form-filter" name="menu"> </td>
-                                <td><input type="text" class="form-control input-sm form-filter" name="create"> </td>
-                                <td><input type="text" class="form-control input-sm form-filter" name="read"> </td>
-                                <td><input type="text" class="form-control input-sm form-filter" name="update"> </td>
-                                <td><input type="text" class="form-control input-sm form-filter" name="delete"> </td>
-                                <td class="text-center"><i class="fa fa-check"></i></td>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
                 </div>
             </div>
             <!-- /.box-body -->

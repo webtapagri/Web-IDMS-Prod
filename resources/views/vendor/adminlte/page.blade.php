@@ -38,6 +38,14 @@
         padding-right: 5px;
         font-size: 12px;
     }
+
+    @media (max-width: 800px) 
+    {
+      /* CSS goes here */
+      .table-scroll{
+        overflow: auto;
+      }
+    }
 </style>
 
 <div class="loading-event"></div>
