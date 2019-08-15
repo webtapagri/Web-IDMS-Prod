@@ -1095,7 +1095,7 @@
                         
                         item += "<div class='form-group'><label for='' class='col-md-4'>QUANTITY</label><div class='col-md-8'><input type='number' class='form-control input-sm' name='quantity-"+val.no_reg_item+"' value='"+val.quantity_asset_sap+"' id='quantity-"+val.no_reg_item+"' autocomplete='off' required></div></div>";
                         
-                        item += "<div class='form-group'><label for='' class='col-md-4'>UOM</label><div class='col-md-8' style='display: inline-block'><input type='text' class='form-control input-sm' name='uom-"+val.no_reg_item+"' value='"+val.uom_asset_sap+"' id='uom-"+val.no_reg_item+"' autocomplete='off' required></div></div>";
+                        item += "<div class='form-group'><label for='' class='col-md-4'>UOM</label><div class='col-md-8' style='display: inline-block'><input type='text' class='form-control input-sm' name='uom-"+val.no_reg_item+"' value='"+val.uom_asset_sap+"' id='uom-"+val.no_reg_item+"' xautocomplete='off' required></div></div>";
 
                         item += "<div class='form-group'><label for='' class='col-md-4'>CAPITALIZED</label><div class='col-md-8'><input type='text' class='form-control input-sm capitalized_on_date' name='capitalized_on-"+val.no_reg_item+"' value='"+val.capitalized_on+"' id='capitalized_on-"+val.no_reg_item+"' autocomplete='off' placeholder='yyyy-mm-dd' required></div></div>";
 
@@ -1154,9 +1154,18 @@
                         item += "<span class='label bg-blue'><i class='fa fa-bars'></i> KODE ASET</span><br/><br/>";
                         
                         item += "<div class='col-md-4'> ";
+                        
                         <?php if( $user_role == 'AC' ){ ?>
-                            item += "<div class='form-group'><label for='' class='col-md-4'>KODE ASET CONTROLLER</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='kode_aset_controller-"+val.no_reg_item+"' value='"+val.kode_asset_controller+"' id='kode_aset_controller-"+val.no_reg_item+"' autocomplete='off' onkeyup='get_kode_aset("+val.no_reg_item+")'><input type='hidden' id='request_kode_aset_input' name='request_kode_aset_input'><div class='btn btn-warning btn-sm' OnClick='validasiKodeAssetController("+val.po_type+","+val.no_reg_item+")' style='margin-right:25px;margin-top:5px'><i class='fa fa-save'></i> SAVE</div></div></div>";
-                            item += "</div>";
+                            
+                            item += "<div class='form-group'><label for='' class='col-md-4'>KODE ASET CONTROLLER</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='kode_aset_controller-"+val.no_reg_item+"' value='"+val.kode_asset_controller+"' id='kode_aset_controller-"+val.no_reg_item+"' autocomplete='off' onkeyup='get_kode_aset("+val.no_reg_item+")'><input type='hidden' id='request_kode_aset_input' name='request_kode_aset_input'>"; 
+                            
+                            if(tipe == 1)
+                            {
+                                item += "<div class='btn btn-warning btn-sm' OnClick='validasiKodeAssetController("+val.po_type+","+val.no_reg_item+")' style='margin-right:25px;margin-top:5px'><i class='fa fa-save'></i> SAVE</div>";
+                            }
+                            
+                            item += "</div></div></div>";
+
                         <?php }else{ ?>
                             item += "<div class='form-group'><label for='' class='col-md-4'>KODE ASET CONTROLLER</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='kode_aset_controller-"+val.no_reg_item+"' value='"+val.kode_asset_controller+"' id='kode_aset_controller-"+val.no_reg_item+"' autocomplete='off' onkeyup='get_kode_aset("+val.no_reg_item+")'><input type='hidden' id='request_kode_aset_input' name='request_kode_aset_input'></div></div>";
                             item += "</div>";
@@ -1206,8 +1215,14 @@
                         
                         item += "<div class='col-md-4'> ";
                         <?php if( $user_role == 'AC' ){ ?>
-                            item += "<div class='form-group'><label for='' class='col-md-4'>KODE ASET CONTROLLER</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='kode_aset_controller-"+val.no_reg_item+"' value='"+val.kode_asset_controller+"' id='kode_aset_controller-"+val.no_reg_item+"' autocomplete='off' onkeyup='get_kode_aset_amp("+val.no_reg_item+")'><input type='hidden' class='form-control input-sm' name='kode_aset_ams-"+val.no_reg_item+"' value='"+val.kode_asset_ams+"' id='kode_aset_ams-"+val.no_reg_item+"'><div class='btn btn-warning btn-sm' OnClick='validasiKodeAssetController("+val.po_type+","+val.no_reg_item+")' style='margin-right:25px;margin-top:5px'><i class='fa fa-save'></i> SAVE</div></div></div>";
-                            item += "</div>";
+                            item += "<div class='form-group'><label for='' class='col-md-4'>KODE ASET CONTROLLER</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='kode_aset_controller-"+val.no_reg_item+"' value='"+val.kode_asset_controller+"' id='kode_aset_controller-"+val.no_reg_item+"' autocomplete='off' onkeyup='get_kode_aset_amp("+val.no_reg_item+")'><input type='hidden' class='form-control input-sm' name='kode_aset_ams-"+val.no_reg_item+"' value='"+val.kode_asset_ams+"' id='kode_aset_ams-"+val.no_reg_item+"'>";
+                            
+                            if(tipe==1)
+                            {
+                                item += "<div class='btn btn-warning btn-sm' OnClick='validasiKodeAssetController("+val.po_type+","+val.no_reg_item+")' style='margin-right:25px;margin-top:5px'><i class='fa fa-save'></i> SAVE</div>";
+                            }
+                            
+                            item += "</div></div></div>";
                         <?php }else{ ?>
                             item += "<div class='form-group'><label for='' class='col-md-4'>KODE ASET CONTROLLER</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='kode_aset_controller-"+val.no_reg_item+"' value='"+val.kode_asset_controller+"' id='kode_aset_controller-"+val.no_reg_item+"' autocomplete='off' onkeyup='get_kode_aset_amp("+val.no_reg_item+")'><input type='hidden' class='form-control input-sm' name='kode_aset_ams-"+val.no_reg_item+"' value='"+val.kode_asset_ams+"' id='kode_aset_ams-"+val.no_reg_item+"'></div></div>";
                             item += "</div>";
@@ -1308,7 +1323,7 @@
             });
         $('input[name="jenis_asset_subgroup-'+no+'"]').val(ja_subgroup[0]).trigger('change');
 
-         var uom = $.parseJSON(JSON.stringify(dataJson('{!! route("get.select_uom") !!}' )));
+        var uom = $.parseJSON(JSON.stringify(dataJson('{!! route("get.select_uom") !!}' )));
             //$('input[name="jenis_asset_subgroup-'+no+'"]').empty().select2({
             $('input[name="uom-'+no+'"]').select2({
                 data: uom,
@@ -1459,6 +1474,16 @@
             notify({
                 type: 'warning',
                 message: " Cost Center < 10 char "
+            });
+            return false;
+        } 
+
+        // VALIDASI UOM
+        if( $.trim(uom) == "" )
+        {
+            notify({
+                type: 'warning',
+                message: " UOM is required "
             });
             return false;
         } 
