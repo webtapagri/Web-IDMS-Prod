@@ -180,4 +180,35 @@ class Select2Controller extends Controller
         ->get();
         return response()->json(array("data"=>$data));
     }
+
+    public function select_role()
+    {
+        $data = DB::table('TBM_ROLE')
+        ->select('id as id', 'name as text')
+        ->where('deleted', 0)
+        ->orderby('name', 'asc')
+        ->get();
+
+        return response()->json(array("data"=>$data));
+    }
+
+    public function select_user(Request $request) 
+    {
+        $data = DB::table( 'TBM_USER')
+        ->select('ID as id', 'NAME as text')
+        ->where( "ROLE_ID", $request->type)
+        ->orderby('NAME', 'asc')
+        ->get();
+
+        $arr = array();
+        $arr[] = array("id"=>"","text"=>"");
+        foreach ($data as $row) {
+            $arr[] = array(
+                "id" => $row->id,
+                "text" => $row->id .'-' . $row->text
+            );
+        }
+
+        return response()->json(array('data' => $arr));
+    }
 }

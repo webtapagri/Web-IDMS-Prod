@@ -156,7 +156,7 @@
                                 <?php /*
                                 content += '<button class="btn btn-flat btn-xs btn-danger btn-action btn-edit" title="edit data ' + row.id + '" onClick="edit(' + row.id + ')"><i class="fa fa-pencil"></i></button>';
                                 */ ?>
-                                content += '<a href="{{ url("master-asset/edit-data") }}/'+kode_asset_ams+'" target="blank"><button class="btn btn-flat btn-xs btn-danger btn-action btn-edit" title="edit data '+row.kode_asset_ams+'"><i class="fa fa-arrow-circle-right"></i></button></a>';
+                                content += '<a href="{{ url("master-asset/show-data") }}/'+kode_asset_ams+'" target="blank"><button class="btn btn-flat btn-xs btn-danger btn-action btn-edit" title="edit data '+row.kode_asset_ams+'"><i class="fa fa-arrow-circle-right"></i></button></a>';
                             }
 
                             return content;

@@ -183,7 +183,6 @@ Route::get('get-generaldata-assetcontroller', ['as' => 'get.generaldata_assetcon
 Route::get('get-select_role_idname', ['as' => 'get.select_role_idname', 'uses' => 'RolesController@select_role']);
 Route::get('get-select_user', ['as' => 'get.select_user', 'uses' => 'UsersController@select2']);
 Route::get('get-select_uom', ['as' => 'get.select_uom', 'uses' => 'Select2Controller@select_uom']);
-Route::get('get-select_uom', ['as' => 'get.select_uom', 'uses' => 'Select2Controller@select_uom']);
 
 /* WORKFLOW SETTING */
 Route::resource('/setting/workflow', 'WorkflowController');
@@ -252,7 +251,7 @@ Route::match(['get', 'post'], 'grid-master-asset', [
     'uses' => 'MasterAssetController@dataGrid'
 ]);
 //Route::get('/master-asset/edit/', 'MasterAssetController@show');
-Route::get('/master-asset/edit-data/{id}', 'MasterAssetController@show_edit');
+Route::get('/master-asset/show-data/{id}', 'MasterAssetController@show_edit');
 Route::get('/master-asset/show_qrcode/{ams}', 'MasterAssetController@show_qrcode')->name('ams');
 Route::get('/test_qrcode', 'MasterAssetController@test_qrcode');
 Route::get('/master-asset/print-qrcode/{noreg}', 'MasterAssetController@print_qrcode')->name('noreg');
@@ -262,5 +261,12 @@ Route::resource('/request', 'RequestAsetLainController');
 Route::get('/create/aset-lain', 'RequestAsetLainController@create');
 Route::post('/aset-lain/post', 'RequestAsetLainController@store');
 
+/* RESUME PROCESS */
+Route::get('/resume/document', 'ResumeController@index');
+Route::post('/resume/document-submit','ResumeController@document_submit');
+Route::get('/resume/user', 'ResumeController@user');
+Route::get('get-select_role_resume', ['as' => 'get.select_role_resume', 'uses' => 'Select2Controller@select_role']);
+Route::get('get-select_user_resume', ['as' => 'get.select_user_resume', 'uses' => 'Select2Controller@select_user']);
+Route::post('/resume/user-submit','ResumeController@user_submit');
 
 

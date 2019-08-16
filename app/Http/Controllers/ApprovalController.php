@@ -432,6 +432,14 @@ class ApprovalController extends Controller
     {
         $user_id = Session::get('user_id');
 
+        // IF UOM NULL or OBJECT VAL
+        $uom_asset_sap = $request->uom;
+        if (strpos($uom_asset_sap, '[object Object]') !== false) 
+        {
+            return response()->json(['status' => false, 'message' => 'UOM ASSET SAP error, silahkan utk diupdate kembali' ]);
+            die();
+        } 
+
         DB::beginTransaction();
 
         try 
@@ -1684,7 +1692,7 @@ WHERE a.NO_REG = '{$noreg}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KODE_ASSET
         $records = array();
 
         /*$sql = "SELECT a.*, date_format(a.date,'%d-%m-%Y %h:%i:%s') AS date2 FROM v_history a WHERE a.document_code = '{$noreg}' ORDER BY a.date";*/
-        $sql = "SELECT document_code,user_id,name,area_code,status_approval,notes,date FROM v_history_approval WHERE document_code = '{$noreg}' ORDER BY -date ASC, date ASC ";
+        $sql = "SELECT a.document_code,a.user_id,a.name AS name_role,a.area_code,a.status_approval,a.notes,a.date,b.name AS nama_lengkap FROM v_history_approval a LEFT JOIN TBM_USER b ON a.user_id = b.id WHERE a.document_code = '{$noreg}' ORDER BY -a.date ASC, -a.date ASC ";
 
         $data = DB::SELECT($sql);
         //echo "3<pre>"; print_r($data); die();
@@ -1702,8 +1710,8 @@ WHERE a.NO_REG = '{$noreg}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KODE_ASSET
                 $records[] = array(
                     'document_code' => $v->document_code,
                     'area_code' => $v->area_code,
-                    'user_id' => $v->user_id,
-                    'name' => $v->name,
+                    'nama_lengkap' => $v->nama_lengkap,
+                    'name_role' => $v->name_role,
                     //'status_dokumen' => $v->status_dokumen,
                     'status_approval' => $v->status_approval,
                     'notes' => $notes,
@@ -1795,8 +1803,15 @@ WHERE a.NO_REG = '{$noreg}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KODE_ASSET
         {
             foreach( $data as $k => $v )
             {
-                $proses = $this->synchronize_sap_process($v);
-                //echo "<pre>"; print_r($proses); die();
+                // IF UOM NULL or OBJECT VAL
+                $uom_asset_sap = $v->UOM_ASSET_SAP;
+                if (strpos($uom_asset_sap, '[object Object]') !== false) 
+                {
+                    return response()->json(['status' => false, 'message' => 'UOM ASSET SAP error, silahkan utk diupdate kembali' ]);
+                    die();
+                }   
+
+                $proses = $this->synchronize_sap_process($v);             
                 
                 if($proses['status']=='error')
                 {

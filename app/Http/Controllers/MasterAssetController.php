@@ -535,7 +535,7 @@ class MasterAssetController extends Controller
         //echo $amscode;
         //echo url($amscode); die();
         $tempDir = 'public/vendor/QRCode/temp/'; 
-        $codeContents = url('master-asset/edit-data/$amscode');
+        $codeContents = url('master-asset/show-data/$amscode');
         $filename = base64_decode($amscode);
         //$qrcode = new QRcode;
         //QRcode::png($codeContents, $tempDir.''.$filename.'.png', QR_ECLEVEL_L, 5);
