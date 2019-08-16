@@ -991,7 +991,7 @@
 
                             <?php if( $user_role == 'AMS' ){ if($data['outstanding'] != 0 ){ ?>
                                 item += "<div class='form-group' align='right'><div class='btn btn-warning btn-sm' value='Save' OnClick='saveItemDetail("+val.id+",\""+val.no_po+"\","+val.no_reg_item+")' style='margin-right:5px;xmargin-top:5px'><i class='fa fa-save'></i> SAVE</div><button type='button' class='btn btn-warning btn-sm' OnClick='delAsset("+val.id+")' style='margin-right: 15px' disabled><i class='fa fa-trash'></i> DELETE</button></div>";
-                            <?php } }else{ if($data['outstanding'] != 0 ){ ?>
+                            <?php } }else{ if($data['outstanding'] != 0 && $user_role == 'AMS' ){ ?>
                                 item += "<div class='form-group' align='right'><button type='button' class='btn btn-warning btn-sm' OnClick='delAsset("+val.id+")' style='margin-right: 15px' disabled><i class='fa fa-trash'></i> DELETE</button></div>";
                             <?php } }  ?>
                         }
@@ -999,7 +999,7 @@
                         {
                             <?php if( $user_role == 'AMS' ){ if($data['outstanding'] != 0 ){ ?>
                                 item += "<div class='form-group' align='right'><div class='btn btn-warning btn-sm' value='Save' OnClick='saveItemDetail("+val.id+",\""+val.no_po+"\","+val.no_reg_item+")' style='margin-right:5px;xmargin-top:5px'><i class='fa fa-save'></i> SAVE</div><div class='btn btn-warning btn-sm button-delete' value='Delete' OnClick='delAsset("+val.id+")' style='margin-right:15px'><i class='fa fa-trash'></i> DELETE</div></div>";
-                            <?php } }else{ if($data['outstanding'] != 0 ){ ?>
+                            <?php } }else{ if($data['outstanding'] != 0 && $user_role == 'AMS' ){ ?>
                                 item += "<div class='form-group' align='right'><div class='btn btn-warning btn-sm button-delete' value='Delete' OnClick='delAsset("+val.id+")' style='margin-right:15px'><i class='fa fa-trash'></i> DELETE</div></div>";
                             <?php } } ?>
                             //item += "<div class='form-group' align='right'><button type='button' class='btn btn-flat label-danger' OnClick='delAsset("+val.id+")' style='margin-right: 5px'>Delete</button></div>";
@@ -1196,6 +1196,15 @@
 
                             item += "<div class='col-md-4'> ";
                             item += "<div class='form-group'><label for='' class='col-md-4'>YEAR</label><div class='col-md-8'><input type='text' class='form-control input-sm md_year' name='md_year-"+val.no_reg_item+"' value='"+val.gi_year+"' id='md_year-"+val.no_reg_item+"' autocomplete='off' onkeyup='get_check_gi("+val.no_reg_item+","+val.po_type+")'></div></div>";
+                            item += "</div>";
+
+                            item += "<div class='col-md-4'>";
+                            
+                            if(tipe == 1)
+                            {
+                                item += "<div class='btn btn-warning btn-sm' OnClick='validasiGINumberYear("+val.po_type+","+val.no_reg_item+")'><i class='fa fa-save'></i> SAVE GI NUMBER & YEAR</div>";
+                            }
+
                             item += "</div>";
 
                             item += "</div></div>";
@@ -1691,8 +1700,8 @@
             item += '<table class="table xtable-condensed table-responsive table-striped" id="request-item-table" style="font-size:13px">';
             item += '<th>NO.</th>';
             item += '<th>AREA CODE</th>';
-            item += '<th>USER</th>';
-            item += '<th>ROLE</th>';
+            item += '<th>USER ID</th>';
+            item += '<th>NAME</th>';
             //item += '<th>STATUS DOKUMEN</th>';
             item += '<th>STATUS APPROVAL</th>';
             item += '<th>NOTES</th>';
@@ -1705,8 +1714,8 @@
                     item += "<tr style='height: 30px !important;font-size:11px !important;'>";
                     item += "<td>" + no + "</td>";
                     item += "<td>" + val.area_code + "</td>";
-                    item += "<td>" + val.nama_lengkap + "</td>";
-                    item += "<td>" + val.name_role + "</td>";
+                    item += "<td>" + val.user_id + "</td>";
+                    item += "<td>" + val.name + "</td>";
                     //item += "<td>" + val.status_dokumen + "</td>";
                     item += "<td>" + val.status_approval + "</td>";
                     item += "<td>" + val.notes + "</td>";
@@ -2111,6 +2120,73 @@
                 url: "{{ url('approval/update_kode_asset_controller') }}",
                 method: "POST",
                 data: param+"&kode_asset_controller="+kode_asset_controller+"&getnoreg="+getnoreg+"&kode_asset_nilai="+kode_asset_nilai+"&no_reg_item="+no_reg_item+"&po_type="+po_type,
+                beforeSend: function() {
+                    $('.loading-event').fadeIn();
+                },
+                success: function(result) 
+                {
+                    //alert(result.status);
+                    if (result.status) 
+                    {
+                        //$("#approve-modal").modal("hide");
+                        //$("#data-table").DataTable().ajax.reload();
+                        notify({
+                            type: 'success',
+                            message: result.message
+                        });
+                        //setTimeout(reload_page, 1000); 
+                    } 
+                    else 
+                    {
+                        notify({
+                            type: 'warning',
+                            message: result.message
+                        });
+                    }
+                    
+                },
+                complete: function() {
+                    jQuery('.loading-event').fadeOut();
+                }
+            }); 
+        }
+    }
+
+    function validasiGINumberYear(po_type,no_reg_item)
+    {
+        //alert(po_type); return false(); 
+        //alert(no_po); 
+        //alert(kode_vendor_update); //return false;
+
+        var getnoreg = $("#getnoreg").val(); //alert(getnoreg);
+        var no_registrasi= getnoreg.replace(/\//g, '-');
+        var md_number = $("#md_number-"+no_reg_item+"").val();
+        var md_year = $("#md_year-"+no_reg_item+"").val();
+        var ka_sap = $("#kode_aset_sap-"+no_reg_item+"").val();
+
+        var param = '';
+
+        // VALIDASI YEAR HARUS 4 CHAR
+        if( $.trim(md_year) < 4 )
+        {
+            notify({
+                type: 'warning',
+                message: " Year is required (4 char)"
+            });
+            return false;
+        } 
+
+        if(confirm('Confirm Save Number '+md_number+' & Year '+md_year+' ?'))
+        {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                url: "{{ url('approval/save_gi_number_year') }}",
+                method: "POST",
+                data: param+"&md_number="+md_number+"&getnoreg="+getnoreg+"&md_year="+md_year+"&no_reg_item="+no_reg_item+"&po_type="+po_type+"&ka_sap="+ka_sap,
                 beforeSend: function() {
                     $('.loading-event').fadeIn();
                 },

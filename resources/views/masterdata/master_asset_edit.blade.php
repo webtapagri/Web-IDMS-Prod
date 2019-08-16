@@ -66,7 +66,7 @@
 ?>
 
 @extends('adminlte::page')
-@section('title', 'Edit Data - Master Asset')
+@section('title', 'Data - Master Asset')
 @section('content')
 
 <style>
@@ -517,7 +517,7 @@
 <div class="box box-default">
 
     <div class="box-header with-border">
-      <h3 class="box-title"><span class="direct-chat-text" style="margin-left:0%"><b>RINCIAN FILE ASSET</b></span></h3>
+      <h3 class="box-title"><span class="direct-chat-text" style="margin-left:0%"><b>RINCIAN FILE ASSET 3</b></span></h3>
 
       <div class="box-tools pull-right">
         <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
@@ -530,86 +530,112 @@
     	<div class="row">
     	<?php 
 
-    		//echo "2<pre>"; print_r($data['file']);
+    		//echo "3<pre>"; print_r($data['file']); die();
     		$l = "";
+        $m = "";
+        $file_category_asset = '';
+        $file_category_noseri = '';
+        $file_category_imei = '';
 
     		if(!empty($data['file']))
     		{
     			header("Content-type: image/jpeg");
-
+ 
     			foreach( $data['file'] as $k => $v )
-    			{
-    				if( $v->FILE_CATEGORY == 'asset' )
+    			{ 
+    				
+            if( $v->FILE_CATEGORY == 'asset' )
     				{
-    					$l .= "<div class='col-md-4' align='center'>";
-    					$l .= "<span class='username'><b>".$v->JENIS_FOTO."</b></span>";
-    					$l .= "<img src='".$v->FILE_UPLOAD."' class='img img-responsive'/>";
-    					$l .= "<span class='username'><b>".$v->FILENAME."</b></span>";
-    					$l .= "</div>";
-    				}
-    				else
-    				{
-    					$l .= "<div class='col-md-4' align='center'>";
-    					$l .= "<span class='username'>foto aset</span>";
-    					$l .= "<img src='' class='img img-responsive'/>";
-    					$l .= "<span class='username'></span>";
-    					$l .= "</div>";
+                $file_category_asset .= 'asset';
+      					$l .= "<div class='col-xs-4' align='center'>";
+      					$l .= "<span class='username'><b>".$v->JENIS_FOTO."</b></span>";
+      					$l .= "<img src='".$v->FILE_UPLOAD."' class='img img-responsive'/>";
+      					$l .= "<span class='username'><b>".$v->FILENAME."</b></span>";
+      					$l .= "</div>";
     				}
 
+            
     				if( $v->FILE_CATEGORY == 'no seri' )
     				{
-    					$l .= "<div class='col-md-4' align='center'>";
-    					$l .= "<span class='username'><b>".$v->JENIS_FOTO."</b></span>";
-    					$l .= "<img src='".$v->FILE_UPLOAD."' class='img img-responsive'/>";
-    					$l .= "<span class='username'><b>".$v->FILENAME."</b></span>";
-    					$l .= "</div>";
+                $file_category_noseri .= 'no seri';
+      					$l .= "<div class='col-xs-4' align='center'>";
+      					$l .= "<span class='username'><b>".$v->JENIS_FOTO."</b></span>";
+      					$l .= "<img src='".$v->FILE_UPLOAD."' class='img img-responsive'/>";
+      					$l .= "<span class='username'><b>".$v->FILENAME."</b></span>";
+      					$l .= "</div>";
     				}
-    				else
-    				{
-    					$l .= "<div class='col-md-4' align='center'>";
-    					$l .= "<span class='username'>no seri</span>";
-    					$l .= "<img src='' class='img img-responsive'/>";
-    					$l .= "<span class='username'></span>";
-    					$l .= "</div>";
-    				}
-
+  
+            
     				if( $v->FILE_CATEGORY == 'imei' )
     				{
-    					$l .= "<div class='col-md-4' align='center'>";
-    					$l .= "<span class='username'><b>".$v->JENIS_FOTO."</b></span>";
-    					$l .= "<img src='".$v->FILE_UPLOAD."' class='img img-responsive'/>";
-    					$l .= "<span class='username'><b>".$v->FILENAME."</b></span>";
-    					$l .= "</div>";
+                  $file_category_imei .= 'imei';
+        					$l .= "<div class='col-xs-4' align='center'>";
+        					$l .= "<span class='username'><b>".$v->JENIS_FOTO."</b></span>";
+        					$l .= "<img src='".$v->FILE_UPLOAD."' class='img img-responsive'/>";
+        					$l .= "<span class='username'><b>".$v->FILENAME."</b></span>";
+        					$l .= "</div>";
     				}
-    				else
-    				{
-    					$l .= "<div class='col-md-4' align='center'>";
-    					$l .= "<span class='username'>IMEI</span>";
-    					$l .= "<img src='' class='img img-responsive'/>";
-    					$l .= "<span class='username'></span>";
-    					$l .= "</div>";
-    				}
-
-    				//echo "3<pre>"; print_r($v);
-    				/*
-    					[ID] => 2
-					    [KODE_ASSET] => 40100194
-					    [NO_REG_ITEM_FILE] => 1
-					    [NO_REG] => 19.07/AMS/PDFA/00030
-					    [JENIS_FOTO] => foto asset
-					    [FILENAME] => 144cda8044.jfif
-					    [DOC_SIZE] => 77312
-					    [FILE_CATEGORY] => asset
-					    [FILE_UPLOAD] => data:image/jpeg;base64,/9j/4AAQSkZJRgABAQIAOQA5AAD/
-					    [CREATED_BY] => 29
-					    [CREATED_AT] => 2019-07-08 09:55:37
-					    [UPDATED_BY] => 
-					    [UPDATED_AT] => 
-    				*/
+    					
     			}
-    		}
 
-    		echo $l; 
+          if( $file_category_asset == '' )
+          {
+              $m .= "<div class='col-xs-4' align='center'>";
+              $m .= "<span class='username'>Foto asset</span>";
+              $m .= "<img src='".url('img/default-img.png')."' class='img img-responsive'/>";
+              //$m .= "<span class='username'><b>".$v->FILENAME."</b></span>";
+              $m .= "</div>";
+          }
+
+          if( $file_category_noseri == '' )
+          {
+               $l .= "<div class='col-xs-4' align='center'>";
+               $l .= "<span class='username'>Foto no. seri / no rangka</span>";
+               $l .= "<img src='".url('img/default-img.png')."' class='img img-responsive'/>";
+               //$l .= "<span class='username'></span>";
+               $l .= "</div>";
+          }
+
+          if( $file_category_imei == '' )
+          {
+              $l .= "<div class='col-xs-4' align='center'>";
+              $l .= "<span class='username'>Foto No msin / IMEI</span>";
+              $l .= "<img src='".url('img/default-img.png')."' class='img img-responsive'/>";
+              //$l .= "<span class='username'></span>";
+              $l .= "</div>";    
+          }
+    		}
+        else
+        {
+            if( $file_category_asset == '' )
+            {
+                $m .= "<div class='col-xs-4' align='center'>";
+                $m .= "<span class='username'>Foto asset</span>";
+                $m .= "<img src='".url('img/default-img.png')."' class='img img-responsive'/>";
+                //$m .= "<span class='username'><b>".$v->FILENAME."</b></span>";
+                $m .= "</div>";
+            }
+
+            if( $file_category_noseri == '' )
+            {
+                 $l .= "<div class='col-xs-4' align='center'>";
+                 $l .= "<span class='username'>Foto no. seri / no rangka</span>";
+                 $l .= "<img src='".url('img/default-img.png')."' class='img img-responsive'/>";
+                 //$l .= "<span class='username'></span>";
+                 $l .= "</div>";
+            }
+
+            if( $file_category_imei == '' )
+            {
+                $l .= "<div class='col-xs-4' align='center'>";
+                $l .= "<span class='username'>Foto No msin / IMEI</span>";
+                $l .= "<img src='".url('img/default-img.png')."' class='img img-responsive'/>";
+                //$l .= "<span class='username'></span>";
+                $l .= "</div>";    
+            }
+        }
+    		echo $l;
+        echo $m; 
     	?>
     	</div>
 

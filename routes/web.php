@@ -72,6 +72,7 @@ Route::post('/approval/synchronize_amp', 'ApprovalController@synchronize_amp');
 Route::post('/approval/update_ka_con_temp', 'ApprovalController@update_ka_con_temp');
 Route::post('/approval/update_kode_vendor_aset_lain','ApprovalController@update_kode_vendor_aset_lain');
 Route::post('/approval/update_kode_asset_controller','ApprovalController@update_kode_asset_controller');
+Route::post('/approval/save_gi_number_year','ApprovalController@save_gi_number_year');
 //Route::get('grid-approval', ['as' => 'get.approval_grid', 'uses' => 'ApprovalController@dataGrid']);
 //Route::get('grid-approval-history', ['as' => 'get.approval_grid_history', 'uses' => 'ApprovalController@dataGridHistory']);
 Route::match(['get', 'post'], 'grid-approval', [

@@ -1691,8 +1691,11 @@ WHERE a.NO_REG = '{$noreg}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KODE_ASSET
 
         $records = array();
 
+        $sql = "SELECT document_code,user_id,name,area_code,status_approval,notes,date FROM v_history_approval WHERE document_code = '{$noreg}' ORDER BY -date ASC, date ASC ";
+
+        /*$sql = "SELECT a.document_code,a.user_id,a.name AS name_role,a.area_code,a.status_approval,a.notes,a.date,b.name AS nama_lengkap FROM v_history_approval a LEFT JOIN TBM_USER b ON a.user_id = b.id WHERE a.document_code = '{$noreg}' ORDER BY -a.date ASC, -a.date ASC ";*/
+
         /*$sql = "SELECT a.*, date_format(a.date,'%d-%m-%Y %h:%i:%s') AS date2 FROM v_history a WHERE a.document_code = '{$noreg}' ORDER BY a.date";*/
-        $sql = "SELECT a.document_code,a.user_id,a.name AS name_role,a.area_code,a.status_approval,a.notes,a.date,b.name AS nama_lengkap FROM v_history_approval a LEFT JOIN TBM_USER b ON a.user_id = b.id WHERE a.document_code = '{$noreg}' ORDER BY -a.date ASC, -a.date ASC ";
 
         $data = DB::SELECT($sql);
         //echo "3<pre>"; print_r($data); die();
@@ -1710,8 +1713,8 @@ WHERE a.NO_REG = '{$noreg}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KODE_ASSET
                 $records[] = array(
                     'document_code' => $v->document_code,
                     'area_code' => $v->area_code,
-                    'nama_lengkap' => $v->nama_lengkap,
-                    'name_role' => $v->name_role,
+                    'user_id' => $v->user_id,
+                    'name' => $v->name,
                     //'status_dokumen' => $v->status_dokumen,
                     'status_approval' => $v->status_approval,
                     'notes' => $notes,
@@ -2440,5 +2443,66 @@ WHERE a.NO_REG = '{$noreg}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KODE_ASSET
             return $result;   
         }
         //#1 END VALIDASI MAPPING INPUT KODE ASSET / IO
+    }
+
+    function save_gi_number_year(Request $request)
+    {
+        $po_type = $request->po_type;
+        $noreg = $request->getnoreg;
+        $gi_number = $request->md_number;
+        $gi_year = $request->md_year;
+        $ka_sap = $request->ka_sap;
+        $user_id = Session::get('user_id');
+
+        $sql = " SELECT COUNT(*) AS TOTAL FROM TR_REG_ASSET_DETAIL WHERE NO_REG = '{$noreg}' AND KODE_ASSET_SAP = {$ka_sap} AND (GI_NUMBER IS NOT NULL OR GI_NUMBER != '') AND (GI_YEAR IS NOT NULL OR GI_YEAR != '') ";
+        $jml = DB::SELECT($sql);
+        //echo "2<pre>"; print_r($jml);die();
+        if($jml[0]->TOTAL == 0)
+        {
+            
+            $service = API::exec(array(
+                'request' => 'GET',
+                'host' => 'ldap',
+                'method' => "check_gi?MBLNR=".$gi_number."&MJAHR=".$gi_year."&ANLN1=".$ka_sap."&ANLN2=0", 
+            ));
+            
+            $data = $service;
+
+            //echo "1<pre>"; print_r($data); die();
+            //$data = 1;
+
+            if( $data->TYPE == 'S' )
+            //if($data==1)
+            {
+                
+                DB::beginTransaction();
+                try 
+                {   
+                    $sql = " UPDATE TR_REG_ASSET_DETAIL SET GI_NUMBER = '{$gi_number}', GI_YEAR = '{$gi_year}', UPDATED_AT = current_timestamp(), UPDATED_BY = '{$user_id}' WHERE NO_REG = '{$noreg}' AND KODE_ASSET_SAP = '{$ka_sap}' ";
+                    //echo $sql; die();
+                    DB::UPDATE($sql);
+                    DB::commit();
+
+                    $result = array('status'=>true,'message'=> "Data GI is successfully updated");
+                }
+                catch (\Exception $e) 
+                {
+                    DB::rollback();
+                    $result = array('status'=>false,'message'=>$e->getMessage());
+                }
+                
+                //$result = array('status'=>'success','message'=> "Validation Success");
+            }
+            else
+            {
+                $result = array('status'=>false,'message'=> $data->MESSAGE.' (GI Number:'.$gi_number.' & Year : '.$gi_year.' )');
+            }
+            return $result;
+        }
+        else
+        {
+            $result = array('status'=>true,'message'=> "Data GI sudah di validasi");
+            return $result;
+        }
     }
 }
