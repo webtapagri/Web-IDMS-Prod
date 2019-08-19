@@ -290,7 +290,7 @@
                                             <div class="form-group material-group-input" id="input-specification">
                                                 <label for="part_no" class="col-md-2 col-md-offset-1 col-form-label">No Polisi</label>
                                                 <div class="col-md-8">
-                                                    <input type="text" class="form-control input-sm attr-material-group" name="asset_police_no" id="asset_police_no">
+                                                    <input type="text" class="form-control input-sm attr-material-group" name="asset_police_no" id="asset_police_no" placeholder="Khusus untuk kendaraan">
                                                 </div>
                                             </div>
                                             <div class="form-group material-group-input" id="input-specification">
@@ -391,13 +391,13 @@
                                             <div class="form-group material-group-input" id="input-specification">
                                                 <label for="part_no" class="col-md-2 col-md-offset-1 col-form-label">Nama <sup style="color:red">*</sup></label>
                                                 <div class="col-md-8">
-                                                    <input type="text" class="form-control input-sm attr-material-group" name="asset_pic_name" id="asset_pic_name">
+                                                    <input type="text" class="form-control input-sm attr-material-group" name="asset_pic_name" id="asset_pic_name" autocomplete="off">
                                                 </div>
                                             </div>
                                             <div class="form-group material-group-input" id="input-specification">
                                                 <label for="part_no" class="col-md-2 col-md-offset-1 col-form-label">Jabatan <sup style="color:red">*</sup></label>
                                                 <div class="col-md-8">
-                                                    <input type="text" class="form-control input-sm attr-material-group" name="asset_pic_level" id="asset_pic_level">
+                                                    <input type="text" class="form-control input-sm attr-material-group" name="asset_pic_level" id="asset_pic_level" autocomplete="off">
                                                 </div>
                                             </div>
                                         </div>

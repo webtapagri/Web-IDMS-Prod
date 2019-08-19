@@ -9,6 +9,7 @@ use function GuzzleHttp\json_encode;
 use Session;
 use API;
 use AccessRight;
+use Spipu\Html2Pdf\Html2Pdf;
 /* use NahidulHasan\Html2pdf\Facades\Pdf; */
 
 class ApprovalController extends Controller
@@ -433,12 +434,32 @@ class ApprovalController extends Controller
         $user_id = Session::get('user_id');
 
         // IF UOM NULL or OBJECT VAL
-        $uom_asset_sap = $request->uom;
+        $uom_asset_sap = $request->uom; //echo $uom_asset_sap; die();
+        $request_uom = '';
+        
         if (strpos($uom_asset_sap, '[object Object]') !== false) 
         {
-            return response()->json(['status' => false, 'message' => 'UOM ASSET SAP error, silahkan utk diupdate kembali' ]);
-            die();
-        } 
+            
+            // VALIDASI UOM ASSET SAP
+            $sql = " SELECT UOM_ASSET_SAP FROM TR_REG_ASSET_DETAIL a WHERE a.ID = $id AND a.NO_REG = '{$request->getnoreg}' AND a.NO_REG_ITEM = {$request->no_reg_item} ";
+            $uom_now_data = DB::SELECT($sql);
+            $uom_now = @$uom_now_data[0]->UOM_ASSET_SAP;
+            //echo "1<pre>"; print_r($uom_now);die();
+
+            if( $uom_now != $uom_asset_sap )
+            {
+                if($uom_now == '')
+                {
+                    $request_uom = $request->uom;
+                    return response()->json(['status' => false, 'message' => 'UOM ASSET SAP error / belum diisi, silahkan utk diupdate kembali!' ]);
+                    die();    
+                }
+                else
+                {
+                    $request_uom = $uom_now;
+                }           
+            }
+        }else{ $request_uom = $uom_asset_sap; }
 
         DB::beginTransaction();
 
@@ -460,7 +481,7 @@ class ApprovalController extends Controller
                             a.nama_asset_2 = '{$request->nama_asset_2}',
                             a.nama_asset_3 = '{$request->nama_asset_3}',
                             a.quantity_asset_sap = '{$request->quantity}',
-                            a.uom_asset_sap = '{$request->uom}',
+                            a.uom_asset_sap = '{$request_uom}',
                             {$co}
                             {$do}
                             a.cost_center = '{$request->cost_center}',
@@ -2298,7 +2319,7 @@ WHERE a.NO_REG = '{$noreg}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KODE_ASSET
                             a.kode_vendor = '{$request->new_kode_vendor}',
                             a.updated_by = '{$user_id}',
                             a.updated_at = current_timestamp()
-                    WHERE a.NO_REG = '{$request->getnoreg}' AND a.NO_PO = {$request->no_po} ";
+                    WHERE a.NO_REG = '{$request->getnoreg}' AND a.NO_PO = '{$request->no_po}' ";
             DB::UPDATE($sql);    
 
             DB::commit();
@@ -2504,5 +2525,125 @@ WHERE a.NO_REG = '{$noreg}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KODE_ASSET
             $result = array('status'=>true,'message'=> "Data GI sudah di validasi");
             return $result;
         }
+    }
+
+    public function print_io($noreg,$asset_po_id)
+    {
+        //$data = $this->get_data_print_io($noreg,$asset_po_id); 
+        //echo "3<pre>"; print_r($data[0]['nama_asset']); die();
+
+        $no_document = $noreg;
+        $no_document = str_replace("-", "/", $no_document);
+        $namafile = str_replace(".", "_", $noreg);
+
+        $html2pdf = new Html2Pdf('P', 'A4', 'en');
+        $html2pdf->writeHTML(view('approval.print_io', [
+            'no_document' => $no_document,
+            'data' => $this->get_data_print_io($noreg,$asset_po_id),
+            'name' => 'Triputra Agro Persada',
+        ]));
+
+        $pdf = $html2pdf->output("", "S");
+        return response($pdf)
+            ->header('Content-Type', 'application/pdf')
+            ->header('Content-Length', strlen($pdf))
+            ->header('Content-Disposition', 'inline; filename="Pengajuan_Print_IO_'.$namafile.'.pdf"');
+    }
+
+    function get_data_print_io($noreg,$id)
+    {
+        //echo $noreg.'/'.$id; die();
+
+        $kondisi = array(
+            'B' => 'Baik',
+            'BP' => 'Butuh Perbaikan',
+            'TB' => 'Tidak Baik'
+        );
+
+        $noreg = str_replace("-", "/", $noreg);
+
+        $records = array();
+        $sql = " SELECT a.*, b.jenis_asset_description AS JENIS_ASSET_NAME, c.group_description AS GROUP_NAME, d.subgroup_description AS SUB_GROUP_NAME, e.KODE_VENDOR, e.NAMA_VENDOR, e.BUSINESS_AREA AS BUSINESS_AREA, e.PO_TYPE AS PO_TYPE
+                    FROM TR_REG_ASSET_DETAIL a 
+                        LEFT JOIN TM_JENIS_ASSET b ON a.jenis_asset = b.jenis_asset_code 
+                        LEFT JOIN TM_GROUP_ASSET c ON a.group = c.group_code AND a.jenis_asset = c.jenis_asset_code
+                        LEFT JOIN TM_SUBGROUP_ASSET d ON a.sub_group = d.subgroup_code AND a.group = d.group_code
+                        LEFT JOIN TR_REG_ASSET e ON a.NO_REG = e.NO_REG
+                    WHERE a.no_reg = '{$noreg}' AND a.asset_po_id = '{$id}' AND (a.DELETED is null OR a.DELETED = '')
+                        ORDER BY a.no_reg_item ";
+        //echo $sql; die();
+        $data = DB::SELECT($sql);
+        //echo "<pre>"; print_r($data); die();
+
+        if($data)
+        {
+            foreach( $data as $k => $v )
+            {
+                $rolename = Session::get('role');
+                if( $rolename == 'AMS' )
+                {
+                    $kondisi_asset = trim($v->JENIS_ASSET);
+                    $group = trim($v->GROUP);
+                    $subgroup = trim($v->SUB_GROUP);
+                }
+                else
+                {
+                    $kondisi_asset = trim($v->JENIS_ASSET).'-'.trim($v->JENIS_ASSET_NAME);
+                    $group = trim($v->GROUP).'-'.trim($v->GROUP_NAME);
+                    $subgroup = trim($v->SUB_GROUP).'-'.trim($v->SUB_GROUP_NAME);
+                }
+
+                $records[] = array
+                (
+                    'id' => trim($v->ID),
+                    'no_po' => trim($v->NO_PO),
+                    'asset_po_id' => trim($v->ASSET_PO_ID),
+                    'tgl_po' => trim($v->CREATED_AT),
+                    'kondisi_asset' => trim(@$kondisi[$v->KONDISI_ASSET]),
+                    'jenis_asset' => trim($v->JENIS_ASSET).'-'.trim($v->JENIS_ASSET_NAME),
+                    //'jenis_asset' => $kondisi_asset,
+                    'group' => trim($v->GROUP).'-'.trim($v->GROUP_NAME),
+                    //'group' => $group,
+                    'sub_group' => trim($v->SUB_GROUP).'-'.trim($v->SUB_GROUP_NAME),
+                    //'sub_group' => $subgroup,
+                    'nama_asset' => trim($v->NAMA_ASSET),
+                    'merk' => trim($v->MERK),
+                    'spesifikasi_or_warna' => trim($v->SPESIFIKASI_OR_WARNA),
+                    'no_rangka_or_no_seri' => trim($v->NO_RANGKA_OR_NO_SERI),
+                    'no_mesin_or_imei' => trim($v->NO_MESIN_OR_IMEI),
+                    'no_polisi' => trim($v->NO_POLISI),
+                    'lokasi' => trim($v->LOKASI_BA_DESCRIPTION),
+                    'tahun' => trim($v->TAHUN_ASSET),
+                    'nama_penanggung_jawab_asset' => trim($v->NAMA_PENANGGUNG_JAWAB_ASSET),
+                    'jabatan_penanggung_jawab_asset' => trim($v->JABATAN_PENANGGUNG_JAWAB_ASSET),
+                    'info' => trim($v->INFORMASI),
+                    'file' => $this->get_asset_file($v->ID,$noreg),
+                    'nama_asset_1' => trim($v->NAMA_ASSET_1),
+                    'nama_asset_2' => trim($v->NAMA_ASSET_2),
+                    'nama_asset_3' => trim($v->NAMA_ASSET_3),
+                    'quantity_asset_sap' => trim($v->QUANTITY_ASSET_SAP),
+                    'uom_asset_sap' => trim($v->UOM_ASSET_SAP),
+                    'capitalized_on' => trim($v->CAPITALIZED_ON),
+                    'deactivation_on' => trim($v->DEACTIVATION_ON),
+                    'cost_center' => trim($v->COST_CENTER),
+                    'book_deprec_01' => trim($v->BOOK_DEPREC_01),
+                    'fiscal_deprec_15' => trim($v->FISCAL_DEPREC_15),
+                    'group_deprec_30' => trim($v->GROUP_DEPREC_30),
+                    'no_reg_item' => trim($v->NO_REG_ITEM),
+                    'vendor' => trim($v->KODE_VENDOR).'-'.trim($v->NAMA_VENDOR),
+                    'business_area' => trim($v->BUSINESS_AREA),
+                    'kode_asset_sap' => trim($v->KODE_ASSET_SAP),
+                    'kode_asset_controller' => trim($v->KODE_ASSET_CONTROLLER),
+                    'kode_asset_ams' => trim($v->KODE_ASSET_AMS),
+                    'po_type' => trim($v->PO_TYPE),
+                    'gi_number' => trim($v->GI_NUMBER),
+                    'gi_year' => trim($v->GI_YEAR),
+                    'total_asset' => $this->get_validasi_delete_asset($noreg),
+                    'nama_material' => trim($v->NAMA_MATERIAL)
+                );
+            }
+        }
+
+        return $records;
     }
 }

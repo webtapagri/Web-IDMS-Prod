@@ -53,7 +53,7 @@ function submit_resume()
     {
         notify({
             type: 'warning',
-            message: " No. Document belum diisi (min 2 char)"
+            message: " No. Document is required (min 2 char)"
         });
         return false;
     }

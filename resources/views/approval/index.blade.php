@@ -343,6 +343,19 @@
     </div>
 </div>
 
+<div id="pdf-modal" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title"><i id="modalHeader"></i></h4>
+            </div>
+            <div class="modal-body"></div>
+        </div>
+    </div>
+</div>
+
 @stop
 @section('js')
 <script>
@@ -1095,7 +1108,8 @@
                         
                         item += "<div class='form-group'><label for='' class='col-md-4'>QUANTITY <sup style='color:red'>*</sup></label><div class='col-md-8'><input type='number' class='form-control input-sm' name='quantity-"+val.no_reg_item+"' value='"+val.quantity_asset_sap+"' id='quantity-"+val.no_reg_item+"' autocomplete='off' required></div></div>";
                         
-                        item += "<div class='form-group'><label for='' class='col-md-4'>UOM <sup style='color:red'>*</sup></label><div class='col-md-8' style='display: inline-block'><input type='text' class='form-control input-sm' name='uom-"+val.no_reg_item+"' value='"+val.uom_asset_sap+"' id='uom-"+val.no_reg_item+"' autocomplete='off' required></div></div>";
+                        //alert(val.uom_asset_sap);                            
+                        item += "<div class='form-group'><label for='' class='col-md-4'>UOM <sup style='color:red'>*</sup></label><div class='col-md-8' style='display: inline-block'><input type='text' class='form-control input-sm' name='uom-"+val.no_reg_item+"' value='"+val.uom_asset_sap+"' id='uom-"+val.no_reg_item+"' required></div></div>";
 
                         item += "<div class='form-group'><label for='' class='col-md-4'>CAPITALIZED</label><div class='col-md-8'><input type='text' class='form-control input-sm capitalized_on_date' name='capitalized_on-"+val.no_reg_item+"' value='"+val.capitalized_on+"' id='capitalized_on-"+val.no_reg_item+"' autocomplete='off' placeholder='yyyy-mm-dd' required></div></div>";
 
@@ -1162,6 +1176,7 @@
                             if(tipe == 1)
                             {
                                 item += "<div class='btn btn-warning btn-sm' OnClick='validasiKodeAssetController("+val.po_type+","+val.no_reg_item+")' style='margin-right:25px;margin-top:5px'><i class='fa fa-save'></i> SAVE</div>";
+                                item += "<div class='btn btn-info btn-sm' OnClick='printFormIO("+val.asset_po_id+","+val.no_reg_item+")' style='margin-right:25px;margin-top:5px'><i class='fa fa-print'></i> PRINT FORM IO</div>";
                             }
                             
                             item += "</div></div></div>";
@@ -1229,6 +1244,7 @@
                             if(tipe==1)
                             {
                                 item += "<div class='btn btn-warning btn-sm' OnClick='validasiKodeAssetController("+val.po_type+","+val.no_reg_item+")' style='margin-right:25px;margin-top:5px'><i class='fa fa-save'></i> SAVE</div>";
+                                item += "<div class='btn btn-info btn-sm' OnClick='printFormIO("+val.asset_po_id+","+val.no_reg_item+")' style='margin-right:25px;margin-top:5px'><i class='fa fa-print'></i> PRINT FORM IO</div>";
                             }
                             
                             item += "</div></div></div>";
@@ -1337,7 +1353,7 @@
             $('input[name="uom-'+no+'"]').select2({
                 data: uom,
                 width: "100%",
-                allowClear: true,
+                allowClear: false,
                 placeholder: ' '
             });
         $('input[name="uom-'+no+'"]').val(uom).trigger('change');
@@ -2218,6 +2234,103 @@
             }); 
         }
     }
+
+    function printFormIO(asset_po_id,no_reg_item)
+    {
+        //alert(asset_po_id);
+        var getnoreg = $("#getnoreg").val(); //alert(getnoreg); return false;
+        var no_registrasi= getnoreg.replace(/\//g, '-');
+           
+        $('#pdf-modal .modal-title').text('FORM PARAMETER INTERNAL ORDER '+getnoreg+'');
+        $('#pdf-modal .modal-body').html('<iframe id="print" style="width:100%;height:500px;" frameborder="0" src="{{ url("printio") }}/'+no_registrasi+'/'+asset_po_id+'">');
+        $('#pdf-modal').modal({
+            backdrop: 'static',
+            keyboard: false
+        });
+        $('#print-modal').modal('show');
+    }
+
+    /*
+    function printFormIO_1(po_type,no_reg_item)
+    {
+        //alert(po_type); return false(); 
+        //alert(no_po); 
+        //alert(kode_vendor_update); //return false;
+
+        var getnoreg = $("#getnoreg").val(); alert(getnoreg); return false;
+        var no_registrasi= getnoreg.replace(/\//g, '-');
+        var kode_asset_controller = $("#kode_aset_controller-"+no_reg_item+"").val();
+        
+        if(po_type == 1 || po_type == 2 )
+        {
+            // AMP & LAIN
+            var kode_asset_nilai = $("#kode_asset_ams-"+no_reg_item+"").val();
+        }
+        else
+        {
+            // SAP
+            var kode_asset_nilai = $("#kode_aset_sap-"+no_reg_item+"").val();
+        }
+        
+
+        //alert(id+"_"+no_po+"_"+no_reg_item+"_"+no_registrasi);
+
+        var param = '';//$("#request-form-detail-asset-sap").serialize();
+        //alert(capitalized_on);
+
+        // VALIDASI COST CENTER HARUS 10 CHAR
+        if( $.trim(kode_asset_controller) < 2 )
+        {
+            notify({
+                type: 'warning',
+                message: " Kode Asset Controller belum diisi (min 2 char)"
+            });
+            return false;
+        } 
+
+        if(confirm('Confirm Update Code Asset Controller '+getnoreg+' ?'))
+        {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                url: "{{ url('approval/update_kode_asset_controller') }}",
+                method: "POST",
+                data: param+"&kode_asset_controller="+kode_asset_controller+"&getnoreg="+getnoreg+"&kode_asset_nilai="+kode_asset_nilai+"&no_reg_item="+no_reg_item+"&po_type="+po_type,
+                beforeSend: function() {
+                    $('.loading-event').fadeIn();
+                },
+                success: function(result) 
+                {
+                    //alert(result.status);
+                    if (result.status) 
+                    {
+                        //$("#approve-modal").modal("hide");
+                        //$("#data-table").DataTable().ajax.reload();
+                        notify({
+                            type: 'success',
+                            message: result.message
+                        });
+                        //setTimeout(reload_page, 1000); 
+                    } 
+                    else 
+                    {
+                        notify({
+                            type: 'warning',
+                            message: result.message
+                        });
+                    }
+                    
+                },
+                complete: function() {
+                    jQuery('.loading-event').fadeOut();
+                }
+            }); 
+        }
+    }
+    */
 
 </script>
 @stop

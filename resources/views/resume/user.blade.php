@@ -34,7 +34,7 @@
                     </div>
 
                     <div class="col-md-1">
-                        <div class="btn bg-red btn-flat margin" style="margin-top:0px"><i class="fa fa-toggle-right"></i> TO</div>
+                        <div class="btn bg-red btn-flat margin" style="margin-top:0px">TO</div>
                     </div>
 
                     <div class="col-md-5">
@@ -91,20 +91,38 @@ $("#user-role-old").select2({
 
 function submit_resume()
 {
-    var user_role_old = $("user-role-old").val();
+    var user_role_old = $("#user-role-old").val();
     var user_id_old = $("#user-id-old").val();
     var user_id_new = $("#user-id-new").val();
     //alert(no_document); return false;
     var param = '';
 
-    /*if( $.trim(user_role_old) == "" )
+    if( $.trim(user_role_old) == "" )
     {
         notify({
             type: 'warning',
             message: " User Role is required"
         });
         return false;
-    }*/
+    }
+
+    if( $.trim(user_id_old) == "" )
+    {
+        notify({
+            type: 'warning',
+            message: " User Old is required"
+        });
+        return false;
+    }
+
+    if( $.trim(user_id_new) == "" )
+    {
+        notify({
+            type: 'warning',
+            message: " User New is required"
+        });
+        return false;
+    }
 
     if(confirm('Confirm Resume User ?'))
     {

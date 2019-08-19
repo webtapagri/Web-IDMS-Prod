@@ -46,8 +46,9 @@
                         <div class="form-group">
                             <label for="plant" class="col-md-3">TIPE TRANSAKSI <sup style="color:red">*</sup></label>
                             <div class="col-md-6">
-                                <input type="text" class="form-control input-sm" name="transaction_type" id="transaction_type" value="BARANG" autocomplete="off" readonly="readonly">
-                                <?php /* <select class="form-control input-sm" name="transaction_type" id="transaction_type" required></select> */ ?>
+                                <select class="form-control input-sm" name="transaction_type" id="transaction_type" required></select>
+                                
+                                <?php /* <input type="text" class="form-control input-sm" name="transaction_type" id="transaction_type" value="BARANG" autocomplete="off" readonly="readonly"> */ ?>
                             </div>
                         </div>
                         <div class="form-group">
@@ -311,7 +312,7 @@
                                             <div class="form-group material-group-input" id="input-specification">
                                                 <label for="part_no" class="col-md-2 col-md-offset-1 col-form-label">No Polisi</label>
                                                 <div class="col-md-8">
-                                                    <input type="text" class="form-control input-sm attr-material-group" name="asset_police_no" id="asset_police_no">
+                                                    <input type="text" class="form-control input-sm attr-material-group" name="asset_police_no" id="asset_police_no" placeholder="Khusus untuk kendaraan">
                                                 </div>
                                             </div>
                                             <div class="form-group material-group-input" id="input-specification">
@@ -412,13 +413,13 @@
                                             <div class="form-group material-group-input" id="input-specification">
                                                 <label for="part_no" class="col-md-2 col-md-offset-1 col-form-label">Nama <sup style="color:red">*</sup></label>
                                                 <div class="col-md-8">
-                                                    <input type="text" class="form-control input-sm attr-material-group" name="asset_pic_name" id="asset_pic_name">
+                                                    <input type="text" class="form-control input-sm attr-material-group" name="asset_pic_name" id="asset_pic_name" autocomplete="off">
                                                 </div>
                                             </div>
                                             <div class="form-group material-group-input" id="input-specification">
                                                 <label for="part_no" class="col-md-2 col-md-offset-1 col-form-label">Jabatan <sup style="color:red">*</sup></label>
                                                 <div class="col-md-8">
-                                                    <input type="text" class="form-control input-sm attr-material-group" name="asset_pic_level" id="asset_pic_level">
+                                                    <input type="text" class="form-control input-sm attr-material-group" name="asset_pic_level" id="asset_pic_level" autocomplete="off">
                                                 </div>
                                             </div>
                                         </div>
@@ -521,7 +522,7 @@
         });
         */
 
-        /* $("#transaction_type").select2({
+        $("#transaction_type").select2({
             data: [{
                     id: '1',
                     text: 'Barang'
@@ -538,7 +539,7 @@
             width: "100%",
             allowClear: true,
             placeholder: ' '
-        }); */ 
+        });
 
         var plant = jQuery.parseJSON(JSON.stringify(dataJson('{!! route("get.generaldataplant") !!}')));
         jQuery("#business_area,  #asset_location").select2({
