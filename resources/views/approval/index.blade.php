@@ -967,10 +967,10 @@
                     
                     item += "<div class='box-body rincian-informasi-aset-box'>";
 
-                    if( val.deleted != "" )
+                    /*if( val.deleted != "" )
                     {
                         item += '<div class="col-md-12"><div class="alert alert-danger alert-dismissible"><h4><i class="icon fa fa-ban"></i> Alert!</h4>This asset has been deleted.</div></div>';
-                    }
+                    }*/
                     
                     item += "<div class='col-md-6'>";
                     item += "<div class='form-group'><label for='plant' class='col-md-4'>NO PO</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='' value='"+val.no_po+"' id='' autocomplete='off' readonly></div></div>";
@@ -1000,8 +1000,7 @@
 
                     if(tipe==1)
                     {
-                        if( val.deleted == "" )
-                        {
+                        //if( val.deleted == "" ){
                             if( val.total_asset == 1 )
                             {
                                 //alert(total_tab);
@@ -1024,7 +1023,7 @@
                                 <?php } } ?>
                                 //item += "<div class='form-group' align='right'><button type='button' class='btn btn-flat label-danger' OnClick='delAsset("+val.id+")' style='margin-right: 5px'>Delete</button></div>";
                             }
-                        }
+                        //}
                     }
 
                     item += "</div>";
@@ -1157,15 +1156,14 @@
                         item += "</table>";
                         item += "</div>";
 
-                        if( val.deleted == '' )
-                        {
+                        //if( val.deleted == '' ){
                             if(val.kode_asset_sap == '')
                             {
                                 <?php if( $user_role == 'AMS' ){ ?>
                                     item += "<div class='form-group' align='right'><div class='btn btn-warning btn-sm' value='Save' OnClick='saveAssetSap("+val.id+",\""+val.no_po+"\","+val.no_reg_item+")' style='margin-right:25px;margin-top:5px'><i class='fa fa-save'></i> SAVE</div></div>";
                                 <?php } ?>
                             }
-                        }
+                        //}
 
                         item += "</div>";
                         item += "</div></div>";
