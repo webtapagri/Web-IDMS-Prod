@@ -181,6 +181,12 @@
                                         <input type="text" class="form-control input-sm" value="" id="po-type" name="po-type" readonly>
                                     </div>
                                 </div>
+                                <div class="form-group">
+                                    <label for="plant" class="col-md-4">KODE VENDOR</label>
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-control input-sm" value="" id="kode-vendor" name="kode-vendor" readonly>
+                                    </div>
+                                </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
@@ -199,6 +205,12 @@
                                     <label for="plant" class="col-md-4">TANGGAL PENGAJUAN</label>
                                     <div class="col-md-6">
                                         <input type="text" class="form-control input-sm" value="" id="tanggal-reg" name="tanggal-reg" readonly>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="plant" class="col-md-4">NAMA VENDOR</label>
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-control input-sm" value="" id="nama-vendor" name="nama-vendor" readonly>
                                     </div>
                                 </div>
                             </div>
@@ -745,6 +757,8 @@
                 $("#request-form #business-area").val(data.business_area);
                 $("#request-form #requestor").val(data.requestor);
                 $("#request-form #tanggal-reg").val(data.tanggal_reg);
+                $("#request-form #kode-vendor").val(data.kode_vendor);
+                $("#request-form #nama-vendor").val(data.nama_vendor);
 
                 if(data.po_type == 'SAP')
                 {
@@ -1572,7 +1586,21 @@
         var specification = $("#specification").val();
 
         if( status == 'A' ){ status_desc = 'approve'; }else
-        if( status == 'R' ){ status_desc = 'reject' }else{ status_desc = 'cancel'; }
+        if( status == 'R' )
+        { 
+            status_desc = 'reject';
+            note_reject = $("#specification").val();
+
+            if( $.trim(note_reject) < 2 )
+            {
+                notify({
+                    type: 'warning',
+                    message: " Note Reject is required (min 2 char)"
+                });
+                return false;
+            } 
+
+        }else{ status_desc = 'cancel'; }
 
         if(confirm('confirm '+status_desc+' data ?'))
         {
@@ -1657,6 +1685,8 @@
                 $("#request-form-history #business-area").val(data.business_area);
                 $("#request-form-history #requestor").val(data.requestor);
                 $("#request-form-history #tanggal-reg").val(data.tanggal_reg);
+                $("#request-form-history #kode-vendor").val(data.kode_vendor);
+                $("#request-form-history #nama-vendor").val(data.nama_vendor);
 
                 var item = '<table class="table xtable-condensed table-responsive table-striped" id="request-item-table" style="font-size:13px">';
                 item += '<th>NO.</th>';

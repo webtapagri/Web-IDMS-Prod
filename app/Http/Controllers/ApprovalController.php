@@ -229,6 +229,9 @@ class ApprovalController extends Controller
                     'sync_amp' => $this->get_sinkronisasi_amp($noreg),
                     'sync_lain' => $this->get_sinkronisasi_lain($noreg),
                     'cek_reject' => $this->get_cek_reject($noreg),
+                    'vendor' => trim($v->KODE_VENDOR).' - '.trim($v->NAMA_VENDOR),
+                    'kode_vendor' =>trim($v->KODE_VENDOR),
+                    'nama_vendor' =>trim($v->NAMA_VENDOR),
                 );
 
             }
