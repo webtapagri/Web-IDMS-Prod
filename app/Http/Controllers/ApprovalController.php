@@ -291,17 +291,27 @@ class ApprovalController extends Controller
         $noreg = str_replace("-", "/", $noreg);
 
         $records = array();
+        
+        // ASSET YANG DIDELETE DITAMPILKAN IT@200819
         $sql = " SELECT a.*, b.jenis_asset_description AS JENIS_ASSET_NAME, c.group_description AS GROUP_NAME, d.subgroup_description AS SUB_GROUP_NAME, e.KODE_VENDOR, e.NAMA_VENDOR, e.BUSINESS_AREA AS BUSINESS_AREA, e.PO_TYPE AS PO_TYPE
                     FROM TR_REG_ASSET_DETAIL a 
                         LEFT JOIN TM_JENIS_ASSET b ON a.jenis_asset = b.jenis_asset_code 
                         LEFT JOIN TM_GROUP_ASSET c ON a.group = c.group_code AND a.jenis_asset = c.jenis_asset_code
                         LEFT JOIN TM_SUBGROUP_ASSET d ON a.sub_group = d.subgroup_code AND a.group = d.group_code
                         LEFT JOIN TR_REG_ASSET e ON a.NO_REG = e.NO_REG
-                    WHERE a.no_reg = '{$noreg}' AND a.asset_po_id = '{$id}' AND (a.DELETED is null OR a.DELETED = '')
+                    WHERE a.no_reg = '{$noreg}' AND a.asset_po_id = '{$id}' 
                         ORDER BY a.no_reg_item ";
-        //echo $sql; die();
+
+        /*$sql = " SELECT a.*, b.jenis_asset_description AS JENIS_ASSET_NAME, c.group_description AS GROUP_NAME, d.subgroup_description AS SUB_GROUP_NAME, e.KODE_VENDOR, e.NAMA_VENDOR, e.BUSINESS_AREA AS BUSINESS_AREA, e.PO_TYPE AS PO_TYPE
+                    FROM TR_REG_ASSET_DETAIL a 
+                        LEFT JOIN TM_JENIS_ASSET b ON a.jenis_asset = b.jenis_asset_code 
+                        LEFT JOIN TM_GROUP_ASSET c ON a.group = c.group_code AND a.jenis_asset = c.jenis_asset_code
+                        LEFT JOIN TM_SUBGROUP_ASSET d ON a.sub_group = d.subgroup_code AND a.group = d.group_code
+                        LEFT JOIN TR_REG_ASSET e ON a.NO_REG = e.NO_REG
+                    WHERE a.no_reg = '{$noreg}' AND a.asset_po_id = '{$id}' AND (a.DELETED is null OR a.DELETED = '')
+                        ORDER BY a.no_reg_item ";*/
+
         $data = DB::SELECT($sql);
-        //echo "<pre>"; print_r($data); die();
 
         if($data)
         {
@@ -366,7 +376,8 @@ class ApprovalController extends Controller
                     'gi_number' => trim($v->GI_NUMBER),
                     'gi_year' => trim($v->GI_YEAR),
                     'total_asset' => $this->get_validasi_delete_asset($noreg),
-                    'nama_material' => trim($v->NAMA_MATERIAL)
+                    'nama_material' => trim($v->NAMA_MATERIAL),
+                    'deleted' => trim($v->DELETED)
                 );
             }
         }
