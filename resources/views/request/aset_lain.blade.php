@@ -1371,11 +1371,11 @@
             item.foto_asset.type = "asset";
             item.foto_asset.size = foto.size;
 
-            if( item.foto_asset.size > 600000 )
+            if( item.foto_asset.size > 500000 )
             {
                 notify({
                         type: 'warning',
-                        message: " Foto Asset Size <= 600 KB ! "
+                        message: " Foto Asset Size <= 500 KB ! "
                     });
                 return false;
             }
@@ -1386,11 +1386,11 @@
             item.foto_asset_seri.type = "no seri";
             item.foto_asset_seri.size = foto.size;
 
-            if( item.foto_asset_seri.size > 600000 )
+            if( item.foto_asset_seri.size > 500000 )
             {
                 notify({
                         type: 'warning',
-                        message: " Foto Asset Seri <= 600 KB ! "
+                        message: " Foto Asset Seri <= 500 KB ! "
                     });
                 return false;
             }
@@ -1401,11 +1401,11 @@
             item.foto_asset_mesin.type = "imei";
             item.foto_asset_mesin.size = foto.size;
             
-            if( item.foto_asset_mesin.size > 600000 )
+            if( item.foto_asset_mesin.size > 500000 )
             {
                 notify({
                         type: 'warning',
-                        message: " Foto Mesin Seri <= 600 KB ! "
+                        message: " Foto Mesin Seri <= 500 KB ! "
                     });
                 return false;
             }

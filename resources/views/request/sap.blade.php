@@ -1581,16 +1581,18 @@
         };
 
         var foto = src.files[0];
+        //var total_size_foto = 0;
+        
         if (code == 'asset') {
             item.foto_asset.name = foto.name;
             item.foto_asset.type = "asset";
             item.foto_asset.size = foto.size;
 
-            if( item.foto_asset.size > 600000 )
+            if( item.foto_asset.size > 500000 )
             {
                 notify({
                         type: 'warning',
-                        message: " Foto Asset Size <= 600 KB ! "
+                        message: " Foto Asset Size <= 500 KB ! "
                     });
               
 
@@ -1600,11 +1602,11 @@
             item.foto_asset_seri.type = "no seri";
             item.foto_asset_seri.size = foto.size;
             
-            if( item.foto_asset_seri.size > 600000 )
+            if( item.foto_asset_seri.size > 500000 )
             {
                 notify({
                         type: 'warning',
-                        message: " Foto Asset Seri <= 600 KB ! "
+                        message: " Foto Asset Seri <= 500 KB ! "
                     });
                 return false;
             }
@@ -1615,17 +1617,20 @@
             item.foto_asset_mesin.type = "imei";
             item.foto_asset_mesin.size = foto.size;
             
-            if( item.foto_asset_mesin.size > 600000 )
+            if( item.foto_asset_mesin.size > 500000 )
             {
                 notify({
                         type: 'warning',
-                        message: " Foto Mesin Seri <= 600 KB ! "
+                        message: " Foto Mesin Seri <= 500 KB ! "
                     });
                 return false;
             }
 
             $(".btn-foto-mesin-remove").removeClass('hide');
         }
+
+        //total_size_foto = item.foto_asset.size+item.foto_asset_seri.size+item.foto_asset_mesin.size;
+        //alert(total_size_foto);
 
         fr.readAsDataURL(src.files[0]);
         jQuery('.btn-remove-image' + id).removeClass('hide');
