@@ -302,6 +302,12 @@
                                         <input type="text" class="form-control input-sm" value="" id="po-type" name="po-type" readonly>
                                     </div>
                                 </div>
+                                <div class="form-group">
+                                    <label for="plant" class="col-md-4">KODE VENDOR</label>
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-control input-sm" value="" id="kode-vendor" name="kode-vendor" readonly>
+                                    </div>
+                                </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
@@ -320,6 +326,12 @@
                                     <label for="plant" class="col-md-4">TANGGAL PENGAJUAN</label>
                                     <div class="col-md-6">
                                         <input type="text" class="form-control input-sm" value="" id="tanggal-reg" name="tanggal-reg" readonly>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="plant" class="col-md-4">NAMA VENDOR</label>
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-control input-sm" value="" id="nama-vendor" name="nama-vendor" readonly>
                                     </div>
                                 </div>
                             </div>
