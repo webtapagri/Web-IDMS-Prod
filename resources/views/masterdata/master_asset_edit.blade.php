@@ -1,7 +1,7 @@
 <?php 
   //echo "<pre>".PHP_OS; die();
   //echo "6<pre>"; print_r($data['content']); die();
-  $qrcode = url('master-asset/edit-data/'.base64_encode($data['id']).'');
+  $qrcode = url('master-asset/show-data/'.base64_encode($data['id']).'');
   $code_ams = base64_encode($data['id']);
 
   //#### GENERATE PNG IMAGE

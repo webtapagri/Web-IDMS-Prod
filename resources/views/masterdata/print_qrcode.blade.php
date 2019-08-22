@@ -29,7 +29,7 @@ function print_document()
 <div class="visible-print text-center">
     <?php
 
-    	$qrcode = url('master-asset/edit-data/'.$data['code_ams'].'');
+    	$qrcode = url('master-asset/show-data/'.$data['code_ams'].'');
 
     	echo QrCode::margin(0)->size(250)->generate(''.$qrcode.'').'<br/>'; 
 
