@@ -271,4 +271,8 @@ Route::get('get-select_role_resume', ['as' => 'get.select_role_resume', 'uses' =
 Route::get('get-select_user_resume', ['as' => 'get.select_user_resume', 'uses' => 'Select2Controller@select_user']);
 Route::post('/resume/user-submit','ResumeController@user_submit');
 
+/* ALL REPORT */
+Route::get('/report/list-asset', 'ReportController@list_asset');
+Route::post('/report/list-asset/submit', 'ReportController@list_asset_submit');
+
 
