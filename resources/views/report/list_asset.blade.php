@@ -16,18 +16,9 @@ html, body {
 <div class="container">
     <div xclass="xtable-scroll ex1" xstyle="background-color: #FFF;overflow: auto;">
 
-    <?php 
+    <center><h1><u>REPORT ASSET</u></h1></center>
 
-        //echo "<pre>"; print_r($data);
-        /*
-        [0] => stdClass Object
-                (
-                    [ID] => 1
-                    [ASSET_PO_ID] => 1
-                    [NO_REG_ITEM] => 1
-                    [NO_REG] => 19.07/AMS/PDFA/00002
-                )
-        */
+    <?php 
         $l = "";
         $no = 1;
 
