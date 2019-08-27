@@ -1,3 +1,5 @@
+<?php //echo "yes"; die(); ?>
+
 @extends('adminlte::page')
 @section('title', 'FAMS - Request')
 
@@ -1550,13 +1552,15 @@
         }
     }
 
-    function showImage(code, id) {
+    function showImage(code, id) 
+    {
         var obj = current_page - 1;
         var key = jQuery('#detail_item_selected').val();
         var request = request_item[key];
         var item = request.detail[obj];
 
-        if (code == 'asset') {
+        if (code == 'asset') 
+        {
             var src = document.getElementById("foto_asset_1");
             var target = document.getElementById("foto_asset_thumb_1");
         } else if (code == 'seri') {
@@ -1567,9 +1571,9 @@
             var target = document.getElementById("foto_mesin_thumb_1");
         }
 
-
         var fr = new FileReader();
-        fr.onload = function(e) {
+        fr.onload = function(e) 
+        {
             target.src = this.result;
             if (code == 'asset') {
                 item.foto_asset.file = this.result;
@@ -1583,7 +1587,8 @@
         var foto = src.files[0];
         //var total_size_foto = 0;
         
-        if (code == 'asset') {
+        if (code == 'asset') 
+        {
             item.foto_asset.name = foto.name;
             item.foto_asset.type = "asset";
             item.foto_asset.size = foto.size;
@@ -1594,10 +1599,12 @@
                         type: 'warning',
                         message: " Foto Asset Size <= 500 KB ! "
                     });
-              
+            }      
 
             $(".btn-foto-asset-remove").removeClass('hide');
-        } else if (code == 'seri') {
+        } 
+        else if (code == 'seri') 
+        {
             item.foto_asset_seri.name = foto.name;
             item.foto_asset_seri.type = "no seri";
             item.foto_asset_seri.size = foto.size;
@@ -1629,11 +1636,8 @@
             $(".btn-foto-mesin-remove").removeClass('hide');
         }
 
-        //total_size_foto = item.foto_asset.size+item.foto_asset_seri.size+item.foto_asset_mesin.size;
-        //alert(total_size_foto);
-
         fr.readAsDataURL(src.files[0]);
-        jQuery('.btn-remove-image' + id).removeClass('hide');
+        $('.btn-remove-image' + id).removeClass('hide');
         var status = jQuery('#material-images-' + id).data('status');
     }
 
@@ -1898,14 +1902,6 @@
         return qty_po;
     }
 
-    /*function get_asset_controller(asset_type,asset_group,asset_sub_group)
-    {
-        //alert(asset_type+'==='+asset_group+'==='+asset_sub_group);
-        //var asset_sub_group_val = $("#asset_sub_group").val();
-
-        //$("#asset_controller").val(asset_type+"-"+asset_group+"-"+asset_sub_group);
-    }*/
-
     function send_email_create_po(noreg)
     {
         //alert(noreg);
@@ -1963,9 +1959,6 @@
 
     function getdatepicker()
     {
-        //alert("datepicker 7");
-        //$('#asset_year').on("keyup", function () {
-
         $("#asset_year").datepicker({
             format: "yyyy",
             autoclose: true,
@@ -1973,13 +1966,6 @@
             minViewMode: "years",
             maxDate: "today"
         });
-
-        //});
-
-        //alert(datechoice)
-
-        //$("#asset_year").val("100");
-
     }
 
 </script>
