@@ -66,9 +66,9 @@ html, body {
                 <th rowspan='2'>COST CENTER</th>
                 <th rowspan='2'>QTY</th>
                 <th rowspan='2'>UOM</th>
-                <th rowspan='2'>JENIS ASSET</th>
-                <th rowspan='2'>GROUP</th>
-                <th rowspan='2'>SUB GROUP</th>
+                <th rowspan='2'>MRP</th>
+                <th colspan='3'>ASSET</th>
+                <th colspan='3'>STATUS</th>
             </tr>
             <tr>
                 <th>NAMA</th>
@@ -76,6 +76,12 @@ html, body {
                 <th>B</th>
                 <th>BP</th>
                 <th>RTLP</th>
+                <th>JENIS</th>
+                <th>GROUP</th>
+                <th>SUB GROUP</th>
+                <th>ASET</th>
+                <th>SEWA</th>
+                <th>DISPOSAL</th>
             </tr>";
 
             foreach( $data['report'] as $k => $v )
@@ -102,7 +108,7 @@ html, body {
                 }
 
                 $l .= "<tr> 
-                    <td>$no 3</td>
+                    <td>$no</td>
                     <td>".$v['KODE_ASSET_AMS']."</td>
                     <td>".$v['KODE_ASSET_SAP']."</td>
                     <td>".$v['KODE_ASSET_CONTROLLER']."</td>
@@ -136,9 +142,13 @@ html, body {
                     <td>".$v['COST_CENTER']."</td>
                     <td>".$v['QUANTITY_ASSET_SAP']."</td>
                     <td>".$v['UOM_ASSET_SAP']."</td>
+                    <td></td>
                     <td>".$v['JENIS_ASSET']."</td>
                     <td>".$v['GROUP']."</td>
                     <td>".$v['SUB_GROUP']."</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
                 </tr>
                 ";
 

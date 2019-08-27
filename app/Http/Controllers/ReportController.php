@@ -62,31 +62,9 @@ class ReportController extends Controller
         if (empty(Session::get('authenticated')))
             return redirect('/login');
 
-        /*if (AccessRight::granted() === false) 
-        {
-            $data['page_title'] = 'Oops! Unauthorized.';
-            return response(view('errors.403')->with(compact('data')), 403);
-        }*/
-
         $where = "";
         $result = array();
-        //echo "<pre>"; print_r($_POST);
         $req = $request->all();
-        //echo "1<pre>"; print_r($req);
-        /*
-            [kode-aset-fams] => 
-            [kode-aset-sap] => 
-            [kode-aset-controller] => 
-            [nama-aset] => 
-            [asset-class] => 
-            [status] => 
-            [jenis-asset] => 
-            [group-asset] => 
-            [subgroup-asset] => 
-            [milik-aset] => 
-            [lokasi-aset] => 
-            [no-of-list] => 100
-        */
 
         if( !empty($req['kode-aset-fams']) )
         {
@@ -140,11 +118,10 @@ class ReportController extends Controller
 
         $sql = " SELECT a.*,b.DESCRIPTION AS NAMA_PT_PEMILIK,(SELECT NAMA_VENDOR FROM TR_REG_ASSET WHERE NO_REG = a.NO_REG) AS NAMA_VENDOR,(SELECT FILE_UPLOAD FROM TR_REG_ASSET_DETAIL_FILE  WHERE NO_REG = a.NO_REG AND FILE_CATEGORY = 'asset' ) AS FOTO_ASET, (SELECT FILE_UPLOAD FROM TR_REG_ASSET_DETAIL_FILE  WHERE NO_REG = a.NO_REG AND FILE_CATEGORY = 'no seri' ) AS FOTO_SERI, (SELECT FILE_UPLOAD FROM TR_REG_ASSET_DETAIL_FILE  WHERE NO_REG = a.NO_REG AND FILE_CATEGORY = 'imei' ) AS FOTO_MESIN
                     FROM TR_REG_ASSET_DETAIL a 
-                        LEFT JOIN TM_GENERAL_DATA b ON a.BA_PEMILIK_ASSET = b.DESCRIPTION_CODE
-                    WHERE 1=1 $where LIMIT ".$req['no-of-list']." "; //echo $sql; die();
+                        LEFT JOIN TM_GENERAL_DATA b ON a.BA_PEMILIK_ASSET = b.DESCRIPTION_CODE AND b.GENERAL_CODE = 'plant'
+                    WHERE 1=1 $where LIMIT ".$req['no-of-list']." ";
         
         $dt = DB::SELECT($sql);
-        //echo "4<pre>"; print_r($dt); die();
 
         if(!empty($dt))
         {
@@ -184,8 +161,6 @@ class ReportController extends Controller
                 ); 
             }
         }
-
-        //echo "4<pre>"; print_r($result); die();
 
         $access = AccessRight::access();    
         $data['page_title'] = 'Report List Asset';

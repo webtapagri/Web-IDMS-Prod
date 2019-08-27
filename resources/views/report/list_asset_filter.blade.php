@@ -84,13 +84,19 @@
                         <div class="form-group">
                             <label for="" class="col-sm-4 control-label">Bisnis Area Pemilik Aset</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control" id="milik-aset" name="milik-aset" placeholder="isi bisnis area pemilik aset" value="">
+                                <select class="form-control" id="milik-aset" name="milik-aset">
+                                    <option value=""></option>
+                                </select>
+                                <?php /* <input type="text" class="form-control" id="milik-aset" name="milik-aset" placeholder="isi bisnis area pemilik aset" value=""> */ ?>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="" class="col-sm-4 control-label">Bisnis Area Lokasi Aset</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control" id="lokasi-aset" name="lokasi-aset" placeholder="isi bisnis area lokasi aset" value="">
+                                <select class="form-control" id="lokasi-aset" name="lokasi-aset">
+                                    <option value=""></option>
+                                </select>
+                                <?php /* <input type="text" class="form-control" id="lokasi-aset" name="lokasi-aset" placeholder="isi bisnis area lokasi aset" value=""> */ ?>
                             </div>
                         </div>
                         <div class="form-group">
@@ -128,6 +134,15 @@ var jenis_asset = $.parseJSON(JSON.stringify(dataJson('{!! route("get.select_jen
 //$('#jenis_asset-'+no+'').select2({
 $('#jenis-asset').select2({    
     data: jenis_asset,
+    width: '100%',
+    placeholder: '',
+    allowClear: true,
+});
+
+var bisnis_area = $.parseJSON(JSON.stringify(dataJson('{!! route("get.generaldataplant") !!}')));
+//$('#jenis_asset-'+no+'').select2({
+$('#milik-aset, #lokasi-aset').select2({    
+    data: bisnis_area,
     width: '100%',
     placeholder: '',
     allowClear: true,
