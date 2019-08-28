@@ -154,6 +154,7 @@ class ReportController extends Controller
                     'FOTO_SERI' => $v->FOTO_SERI,
                     'FOTO_MESIN' => $v->FOTO_MESIN,
                     'ASSET_CLASS' => $v->ASSET_CLASS,
+                    'TAHUN_ASSET' => $v->TAHUN_ASSET,
                     'BOOK_DEPREC_01' => $v->BOOK_DEPREC_01,
                     'COST_CENTER' => $v->COST_CENTER,
                     'QUANTITY_ASSET_SAP' => $v->QUANTITY_ASSET_SAP,

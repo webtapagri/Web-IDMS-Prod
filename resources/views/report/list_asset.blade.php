@@ -16,7 +16,7 @@ html, body {
 <div class="container">
     <div xclass="xtable-scroll ex1" xstyle="background-color: #FFF;overflow: auto;">
 
-    <center><h1><u>REPORT ASSET</u></h1></center>
+    <center><h1><u>REPORT ASSET</u></h1><h3>Per tanggal : <?php echo date('d/m/Y'); ?></h3></center>
 
     <?php 
         $l = "";
@@ -126,10 +126,10 @@ html, body {
                     <td><img src='".$v['FOTO_SERI']."' width='100px' /></td>
                     <td><img src='".$v['FOTO_MESIN']."' width='100px' /></td>
                     <td>".$v['ASSET_CLASS']."</td>
-                    <td>".$v['ASSET_CLASS']."</td>
-                    <td>".$v['ASSET_CLASS']."</td>
+                    <td>".$v['TAHUN_ASSET']."</td>
+                    <td></td>
+                    <td></td>
                     <td>".$v['BOOK_DEPREC_01']."</td>
-                    <td>".$v['ASSET_CLASS']."</td>
                     <td>".$v['COST_CENTER']."</td>
                     <td>".$v['QUANTITY_ASSET_SAP']."</td>
                     <td>".$v['UOM_ASSET_SAP']."</td>
