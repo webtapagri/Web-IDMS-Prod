@@ -44,7 +44,7 @@ class MasterAssetController extends Controller
         $sortColumn = "";
         $selectedColumn[] = "";
 
-        $selectedColumn = ['kode_asset_ams','kode_material','nama_material', 'ba_pemilik_asset', 'nama_asset', 'kode_asset_sap'];
+        $selectedColumn = ['kode_asset_ams','kode_material','nama_material', 'ba_pemilik_asset', 'lokasi_ba_description', 'nama_asset', 'kode_asset_sap'];
 
         if ($orderColumn) {
             $order = explode("as", $selectedColumn[$orderColumn]);
@@ -55,11 +55,21 @@ class MasterAssetController extends Controller
             }
         }
 
+        $user_area_code = Session::get('area_code');
+
         $sql = '
             SELECT ' . implode(", ", $selectedColumn) . '
                 FROM TM_MSTR_ASSET
                 WHERE 1=1
         ';
+
+        if(  $user_area_code != '' )
+        {
+            if( $user_area_code != 'All' )
+            {
+                $sql .= " AND ( ba_pemilik_asset in (".$user_area_code.") OR lokasi_ba_code in (".$user_area_code.") ) ";
+            }
+        }
 
         if ($request->kode_asset_ams)
         $sql .= " AND kode_asset_ams like'%" . $request->kode_asset_ams . "%'";
@@ -72,6 +82,9 @@ class MasterAssetController extends Controller
 
         if ($request->ba_pemilik_asset)
         $sql .= " AND ba_pemilik_asset like'%" . $request->ba_pemilik_asset . "%'";
+
+        if ($request->lokasi_ba_description)
+        $sql .= " AND lokasi_ba_description like'%" . $request->lokasi_ba_description . "%'";
 
         if ($request->nama_asset)
         $sql .= " AND nama_asset like'%" . $request->nama_asset . "%'";

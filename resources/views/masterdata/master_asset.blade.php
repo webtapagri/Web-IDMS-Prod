@@ -1,3 +1,5 @@
+<?php //echo "<pre>"; print_r(session()->all()); die(); ?>
+
 @extends('adminlte::page')
 @section('title', 'FAMS - Master General Data')
 @section('content')
@@ -16,21 +18,23 @@
                     <table id="data-table" class="table table-condensed" width="100%">
                         <thead>
                             <tr role="row" class="heading">
-                                <th>KODE ASSET AMS</th>
                                 <th>KODE MATERIAL</th>
                                 <th>NAMA MATERIAL</th>
                                 <th>BA PEMILIK ASSET</th>
+                                <th>LOKASI ASSET</th>
                                 <th>NAMA ASSET</th>
                                 <th>KODE ASSET SAP</th>
+                                <th>KODE ASSET AMS</th>
                                 <th width="8%">ACTION</th>
                             </tr>
                             <tr role="row" class="filter">
-                                <th><input type="text" class="form-control input-xs form-filter" name="kode_asset_ams" autocomplete="off"></th>
                                 <th><input type="text" class="form-control input-xs form-filter" name="kode_material" autocomplete="off"></th>
                                 <th><input type="text" class="form-control input-xs form-filter" name="nama_material" autocomplete="off"></th>
                                 <th><input type="text" class="form-control input-xs form-filter" name="ba_pemilik_asset" autocomplete="off"></th>
+                                <th><input type="text" class="form-control input-xs form-filter" name="lokasi_ba_description" autocomplete="off"></th>
                                 <th><input type="text" class="form-control input-xs form-filter" name="nama_asset" autocomplete="off"></th>
                                 <th><input type="text" class="form-control input-xs form-filter" name="kode_asset_sap" autocomplete="off"></th>
+                                <th><input type="text" class="form-control input-xs form-filter" name="kode_asset_ams" autocomplete="off"></th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -120,10 +124,6 @@
                 },
                 columns: [
                     {
-                        data: 'kode_asset_ams',
-                        name: 'kode_asset_ams'
-                    },
-                    {
                         data: 'kode_material',
                         name: 'kode_material'
                     },
@@ -136,12 +136,20 @@
                         name: 'ba_pemilik_asset'
                     },
                     {
+                        data: 'lokasi_ba_description',
+                        name: 'lokasi_ba_description'
+                    },
+                    {
                         data: 'nama_asset',
                         name: 'nama_asset'
                     },
                     {
                         data: 'kode_asset_sap',
                         name: 'kode_asset_sap'
+                    },
+                    {
+                        data: 'kode_asset_ams',
+                        name: 'kode_asset_ams'
                     },
                     {
                         "render": function(data, type, row) 

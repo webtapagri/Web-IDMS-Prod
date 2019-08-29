@@ -77,7 +77,7 @@ class LDAPController extends Controller
             Session::put('user', $username);
 
             $profile = DB::table('TBM_USER as user')
-            ->select('user.id as id', 'user.img as img', 'user.username', 'role.id as role_id', 'user.name as name', 'role.name as role_name')
+            ->select('user.id as id', 'user.img as img', 'user.username', 'role.id as role_id', 'user.name as name', 'role.name as role_name','user.area_code as area_code')
             ->join('TBM_ROLE as role', 'role.id', '=', 'user.role_id')
             ->where([
                 ['user.username','=',  $username],
@@ -92,6 +92,7 @@ class LDAPController extends Controller
                 Session::put('name', $profile[0]->name);
                 Session::put('role', $profile[0]->role_name);
                 Session::put('role_id', $profile[0]->role_id);
+                Session::put('area_code', $profile[0]->area_code);
             } 
             else 
             {
