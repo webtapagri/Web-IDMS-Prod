@@ -1373,7 +1373,7 @@
 
         var ja_subgroup = sub_group.split('-');
         //var assetsubgroup = $.parseJSON(JSON.stringify(dataJson('{!! route("get.assetsubgroup") !!}?group=' + group )));
-        var assetsubgroup = $.parseJSON(JSON.stringify(dataJson('{!! route("get.select_subgroup_code") !!}' )));
+        var assetsubgroup = $.parseJSON(JSON.stringify(dataJson('{!! route("get.select_subgroup_code_condition") !!}?group=' + ja_group[0] )));
             //$('input[name="jenis_asset_subgroup-'+no+'"]').empty().select2({
             $('input[name="jenis_asset_subgroup-'+no+'"]').select2({
                 data: assetsubgroup,

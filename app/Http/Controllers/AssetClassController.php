@@ -709,6 +709,17 @@ class AssetClassController extends Controller
         return response()->json(array("data"=>$data));
     }
 
+    public function select_subgroup_code_condition(Request $request)
+    {
+        $data = DB::table('TM_SUBGROUP_ASSET')
+        ->select('subgroup_code as id',DB::raw('CONCAT(subgroup_code,"-",subgroup_description) as text'))
+        //->select('subgroup_code as id', 'subgroup_description as text')
+        ->where('group_code', $request->group)
+        ->orderby('subgroup_description', 'asc')
+        ->get();
+        return response()->json(array("data"=>$data));
+    }
+
     public function select_asset_controller()
     {
         $data = DB::table('TM_GENERAL_DATA')

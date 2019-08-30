@@ -180,6 +180,7 @@ Route::get('get-select_jenis_asset_code', ['as' => 'get.select_jenis_asset_code'
 Route::get('get-select_jenis_asset_code_text_only', ['as' => 'get.select_jenis_asset_code_text_only', 'uses' => 'AssetClassController@select_jenis_asset_code_text_only']);
 Route::get('get-select_group_code', ['as' => 'get.select_group_code', 'uses' => 'AssetClassController@select_group_code']);
 Route::get('get-select_subgroup_code', ['as' => 'get.select_subgroup_code', 'uses' => 'AssetClassController@select_subgroup_code']);
+Route::get('get-select_subgroup_code_condition', ['as' => 'get.select_subgroup_code_condition', 'uses' => 'AssetClassController@select_subgroup_code_condition']);
 Route::get('get-select_asset_controller', ['as' => 'get.select_asset_controller', 'uses' => 'AssetClassController@select_asset_controller']);
 Route::get('get-generaldata-assetcontroller', ['as' => 'get.generaldata_assetcontroller', 'uses' => 'Select2Controller@generaldata_assetcontroller']);
 Route::get('get-select_role_idname', ['as' => 'get.select_role_idname', 'uses' => 'RolesController@select_role']);
