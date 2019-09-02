@@ -19,10 +19,16 @@ class FamsEmailController extends Controller
 		$document_code = str_replace("-", "/", $no_registrasi); 
 	
 		// 1. DATA ASSET
-		$sql = " SELECT distinct(document_code) as document_code, KODE_MATERIAL, NAMA_MATERIAL, LOKASI_BA_CODE, PO_TYPE, NO_PO, BA_PEMILIK_ASSET   
-					FROM v_email_approval WHERE document_code = '{$document_code}'
-					order by nama_material "; 
-		//$sql = " SELECT * FROM v_email_approval WHERE document_code = '{$document_code}' ";
+		$sql = " SELECT distinct(a.document_code) as document_code, a.KODE_MATERIAL, a.NAMA_MATERIAL, a.LOKASI_BA_CODE, a.PO_TYPE, a.NO_PO, a.BA_PEMILIK_ASSET, b.DESCRIPTION as LOKASI_BA_CODE_DESC, c.DESCRIPTION as BA_PEMILIK_ASSET_DESC   
+					FROM v_email_approval a 
+					LEFT JOIN TM_GENERAL_DATA b ON a.LOKASI_BA_CODE = b.DESCRIPTION_CODE AND b.GENERAL_CODE = 'PLANT'
+					LEFT JOIN TM_GENERAL_DATA c ON a.BA_PEMILIK_ASSET = c.DESCRIPTION_CODE AND c.GENERAL_CODE = 'PLANT'
+					WHERE a.document_code = '{$document_code}'
+					order by a.nama_material ";
+		
+		/*$sql2 = " SELECT distinct(document_code) as document_code, KODE_MATERIAL, NAMA_MATERIAL, LOKASI_BA_CODE, PO_TYPE, NO_PO, BA_PEMILIK_ASSET FROM v_email_approval WHERE document_code = '{$document_code}' order by nama_material "; */
+		//$sql1 = " SELECT * FROM v_email_approval WHERE document_code = '{$document_code}' ";
+		
 		$dt = DB::SELECT($sql);
 
 		// 2. HISTORY APPROVAL 
@@ -42,7 +48,6 @@ b ON a.USER_ID = b.ID WHERE a.document_code = '{$document_code}' AND status_appr
 		$dt_email_to = DB::SELECT($sql3);
 		
 		#1 IT@220719 
-		//echo "2<pre>"; print_r($dt_email_to); die();
 		if(!empty($dt_email_to))
 		{
 			foreach($dt_email_to as $k => $v)
@@ -53,42 +58,6 @@ b ON a.USER_ID = b.ID WHERE a.document_code = '{$document_code}' AND status_appr
 					->send(new FamsEmail($data));
 			}
 		}
-
-		/*
-		#2 IT@220719 - SEND EMAIL VIA SERVICE LDAP 
-		$data->email_to = $dt_email_to;
-
-		//$data_asset = urlencode(serialize($data->noreg));
-		$data_asset = serialize($data->noreg);
-		//$content2 = base64_encode($content);
-		//$content3 = json_encode($data);
-		//$content = $data->noreg;
-		
-		/*$service = API::exec(array(
-			'request' => 'GET',
-			'host' => 'ldap',
-			'method' => "send_email_fams?data_asset=20190723",
-			'data' => $data 
-		));
-
-		//echo "14=<pre>"; print_r($data); die();
-		$service = API::exec(array(
-            'request' => 'PUT',
-            'host' => 'ldap',
-            'method' => 'send_email',
-            'data' => $data
-        ));
-	
-		/*$service = API::exec(array(
-            'request' => 'POST',
-            'host' => 'ldap',
-            'method' => 'send_email_fams',
-            'data' => $data
-        ));
-
-		$datax = $service;
-		echo "13=<pre>"; print_r($datax); die();
-		*/
 	}
 
 	public function showToken()

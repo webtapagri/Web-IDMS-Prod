@@ -1210,7 +1210,8 @@
                             
                             if(tipe == 1)
                             {
-                                item += "<div class='btn btn-warning btn-sm' OnClick='validasiKodeAssetController("+val.po_type+","+val.no_reg_item+")' style='margin-right:25px;margin-top:5px'><i class='fa fa-save'></i> SAVE</div>";
+                                item += "<div class='btn btn-warning btn-sm' OnClick='validasiKodeAssetController("+val.po_type+","+val.no_reg_item+")' style='margin-right:25px;margin-top:5px;margin-bottom:5px'><i class='fa fa-save'></i> SAVE</div>";
+                                item += "<input type='text' class='form-control' placeholder='Jenis Kendaraan' id='jenis-kendaraan' name='jenis-kendaraan'>";
                                 item += "<div class='btn btn-info btn-sm' OnClick='printFormIO("+val.asset_po_id+","+val.no_reg_item+")' style='margin-right:25px;margin-top:5px'><i class='fa fa-print'></i> PRINT FORM IO</div>";
                             }
                             
@@ -1278,7 +1279,8 @@
                             
                             if(tipe==1)
                             {
-                                item += "<div class='btn btn-warning btn-sm' OnClick='validasiKodeAssetController("+val.po_type+","+val.no_reg_item+")' style='margin-right:25px;margin-top:5px'><i class='fa fa-save'></i> SAVE</div>";
+                                item += "<div class='btn btn-warning btn-sm' OnClick='validasiKodeAssetController("+val.po_type+","+val.no_reg_item+")' style='margin-right:25px;margin-top:5px;margin-bottom:5px'><i class='fa fa-save'></i> SAVE</div>";
+                                item += "<input type='text' class='form-control' placeholder='Jenis Kendaraan' id='jenis-kendaraan' name='jenis-kendaraan'>";
                                 item += "<div class='btn btn-info btn-sm' OnClick='printFormIO("+val.asset_po_id+","+val.no_reg_item+")' style='margin-right:25px;margin-top:5px'><i class='fa fa-print'></i> PRINT FORM IO</div>";
                             }
                             
@@ -2291,9 +2293,19 @@
         //alert(asset_po_id);
         var getnoreg = $("#getnoreg").val(); //alert(getnoreg); return false;
         var no_registrasi= getnoreg.replace(/\//g, '-');
+        var jenis_kendaraan = $("#jenis-kendaraan").val();
+
+        if( jenis_kendaraan == '' )
+        {
+            notify({
+                type: 'warning',
+                message: " Jenis Kendaraan is required ! "
+            });
+            return false;
+        }
            
         $('#pdf-modal .modal-title').text('FORM PARAMETER INTERNAL ORDER '+getnoreg+'');
-        $('#pdf-modal .modal-body').html('<iframe id="print" style="width:100%;height:500px;" frameborder="0" src="{{ url("printio") }}/'+no_registrasi+'/'+asset_po_id+'">');
+        $('#pdf-modal .modal-body').html('<iframe id="print" style="width:100%;height:500px;" frameborder="0" src="{{ url("printio") }}/'+no_registrasi+'/'+asset_po_id+'/'+jenis_kendaraan+'">');
         $('#pdf-modal').modal({
             backdrop: 'static',
             keyboard: false

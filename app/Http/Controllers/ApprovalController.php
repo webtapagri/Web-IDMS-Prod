@@ -2541,7 +2541,7 @@ WHERE a.NO_REG = '{$noreg}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KODE_ASSET
         }
     }
 
-    public function print_io($noreg,$asset_po_id)
+    public function print_io($noreg,$asset_po_id,$jenis_kendaraan)
     {
         //$data = $this->get_data_print_io($noreg,$asset_po_id); 
         //echo "3<pre>"; print_r($data[0]['nama_asset']); die();
@@ -2555,6 +2555,7 @@ WHERE a.NO_REG = '{$noreg}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KODE_ASSET
             'no_document' => $no_document,
             'data' => $this->get_data_print_io($noreg,$asset_po_id),
             'name' => 'Triputra Agro Persada',
+            'jenis_kendaraan' => $jenis_kendaraan
         ]));
 
         $pdf = $html2pdf->output("", "S");

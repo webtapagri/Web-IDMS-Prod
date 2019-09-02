@@ -7,7 +7,7 @@ if($data)
     $l .= "<table style='border-collapse:collapse;text-align:left;width:100%;height:auto'>";
     $l .= "<tr><td align='right'><img src='".$url_img."' style='width:60px'></td></tr>";
     $l .= "<tr align='center'><td align='center'><h4>FORM PARAMETER INTERNAL ORDER</h4></td></tr>";
-    $l .= "<tr align='center'><td style='margin-left:100px'>Tanggal</td></tr>";
+    $l .= "<tr align='center'><td style='margin-left:100px'>Tanggal ".date('d/m/Y')."</td></tr>";
     $l .= "<tr align='center'><td style='margin-left:100px'></td></tr>";
     $l .= "<tr align='center'><td style='margin-left:100px'></td></tr>";
     $l .= "<tr align='center'><td style='margin-left:100px'></td></tr>";
@@ -26,7 +26,7 @@ if($data)
     $l .= "<tr align='center'><td style='margin-left:100px' colspan='3'></td></tr>";
     $l .= "<tr style='width:175px' class='alt'><td>JENIS KENDARAAN</td>
                 <td>:</td>
-                <td></td>
+                <td>".$jenis_kendaraan."</td>
             </tr>";
     $l .= "<tr align='center'><td style='margin-left:100px' colspan='3'></td></tr>";
     $l .= "<tr><td style='width:175px'>KODE INTERNAL ORDER</td>
@@ -58,6 +58,17 @@ if($data)
                 <td>:</td>
                 <td>".$data[0]['tahun']."</td>
             </tr>";
+     $l .= "<tr align='center'><td style='margin-left:100px' colspan='3'></td></tr>";
+    $l .= "<tr class='alt' style='width:175px'><td>KODE ASSET FAMS</td>
+                <td>:</td>
+                <td>".$data[0]['kode_asset_ams']."</td>
+            </tr>";
+     $l .= "<tr align='center'><td style='margin-left:100px' colspan='3'></td></tr>";
+     $l .= "<tr class='alt' style='width:175px'><td>KODE ASSET SAP</td>
+                <td>:</td>
+                <td>".$data[0]['kode_asset_sap']."</td>
+            </tr>";
+    $l .= "<tr align='center'><td style='margin-left:100px' colspan='3'></td></tr>";
     $l .= "<tr align='center'><td style='margin-left:100px' colspan='3'></td></tr>";
     $l .= "</table>";
     $l .= "</td></tr>";
@@ -68,18 +79,18 @@ if($data)
       $l .= "<tr align='center'><td style='margin-left:100px'></td></tr>";
        $l .= "<tr align='center'><td style='margin-left:100px'></td></tr>";
     $l .= "<tr><td><table border=0 style='margin-top:25px;xfont-weight:bold'>";
-    $l .= "<tr align='center'><td style='width:175px'>PENGAJU</td>
-                <td style='width:175px'>PENYETUJU</td>
+    $l .= "<tr align='center'><td style='width:175px'>&nbsp;</td>
+                <td style='width:175px'>&nbsp;</td>
                 <td style='width:175px'>&nbsp;&nbsp;&nbsp;</td>
-                <td style='width:175px'>PEMERIKSA</td></tr>";
+                <td style='width:175px'>&nbsp;</td></tr>";
     $l .= "<tr align='center'><td style='width:175px;height:75px'></td>
                 <td style='width:175px;height:75px'></td>
                 <td style='width:175px;height:75px'></td>
                 <td style='width:175px;height:75px'></td></tr>";
-    $l .= "<tr align='center'><td style='width:175px'>(KTU)</td>
-                <td style='width:175px'>(SMU)</td>
-                <td style='width:175px'>(....................)</td>
-                <td style='width:175px'>(....................)</td></tr>";
+    $l .= "<tr align='center'><td style='width:175px'>&nbsp;</td>
+                <td style='width:175px'>&nbsp;</td>
+                <td style='width:175px'>&nbsp;</td>
+                <td style='width:175px'>&nbsp;</td></tr>";
     $l .= "</table></td></tr>";
     $l .= "</table>";    
 }

@@ -26,7 +26,10 @@
 ?>
 
 <h3>PERMOHONAN PERSETUJUAN PENGAJUAN ASET</h3>
-<h4>Asset Management PT. Triputra Agro Persada</h4>
+
+<?php /* <h4>Asset Management PT. Triputra Agro Persada</h4> */ ?>
+<h4>Fixed Asset Management System (FAMS)</h4>
+
 <br/>
 <br/>
 Kepada Yth, <br/>
@@ -41,7 +44,7 @@ Dibutuhkan persetujuan atas dokumen berikut :
 	NO DOCUMENT : {{ $data->datax[0]->document_code }} (<a href="<?php echo url('/?noreg='.$dc.'') ?>" target="_blank">detail</a>) <br/>
 	TYPE OF SUBMISSION : {{ $TYPE_OF_SUBMISSION }} <br/>
 	PURCHASE NO : {{ $data->datax[0]->NO_PO }} <br/>
-	BUSINESS AREA KEPEMILIKAN ASET : {{ $data->datax[0]->BA_PEMILIK_ASSET }} <br/><br/>
+	LOKASI KEPEMILIKAN ASET : {{ $data->datax[0]->BA_PEMILIK_ASSET }} - {{ $data->datax[0]->BA_PEMILIK_ASSET_DESC }} <br/><br/>
 	<?php 
 
 		//echo "1<pre>"; print_r($data->datax); 
@@ -56,7 +59,7 @@ Dibutuhkan persetujuan atas dokumen berikut :
 						<th>NO</th>
 						<th>KODE MATERIAL</th>
 						<th>ASSETS</th>
-						<th>BUSINESS AREA LOKASI</th>
+						<th>LOKASI</th>
 					</tr>
 			";
 			foreach($data->datax as $k => $v)
@@ -66,7 +69,7 @@ Dibutuhkan persetujuan atas dokumen berikut :
 						<td>$no</td>
 						<td>$v->KODE_MATERIAL</td>
 						<td>$v->NAMA_MATERIAL</td>
-						<td>$v->LOKASI_BA_CODE</td>
+						<td>$v->LOKASI_BA_CODE - $v->LOKASI_BA_CODE_DESC</td>
 					</tr> 
 				";
 				$no++;
@@ -115,6 +118,7 @@ Dibutuhkan persetujuan atas dokumen berikut :
 <br/>
 <br/>
 
+<?php /*
 <h2>CATATAN PENTING</h2>
 1.Melakukan Persetujuan secara Parsial <br/>
 2.Melihat sejarah dokumen <br/>
@@ -122,6 +126,7 @@ Dibutuhkan persetujuan atas dokumen berikut :
 4.Pengajuan revisi ke pembuat dokumen <br/>
 5.Permohonan penambahan data pendukung ke pembuat dokumen <br/>
 dapat dilakukan dengan memilih action Detail <br/>
+*/ ?>
 
 <hr/>
 
