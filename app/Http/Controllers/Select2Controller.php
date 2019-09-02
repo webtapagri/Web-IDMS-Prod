@@ -211,4 +211,14 @@ class Select2Controller extends Controller
 
         return response()->json(array('data' => $arr));
     }
+
+    public function select_jenis_kendaraan(Request $request)
+    {
+        $data = DB::table('TM_GENERAL_DATA')
+        ->select(DB::raw('CONCAT(description_code," - ",description) as id'), DB::raw('CONCAT(description_code," - ",description) as text'))
+        ->where('general_code', 'jenis_kendaraan')
+        ->orderby('description', 'asc')
+        ->get();
+        return response()->json(array("data"=>$data));
+    }
 }

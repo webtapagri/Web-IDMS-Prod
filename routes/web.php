@@ -85,6 +85,7 @@ Route::match(['get', 'post'], 'grid-approval-history', [
 ]);
 Route::get('/approval/berkas-amp/{no_reg}', 'ApprovalController@berkas_amp')->name('no_reg');
 Route::get('/printio/{noreg}/{asset_po_id}/{jenis_kendaraan}', 'ApprovalController@print_io');
+Route::get('get-select_jenis_kendaraan', ['as' => 'get.select_jenis_kendaraan', 'uses' => 'Select2Controller@select_jenis_kendaraan']);
 
 Route::resource('/mutasi', 'MutasiController');
 Route::get('/mutasi/create/{type}', 'MutasiController@create')->name('type');

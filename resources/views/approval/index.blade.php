@@ -579,16 +579,15 @@
             allowClear: true
         });
 
-        /*
-        var po_type = $.parseJSON(JSON.stringify(dataJson('{!! route("get.select_role_idname") !!}')));
-        $('#PO_TYPE').select2({
-            data: po_type,
+        // JENIS KENDARAAN
+        /*alert("tipe kendaraan 1");
+        var tipekendaraan = $.parseJSON(JSON.stringify(dataJson('{!! route("get.select_jenis_kendaraan") !!}')));
+        $('input[name="jenis-kendaraan"]').select2({
+            data: tipekendaraan,
             width: '100%',
             placeholder: ' ',
             allowClear: true
-        });
-        */
-
+        });*/
 
         $.ajaxSetup({
             headers: {
@@ -1337,6 +1336,15 @@
                     trigger_edit_asset(val.no_reg_item,val.jenis_asset,val.group,val.sub_group,val.uom_asset_sap);
                 });
                 <?php } ?>
+
+                //alert("tipe kendaraan a");
+                var tipekendaraan = $.parseJSON(JSON.stringify(dataJson('{!! route("get.select_jenis_kendaraan") !!}')));
+                $('input[name="jenis-kendaraan"]').select2({
+                    data: tipekendaraan,
+                    width: '100%',
+                    placeholder: ' ',
+                    allowClear: true,
+                });
             },
             error: function(x) 
             {                           
