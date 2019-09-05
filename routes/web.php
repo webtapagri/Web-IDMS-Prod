@@ -277,4 +277,15 @@ Route::post('/resume/user-submit','ResumeController@user_submit');
 Route::get('/report/list-asset', 'ReportController@list_asset');
 Route::post('/report/list-asset/submit', 'ReportController@list_asset_submit');
 
+/* DISPOSAL */
+Route::resource('/disposal-penjualan', 'DisposalController');
+Route::get('/disposal-penjualan/add/{id}/{pengajuan}', 'DisposalController@add');
+Route::get('/disposal-penjualan/delete/{kode_asset_ams}', 'DisposalController@remove');
+Route::get('/disposal-hilang', 'DisposalController@index_hilang');
+Route::get('/disposal-hilang/add_hilang/{id}/{pengajuan}', 'DisposalController@add_hilang');
+Route::get('/disposal-hilang/delete_hilang/{kode_asset_ams}', 'DisposalController@remove_hilang');
+Route::get('/disposal-rusak', 'DisposalController@index_rusak');
+Route::get('/disposal-rusak/add_rusak/{id}/{pengajuan}', 'DisposalController@add_rusak');
+
+
 

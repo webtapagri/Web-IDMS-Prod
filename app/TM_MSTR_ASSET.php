@@ -16,9 +16,9 @@ class TM_MSTR_ASSET extends Model
         "ITEM_PO",
         "KODE_MATERIAL",
         "NAMA_MATERIAL",
-        "KODE_MATERIAL"
+        "KODE_MATERIAL",
         "NO_PO",
-        "BA_PEMILIK_ASSET"
+        "BA_PEMILIK_ASSET",
         "JENIS_ASSET",
         "GROUP",
         "SUB_GROUP",
