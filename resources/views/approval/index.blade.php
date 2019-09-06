@@ -974,13 +974,7 @@
                 item += "</ul>";
 
                 item += "<div class='tab-content' style='border: 1px solid #e0dcdc;border-top:none; font-size:12px !important'>";
-                /*for(j=0;j<total_tab;j++)
-                {
-                    //var aktif = '';
-                    //if(j==0){ aktif = 'active'; }
-                    //item += "<div class='tab-pane "+aktif+" ' id='panel-"+num+"'>Content "+num+"</div> ";
-                    //num++;
-                }*/
+            
 
                 $.each(data, function(key, val) 
                 {
@@ -992,31 +986,42 @@
                     
                     item += "<div class='box-body rincian-informasi-aset-box'>";
 
-                    /*if( val.deleted != "" )
-                    {
-                        item += '<div class="col-md-12"><div class="alert alert-danger alert-dismissible"><h4><i class="icon fa fa-ban"></i> Alert!</h4>This asset has been deleted.</div></div>';
-                    }*/
+                    <?php if( $user_role == 'AC' || $user_role == 'PGA' ){$readonly = "readonly";}else{ $readonly = ""; }?>
                     
                     item += "<div class='col-md-6'>";
+                    
                     item += "<div class='form-group'><label for='plant' class='col-md-4'>NO PO</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='' value='"+val.no_po+"' id='' autocomplete='off' readonly></div></div>";
+                    
                     item += "<div class='form-group'><label for='plant' class='col-md-4'>TGL PO</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='' value='"+val.tgl_po+"' id='' autocomplete='off' readonly></div></div>";
+                    
                     item += "<div class='form-group'><label for='plant' class='col-md-4'>KONDISI ASET</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='' value='"+val.kondisi_asset+"' id='' autocomplete='off' readonly></div></div>";
+                    
                     item += "<div class='form-group'><label for='plant' class='col-md-4'>NAMA ASSET</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='' value='"+val.nama_asset+"' id='' autocomplete='off' readonly></div></div>";
+                    
                     item += "<div class='form-group'><label for='plant' class='col-md-4'>NO RANGKA/SERI</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='' value='"+val.no_rangka_or_no_seri+"' id='' autocomplete='off' readonly></div></div>";
+                    
                     item += "<div class='form-group'><label for='plant' class='col-md-4'>NO MESIN / IMEI</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='' value='"+val.no_mesin_or_imei+"' id='' autocomplete='off' readonly></div></div>";
+
+                    item += "<div class='form-group'><label for='plant' class='col-md-4'>NO POLISI</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='' value='"+val.no_polisi+"' id='' autocomplete='off' readonly></div></div>";
+
                     item += "<div class='form-group'><label for='plant' class='col-md-4'>LOKASI</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='' value='"+val.lokasi+"' id='' autocomplete='off' readonly></div></div>";
+
                     item += "<div class='form-group'><label for='plant' class='col-md-4'>INFORMASI</label><div class='col-md-8'><textarea class='form-control' readonly>"+val.info+"</textarea></div></div>";
+                    
                     item += "</div>";
 
                     item += "<div class='col-md-6'>";
                     
-                    item += " <div class='form-group'><label for='plant' class='col-md-4'>JENIS ASET <sup style='color:red'>*</sup></label><div class='col-md-8'><input type='text' class='form-control input-sm select-jenis-aset' name='jenis_asset-"+val.no_reg_item+"' value='"+val.jenis_asset+"' id='jenis_asset-"+val.no_reg_item+"' autocomplete='off' onChange='get_group("+val.no_reg_item+")'></div></div>";
+                    item += " <div class='form-group'><label for='plant' class='col-md-4'>JENIS ASET <sup style='color:red'>*</sup></label><div class='col-md-8'><input type='text' class='form-control input-sm select-jenis-aset' name='jenis_asset-"+val.no_reg_item+"' value='"+val.jenis_asset+"' id='jenis_asset-"+val.no_reg_item+"' autocomplete='off' onChange='get_group("+val.no_reg_item+")' <?php echo $readonly; ?> ></div></div>";
 
-                    item += " <div class='form-group'><label for='plant' class='col-md-4'>GROUP <sup style='color:red'>*</sup></label><div class='col-md-8'><input type='text' class='form-control input-sm' id='jenis_asset_group-"+val.no_reg_item+"' name='jenis_asset_group-"+val.no_reg_item+"' value='"+val.group+"' id='' autocomplete='off' onChange='get_subgroup("+val.no_reg_item+")'></div></div>";
+                    item += " <div class='form-group'><label for='plant' class='col-md-4'>GROUP <sup style='color:red'>*</sup></label><div class='col-md-8'><input type='text' class='form-control input-sm' id='jenis_asset_group-"+val.no_reg_item+"' name='jenis_asset_group-"+val.no_reg_item+"' value='"+val.group+"' id='' autocomplete='off' onChange='get_subgroup("+val.no_reg_item+")' <?php echo $readonly; ?> ></div></div>";
                     
-                    item += " <div class='form-group'><label for='plant' class='col-md-4'>SUB GROUP <sup style='color:red'>*</sup></label><div class='col-md-8'><input type='text' class='form-control input-sm' id='jenis_asset_subgroup-"+val.no_reg_item+"' name='jenis_asset_subgroup-"+val.no_reg_item+"' value='"+val.sub_group+"' id='' autocomplete='off'></div></div>";
+                    item += " <div class='form-group'><label for='plant' class='col-md-4'>SUB GROUP <sup style='color:red'>*</sup></label><div class='col-md-8'><input type='text' class='form-control input-sm' id='jenis_asset_subgroup-"+val.no_reg_item+"' name='jenis_asset_subgroup-"+val.no_reg_item+"' value='"+val.sub_group+"' id='' autocomplete='off' <?php echo $readonly; ?> ></div></div>";
+
                     item += " <div class='form-group'><label for='plant' class='col-md-4'>MERK</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='' value='"+val.merk+"' id='' autocomplete='off' readonly></div></div>";
+
                     item += " <div class='form-group'><label for='plant' class='col-md-4'>SPESIFIKASI/WARNA</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='' value='"+val.spesifikasi_or_warna+"' id='' autocomplete='off' readonly></div></div>";
+
                     item += " <div class='form-group'><label for='plant' class='col-md-4'>TAHUN</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='' value='"+val.tahun+"' id='' autocomplete='off' readonly></div></div>";
 
                     item += "<div class='form-group'><label for='' class='col-md-4'>PENANGGUNG JAWAB</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='nama_penanggung_jawab_asset-"+val.no_reg_item+"' value='"+val.nama_penanggung_jawab_asset+"' id='nama_penanggung_jawab_asset-"+val.no_reg_item+"' autocomplete='off' readonly></div></div>";
@@ -1126,11 +1131,11 @@
                         //item += "<form id='request-form-detail-asset-sap' class='form-horizontal' style=''>";
                         item += "<div class='col-md-6'> ";
 
-                        item += "<div class='form-group'><label for='' class='col-md-4'>DESCRIPTION</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='nama_asset_1-"+val.no_reg_item+"' value='"+nama_asset_1+"' id='nama_asset_1-"+val.no_reg_item+"' autocomplete='off' placeholder='Nama Asset 1' required></div></div>";
+                        item += "<div class='form-group'><label for='' class='col-md-4'>DESCRIPTION</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='nama_asset_1-"+val.no_reg_item+"' value='"+nama_asset_1+"' id='nama_asset_1-"+val.no_reg_item+"' autocomplete='off' placeholder='Nama Asset 1' required <?php echo $readonly; ?> ></div></div>";
                         
-                        item += "<div class='form-group'><label for='' class='col-md-4'></label><div class='col-md-8'><input type='text' class='form-control input-sm' name='nama_asset_2-"+val.no_reg_item+"' value='"+nama_asset_2+"' id='nama_asset_2-"+val.no_reg_item+"' autocomplete='off' placeholder='Nama Asset 2'></div></div>";
+                        item += "<div class='form-group'><label for='' class='col-md-4'></label><div class='col-md-8'><input type='text' class='form-control input-sm' name='nama_asset_2-"+val.no_reg_item+"' value='"+nama_asset_2+"' id='nama_asset_2-"+val.no_reg_item+"' autocomplete='off' placeholder='Nama Asset 2' <?php echo $readonly; ?> ></div></div>";
                         
-                        item += "<div class='form-group'><label for='' class='col-md-4'>ASET MAIN NO. TEXT</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='nama_asset_3-"+val.no_reg_item+"' value='"+nama_asset_3+"' id='nama_asset_3-"+val.no_reg_item+"' autocomplete='off' placeholder='Nama Asset 3' required></div></div>";
+                        item += "<div class='form-group'><label for='' class='col-md-4'>ASET MAIN NO. TEXT</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='nama_asset_3-"+val.no_reg_item+"' value='"+nama_asset_3+"' id='nama_asset_3-"+val.no_reg_item+"' autocomplete='off' placeholder='Nama Asset 3' required <?php echo $readonly; ?>></div></div>";
 
                         item += "<div class='form-group'><label for='' class='col-md-4'>ACCT DETERMINATION</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='acct_determination-"+val.no_reg_item+"' value='"+val.jenis_asset+"' id='nama_asset_3-"+val.no_reg_item+"' autocomplete='off' placeholder='Acct Determination' readonly></div></div>";
 
@@ -1138,14 +1143,14 @@
 
                         item += "<div class='form-group'><label for='' class='col-md-4'>INVENTORY NUMBER</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='inventory_number-"+val.no_reg_item+"' value='"+val.no_mesin_or_imei+"' id='inventory_number-"+val.no_reg_item+"' autocomplete='off' placeholder='Inventory Number' readonly></div></div>";
                         
-                        item += "<div class='form-group'><label for='' class='col-md-4'>QUANTITY <sup style='color:red'>*</sup></label><div class='col-md-8'><input type='number' class='form-control input-sm' name='quantity-"+val.no_reg_item+"' value='"+val.quantity_asset_sap+"' id='quantity-"+val.no_reg_item+"' autocomplete='off' required></div></div>";
+                        item += "<div class='form-group'><label for='' class='col-md-4'>QUANTITY <sup style='color:red'>*</sup></label><div class='col-md-8'><input type='number' class='form-control input-sm' name='quantity-"+val.no_reg_item+"' value='"+val.quantity_asset_sap+"' id='quantity-"+val.no_reg_item+"' autocomplete='off' required <?php echo $readonly; ?> ></div></div>";
                         
                         //alert(val.uom_asset_sap);                            
-                        item += "<div class='form-group'><label for='' class='col-md-4'>UOM <sup style='color:red'>*</sup></label><div class='col-md-8' style='display: inline-block'><input type='text' class='form-control input-sm' name='uom-"+val.no_reg_item+"' value='"+val.uom_asset_sap+"' id='uom-"+val.no_reg_item+"' required></div></div>";
+                        item += "<div class='form-group'><label for='' class='col-md-4'>UOM <sup style='color:red'>*</sup></label><div class='col-md-8' style='display: inline-block'><input type='text' class='form-control input-sm' name='uom-"+val.no_reg_item+"' value='"+val.uom_asset_sap+"' id='uom-"+val.no_reg_item+"' required <?php echo $readonly; ?> ></div></div>";
 
-                        item += "<div class='form-group'><label for='' class='col-md-4'>CAPITALIZED</label><div class='col-md-8'><input type='text' class='form-control input-sm capitalized_on_date' name='capitalized_on-"+val.no_reg_item+"' value='"+val.capitalized_on+"' id='capitalized_on-"+val.no_reg_item+"' autocomplete='off' placeholder='yyyy-mm-dd' required></div></div>";
+                        item += "<div class='form-group'><label for='' class='col-md-4'>CAPITALIZED</label><div class='col-md-8'><input type='text' class='form-control input-sm capitalized_on_date' name='capitalized_on-"+val.no_reg_item+"' value='"+val.capitalized_on+"' id='capitalized_on-"+val.no_reg_item+"' autocomplete='off' placeholder='yyyy-mm-dd' required <?php echo $readonly; ?>></div></div>";
 
-                        item += "<div class='form-group'><label for='' class='col-md-4'>DEACTIVATION</label><div class='col-md-8'><input type='text' class='form-control input-sm capitalized_on_date' name='deactivation_on-"+val.no_reg_item+"' value='"+val.deactivation_on+"' id='deactivation_on-"+val.no_reg_item+"' autocomplete='off' placeholder='yyyy-mm-dd' required></div></div>";
+                        item += "<div class='form-group'><label for='' class='col-md-4'>DEACTIVATION</label><div class='col-md-8'><input type='text' class='form-control input-sm capitalized_on_date' name='deactivation_on-"+val.no_reg_item+"' value='"+val.deactivation_on+"' id='deactivation_on-"+val.no_reg_item+"' autocomplete='off' placeholder='yyyy-mm-dd' required <?php echo $readonly; ?>></div></div>";
                         
                         item += "</div>";
                         
@@ -1153,7 +1158,7 @@
 
                         item += "<div class='form-group'><label for='' class='col-md-4'>BUSINESS AREA</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='business_area-"+val.no_reg_item+"' value='"+val.business_area+"' id='business_area-"+val.no_reg_item+"' autocomplete='off' readonly></div></div>";
 
-                        item += "<div class='form-group'><label for='' class='col-md-4'>COST CENTER <sup style='color:red'>*</sup></label><div class='col-md-8'><input type='text' class='form-control input-sm' name='cost_center-"+val.no_reg_item+"' value='"+val.cost_center+"' id='cost_center-"+val.no_reg_item+"' autocomplete='off' minlength='10' maxlength='10' required></div></div>";
+                        item += "<div class='form-group'><label for='' class='col-md-4'>COST CENTER <sup style='color:red'>*</sup></label><div class='col-md-8'><input type='text' class='form-control input-sm' name='cost_center-"+val.no_reg_item+"' value='"+val.cost_center+"' id='cost_center-"+val.no_reg_item+"' autocomplete='off' minlength='10' maxlength='10' required <?php echo $readonly; ?>></div></div>";
 
                         item += "<div class='form-group'><label for='' class='col-md-4'>PLANT</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='plant-"+val.no_reg_item+"' value='"+val.business_area+"' id='plant-"+val.no_reg_item+"' autocomplete='off' readonly></div></div>";
 
@@ -1175,8 +1180,8 @@
                         item += "<div class='xform-group'><label for='' class='xcol-md-4'>DEPREC, AREAS</label><br/>";
                         item += "<table class='tabel table-bordered table-responsive table-condensed table-striped table-container'>";
                         item += "<tr><th>Area Number</th><th>Depreciation Area</th><th>Dkey</th><th>Use Life</th></tr>";
-                        item += "<tr><td>01</td><td>Book</td><td>Z001</td><td><input type='text' class='form-control input-sm' name='book_deprec_01-"+val.no_reg_item+"' value='"+val.book_deprec_01+"' id='book_deprec_01-"+val.no_reg_item+"' autocomplete='off' required></td></tr>";
-                        item += "<tr><td>15</td><td>Fiscal</td><td>Z001</td><td><input type='text' class='form-control input-sm' name='fiscal_deprec_15-"+val.no_reg_item+"' value='"+val.fiscal_deprec_15+"' id='fiscal_deprec_15-"+val.no_reg_item+"' autocomplete='off' onkeyup='fiscalgroup("+val.no_reg_item+")' required></td></tr>";
+                        item += "<tr><td>01</td><td>Book</td><td>Z001</td><td><input type='text' class='form-control input-sm' name='book_deprec_01-"+val.no_reg_item+"' value='"+val.book_deprec_01+"' id='book_deprec_01-"+val.no_reg_item+"' autocomplete='off' required <?php echo $readonly; ?>></td></tr>";
+                        item += "<tr><td>15</td><td>Fiscal</td><td>Z001</td><td><input type='text' class='form-control input-sm' name='fiscal_deprec_15-"+val.no_reg_item+"' value='"+val.fiscal_deprec_15+"' id='fiscal_deprec_15-"+val.no_reg_item+"' autocomplete='off' onkeyup='fiscalgroup("+val.no_reg_item+")' required <?php echo $readonly; ?>></td></tr>";
                         item += "<tr><td>30</td><td>Group</td><td>Z001</td><td><input type='text' class='form-control input-sm' name='group_deprec_30-"+val.no_reg_item+"' value='"+val.group_deprec_30+"' id='group_deprec_30-"+val.no_reg_item+"' autocomplete='off' placeholder='' readonly></td></tr>";
                         item += "</table>";
                         item += "</div>";
@@ -1217,7 +1222,7 @@
                             item += "</div></div></div>";
 
                         <?php }else{ ?>
-                            item += "<div class='form-group'><label for='' class='col-md-4'>KODE ASET CONTROLLER</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='kode_aset_controller-"+val.no_reg_item+"' value='"+val.kode_asset_controller+"' id='kode_aset_controller-"+val.no_reg_item+"' autocomplete='off' onkeyup='get_kode_aset("+val.no_reg_item+")'><input type='hidden' id='request_kode_aset_input' name='request_kode_aset_input'></div></div>";
+                            item += "<div class='form-group'><label for='' class='col-md-4'>KODE ASET CONTROLLER</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='kode_aset_controller-"+val.no_reg_item+"' value='"+val.kode_asset_controller+"' id='kode_aset_controller-"+val.no_reg_item+"' autocomplete='off' onkeyup='get_kode_aset("+val.no_reg_item+")' <?php echo $readonly; ?> ><input type='hidden' id='request_kode_aset_input' name='request_kode_aset_input'></div></div>";
                             item += "</div>";
                         <?php } ?>
 
@@ -2313,7 +2318,7 @@
         }
            
         $('#pdf-modal .modal-title').text('FORM PARAMETER INTERNAL ORDER '+getnoreg+'');
-        $('#pdf-modal .modal-body').html('<iframe id="print" style="width:100%;height:500px;" frameborder="0" src="{{ url("printio") }}/'+no_registrasi+'/'+asset_po_id+'/'+jenis_kendaraan+'">');
+        $('#pdf-modal .modal-body').html('<iframe id="print" style="width:100%;height:500px;" frameborder="0" src="{{ url("printio") }}/'+no_registrasi+'/'+asset_po_id+'/'+jenis_kendaraan+'/'+no_reg_item+'">');
         $('#pdf-modal').modal({
             backdrop: 'static',
             keyboard: false

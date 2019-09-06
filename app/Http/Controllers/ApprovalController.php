@@ -352,6 +352,7 @@ class ApprovalController extends Controller
                     'spesifikasi_or_warna' => trim($v->SPESIFIKASI_OR_WARNA),
                     'no_rangka_or_no_seri' => trim($v->NO_RANGKA_OR_NO_SERI),
                     'no_mesin_or_imei' => trim($v->NO_MESIN_OR_IMEI),
+                    'no_polisi'=>trim($v->NO_POLISI),
                     'lokasi' => trim($v->LOKASI_BA_DESCRIPTION),
                     'tahun' => trim($v->TAHUN_ASSET),
                     'nama_penanggung_jawab_asset' => trim($v->NAMA_PENANGGUNG_JAWAB_ASSET),
@@ -2541,7 +2542,7 @@ WHERE a.NO_REG = '{$noreg}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KODE_ASSET
         }
     }
 
-    public function print_io($noreg,$asset_po_id,$jenis_kendaraan)
+    public function print_io($noreg,$asset_po_id,$jenis_kendaraan,$no_reg_item)
     {
         //$data = $this->get_data_print_io($noreg,$asset_po_id); 
         //echo "3<pre>"; print_r($data[0]['nama_asset']); die();
@@ -2553,7 +2554,7 @@ WHERE a.NO_REG = '{$noreg}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KODE_ASSET
         $html2pdf = new Html2Pdf('P', 'A4', 'en');
         $html2pdf->writeHTML(view('approval.print_io', [
             'no_document' => $no_document,
-            'data' => $this->get_data_print_io($noreg,$asset_po_id),
+            'data' => $this->get_data_print_io($noreg,$asset_po_id,$no_reg_item),
             'name' => 'Triputra Agro Persada',
             'jenis_kendaraan' => $jenis_kendaraan
         ]));
@@ -2565,10 +2566,8 @@ WHERE a.NO_REG = '{$noreg}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KODE_ASSET
             ->header('Content-Disposition', 'inline; filename="Pengajuan_Print_IO_'.$namafile.'.pdf"');
     }
 
-    function get_data_print_io($noreg,$id)
+    function get_data_print_io($noreg,$id,$no_reg_item)
     {
-        //echo $noreg.'/'.$id; die();
-
         $kondisi = array(
             'B' => 'Baik',
             'BP' => 'Butuh Perbaikan',
@@ -2584,11 +2583,10 @@ WHERE a.NO_REG = '{$noreg}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KODE_ASSET
                         LEFT JOIN TM_GROUP_ASSET c ON a.group = c.group_code AND a.jenis_asset = c.jenis_asset_code
                         LEFT JOIN TM_SUBGROUP_ASSET d ON a.sub_group = d.subgroup_code AND a.group = d.group_code
                         LEFT JOIN TR_REG_ASSET e ON a.NO_REG = e.NO_REG
-                    WHERE a.no_reg = '{$noreg}' AND a.asset_po_id = '{$id}' AND (a.DELETED is null OR a.DELETED = '')
+                    WHERE a.no_reg = '{$noreg}' AND a.no_reg_item = '{$no_reg_item}' AND a.asset_po_id = '{$id}' AND (a.DELETED is null OR a.DELETED = '')
                         ORDER BY a.no_reg_item ";
-        //echo $sql; die();
+        
         $data = DB::SELECT($sql);
-        //echo "<pre>"; print_r($data); die();
 
         if($data)
         {
