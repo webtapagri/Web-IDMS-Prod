@@ -60,7 +60,7 @@ class DisposalController extends Controller
     	}
 
     	$sql = " SELECT a.kode_asset_ams AS kode_asset_ams, a.kode_material AS kode_material, a.nama_material AS nama_material, a.nama_asset_1 AS nama_asset_1, a.kode_asset_sap AS kode_asset_sap 
-    				FROM tm_mstr_asset a 
+    				FROM TM_MSTR_ASSET a 
     					WHERE 1=1 $where
     				ORDER BY a.created_at ASC ";
  		$data = DB::SELECT($sql); 
