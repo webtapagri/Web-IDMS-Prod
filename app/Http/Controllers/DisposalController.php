@@ -40,7 +40,7 @@ class DisposalController extends Controller
 
 		//$created_by = $u['username'];
 		
-		$sql = " SELECT * FROM tr_disposal_temp WHERE JENIS_PENGAJUAN = $jenis_pengajuan AND CREATED_BY = $user_id "; //echo $sql; die();
+		$sql = " SELECT * FROM TR_DISPOSAL_TEMP WHERE JENIS_PENGAJUAN = $jenis_pengajuan AND CREATED_BY = $user_id "; //echo $sql; die();
 		
 		$dt = DB::SELECT($sql);
 		//echo "<pre>"; print_r($dt); die();
@@ -109,7 +109,7 @@ class DisposalController extends Controller
 			try 
 			{
 
-				$sql = "INSERT INTO tr_disposal_temp(KODE_ASSET_AMS,KODE_ASSET_SAP,NAMA_MATERIAL,BA_PEMILIK_ASSET,LOKASI_BA_CODE,LOKASI_BA_DESCRIPTION,NAMA_ASSET_1,CREATED_BY,JENIS_PENGAJUAN,CHECKLIST)
+				$sql = "INSERT INTO TR_DISPOSAL_TEMP(KODE_ASSET_AMS,KODE_ASSET_SAP,NAMA_MATERIAL,BA_PEMILIK_ASSET,LOKASI_BA_CODE,LOKASI_BA_DESCRIPTION,NAMA_ASSET_1,CREATED_BY,JENIS_PENGAJUAN,CHECKLIST)
 							VALUES('{$row->KODE_ASSET_AMS}','{$row->KODE_ASSET_SAP}','{$row->NAMA_MATERIAL}','{$row->BA_PEMILIK_ASSET}','{$row->LOKASI_BA_CODE}','{$row->LOKASI_BA_DESCRIPTION}','{$row->NAMA_ASSET_1}','{$user_id}','{$jenis_pengajuan}',0)";
 				//	echo $sql; die();
 				DB::insert($sql);
@@ -135,7 +135,7 @@ class DisposalController extends Controller
 	function remove($kode_asset_ams)
     {	
 		
-		DB::DELETE(" DELETE FROM tr_disposal_temp WHERE KODE_ASSET_AMS = '{$kode_asset_ams}' ");
+		DB::DELETE(" DELETE FROM TR_DISPOSAL_TEMP WHERE KODE_ASSET_AMS = '{$kode_asset_ams}' ");
 		
         //Cart::remove($rowid);
         return Redirect::to('/disposal-penjualan');
@@ -188,7 +188,7 @@ class DisposalController extends Controller
 			try 
 			{
 
-				$sql = "INSERT INTO tr_disposal_temp(KODE_ASSET_AMS,KODE_ASSET_SAP,NAMA_MATERIAL,BA_PEMILIK_ASSET,LOKASI_BA_CODE,LOKASI_BA_DESCRIPTION,NAMA_ASSET_1,CREATED_BY,JENIS_PENGAJUAN,CHECKLIST)
+				$sql = "INSERT INTO TR_DISPOSAL_TEMP(KODE_ASSET_AMS,KODE_ASSET_SAP,NAMA_MATERIAL,BA_PEMILIK_ASSET,LOKASI_BA_CODE,LOKASI_BA_DESCRIPTION,NAMA_ASSET_1,CREATED_BY,JENIS_PENGAJUAN,CHECKLIST)
 							VALUES('{$row->KODE_ASSET_AMS}','{$row->KODE_ASSET_SAP}','{$row->NAMA_MATERIAL}','{$row->BA_PEMILIK_ASSET}','{$row->LOKASI_BA_CODE}','{$row->LOKASI_BA_DESCRIPTION}','{$row->NAMA_ASSET_1}','{$user_id}','{$jenis_pengajuan}',0)";
 				//	echo $sql; die();
 				DB::insert($sql);
@@ -213,13 +213,13 @@ class DisposalController extends Controller
 
 	function remove_hilang($kode_asset_ams)
     {	
-		DB::DELETE(" DELETE FROM tr_disposal_temp WHERE KODE_ASSET_AMS = '{$kode_asset_ams}' ");
+		DB::DELETE(" DELETE FROM TR_DISPOSAL_TEMP WHERE KODE_ASSET_AMS = '{$kode_asset_ams}' ");
         return Redirect::to('/disposal-hilang');
     }
 
     function check_asset($kode_asset_ams,$jenis_pengajuan)
     {
-    	$sql = "SELECT COUNT(*) AS TOTAL FROM tr_disposal_temp WHERE KODE_ASSET_AMS = '{$kode_asset_ams}' AND JENIS_PENGAJUAN = $jenis_pengajuan ";
+    	$sql = "SELECT COUNT(*) AS TOTAL FROM TR_DISPOSAL_TEMP WHERE KODE_ASSET_AMS = '{$kode_asset_ams}' AND JENIS_PENGAJUAN = $jenis_pengajuan ";
     	$data = DB::SELECT($sql);
     	//echo "2<pre>"; print_r($data); die();
     	return $data[0]->TOTAL;
@@ -273,7 +273,7 @@ class DisposalController extends Controller
 			try 
 			{
 
-				$sql = "INSERT INTO tr_disposal_temp(KODE_ASSET_AMS,KODE_ASSET_SAP,NAMA_MATERIAL,BA_PEMILIK_ASSET,LOKASI_BA_CODE,LOKASI_BA_DESCRIPTION,NAMA_ASSET_1,CREATED_BY,JENIS_PENGAJUAN,CHECKLIST)
+				$sql = "INSERT INTO TR_DISPOSAL_TEMP(KODE_ASSET_AMS,KODE_ASSET_SAP,NAMA_MATERIAL,BA_PEMILIK_ASSET,LOKASI_BA_CODE,LOKASI_BA_DESCRIPTION,NAMA_ASSET_1,CREATED_BY,JENIS_PENGAJUAN,CHECKLIST)
 							VALUES('{$row->KODE_ASSET_AMS}','{$row->KODE_ASSET_SAP}','{$row->NAMA_MATERIAL}','{$row->BA_PEMILIK_ASSET}','{$row->LOKASI_BA_CODE}','{$row->LOKASI_BA_DESCRIPTION}','{$row->NAMA_ASSET_1}','{$user_id}','{$jenis_pengajuan}',0)";
 				//	echo $sql; die();
 				DB::insert($sql);
