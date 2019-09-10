@@ -49,6 +49,9 @@
                         <button type="submit"
                                 class="btn btn-danger btn-block btn-flat pull-left">{{ trans('adminlte::adminlte.sign_in') }}</button>
                     </div>
+                    <div class="col-xs-12" align="center" style="margin-top:10px">
+                        <i style="font-size:10px">Recomended Browser Google Chrome / Mozilla Firefox</i>
+                    </div>
                     <!-- /.col -->
                 </div>
             </form>
