@@ -52,8 +52,11 @@
                         </div>
                         <div class="form-group">
                             <label for="plant" class="col-md-3">NO. PURCHASE ORDER <sup style="color:red">*</sup></label>
-                            <div class="col-md-9">
+                            <div class="col-md-6">
                                 <input type="text" class="form-control input-sm" name="po_no" id="po_no" value="" autocomplete="off" maxlength="10" required>
+                            </div>
+                            <div class="col-md-3" id="ganti-no-po" style="margin-top:2px;color:red;font-weight:bold">
+                                <i class="fa fa-edit"></i> Ganti NO PO
                             </div>
                         </div>
                         <div class="form-group">
@@ -477,6 +480,18 @@
 
     $(document).ready(function() 
     {
+        $("#ganti-no-po").hide();
+        $('#ganti-no-po').click(function() 
+        {
+            request_item = [];
+            request_item_page = [];
+            createItemRequestTable();
+            $("#po_date").val("");
+            $("#vendor_code").val("");
+            $("#vendor_name").val("");
+            $("#po_no").attr("readonly",false);
+        });
+
         $('input[type="text"]').change(function(){
             this.value = $.trim(this.value);
         });
@@ -488,44 +503,32 @@
             }
         });
 
-        jQuery('#request-detail-page').addClass('sub-loader');
-        jQuery(".btn-cancel").on('click', function() {
-            if (confirm("Apakah anda yakin akan menghapus data ini?")) {
+        $('#request-detail-page').addClass('sub-loader');
+        $(".btn-cancel").on('click', function() 
+        {
+            if (confirm("Apakah anda yakin akan menghapus data ini?")) 
+            {
                 request_item = [];
                 request_item_page = [];
                 createItemRequestTable();
 
-                jQuery('#transaction_type').val('');
-                jQuery('#transaction_type').trigger('change');
+                $('#transaction_type').val('');
+                $('#transaction_type').trigger('change');
 
-                jQuery('#business_area').val('');
-                jQuery('#business_area').trigger('change');
+                $('#business_area').val('');
+                $('#business_area').trigger('change');
+                
                 notify({
                     type: 'error',
                     message: 'form has been cleared!'
                 });
+                
                 document.getElementById("request-form").reset();
+
+                $("#po_no").attr("readonly",false);
+                $("#ganti-no-po").hide();
             }
         });
-
-        /*$("#transaction_type").select2({
-            data: [{
-                    id: '1',
-                    text: 'Barang'
-                },
-                {
-                    id: '2',
-                    text: 'Jasa'
-                },
-                {
-                    id: '3',
-                    text: 'Lain-lain'
-                },
-            ],
-            width: "100%",
-            allowClear: true,
-            placeholder: ' '
-        });*/
 
         var plant = jQuery.parseJSON(JSON.stringify(dataJson('{!! route("get.businessarea") !!}')));
         jQuery("#business_area").select2({
@@ -1146,22 +1149,24 @@
 
     function showPO() 
     {
-        jQuery('.loading-event').fadeIn();
-        var no_po = jQuery("#po_no").val();
-        var data = jQuery.parseJSON(JSON.stringify(dataJson('{!! route("get.no_po") !!}?no_po=' + no_po)));
+        $('.loading-event').fadeIn();
 
-        //var ba_user = [<?php //echo $data['ba_user']; ?>];
+        var no_po = $("#po_no").val();
+        var data = jQuery.parseJSON(JSON.stringify(dataJson('{!! route("get.no_po") !!}?no_po=' + no_po)));
         var ba_user = new Array(<?php echo $data['ba_user']; ?>);
-        //alert(ba_user); return false; 
         var count = 0;
 
         if (data.AEDAT) 
         {
-            jQuery("#po_date").val(data.AEDAT);
-            jQuery("#vendor_code").val(data.LIFNR);
-            jQuery("#vendor_name").val(data.NAME1);
-            jQuery('.select-item-panel').removeClass("hide");
+            $("#po_no").attr("readonly", true);
+            $("#po_date").val(data.AEDAT);
+            $("#vendor_code").val(data.LIFNR);
+            $("#vendor_name").val(data.NAME1);
+            $('.select-item-panel').removeClass("hide");
+            $("#ganti-no-po").fadeIn();    
+
             var item = '<table class="table table-bordered table-condensed table-hover" id="table-detail-item">';
+            
             item += '<tr>';
             item += '<th width="45px">SELECT</th>';
             item += '<th>ITEM PO</th>';
@@ -1173,7 +1178,7 @@
             
             selected_detail_item = [];
 
-            jQuery.each(data.DETAIL_ITEM, function(key, val) 
+            $.each(data.DETAIL_ITEM, function(key, val) 
             {
                 if( ba_user == 'All' )
                 {
@@ -1247,7 +1252,8 @@
                 message: "PO number belum di GR / belum ada di SAP"
             });
         }
-        jQuery('.loading-event').fadeOut();
+        
+        $('.loading-event').fadeOut();
     }
 
     function convertToRupiah(angka)

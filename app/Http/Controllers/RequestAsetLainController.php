@@ -253,7 +253,7 @@ class RequestAsetLainController extends Controller
             $po_type = $request->po_type;
             //if($po_type == 0){ $menu_code = 'P1'; }else{ $menu_code = 'P2'; }
             //DB::SELECT('call create_approval("'.$menu_code.'", "'.$request->business_area.'","","'.$reg_no.'","'.$user_id.'")');
-            DB::SELECT('call create_approval("P3", "'.$request->business_area.'","","'.$reg_no.'","'.$user_id.'","'.$asset_type.'")');
+            DB::SELECT('call create_approval("P3", "'.$request->business_area.'","","'.$reg_no.'","'.$user_id.'","'.$asset_type.'","")');
             //die();
 
             $asset_id = DB::table('TR_REG_ASSET')->insertGetId([
