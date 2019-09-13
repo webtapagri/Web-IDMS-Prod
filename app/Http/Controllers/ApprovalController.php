@@ -195,8 +195,6 @@ class ApprovalController extends Controller
                         LEFT JOIN TBM_USER c ON a.created_by = c.id 
                     WHERE a.no_reg = '$noreg' ";
         $data = DB::SELECT($sql);
-
-        //echo "<pre>"; print_r($data); die();
         
         if($data)
         {
@@ -214,9 +212,6 @@ class ApprovalController extends Controller
 
             foreach ($data as $k => $v) 
             {
-                //echo "<pre>"; print_r($v->NO_REG);
-                # code...
-
                 $records[] = array(
                     'no_reg' => trim($v->NO_REG),
                     'type_transaksi' => trim($type_transaksi[$v->TYPE_TRANSAKSI]),
@@ -236,12 +231,6 @@ class ApprovalController extends Controller
 
             }
         }
-        
-        //echo "<pre>"; print_r($records[0]); die();
-
-        //echo $id; die();
-        //$records = array('id'=>$id);
-        //echo response()->json($records);
         echo json_encode($records[0]);
     }
 
@@ -1489,14 +1478,11 @@ WHERE a.NO_REG = '{$no_registrasi}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KO
         $sql = " SELECT a.KODE_ASSET_SAP AS KODE_ASSET_SAP, b.mandatory_kode_asset_controller FROM TR_REG_ASSET_DETAIL a 
 LEFT JOIN TM_ASSET_CONTROLLER_MAP b ON a.JENIS_ASSET = b.JENIS_ASSET_CODE AND a.GROUP = b.GROUP_CODE AND a.SUB_GROUP = b.SUBGROUP_CODE
 WHERE a.NO_REG = '{$noreg}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KODE_ASSET_CONTROLLER = '' ) AND (a.DELETED is null OR a.DELETED = '')  AND (b.MANDATORY_KODE_ASSET_CONTROLLER is not null AND b.MANDATORY_KODE_ASSET_CONTROLLER != '')  ";    
-        //echo $sql; die();
         $data = DB::SELECT($sql); 
-        //echo "5<pre>"; print_r($data);die();
         
         if(!empty($data))
         {
             $request_ka = json_decode($req['request_ka']);
-            //echo "1<pre>"; print_r($request_ka); die();
             
             if(!empty($request_ka))
             {
@@ -1536,7 +1522,8 @@ WHERE a.NO_REG = '{$noreg}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KODE_ASSET
             }
             else
             {
-                $result = array('status'=>false,'message'=> 'Kode Aset Controller belum diisi (di Item Detail)');
+                $list_kac_required = $this->list_kac_required($noreg);
+                $result = array('status'=>false,'message'=> 'Kode Aset Controller belum diisi ('.$list_kac_required.')');
                 return $result;
             }
         }
@@ -2658,5 +2645,35 @@ WHERE a.NO_REG = '{$noreg}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KODE_ASSET
         }
 
         return $records;
+    }
+
+    function list_kac_required($noreg)
+    {
+        $dt = "";
+
+        $sql = " SELECT a.NO_REG_ITEM, a.NAMA_MATERIAL, c.SUBGROUP_DESCRIPTION 
+FROM tr_reg_asset_detail a 
+LEFT JOIN tm_asset_controller_map b ON a.JENIS_ASSET = b.JENIS_ASSET_CODE AND a.`GROUP` = b.GROUP_CODE AND a.SUB_GROUP = b.SUBGROUP_CODE  
+LEFT JOIN tm_subgroup_asset c ON a.JENIS_ASSET = c.JENIS_ASSET_CODE AND a.`GROUP` = c.GROUP_CODE AND a.SUB_GROUP = c.SUBGROUP_CODE 
+WHERE a.no_reg = '".$noreg."' AND b.MANDATORY_KODE_ASSET_CONTROLLER = 'X' ORDER BY a.NO_REG_ITEM ";
+        
+        $data = DB::SELECT($sql);
+        //echo "4<pre>"; print_r($data); die(); 
+
+        if( !empty($data) )
+        {
+            $no = 1;
+            foreach($data as $k => $v)
+            {
+                $dt .= $v->NO_REG_ITEM.'. '.$v->SUBGROUP_DESCRIPTION.' ('.$v->NAMA_MATERIAL.')<br/>';  
+                $no++;
+            }
+        }
+        else
+        {
+            $dt = "";
+        }
+
+        return $dt;
     }
 }
