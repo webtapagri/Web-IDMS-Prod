@@ -40,7 +40,7 @@ class DisposalController extends Controller
 
 		//$created_by = $u['username'];
 		
-		$sql = " SELECT * FROM TR_DISPOSAL_TEMP WHERE JENIS_PENGAJUAN = $jenis_pengajuan AND CREATED_BY = $user_id "; //echo $sql; die();
+		$sql = " SELECT * FROM TR_DISPOSAL_TEMP WHERE JENIS_PENGAJUAN = $jenis_pengajuan AND CREATED_BY = $user_id AND CHECKLIST = 0 "; //echo $sql; die();
 		
 		$dt = DB::SELECT($sql);
 		//echo "<pre>"; print_r($dt); die();
@@ -295,6 +295,107 @@ class DisposalController extends Controller
             return Redirect::to('/disposal-rusak');
         }
 	}
+
+	function proses(Request $request,$jenis)
+	{
+		$req = $request->all();
+		$user_id = Session::get('user_id');
+		$reg_no = $this->get_reg_no();
+		//echo $reg_no."<br/>";
+
+		$sql = " SELECT * FROM TR_DISPOSAL_TEMP WHERE JENIS_PENGAJUAN = $jenis AND CREATED_BY = $user_id AND CHECKLIST = 0 ";
+		$data = DB::SELECT($sql);
+
+		if(!empty($data))
+		{
+			DB::beginTransaction();
+			try 
+       		{
+				foreach($data as $k => $v)
+				{
+					//echo "1<pre>"; print_r($v);
+				}
+
+				DB::SELECT('call create_approval("D1", "'.$data[0]->LOKASI_BA_CODE.'","","'.$reg_no.'","'.$user_id.'","","")');
+
+				Session::flash('message', 'Proses sukses (NO REG : '.$reg_no.' ) ');
+				return Redirect::to('/disposal-penjualan');
+			}
+			catch (\Exception $e) 
+			{
+	            DB::rollback();
+	            Session::flash('alert', $e->getMessage());
+				return Redirect::to('/disposal-penjualan');
+	       }
+		}
+		else
+		{
+			if( $jenis == 1 )
+			{
+				Session::flash('alert', 'Proses failed!');
+				return Redirect::to('/disposal-penjualan');
+			}
+			else if ( $jenis == 2 )
+			{
+				Session::flash('alert', 'Proses failed!');
+				return Redirect::to('/disposal-hilang');
+			}
+			else if ( $jenis == 3 )
+			{
+				Session::flash('alert', 'Proses failed!');
+				return Redirect::to('/disposal-rusak');
+			}
+			else
+			{
+				Session::flash('alert', 'Proses failed!');
+				return Redirect::to('/');
+			}
+		}
+	}
+
+	public function get_reg_no()
+    {
+        $sql = "SELECT count(*) AS total FROM TR_REG_ASSET WHERE YEAR(tanggal_reg) = YEAR(CURDATE()) AND MONTH(tanggal_reg) = MONTH(curdate())";
+        $data = DB::select($sql);
+        $maxno = $data[0]->total+1;
+        $year= date('y');
+        $month = date('m');
+        $year=$year.'.';
+        $n=$maxno;
+        $n = str_pad($n + 1, 5, 0, STR_PAD_LEFT);
+        $number=$year.$month.'/AMS/DSPL/0001';
+        return $number;
+    }
+
+    public function update_harga_perolehan(Request $request)
+    {
+    	$req = $request->all();
+
+		DB::beginTransaction();
+		try 
+   		{
+			DB::UPDATE(' UPDATE TR_DISPOSAL_TEMP SET HARGA_PEROLEHAN = '.$request->harga_perolehan.' WHERE KODE_ASSET_AMS = '.$request->kode_asset_ams.' ');
+
+			$result = 1;
+		}
+		catch (\Exception $e) 
+		{
+            DB::rollback();
+            $result = 0;
+       	}
+
+		if( $result == 1 )
+		{
+			Session::flash('message', 'Updated success ('.$request->kode_asset_ams.' - '.$request->nama_asset.') ');
+			return Redirect::to('/disposal-penjualan');
+		}
+		else
+		{
+			Session::flash('alert', 'Updated failed!');
+			return Redirect::to('/disposal-penjualan');
+		}
+	
+    }
 }
 
 ?>
