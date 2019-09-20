@@ -335,6 +335,7 @@ class DisposalController extends Controller
 				}
 
 				DB::SELECT('call create_approval("D1", "'.$data[0]->LOKASI_BA_CODE.'","","'.$reg_no.'","'.$user_id.'","IT","0")');
+				DB::commit();
 
 				Session::flash('message', 'Proses sukses (NO REG : '.$reg_no.' ) ');
 				return Redirect::to('/disposal-'.$jp.'');
@@ -363,7 +364,7 @@ class DisposalController extends Controller
         $year=$year.'.';
         $n=$maxno;
         $n = str_pad($n + 1, 5, 0, STR_PAD_LEFT);
-        $number=$year.$month.'/AMS/DSPL/0001';
+        $number=$year.$month.'/AMS/DSPA/0001';
         return $number;
     }
 
