@@ -298,10 +298,11 @@ class DisposalController extends Controller
 
 	function proses(Request $request,$jenis)
 	{
+		if( $jenis == 1 ){ $jp = 'penjualan'; }elseif($jenis==2){ $jp = 'hilang'; }else{ $jp = 'rusak'; }
+
 		$req = $request->all();
 		$user_id = Session::get('user_id');
 		$reg_no = $this->get_reg_no();
-		//echo $reg_no."<br/>";
 
 		$sql = " SELECT * FROM TR_DISPOSAL_TEMP WHERE JENIS_PENGAJUAN = $jenis AND CREATED_BY = $user_id AND CHECKLIST = 0 ";
 		$data = DB::SELECT($sql);
@@ -311,45 +312,44 @@ class DisposalController extends Controller
 			DB::beginTransaction();
 			try 
        		{
+       			$vhp_plus = array();
+
+       			if($data[0]->HARGA_PEROLEHAN >= 50000000)
+       			{
+       				$tipe = 'plus';
+       			}
+       			else
+       			{
+       				$tipe = 'minus';
+       			}
+
 				foreach($data as $k => $v)
 				{
-					//echo "1<pre>"; print_r($v);
+					$vhp = $this->validasi_harga_perolehan($v,$tipe);
+					if( $vhp['result'] != 1 )
+					{
+						DB::rollback();
+	           	 		Session::flash('alert',$vhp['message']);
+						return Redirect::to('/disposal-'.$jp.'');
+					}
 				}
 
-				DB::SELECT('call create_approval("D1", "'.$data[0]->LOKASI_BA_CODE.'","","'.$reg_no.'","'.$user_id.'","","")');
+				DB::SELECT('call create_approval("D1", "'.$data[0]->LOKASI_BA_CODE.'","","'.$reg_no.'","'.$user_id.'","IT","0")');
 
 				Session::flash('message', 'Proses sukses (NO REG : '.$reg_no.' ) ');
-				return Redirect::to('/disposal-penjualan');
+				return Redirect::to('/disposal-'.$jp.'');
 			}
 			catch (\Exception $e) 
 			{
 	            DB::rollback();
 	            Session::flash('alert', $e->getMessage());
-				return Redirect::to('/disposal-penjualan');
+	            return Redirect::to('/disposal-'.$jp.'');
 	       }
 		}
 		else
 		{
-			if( $jenis == 1 )
-			{
-				Session::flash('alert', 'Proses failed!');
-				return Redirect::to('/disposal-penjualan');
-			}
-			else if ( $jenis == 2 )
-			{
-				Session::flash('alert', 'Proses failed!');
-				return Redirect::to('/disposal-hilang');
-			}
-			else if ( $jenis == 3 )
-			{
-				Session::flash('alert', 'Proses failed!');
-				return Redirect::to('/disposal-rusak');
-			}
-			else
-			{
-				Session::flash('alert', 'Proses failed!');
-				return Redirect::to('/');
-			}
+			Session::flash('alert', 'Proses failed!');
+			return Redirect::to('/disposal-'.$jp.'');
 		}
 	}
 
@@ -369,8 +369,6 @@ class DisposalController extends Controller
 
     public function update_harga_perolehan(Request $request)
     {
-    	$req = $request->all();
-
 		DB::beginTransaction();
 		try 
    		{
@@ -387,14 +385,78 @@ class DisposalController extends Controller
 		if( $result == 1 )
 		{
 			Session::flash('message', 'Updated success ('.$request->kode_asset_ams.' - '.$request->nama_asset.') ');
-			return Redirect::to('/disposal-penjualan');
+			
+			if( $request->tipe == 1 )
+			{
+				return Redirect::to('/disposal-penjualan');
+			}
+			elseif( $request->tipe == 2 )
+			{
+				return Redirect::to('/disposal-hilang');
+			}
+			else
+			{
+				return Redirect::to('/disposal-rusak');
+			}
+			
 		}
 		else
 		{
 			Session::flash('alert', 'Updated failed!');
-			return Redirect::to('/disposal-penjualan');
+			
+			if( $request->tipe == 1 )
+			{
+				return Redirect::to('/disposal-penjualan');
+			}
+			elseif( $request->tipe == 2 )
+			{
+				return Redirect::to('/disposal-hilang');
+			}
+			else
+			{
+				return Redirect::to('/disposal-rusak');
+			}
+
 		}
 	
+    }
+
+    function validasi_harga_perolehan($nilai,$jenis)
+    {
+    	$hp_default = 50000000;
+    	$nilai_temp_plus = array();
+    	$nilai_temp_minus = array();
+
+    	if($jenis == 'plus')
+    	{
+    		if($nilai->HARGA_PEROLEHAN >= $hp_default)
+	    	{
+	    		//array_push($nilai_temp_plus, $nilai);
+	    		$nilai_temp_plus[] = $nilai->HARGA_PEROLEHAN;
+	    		$result = array('result'=> 1, 'message'=> $nilai_temp_plus);
+	    		return $result;
+	    	}
+	    	else
+	    	{
+	    		$result = array('result'=> 0, 'message'=> 'Gagal Proses, Harga Perolehan dibawah Rp. 50 juta (Rp. '.number_format($nilai->HARGA_PEROLEHAN,0,',','.').' / KODE ASSET AMS : '.$nilai->KODE_ASSET_AMS.' - '.$nilai->NAMA_ASSET_1.' ) ');
+	    		return $result;
+	    	}
+    	}
+    	else
+    	{
+    		if($nilai->HARGA_PEROLEHAN < $hp_default)
+	    	{
+	    		//array_push($nilai_temp_plus, $nilai);
+	    		$nilai_temp_minus[] = $nilai->HARGA_PEROLEHAN;
+	    		$result = array('result'=> 1, 'message'=> $nilai_temp_minus);
+	    		return $result;
+	    	}
+	    	else
+	    	{
+	    		$result = array('result'=> 0, 'message'=> 'Gagal Proses, Harga Perolehan diatas Rp. 50 juta (Rp. '.number_format($nilai->HARGA_PEROLEHAN,0,',','.').' / KODE ASSET AMS : '.$nilai->KODE_ASSET_AMS.' - '.$nilai->NAMA_ASSET_1.' ) ');
+	    		return $result;
+	    	}
+    	}
     }
 }
 
