@@ -1118,6 +1118,7 @@
                     $.each(data.item_detail, function(key, val) 
                     {
                         var doc_no = val.document_code.replace(/\//g, '-');
+                        var kode_fams = btoa(val.kode_asset_ams);
 
                         item += "<tr style='height: 30px !important;font-size:11px !important;'>";
                         item += "<td>" + no + "</td>";
@@ -1126,7 +1127,11 @@
                         item += "<td>" + val.nama_material + "</td>";
                         item += "<td>" + val.lokasi_ba_description + "</td>";
                         item += "<td>" + val.nama_asset_1 + "</td>";
-                        item += "<td><i class='fa fa-eye' OnClick='getDetailItemDisposal(\""+doc_no+"\","+val.asset_po_id+",3,"+no+")'></i> &nbsp;&nbsp;&nbsp; <i class='fa fa-trash' style='color:red' OnClick='delDisposal(\""+data.no_reg+"\","+val.kode_asset_ams+")'></i> </td>";
+                        
+                        /*item += "<td><i class='fa fa-eye' OnClick='getDetailItemDisposal(\""+doc_no+"\","+val.asset_po_id+",3,"+no+")'></i> &nbsp;&nbsp;&nbsp; <i class='fa fa-trash' style='color:red' OnClick='delDisposal(\""+data.no_reg+"\","+val.kode_asset_ams+")'></i> </td>";*/
+
+                        item += "<td><a href='<?php {{ echo url("/master-asset/show-data"); }} ?>/"+kode_fams+"' target='_blank'><i class='fa fa-eye'></i></a> &nbsp;&nbsp;&nbsp; <i class='fa fa-trash' style='color:red' OnClick='delDisposal(\""+data.no_reg+"\","+val.kode_asset_ams+")'></i> </td>";
+
                         item += "</tr>";
                         no++;
                     });
@@ -2567,8 +2572,11 @@
                 if (data.item_detail.length > 0) 
                 {
                     var no = 1;
+
                     $.each(data.item_detail, function(key, val) 
                     {
+                        var kode_fams = btoa(val.kode_asset_ams);
+
                         item += "<tr style='height: 30px !important;font-size:11px !important;'>";
                         item += "<td>" + no + "</td>";
                         item += "<td>" + val.kode_asset_ams + "</td>";
@@ -2576,9 +2584,11 @@
                         item += "<td>" + val.nama_material + "</td>";
                         item += "<td>" + val.lokasi_ba_description + "</td>";
                         item += "<td>" + val.nama_asset_1 + "</td>";
-                        item += "<td><i class='fa fa-eye' OnClick='getDetailItem(\""+noreg+"\","+val.id+",2,"+no+")'></i></td>";
+                        item += "<td><a href='<?php {{ echo url("/master-asset/show-data"); }} ?>/"+kode_fams+"' target='_blank'><i class='fa fa-eye'></i></a></td>";
+                        //item += "<td><i class='fa fa-eye' OnClick='getDetailItem(\""+noreg+"\","+val.id+",2,"+no+")'></i></td>";
                         item += "</tr>";
                         no++;
+                        
                     });
                 }
                 else
