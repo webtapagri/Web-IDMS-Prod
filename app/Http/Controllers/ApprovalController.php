@@ -2713,15 +2713,13 @@ WHERE a.no_reg = '".$noreg."' AND b.MANDATORY_KODE_ASSET_CONTROLLER = 'X' ORDER 
             )
         */
 
-        $asset_type = '';
         $no_registrasi = str_replace("-", "/", $noreg);
         $user_id = Session::get('user_id');
         $note = $request->parNote;
         $role_id = Session::get('role_id');
         $role_name = Session::get('role'); //get role id user
-        $asset_controller = ''; //get asset controller 
-        //echo $note;die();
-
+        $asset_controller = $this->get_ac($no_registrasi); //get asset controller 
+    
         $validasi_last_approve = $this->get_validasi_last_approve($no_registrasi);
 
         if( $validasi_last_approve == 0 )
@@ -2730,7 +2728,7 @@ WHERE a.no_reg = '".$noreg."' AND b.MANDATORY_KODE_ASSET_CONTROLLER = 'X' ORDER 
             
             try 
             {
-                DB::SELECT('CALL update_approval("'.$no_registrasi.'", "'.$user_id.'","'.$status.'", "'.$note.'", "'.$role_name.'", "'.$asset_type.'")');
+                DB::SELECT('CALL update_approval("'.$no_registrasi.'", "'.$user_id.'","'.$status.'", "'.$note.'", "'.$role_name.'", "'.$asset_controller.'")');
                 DB::commit();
                 return response()->json(['status' => true, "message" => 'Data is successfully ' . ($no_registrasi ? 'updated' : 'update'), "new_noreg"=>$no_registrasi]);
             } 
@@ -2899,5 +2897,27 @@ WHERE a.no_reg = '".$noreg."' AND b.MANDATORY_KODE_ASSET_CONTROLLER = 'X' ORDER 
             DB::rollback();
             return response()->json(['status' => false, "message" => $e->getMessage()]);
         }
+    }
+
+    function get_ac($noreg)
+    {
+        $sql = "SELECT b.ASSET_CONTROLLER
+                    FROM tr_disposal_asset_detail a 
+                    LEFT JOIN tm_mstr_asset b on a.KODE_ASSET_AMS = b.KODE_ASSET_AMS
+                    WHERE a.no_reg = '".$noreg."' 
+                    LIMIT 1";
+
+        $data = DB::SELECT($sql);
+
+        if(!empty($data))
+        {   
+            $ac = $data[0]->ASSET_CONTROLLER;
+        }
+        else
+        {
+            $ac = "";
+        }
+
+        return $ac;
     }
 }
