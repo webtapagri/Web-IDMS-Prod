@@ -31,10 +31,6 @@
                         <div class="form-group">
                             <label for="plant" class="col-md-3">TIPE TRANSAKSI<sup style="color:red">*</sup></label>
                             <div class="col-md-6">
-                                <?php /*
-                                <select class="form-control input-sm" name="transaction_type" id="transaction_type" required>
-                                    <option></option>
-                                </select> */ ?>
                                 <input type="text" class="form-control input-sm" name="transaction_type" id="transaction_type" value="BARANG" autocomplete="off" readonly="readonly">
                             </div>
                         </div>
@@ -238,23 +234,6 @@
                                                 </div>
                                             </div>
 
-                                            <?php /*
-                                            <div class="form-group" id="asset-controller">
-                                                <label for="part_no" class="col-md-2 col-md-offset-1">Asset Controller</label>
-                                                <div class="col-md-8">
-                                                    <input type="text" class="form-control input-sm asset-controller" name="asset_controller" id="asset_controller" autocomplete="off">
-                                                </div>
-                                            </div>
-                                            */ ?>
-
-                                            <div class="form-group">
-                                                <label for="plant" class="col-md-3">
-                                                    <h4>ASSET CLASS :</h4>
-                                                </label>
-                                                <div class="col-md-9">
-                                                    <h4></h4>
-                                                </div>
-                                            </div>
                                             <div class="form-group material-group-input" id="input-description">
 
                                                 <label for="part_no" class="col-md-2 col-md-offset-1">Nama Aset</label>

@@ -713,8 +713,12 @@ class AssetClassController extends Controller
     {
         $data = DB::table('TM_SUBGROUP_ASSET')
         ->select('subgroup_code as id',DB::raw('CONCAT(subgroup_code,"-",subgroup_description) as text'))
-        //->select('subgroup_code as id', 'subgroup_description as text')
-        ->where('group_code', $request->group)
+        ->where(
+            array(
+                'jenis_asset_code' => $request->jenis_asset,
+                'group_code' => $request->group
+            )
+        )
         ->orderby('subgroup_description', 'asc')
         ->get();
         return response()->json(array("data"=>$data));

@@ -59,10 +59,10 @@ class DisposalController extends Controller
     		$where .= " AND BA_PEMILIK_ASSET in ($area_code) ";
     	}
 
-    	$sql = " SELECT a.kode_asset_ams AS kode_asset_ams, a.kode_material AS kode_material, a.nama_material AS nama_material, a.nama_asset_1 AS nama_asset_1, a.kode_asset_sap AS kode_asset_sap 
+    	$sql = " SELECT a.kode_asset_ams AS kode_asset_ams, a.kode_material AS kode_material, a.nama_material AS nama_material, a.nama_asset_1 AS nama_asset_1, a.kode_asset_sap AS kode_asset_sap, a.lokasi_ba_description, a.ba_pemilik_asset 
     				FROM TM_MSTR_ASSET a 
-    					WHERE 1=1 $where
-    				ORDER BY a.created_at ASC ";
+    					WHERE (a.kode_asset_ams IS NOT NULL OR a.kode_asset_ams != '') and (a.nama_material IS NOT NULL OR a.nama_material != '' ) $where
+    				ORDER BY a.nama_material ASC ";//echo $sql;
  		$data = DB::SELECT($sql); 
 
  		if($data)
@@ -73,7 +73,10 @@ class DisposalController extends Controller
  				$kode_asset_ams = base64_encode($v->kode_asset_ams);
  				$datax .= "{id : '{$kode_asset_ams}',
  								name : '{$v->nama_material}  ',
- 								asset : '{$v->nama_asset_1} '
+ 								asset : '{$v->nama_asset_1} ',
+ 								kode_asset_ams : '{$v->kode_asset_ams}',
+ 								lokasi_ba_description : '{$v->lokasi_ba_description}',
+ 								ba_pemilik_asset : '{$v->ba_pemilik_asset}'
  							},";
  			}
  		}
@@ -94,7 +97,7 @@ class DisposalController extends Controller
 		$validasi_asset = $this->check_asset($kode_asset_ams,1);
 		if( $validasi_asset > 0 )
 		{
-			Session::flash('alert', 'Data sudah ada (KODE AMS : '.$row->KODE_ASSET_AMS.') ');
+			Session::flash('alert', 'Data sudah di Disposal (KODE AMS : '.$row->KODE_ASSET_AMS.') ');
 			return Redirect::to('/disposal-penjualan');
 			exit;
 		}
@@ -108,7 +111,6 @@ class DisposalController extends Controller
 
 			try 
 			{
-
 				$sql = "INSERT INTO TR_DISPOSAL_TEMP(KODE_ASSET_AMS,KODE_ASSET_SAP,NAMA_MATERIAL,BA_PEMILIK_ASSET,LOKASI_BA_CODE,LOKASI_BA_DESCRIPTION,NAMA_ASSET_1,CREATED_BY,JENIS_PENGAJUAN,CHECKLIST)
 							VALUES('{$row->KODE_ASSET_AMS}','{$row->KODE_ASSET_SAP}','{$row->NAMA_MATERIAL}','{$row->BA_PEMILIK_ASSET}','{$row->LOKASI_BA_CODE}','{$row->LOKASI_BA_DESCRIPTION}','{$row->NAMA_ASSET_1}','{$user_id}','{$jenis_pengajuan}',0)";
 				//	echo $sql; die();
@@ -173,7 +175,7 @@ class DisposalController extends Controller
 		$validasi_asset = $this->check_asset($kode_asset_ams,2);
 		if( $validasi_asset > 0 )
 		{
-			Session::flash('alert', 'Data sudah ada (KODE AMS : '.$row->KODE_ASSET_AMS.') ');
+			Session::flash('alert', 'Data sudah di Disposal (KODE AMS : '.$row->KODE_ASSET_AMS.') ');
 			return Redirect::to('/disposal-hilang');
 			exit;
 		}
@@ -219,10 +221,26 @@ class DisposalController extends Controller
 
     function check_asset($kode_asset_ams,$jenis_pengajuan)
     {
-    	$sql = "SELECT COUNT(*) AS TOTAL FROM TR_DISPOSAL_TEMP WHERE KODE_ASSET_AMS = '{$kode_asset_ams}' AND JENIS_PENGAJUAN = $jenis_pengajuan ";
-    	$data = DB::SELECT($sql);
-    	//echo "2<pre>"; print_r($data); die();
-    	return $data[0]->TOTAL;
+    	$total = 0;
+
+    	// #1 VALIDASI DI DISPOSAL ASET DETAIL
+    	$sql1 = "SELECT COUNT(*) AS TOTAL FROM TR_DISPOSAL_ASSET_DETAIL WHERE KODE_ASSET_AMS = '{$kode_asset_ams}'";
+    	$data = DB::SELECT($sql1);
+
+    	if( $data[0]->TOTAL == 0)
+    	{
+    		// #2 JIKA ASET DETAIL NULL VALIDASI DI DISPOSAL ASET TEMP
+    		$sql2 = "SELECT COUNT(*) AS TOTAL FROM TR_DISPOSAL_TEMP WHERE KODE_ASSET_AMS = '{$kode_asset_ams}' ";
+    		$dt = DB::SELECT($sql2);
+
+    		$total = $dt[0]->TOTAL;
+    	}
+    	else
+    	{
+    		$total = $data[0]->TOTAL;
+    	}
+
+    	return $total;
     }
 
     public function index_rusak()
@@ -256,9 +274,10 @@ class DisposalController extends Controller
 		$row = TM_MSTR_ASSET::find($kode_asset_ams);
 
 		$validasi_asset = $this->check_asset($kode_asset_ams,3);
+
 		if( $validasi_asset > 0 )
 		{
-			Session::flash('alert', 'Data sudah ada (KODE AMS : '.$row->KODE_ASSET_AMS.') ');
+			Session::flash('alert', 'Data sudah di Disposal (KODE AMS : '.$row->KODE_ASSET_AMS.') ');
 			return Redirect::to('/disposal-rusak');
 			exit;
 		}
@@ -298,7 +317,9 @@ class DisposalController extends Controller
 
 	function proses(Request $request,$jenis)
 	{
-		if( $jenis == 1 ){ $jp = 'penjualan'; }elseif($jenis==2){ $jp = 'hilang'; }else{ $jp = 'rusak'; }
+		if( $jenis == 1 ){ $jp = 'penjualan'; $menu_code = 'D3'; }
+		elseif($jenis==2){ $jp = 'hilang'; $menu_code = 'D1'; }
+		else{ $jp = 'rusak'; $menu_code = 'D2'; }
 
 		$req = $request->all();
 		$user_id = Session::get('user_id');
@@ -314,27 +335,85 @@ class DisposalController extends Controller
        		{
        			$vhp_plus = array();
 
-       			if($data[0]->HARGA_PEROLEHAN >= 50000000)
-       			{
-       				$tipe = 'plus';
-       			}
-       			else
-       			{
-       				$tipe = 'minus';
-       			}
+       			if($data[0]->HARGA_PEROLEHAN >= 50000000){$tipe = 'plus';}
+       			else{$tipe = 'minus';}
+
+       			$lokasi_ba_code = $data[0]->LOKASI_BA_CODE;
+
+       			$ac_awal = $this->get_ac_awal($data[0]->KODE_ASSET_AMS);
+       			if( $ac_awal == "not found" )
+       			{ 	
+	           	 	Session::flash('alert', 'Asset Controller not found (KODE ASSET AMS : '.$data[0]->KODE_ASSET_AMS.' )');
+					return Redirect::to('/disposal-'.$jp.''); 
+				}
 
 				foreach($data as $k => $v)
 				{
+					// #1 VALIDASI HARGA PEROLEHAN
 					$vhp = $this->validasi_harga_perolehan($v,$tipe);
 					if( $vhp['result'] != 1 )
 					{
-						DB::rollback();
+						DB::rollback(); 
+						DB::commit();
 	           	 		Session::flash('alert',$vhp['message']);
 						return Redirect::to('/disposal-'.$jp.'');
+						exit;
 					}
+
+					// #2 VALIDASI SATU LOKASI BA CODE
+					$vlb = $this->validasi_lokasi_bacode($v,$lokasi_ba_code);
+					if( $vlb['result'] != 1 )
+					{
+						DB::rollback();
+						DB::commit();
+	           	 		
+	           	 		Session::flash('alert',$vlb['message']);
+						return Redirect::to('/disposal-'.$jp.'');
+						exit;
+					}
+
+					// #3 VALIDASI SAMA ASSET CONTROLLER
+					$vac = $this->validasi_asset_controller($v->KODE_ASSET_AMS, $ac_awal); 
+					if( $vac['result'] != 1 )
+					{
+						DB::rollback();DB::commit();
+	           	 		Session::flash('alert',$vlb['message']);
+						return Redirect::to('/disposal-'.$jp.'');
+						exit;
+					}
+					
 				}
 
-				DB::SELECT('call create_approval("D1", "'.$data[0]->LOKASI_BA_CODE.'","","'.$reg_no.'","'.$user_id.'","IT","0")');
+				foreach($data as $k => $v)
+				{
+					DB::table('TR_DISPOSAL_ASSET_DETAIL')->insertGetId([
+                        "NO_REG" => $reg_no,
+                        "KODE_ASSET_AMS" => $v->KODE_ASSET_AMS,
+                        "KODE_ASSET_SAP" => $v->KODE_ASSET_SAP,
+                        "NAMA_MATERIAL" => $v->NAMA_MATERIAL,
+                        "BA_PEMILIK_ASSET" => $v->BA_PEMILIK_ASSET,
+                        "LOKASI_BA_CODE" => $v->LOKASI_BA_CODE,
+                        "LOKASI_BA_DESCRIPTION" => $v->LOKASI_BA_DESCRIPTION,
+                        "NAMA_ASSET_1" => $v->NAMA_ASSET_1,
+                        "HARGA_PEROLEHAN" => $v->HARGA_PEROLEHAN,
+                        "JENIS_PENGAJUAN" => $v->JENIS_PENGAJUAN,
+                        "CREATED_BY" => Session::get('user_id'),
+                    ]);
+				}
+
+				//echo $ac_awal; die();
+
+				DB::SELECT('call create_approval("'.$menu_code.'", "'.$data[0]->LOKASI_BA_CODE.'","","'.$reg_no.'","'.$user_id.'","'.$ac_awal.'","0")');
+
+				$asset_id = DB::table('TR_DISPOSAL_ASSET')->insertGetId([
+	                "CREATED_BY" => Session::get('user_id'),
+	                "NO_REG" => $reg_no,
+	                "BUSINESS_AREA" => $data[0]->LOKASI_BA_CODE,
+	                "TANGGAL_REG" => date("Y-m-d")
+	            ]);
+
+	            DB::DELETE(" DELETE FROM TR_DISPOSAL_TEMP WHERE JENIS_PENGAJUAN = $jenis AND CREATED_BY = $user_id AND CHECKLIST = 0 ");
+
 				DB::commit();
 
 				Session::flash('message', 'Proses sukses (NO REG : '.$reg_no.' ) ');
@@ -356,7 +435,7 @@ class DisposalController extends Controller
 
 	public function get_reg_no()
     {
-        $sql = "SELECT count(*) AS total FROM TR_REG_ASSET WHERE YEAR(tanggal_reg) = YEAR(CURDATE()) AND MONTH(tanggal_reg) = MONTH(curdate())";
+        $sql = "SELECT count(*) AS total FROM TR_DISPOSAL_ASSET WHERE YEAR(tanggal_reg) = YEAR(CURDATE()) AND MONTH(tanggal_reg) = MONTH(curdate())";
         $data = DB::select($sql);
         $maxno = $data[0]->total+1;
         $year= date('y');
@@ -364,7 +443,7 @@ class DisposalController extends Controller
         $year=$year.'.';
         $n=$maxno;
         $n = str_pad($n + 1, 5, 0, STR_PAD_LEFT);
-        $number=$year.$month.'/AMS/DSPA/0001';
+        $number=$year.$month.'/AMS/DSPA/'.$n;
         return $number;
     }
 
@@ -428,6 +507,12 @@ class DisposalController extends Controller
     	$nilai_temp_plus = array();
     	$nilai_temp_minus = array();
 
+    	if($nilai->HARGA_PEROLEHAN == 0)
+    	{
+    		$result = array('result'=> 0, 'message'=> 'Gagal Proses, Harga Perolehan tidak boleh kosong (0) (Rp. '.number_format($nilai->HARGA_PEROLEHAN,0,',','.').' / KODE ASSET AMS : '.$nilai->KODE_ASSET_AMS.' - '.$nilai->NAMA_ASSET_1.' ) ');
+	    		return $result;
+    	}
+
     	if($jenis == 'plus')
     	{
     		if($nilai->HARGA_PEROLEHAN >= $hp_default)
@@ -457,6 +542,68 @@ class DisposalController extends Controller
 	    		$result = array('result'=> 0, 'message'=> 'Gagal Proses, Harga Perolehan diatas Rp. 50 juta (Rp. '.number_format($nilai->HARGA_PEROLEHAN,0,',','.').' / KODE ASSET AMS : '.$nilai->KODE_ASSET_AMS.' - '.$nilai->NAMA_ASSET_1.' ) ');
 	    		return $result;
 	    	}
+    	}
+    }
+
+    function validasi_lokasi_bacode($nilai,$lokasi_awal)
+    {
+    	//echo $lokasi_awal; die();
+
+    	if( $lokasi_awal == $nilai->LOKASI_BA_CODE )
+    	{
+    		$result = array('result'=> 1, 'message'=> "success");
+	    	return $result;
+    	}
+    	else
+    	{
+    		$result = array('result'=> 0, 'message'=> 'Gagal Proses, Lokasi BA Code tidak sama (KODE ASSET AMS : '.$nilai->KODE_ASSET_AMS.' - '.$nilai->NAMA_ASSET_1.' ) ');
+	    		return $result;
+    	}
+    }
+
+    function remove_rusak($kode_asset_ams)
+    {	
+		DB::DELETE(" DELETE FROM TR_DISPOSAL_TEMP WHERE KODE_ASSET_AMS = '{$kode_asset_ams}' ");
+        return Redirect::to('/disposal-rusak');
+    }
+
+    function get_ac_awal($kode_asset_ams)
+    {
+    	$sql = " SELECT a.ASSET_CONTROLLER FROM TM_MSTR_ASSET a WHERE a.KODE_ASSET_AMS = '".$kode_asset_ams."' ";
+    	$data = DB::SELECT($sql);
+    	//echo "<pre>"; print_r($data); die();
+    	if(!empty($data))
+    	{
+    		$ac = $data[0]->ASSET_CONTROLLER;
+    	}
+    	else
+    	{
+    		$ac = "not found";
+    	}
+
+    	//echo "2<br/>".$ac; die();
+
+    	return $ac;
+    }
+
+    function validasi_asset_controller($kode_asset_ams,$ac_awal)
+    {
+    	$ac = $this->get_ac_awal($kode_asset_ams);
+
+    	if( $ac == 'not found' )
+    	{
+    		$result = array('result'=> 0, 'message'=> 'Asset Controller not found (KODE ASSET AMS : '.$kode_asset_ams.' )');
+	    	return $result;
+    	}
+    	else if( $ac == $ac_awal )
+    	{
+    		$result = array('result'=> 1, 'message'=> "success");
+	    	return $result;
+    	}
+    	else
+    	{
+    		$result = array('result'=> 0, 'message'=> 'Gagal Proses, AC Controller tidak sama (KODE ASSET AMS : '.$kode_asset_ams.' ) ');
+	    	return $result;
     	}
     }
 }

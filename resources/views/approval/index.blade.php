@@ -20,7 +20,7 @@
 @section('content')
 
 <style>
-.fa-eye{cursor:pointer;}
+.fa-eye, .fa-trash {cursor:pointer;}
 </style>
 
 <div class="row" style="margin-top:-3%">
@@ -220,19 +220,6 @@
                         <span class="label bg-blue"><i class="fa fa-bars"></i> ITEM DETAIL</span> <br/><br/>
                         <div class="form-group">
                             <div class="col-md-12" id="box-item-detail">
-                                <!--table class="table table-condensed table-responsive" id="request-item-table">
-                                    <tr>
-                                        <th>NO</th>
-                                        <th>ITEM</th>
-                                        <th>QTY</th>
-                                        <th>KODE MATERIAL</th>
-                                        <th>NAMA MATERIAL</th>
-                                        <th>MRP</th>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="6" style="text-align:center">No item selected</td>
-                                    </tr>
-                                </table-->
                             </div>
                         </div>
                         
@@ -251,7 +238,6 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <?php /* <button type="button" class="btn btn-flat btn-default" data-dismiss="modal">Close</button> */ ?>
                 <?php if($user_role == 'AC'){ ?> 
                    <span id="create-button-sync-sap"></span>
                 <?php }  ?>
@@ -261,10 +247,7 @@
                     </span>
                     <button type="button" class="btn btn-flat label-danger button-reject" OnClick="changeStatus('R')" style="margin-right: 5px;">REJECT</button>
                 <?php }} ?>
-                <?php /*
-                <button type="button" class="btn btn-flat label-danger" OnClick="saveRequest()" style="margin-right: 5px;">Revise</button>
-                <button type="button" class="btn btn-flat label-danger" OnClick="saveRequest()" style="margin-right: 5px;">Simpan</button>
-                */ ?>
+                
             </div>
             </form>
         </div>
@@ -380,6 +363,167 @@
     </div>
 </div>
 
+<div id="approve-disposal-modal" class="modal fade" role="dialog" aria-labelledby="largeModal" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+                <h4 class="modal-title"></h4>
+            </div>
+            <div class="modal-body">
+                <div class="box-body">
+                    <form id="request-form" class="form-horizontal" style="font-size:13px !important">
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="plant" class="col-md-4">NO REGISTRASI</label>
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-control xinput-sm" value="" id="no-reg" name="no-reg" readonly>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="plant" class="col-md-4">TANGGAL PENGAJUAN</label>
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-control input-sm" value="" id="tanggal-reg" name="tanggal-reg" readonly>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="plant" class="col-md-4">BUSINESS AREA</label>
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-control input-sm" value="" id="business-area" name="business-area" readonly>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="plant" class="col-md-4">REQUESTOR</label>
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-control input-sm" value="" id="requestor" name="requestor" readonly>
+                                    </div>
+                                </div>
+                                
+                                
+                            </div>
+                        </div>                        
+                        
+                        <br>
+                        <span class="label bg-blue"><i class="fa fa-bars"></i> ITEM DETAIL</span> <br/><br/>
+                        <div class="form-group">
+                            <div class="col-md-12" id="box-item-detail-disposal">
+                            </div>
+                        </div>
+                        
+                        <!-- ITEM DETAIL OUTSTANDING -->
+                        <div id="box-detail-item-disposal"></div>
+
+                        <!-- LOG HISTORY OUTSTANDING --> 
+                        <div id="log-history-box-disposal" class="table-scroll"></div>
+
+                        <div class="form-group">
+                            <label class="col-md-2">NOTE</label>
+                            <div class="col-md-8">
+                                <textarea type="text" class="form-control input-sm attr-material-group" row="3" name="specification-disposal" id="specification-disposal"></textarea>
+                            </div>
+                        </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <?php if($user_role == 'AC'){ ?> 
+                   <span id="create-button-sync-sap"></span>
+                <?php }  ?>
+                <?php if($user_role != 'Super Administrator'){ if($data['outstanding'] != 0 ){ ?> 
+                    <span id="button-approve">
+                        <button type="button" class="btn btn-flat label-danger" OnClick="changeStatusDisposal('A')" style="margin-right: 5px;">APPROVE</button>
+                    </span>
+                    <button type="button" class="btn btn-flat label-danger button-reject" OnClick="changeStatusDisposal('R')" style="margin-right: 5px;">REJECT</button>
+                <?php }} ?>
+                
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div id="history-modal-disposal" class="modal fade" role="dialog" aria-labelledby="largeModal" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+                <h4 class="modal-title"></h4>
+            </div>
+            <div class="modal-body">
+                <div class="box-body">
+                    <form id="request-form-history" class="form-horizontal" style="font-size:13px !important">
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                
+                                <div class="form-group">
+                                    <label for="plant" class="col-md-4">NO REGISTRASI</label>
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-control xinput-sm" value="" id="no-reg" name="no-reg" readonly>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="plant" class="col-md-4">TANGGAL PENGAJUAN</label>
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-control input-sm" value="" id="tanggal-reg" name="tanggal-reg" readonly>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="plant" class="col-md-4">BUSINESS AREA</label>
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-control input-sm" value="" id="business-area" name="business-area" readonly>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="plant" class="col-md-4">REQUESTOR</label>
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-control input-sm" value="" id="requestor" name="requestor" readonly>
+                                    </div>
+                                </div> 
+                            </div>
+                        </div>
+                        <div class="row">
+                        
+                            <br>
+                            <span class="label bg-blue"><i class="fa fa-bars"></i> ITEM DETAIL</span> <br/><br/>
+                            <div class="form-group">
+                                <div class="col-md-12" id="box-item-detail-history-disposal"></div>
+                            </div>
+                            
+                            <!-- ITEM DETAIL HISTORY -->
+                            <div id="box-detail-item-history-disposal"></div>
+
+                            <div class="form-group" id="history-notes-disposal">
+                                <label class="col-md-2"><span class="label bg-blue"><i class="fa fa-bars"></i> NOTE</span></label>
+                                <div class="col-md-8">
+                                    <textarea type="text" class="form-control input-sm attr-material-group" row="3" name="specification-disposal" id="specification-disposal" readonly></textarea>
+                                </div>
+                            </div>
+
+                            <!-- LOG HISTORY -->
+                            <div id="log-history-box-disposal-history" class="table-scroll"></div>
+                        
+                        </div><!-- ROW -->                        
+                        
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-flat btn-default" data-dismiss="modal">Close</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 @stop
 @section('js')
 <script>
@@ -429,7 +573,21 @@
                         "render": function(data, type, row) 
                         {
                             var no_registrasi= row.NO_REG.replace(/\//g, '-');
-                            return '<a href="javascript:;" style="font-weight:bold" OnClick="approval(\'' + no_registrasi + '\')">' + row.NO_REG + '</a>';
+                            var disposal = no_registrasi.includes("DSPA");
+
+                            if(disposal)
+                            {
+                                //var kode_asset_ams = btoa(row.KODE_ASSET_AMS); //alert(kode_asset_ams);
+                                //return '<a href="{{ url("master-asset/show-data") }}/'+kode_asset_ams+'" style="font-weight:bold" target="_blank">' + row.NO_REG + '</a>';
+
+                                return '<a href="javascript:;" style="font-weight:bold" OnClick="approval_disposal(\'' + no_registrasi + '\')">' + row.NO_REG + '</a>'; 
+
+                            }
+                            else
+                            {
+                                return '<a href="javascript:;" style="font-weight:bold" OnClick="approval(\'' + no_registrasi + '\')">' + row.NO_REG + '</a>';
+                            }
+                            
                         }
                     }, {
                         "render": function(data, type, row) 
@@ -441,6 +599,8 @@
                                 var content = 'Jasa'
                             } else if (row.TYPE == 3) {
                                 var content = 'lain-lain'
+                            } else {
+                                var content = '-'
                             }
 
                             return content;
@@ -455,6 +615,8 @@
                                 var content = '<span class="label label-danger">AMP</span>';
                             }else if (row.PO_TYPE == 2) {
                                 var content = '<span class="label label-warning">ASSET LAIN</span>';
+                            }else{
+                                var content = '<span class="label label-default">DISPOSAL</span>';
                             }
 
                             return content;
@@ -524,22 +686,7 @@
                 },
                 "order": [],
             },
-            //responsive: true,
-            //orderCellsTop: true
         });
-
-        /*
-        alert("99");
-        $('#data-table thead').on( 'click', '.form-control', function (e) {   // for text boxes
-           e.stopPropagation();
-        });
-        $('#data-table thead').on( 'keyup change', '.form-control', function (e) {   // for text boxes
-           var i = $(this).attr('data-column');  // getting column index
-           var v = $(this).val();  // getting search input value
-           var grid = $('#data-table').DataTable();
-           grid.columns(i).search(v).draw();
-        });
-        */   
 
         $("#PO_TYPE").select2({
             data: [{
@@ -579,16 +726,6 @@
             allowClear: true
         });
 
-        // JENIS KENDARAAN
-        /*alert("tipe kendaraan 1");
-        var tipekendaraan = $.parseJSON(JSON.stringify(dataJson('{!! route("get.select_jenis_kendaraan") !!}')));
-        $('input[name="jenis-kendaraan"]').select2({
-            data: tipekendaraan,
-            width: '100%',
-            placeholder: ' ',
-            allowClear: true
-        });*/
-
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -618,33 +755,19 @@
                         "render": function(data, type, row) 
                         {
                             var no_registrasi= row.document_code.replace(/\//g, '-');
-                            return '<a href="javascript:;" style="font-weight:bold" OnClick="history(\'' + no_registrasi + '\')">' + row.document_code + '</a>';
+                            var disposal = no_registrasi.includes("DSPA");
+
+                            if(disposal)
+                            {
+                                return '<a href="javascript:;" style="font-weight:bold" OnClick="history_disposal(\'' + no_registrasi + '\')">' + row.document_code + '</a>';
+                            }
+                            else
+                            {
+                                return '<a href="javascript:;" style="font-weight:bold" OnClick="history(\'' + no_registrasi + '\')">' + row.document_code + '</a>';
+                            }
+                            
                         }
                     }, 
-                    /*{
-                        "render": function(data, type, row) {
-                            if (row.type == 1) {
-                                var content = 'Barang'
-                            } else if (row.type == 2) {
-                                var content = 'Jasa'
-                            } else if (row.type == 3) {
-                                var content = 'lain-lain'
-                            }
-
-                            return content;
-                        }
-                    }, {
-                        "render": function(data, type, row) {
-                            if (row.po_type == 0) {
-                                var content = '<span class="label label-primary">SAP</span>';
-                            } else if (row.po_type == 1) {
-                                var content = '<span class="label label-danger">AMP</span>';
-                            }
-
-                            return content;
-                        }
-                    },
-                    */
                     {
                         data: 'area_code',
                         name: 'area_code'
@@ -657,14 +780,6 @@
                         data: 'status_dokumen',
                         name: 'status_dokumen'
                     },
-                    /*{
-                        data: 'status_approval',
-                        name: 'status_approval'
-                    },
-                    {
-                        data: 'po_notes',
-                        name: 'po_notes'
-                    },*/
                     {
                         data: 'po_date',
                         name: 'po_date'
@@ -877,13 +992,161 @@
 
                 $("#box-item-detail").html(item);
 
-                //alert(id);
                 log_history(id,1);
                 $("#box-item-detail-history").html(item);
 
                 $("#approve-modal .modal-title").html("<i class='fa fa-edit'></i>  Approval Pendaftaran - <span style='color:#dd4b39'>" + data.no_reg + "</span><input type='hidden' id='getnoreg' name='getnoreg' value='"+data.no_reg+"' >");
 
                 $('#approve-modal').modal('show');
+            },
+            error: function(x) 
+            {                           
+                alert("Error: "+ "\r\n\r\n" + x.responseText);
+            }
+        }); 
+    }
+
+    function approval_disposal(id)
+    {
+        //alert(id); return false;
+        var kata = id;
+        var noreg= kata.replace(/\//g, '-');
+        //alert(noreg); //return false;
+
+        $("#box-detail-item-disposal").hide();
+
+        $.ajax({
+            type: 'GET',
+            url: "{{ url('approval/view_disposal') }}/"+noreg,
+            data: "",
+            //async: false,
+            dataType: 'json',
+            success: function(data) 
+            { 
+                //alert(data.cek_reject);
+                $("#request-form #no-reg").val(data.no_reg);
+                $("#request-form #type-transaksi").val(data.type_transaksi);
+                $("#request-form #po-type").val(data.po_type);
+                $("#request-form #business-area").val(data.business_area);
+                $("#request-form #requestor").val(data.requestor);
+                $("#request-form #tanggal-reg").val(data.tanggal_reg);
+                $("#request-form #kode-vendor").val(data.kode_vendor);
+                $("#request-form #nama-vendor").val(data.nama_vendor);
+
+                if(data.po_type == 'SAP')
+                {
+                    //VALIDASI SYNC VIEW SAP
+                    if(data.sync_sap != '')
+                    {
+                        $("#create-button-sync-sap").show();
+                        $("#create-button-sync-sap").html('<button type="button" class="btn btn-flat label-danger" OnClick="sinkronisasi()" style="margin-right: 5px;">SYNC SAP</button>');
+                        
+                        <?php if( $user_role == 'AC' ){ ?>
+                            $("#button-approve").hide();
+                            $(".button-reject").attr("disabled", false); 
+                        <?php } ?>
+                    }
+                    else
+                    {
+                        $("#create-button-sync-sap").hide();
+                        if(data.cek_reject==0){$("#button-approve").show();}
+                        //$(".button-reject").attr("disabled", true); 
+                        $(".button-reject").hide(); 
+                    }
+                }
+                else if( data.po_type == 'Asset Lainnya' )
+                {
+                    //alert(data.po_type);
+                    //VALIDASI SYNC ASET LAIN IT@080819
+                    if(data.sync_lain == 'SAP')
+                    {
+                        $("#create-button-sync-sap").show();
+                        $("#create-button-sync-sap").html('<button type="button" class="btn btn-flat label-danger" OnClick="sinkronisasi()" style="margin-right: 5px;">SYNC ASSET LAIN (SAP)</button>');
+                        <?php if( $user_role == 'AC' ){ ?>
+                            $("#button-approve").hide();
+                            $(".button-reject").attr("disabled", false); 
+                        <?php } ?>
+                    }
+                    else if(data.sync_lain == 'AMP')
+                    {
+                        $("#create-button-sync-sap").show();
+                        $("#create-button-sync-sap").html('<button type="button" class="btn btn-flat label-danger" OnClick="sinkronisasi_amp()" style="margin-right: 5px;">SYNC ASSET LAIN</button>');
+                        <?php if( $user_role == 'AC' ){ ?>
+                            $("#button-approve").hide();
+                            $(".button-reject").attr("disabled", false); 
+                        <?php } ?>
+                    }
+                    else
+                    {
+                        $("#create-button-sync-sap").hide();
+                        if(data.cek_reject==0){$("#button-approve").show();}
+                        $(".button-reject").hide(); 
+                    }
+                }
+                else
+                {
+                    //VALIDASI SYNC AMP IT@160719
+                    if(data.sync_amp != 0)
+                    {
+                        $("#create-button-sync-sap").show();
+                        $("#create-button-sync-sap").html('<button type="button" class="btn btn-flat label-danger" OnClick="sinkronisasi_amp()" style="margin-right: 5px;">SYNC AMP</button>');
+                        <?php if( $user_role == 'AC' ){ ?>
+                            $("#button-approve").hide();
+                            $(".button-reject").attr("disabled", false); 
+                        <?php } ?>
+                    }
+                    else
+                    {
+                        $("#create-button-sync-sap").hide();
+                        if(data.cek_reject==0){$("#button-approve").show();}
+                        $(".button-reject").show(); 
+                    }
+
+                }
+                    
+                var item = '<table class="table table-responsive table-striped" id="request-item-table" style="font-size:13px">';
+                item += '<th>NO.</th>';
+                item += '<th>KODE ASSET AMS</th>';
+                item += '<th>KODE ASSET SAP</th>';
+                item += '<th>NAMA MATERIAL</th>';
+                item += '<th>LOKASI BA CODE</th>';
+                item += '<th>NAMA ASSET</th>';
+                item += '<th>VIEW DETAIL</th>';
+                if (data.item_detail.length > 0) 
+                {
+                    var no = 1;
+                    $.each(data.item_detail, function(key, val) 
+                    {
+                        var doc_no = val.document_code.replace(/\//g, '-');
+
+                        item += "<tr style='height: 30px !important;font-size:11px !important;'>";
+                        item += "<td>" + no + "</td>";
+                        item += "<td>" + val.kode_asset_ams + "</td>";
+                        item += "<td>" + val.kode_asset_sap + "</td>";
+                        item += "<td>" + val.nama_material + "</td>";
+                        item += "<td>" + val.lokasi_ba_description + "</td>";
+                        item += "<td>" + val.nama_asset_1 + "</td>";
+                        item += "<td><i class='fa fa-eye' OnClick='getDetailItemDisposal(\""+doc_no+"\","+val.asset_po_id+",3,"+no+")'></i> &nbsp;&nbsp;&nbsp; <i class='fa fa-trash' style='color:red' OnClick='delDisposal(\""+data.no_reg+"\","+val.kode_asset_ams+")'></i> </td>";
+                        item += "</tr>";
+                        no++;
+                    });
+                }
+                else
+                {
+                    item += '<tr>';
+                    item += ' <td colspan="7" style="text-align:center">No item selected</td>';
+                    item += '</tr>';
+                }
+                item += '</table>';
+
+                $("#box-item-detail-disposal").html(item);
+
+                log_history(id,3);
+                $("#box-item-detail-history-disposal").html(item);
+
+                $("#approve-disposal-modal .modal-title").html("<i class='fa fa-edit'></i> Approval Disposal - <span style='color:#dd4b39'>" + data.no_reg + "</span><input type='hidden' id='getnoreg' name='getnoreg' value='"+data.no_reg+"' >");
+
+                $('#approve-disposal-modal').modal('show');
             },
             error: function(x) 
             {                           
@@ -1359,6 +1622,428 @@
         
     }
 
+    function getDetailItemDisposal(noreg,id,tipe,no_urut)
+    {
+        //alert(JSON.stringify(id));
+        //alert(tipe); return false;
+        //$(".rincian-informasi-aset-box").reset(); //return false;
+        $('.rincian-informasi-aset-box input[type="text"]').val('');
+
+        $.ajax({
+            type: 'GET',
+            url: "{{ url('approval/view_detail') }}/"+noreg+"/"+id,
+            data: "",
+            //async: false,
+            dataType: 'json',
+            success: function(data) 
+            {
+                //alert(data.length);
+                var total_tab = data.length;
+                var i;
+                var j;
+                var no=1;
+                var num=1;
+
+                var item = "<span class='label bg-blue'><i class='fa fa-bars'></i> RINCIAN INFORMASI ASET</span><br/><br/>";
+                item += "<div class='form-group'>";
+                item += "<div class='col-md-12 xnav-tabs-custom'><input type='hidden' id='total_tab' name='total_tab' value='"+total_tab+"'>";
+
+                if(total_tab == 0)
+                {
+                    item += "<div class='callout callout-danger'><h4>Warning!</h4><p>Belum ada Informasi aset</p></div>";
+                }
+
+                item += "<ul class='nav nav-tabs'>";
+                
+                for(i=0;i<total_tab;i++)
+                {
+                    var active = '';
+                    if(i==0){ active = 'active'; }
+
+                    item += "<li class='"+active+"'><a href='#panel-"+no+"' data-toggle='tab' class='panel-"+i+"'>Aset "+no_urut+"."+no+"</a></li> ";
+                    no++;
+                }
+                //item += "<li class='"+active+"'><a href='#panel-file' data-toggle='tab' class='panel-"+no+"'>Asset "+no+"</a></li> ";
+                item += "</ul>";
+
+                item += "<div class='tab-content' style='border: 1px solid #e0dcdc;border-top:none; font-size:12px !important'>";
+            
+
+                $.each(data, function(key, val) 
+                {
+                    //alert(val.deleted);
+                    var aktif = '';
+
+                    if(key==0){ aktif = 'active'; }
+                    item += "<div class='tab-pane "+aktif+" ' id='panel-"+num+"'>";
+                    
+                    item += "<div class='box-body rincian-informasi-aset-box'>";
+
+                    <?php if( $user_role == 'AC' || $user_role == 'PGA' ){$readonly = "readonly";}else{ $readonly = ""; }?>
+                    
+                    item += "<div class='col-md-6'>";
+                    
+                    item += "<div class='form-group'><label for='plant' class='col-md-4'>NO PO</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='' value='"+val.no_po+"' id='' autocomplete='off' readonly></div></div>";
+                    
+                    item += "<div class='form-group'><label for='plant' class='col-md-4'>TGL PO</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='' value='"+val.tgl_po+"' id='' autocomplete='off' readonly></div></div>";
+                    
+                    item += "<div class='form-group'><label for='plant' class='col-md-4'>KONDISI ASET</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='' value='"+val.kondisi_asset+"' id='' autocomplete='off' readonly></div></div>";
+                    
+                    item += "<div class='form-group'><label for='plant' class='col-md-4'>NAMA ASSET</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='' value='"+val.nama_asset+"' id='' autocomplete='off' readonly></div></div>";
+                    
+                    item += "<div class='form-group'><label for='plant' class='col-md-4'>NO RANGKA/SERI</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='' value='"+val.no_rangka_or_no_seri+"' id='' autocomplete='off' readonly></div></div>";
+                    
+                    item += "<div class='form-group'><label for='plant' class='col-md-4'>NO MESIN / IMEI</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='' value='"+val.no_mesin_or_imei+"' id='' autocomplete='off' readonly></div></div>";
+
+                    item += "<div class='form-group'><label for='plant' class='col-md-4'>NO POLISI</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='' value='"+val.no_polisi+"' id='' autocomplete='off' readonly></div></div>";
+
+                    item += "<div class='form-group'><label for='plant' class='col-md-4'>LOKASI</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='' value='"+val.lokasi+"' id='' autocomplete='off' readonly></div></div>";
+
+                    item += "<div class='form-group'><label for='plant' class='col-md-4'>INFORMASI</label><div class='col-md-8'><textarea class='form-control' readonly>"+val.info+"</textarea></div></div>";
+                    
+                    item += "</div>";
+
+                    item += "<div class='col-md-6'>";
+                    
+                    item += " <div class='form-group'><label for='plant' class='col-md-4'>JENIS ASET <sup style='color:red'>*</sup></label><div class='col-md-8'><input type='text' class='form-control input-sm select-jenis-aset' name='xjenis_asset-"+val.no_reg_item+"' value='"+val.jenis_asset+"' id='xjenis_asset-"+val.no_reg_item+"' autocomplete='off' onChange='get_group("+val.no_reg_item+")' readonly='readonly' ></div></div>";
+
+                    item += " <div class='form-group'><label for='plant' class='col-md-4'>GROUP <sup style='color:red'>*</sup></label><div class='col-md-8'><input type='text' class='form-control input-sm' id='xjenis_asset_group-"+val.no_reg_item+"' name='xjenis_asset_group-"+val.no_reg_item+"' value='"+val.group+"' id='' autocomplete='off' onChange='get_subgroup("+val.no_reg_item+")' readonly='readonly' ></div></div>";
+                    
+                    item += " <div class='form-group'><label for='plant' class='col-md-4'>SUB GROUP <sup style='color:red'>*</sup></label><div class='col-md-8'><input type='text' class='form-control input-sm' id='jenis_asset_subgroup-"+val.no_reg_item+"' name='xjenis_asset_subgroup-"+val.no_reg_item+"' value='"+val.sub_group+"' id='' autocomplete='off' readonly='readonly' ></div></div>";
+
+                    item += " <div class='form-group'><label for='plant' class='col-md-4'>MERK</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='' value='"+val.merk+"' id='' autocomplete='off' readonly></div></div>";
+
+                    item += " <div class='form-group'><label for='plant' class='col-md-4'>SPESIFIKASI/WARNA</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='' value='"+val.spesifikasi_or_warna+"' id='' autocomplete='off' readonly></div></div>";
+
+                    item += " <div class='form-group'><label for='plant' class='col-md-4'>TAHUN</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='' value='"+val.tahun+"' id='' autocomplete='off' readonly></div></div>";
+
+                    item += "<div class='form-group'><label for='' class='col-md-4'>PENANGGUNG JAWAB</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='nama_penanggung_jawab_asset-"+val.no_reg_item+"' value='"+val.nama_penanggung_jawab_asset+"' id='nama_penanggung_jawab_asset-"+val.no_reg_item+"' autocomplete='off' readonly></div></div>";
+
+                        item += "<div class='form-group'><label for='' class='col-md-4'>JABATAN PENANGGUNG JAWAB</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='jabatan_penanggung_jawab_asset-"+val.no_reg_item+"' value='"+val.jabatan_penanggung_jawab_asset+"' id='jabatan_penanggung_jawab_asset-"+val.no_reg_item+"' autocomplete='off' readonly></div></div>";
+
+                    if(tipe==1)
+                    {
+                        //if( val.deleted == "" ){
+                            if( val.total_asset == 1 )
+                            {
+                                //alert(total_tab);
+                                //$(".button-delete").hide(); 
+
+                                //alert(val.no_po); return false; //EST/AMP-NPN/JKTO/07/14/0186
+
+                                <?php if( $user_role == 'AMS' ){ if($data['outstanding'] != 0 ){ ?>
+                                    item += "<div class='form-group' align='right'><div class='btn btn-warning btn-sm' value='Save' OnClick='saveItemDetail("+val.id+",\""+val.no_po+"\","+val.no_reg_item+")' style='margin-right:5px;xmargin-top:5px'><i class='fa fa-save'></i> SAVE</div><button type='button' class='btn btn-warning btn-sm' OnClick='delAsset("+val.id+")' style='margin-right: 15px' disabled><i class='fa fa-trash'></i> DELETE</button></div>";
+                                <?php } }else{ if($data['outstanding'] != 0 && $user_role == 'AMS' ){ ?>
+                                    item += "<div class='form-group' align='right'><button type='button' class='btn btn-warning btn-sm' OnClick='delAsset("+val.id+")' style='margin-right: 15px' disabled><i class='fa fa-trash'></i> DELETE</button></div>";
+                                <?php } }  ?>
+                            }
+                            else
+                            {
+                                <?php if( $user_role == 'AMS' ){ if($data['outstanding'] != 0 ){ ?>
+                                    item += "<div class='form-group' align='right'><div class='btn btn-warning btn-sm' value='Save' OnClick='saveItemDetail("+val.id+",\""+val.no_po+"\","+val.no_reg_item+")' style='margin-right:5px;xmargin-top:5px'><i class='fa fa-save'></i> SAVE</div><div class='btn btn-warning btn-sm button-delete' value='Delete' OnClick='delAsset("+val.id+")' style='margin-right:15px'><i class='fa fa-trash'></i> DELETE</div></div>";
+                                <?php } }else{ if($data['outstanding'] != 0 && $user_role == 'AMS' ){ ?>
+                                    item += "<div class='form-group' align='right'><div class='btn btn-warning btn-sm button-delete' value='Delete' OnClick='delAsset("+val.id+")' style='margin-right:15px'><i class='fa fa-trash'></i> DELETE</div></div>";
+                                <?php } } ?>
+                                //item += "<div class='form-group' align='right'><button type='button' class='btn btn-flat label-danger' OnClick='delAsset("+val.id+")' style='margin-right: 5px'>Delete</button></div>";
+                            }
+                        //}
+                    }
+
+                    item += "</div>";
+
+                    /* FILE UPLOAD */
+                    item += "<div class='col-md-12'><div class='row'>";
+                    item += "<span class='label bg-blue'><i class='fa fa-bars'></i> RINCIAN FILE ASET</span><br/><br/>";
+                    
+                    var file_foto_asset = [];
+                    var file_foto_seri = [];
+                    var file_foto_mesin = [];
+
+                    if (val.file === undefined || val.file.length == 0) 
+                    {
+                        //item += "<div class='callout callout-danger'><h4>Warning!</h4><p>Belum ada file asset</p></div>";
+                        item += "<div class='col-md-4'><b>aset</b><br/> <img id='foto_thumb' name='foto_thumb' data-status='0' title='' class='img-responsive' src='{{ url('img/default-img.png') }}' width='200'><br/></div>";
+                        item += "<div class='col-md-4'><b>no seri / no rangka</b><br/> <img id='foto_thumb' name='foto_thumb' data-status='0' title='' class='img-responsive' src='{{ url('img/default-img.png') }}' width='200'><br/></div>";
+                        item += "<div class='col-md-4'><b>imei / no mesin</b><br/> <img id='foto_thumb' name='foto_thumb' data-status='0' title='' class='img-responsive' src='{{ url('img/default-img.png') }}' width='200'><br/></div>";
+                    }
+                    else
+                    {
+                        var kategori = ["asset", "no seri", "imei"];
+                        var print_kategori = [];
+
+                        $.each(val.file, function(k, v) 
+                        {
+                            if( $.inArray(v.file_category, kategori) !== -1 )
+                            {   
+                                //alert(kategori[k]);
+                                item += "<div class='col-md-4'><b>"+v.file_category+"</b><br/> <img id='foto_thumb' name='foto_thumb' data-status='0' title='' class='img-responsive' src='"+v.file_thumb+"'></div>";
+                                print_kategori.push(v.file_category);
+                            }
+                        });
+
+                        //alert(val.file.length);
+                        //alert(print_kategori);
+
+                        //if( print_kategori != 'asset' )
+                        if( print_kategori.includes("asset") == false )
+                        {
+                            item += "<div class='col-md-4'><b>aset</b><br/> <img id='foto_thumb' name='foto_thumb' data-status='0' title='' class='img-responsive' src='{{ url('img/default-img.png') }}' width='200'><br/></div>";
+                        }
+
+                        //if( print_kategori != 'no seri' )
+                        if( print_kategori.includes("no seri") == false )
+                        {
+                            item += "<div class='col-md-4'><b>no seri / no rangka</b><br/> <img id='foto_thumb' name='foto_thumb' data-status='0' title='' class='img-responsive' src='{{ url('img/default-img.png') }}' width='200'><br/></div>";
+                        }
+
+                        //if( print_kategori != 'imei' )
+                        if( print_kategori.includes("imei") == false )
+                        {
+                            item += "<div class='col-md-4'><b>imei / no mesin</b><br/> <img id='foto_thumb' name='foto_thumb' data-status='0' title='' class='img-responsive' src='{{ url('img/default-img.png') }}' width='200'><br/></div>";
+                        }
+                    }
+                    
+                    item += "</div></div>";
+                    /* END FILE UPLOAD */
+
+                    //alert(val.po_type);
+                    if( val.po_type == 0 || val.po_type == 2 )
+                    {
+                        var nama_aset_2 = '';
+                        if( val.nama_asset_2 == '' ){nama_asset_2 = val.no_po;}else{nama_asset_2 = val.nama_asset_2;}
+
+                        var nama_aset_1 = '';
+                        var nama_aset_3 = '';
+                        if( val.nama_asset_1 == '' ){nama_asset_1 = val.nama_material}else{nama_asset_1=val.nama_asset_1;}
+                        if( val.nama_asset_3 == '' ){nama_asset_3 = val.nama_material}else{nama_asset_3=val.nama_asset_3;}
+
+                        /* BOX DETAIL ASSET SAP */
+                        item += "<div class='col-md-12'><div class='row'>";
+                        item += "<span class='label bg-blue'><i class='fa fa-bars'></i> DETAIL ASET SAP</span><br/><br/>";
+                        
+                        //item += "<form id='request-form-detail-asset-sap' class='form-horizontal' style=''>";
+                        item += "<div class='col-md-6'> ";
+
+                        item += "<div class='form-group'><label for='' class='col-md-4'>DESCRIPTION</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='nama_asset_1-"+val.no_reg_item+"' value='"+nama_asset_1+"' id='nama_asset_1-"+val.no_reg_item+"' autocomplete='off' placeholder='Nama Asset 1' required <?php echo $readonly; ?> ></div></div>";
+                        
+                        item += "<div class='form-group'><label for='' class='col-md-4'></label><div class='col-md-8'><input type='text' class='form-control input-sm' name='nama_asset_2-"+val.no_reg_item+"' value='"+nama_asset_2+"' id='nama_asset_2-"+val.no_reg_item+"' autocomplete='off' placeholder='Nama Asset 2' <?php echo $readonly; ?> ></div></div>";
+                        
+                        item += "<div class='form-group'><label for='' class='col-md-4'>ASET MAIN NO. TEXT</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='nama_asset_3-"+val.no_reg_item+"' value='"+nama_asset_3+"' id='nama_asset_3-"+val.no_reg_item+"' autocomplete='off' placeholder='Nama Asset 3' required <?php echo $readonly; ?>></div></div>";
+
+                        item += "<div class='form-group'><label for='' class='col-md-4'>ACCT DETERMINATION</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='acct_determination-"+val.no_reg_item+"' value='"+val.jenis_asset+"' id='nama_asset_3-"+val.no_reg_item+"' autocomplete='off' placeholder='Acct Determination' readonly></div></div>";
+
+                        item += "<div class='form-group'><label for='' class='col-md-4'>SERIAL NUMBER</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='serial_number-"+val.no_reg_item+"' value='"+val.no_rangka_or_no_seri+"' id='serial_number-"+val.no_reg_item+"' autocomplete='off' placeholder='Serial Number' readonly></div></div>";
+
+                        item += "<div class='form-group'><label for='' class='col-md-4'>INVENTORY NUMBER</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='inventory_number-"+val.no_reg_item+"' value='"+val.no_mesin_or_imei+"' id='inventory_number-"+val.no_reg_item+"' autocomplete='off' placeholder='Inventory Number' readonly></div></div>";
+                        
+                        item += "<div class='form-group'><label for='' class='col-md-4'>QUANTITY <sup style='color:red'>*</sup></label><div class='col-md-8'><input type='number' class='form-control input-sm' name='quantity-"+val.no_reg_item+"' value='"+val.quantity_asset_sap+"' id='quantity-"+val.no_reg_item+"' autocomplete='off' required <?php echo $readonly; ?> ></div></div>";
+                        
+                        //alert(val.uom_asset_sap);                            
+                        item += "<div class='form-group'><label for='' class='col-md-4'>UOM <sup style='color:red'>*</sup></label><div class='col-md-8' style='display: inline-block'><input type='text' class='form-control input-sm' name='uom-"+val.no_reg_item+"' value='"+val.uom_asset_sap+"' id='uom-"+val.no_reg_item+"' required <?php echo $readonly; ?> ></div></div>";
+
+                        item += "<div class='form-group'><label for='' class='col-md-4'>CAPITALIZED</label><div class='col-md-8'><input type='text' class='form-control input-sm capitalized_on_date' name='capitalized_on-"+val.no_reg_item+"' value='"+val.capitalized_on+"' id='capitalized_on-"+val.no_reg_item+"' autocomplete='off' placeholder='yyyy-mm-dd' required <?php echo $readonly; ?>></div></div>";
+
+                        item += "<div class='form-group'><label for='' class='col-md-4'>DEACTIVATION</label><div class='col-md-8'><input type='text' class='form-control input-sm capitalized_on_date' name='deactivation_on-"+val.no_reg_item+"' value='"+val.deactivation_on+"' id='deactivation_on-"+val.no_reg_item+"' autocomplete='off' placeholder='yyyy-mm-dd' required <?php echo $readonly; ?>></div></div>";
+                        
+                        item += "</div>";
+                        
+                        item += "<div class='col-md-6'> ";
+
+                        item += "<div class='form-group'><label for='' class='col-md-4'>BUSINESS AREA</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='business_area-"+val.no_reg_item+"' value='"+val.business_area+"' id='business_area-"+val.no_reg_item+"' autocomplete='off' readonly></div></div>";
+
+                        item += "<div class='form-group'><label for='' class='col-md-4'>COST CENTER <sup style='color:red'>*</sup></label><div class='col-md-8'><input type='text' class='form-control input-sm' name='cost_center-"+val.no_reg_item+"' value='"+val.cost_center+"' id='cost_center-"+val.no_reg_item+"' autocomplete='off' minlength='10' maxlength='10' required <?php echo $readonly; ?>></div></div>";
+
+                        item += "<div class='form-group'><label for='' class='col-md-4'>PLANT</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='plant-"+val.no_reg_item+"' value='"+val.business_area+"' id='plant-"+val.no_reg_item+"' autocomplete='off' readonly></div></div>";
+
+                        if( val.po_type == 2 )
+                        {
+                            <?php if( $user_role == 'AMS' ){ ?>
+
+                            var kode_vendor = val.vendor.split('-');
+                            //var jenis_asset_code = jenis_asset.split('-');
+
+                            item += "<div class='form-group'><label for='' class='col-md-4'>VENDOR</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='vendor-"+val.no_reg_item+"' value='"+kode_vendor[0]+"' id='vendor-"+val.no_reg_item+"' autocomplete='off' placeholder='Masukkan Kode Vendor'> <div class='btn btn-warning btn-sm' value='Update' OnClick='updateKodeVendor(\""+val.no_po+"\","+val.no_reg_item+")' style='margin-right:25px;margin-top:5px'><i class='fa fa-save'></i> UPDATE VENDOR</div></div></div>";
+                            <?php } ?>
+                        }
+                        else
+                        {
+                            item += "<div class='form-group'><label for='' class='col-md-4'>VENDOR</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='vendor-"+val.no_reg_item+"' value='"+val.vendor+"' id='vendor-"+val.no_reg_item+"' autocomplete='off' readonly></div></div>";
+                        }
+
+                        item += "<div class='xform-group'><label for='' class='xcol-md-4'>DEPREC, AREAS</label><br/>";
+                        item += "<table class='tabel table-bordered table-responsive table-condensed table-striped table-container'>";
+                        item += "<tr><th>Area Number</th><th>Depreciation Area</th><th>Dkey</th><th>Use Life</th></tr>";
+                        item += "<tr><td>01</td><td>Book</td><td>Z001</td><td><input type='text' class='form-control input-sm' name='book_deprec_01-"+val.no_reg_item+"' value='"+val.book_deprec_01+"' id='book_deprec_01-"+val.no_reg_item+"' autocomplete='off' required <?php echo $readonly; ?>></td></tr>";
+                        item += "<tr><td>15</td><td>Fiscal</td><td>Z001</td><td><input type='text' class='form-control input-sm' name='fiscal_deprec_15-"+val.no_reg_item+"' value='"+val.fiscal_deprec_15+"' id='fiscal_deprec_15-"+val.no_reg_item+"' autocomplete='off' onkeyup='fiscalgroup("+val.no_reg_item+")' required <?php echo $readonly; ?>></td></tr>";
+                        item += "<tr><td>30</td><td>Group</td><td>Z001</td><td><input type='text' class='form-control input-sm' name='group_deprec_30-"+val.no_reg_item+"' value='"+val.group_deprec_30+"' id='group_deprec_30-"+val.no_reg_item+"' autocomplete='off' placeholder='' readonly></td></tr>";
+                        item += "</table>";
+                        item += "</div>";
+
+                        //if( val.deleted == '' ){
+                            if(val.kode_asset_sap == '')
+                            {
+                                <?php if( $user_role == 'AMS' ){ ?>
+                                    item += "<div class='form-group' align='right'><div class='btn btn-warning btn-sm' value='Save' OnClick='saveAssetSap("+val.id+",\""+val.no_po+"\","+val.no_reg_item+")' style='margin-right:25px;margin-top:5px'><i class='fa fa-save'></i> SAVE</div></div>";
+                                <?php } ?>
+                            }
+                        //}
+
+                        item += "</div>";
+                        item += "</div></div>";
+                        /* END BOX DETAIL ASSET SAP */
+                    }
+
+                    /* BOX KODE ASET CONTROLLER */
+                    if( val.kode_asset_sap != '' && val.po_type == 0 )
+                    {
+                        item += "<div class='col-md-12 box-kode-asset-controller'><div class='row'>";
+                        item += "<span class='label bg-blue'><i class='fa fa-bars'></i> KODE ASET</span><br/><br/>";
+                        
+                        item += "<div class='col-md-4'> ";
+                        
+                        <?php if( $user_role == 'AC' ){ ?>
+                            
+                            item += "<div class='form-group'><label for='' class='col-md-4'>KODE ASET CONTROLLER</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='kode_aset_controller-"+val.no_reg_item+"' value='"+val.kode_asset_controller+"' id='kode_aset_controller-"+val.no_reg_item+"' autocomplete='off' onkeyup='get_kode_aset("+val.no_reg_item+")'><input type='hidden' id='request_kode_aset_input' name='request_kode_aset_input'>"; 
+                            
+                            if(tipe == 1)
+                            {
+                                item += "<div class='btn btn-warning btn-sm' OnClick='validasiKodeAssetController("+val.po_type+","+val.no_reg_item+")' style='margin-right:25px;margin-top:5px;margin-bottom:5px'><i class='fa fa-save'></i> SAVE</div>";
+                                item += "<input type='text' class='form-control' placeholder='Jenis Kendaraan' id='jenis-kendaraan' name='jenis-kendaraan'>";
+                                item += "<div class='btn btn-info btn-sm' OnClick='printFormIO("+val.asset_po_id+","+val.no_reg_item+")' style='margin-right:25px;margin-top:5px'><i class='fa fa-print'></i> PRINT FORM IO</div>";
+                            }
+                            
+                            item += "</div></div></div>";
+
+                        <?php }else{ ?>
+                            item += "<div class='form-group'><label for='' class='col-md-4'>KODE ASET CONTROLLER</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='kode_aset_controller-"+val.no_reg_item+"' value='"+val.kode_asset_controller+"' id='kode_aset_controller-"+val.no_reg_item+"' autocomplete='off' onkeyup='get_kode_aset("+val.no_reg_item+")' <?php echo $readonly; ?> ><input type='hidden' id='request_kode_aset_input' name='request_kode_aset_input'></div></div>";
+                            item += "</div>";
+                        <?php } ?>
+
+                        item += "<div class='col-md-4'> ";
+                        item += "<div class='form-group'><label for='' class='col-md-4'>KODE ASET SAP</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='kode_aset_sap-"+val.no_reg_item+"' value='"+val.kode_asset_sap+"' id='kode_aset_sap-"+val.no_reg_item+"' autocomplete='off' readonly='1'></div></div>";
+                        item += "</div>";
+                        
+                        item += "<div class='col-md-4'> ";
+                        item += "<div class='form-group'><label for='' class='col-md-4'>KODE ASET FAMS</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='kode_asset_ams-"+val.no_reg_item+"' value='"+val.kode_asset_ams+"' id='kode_asset_ams-"+val.no_reg_item+"' autocomplete='off' readonly='1'></div></div>";
+                        item += "</div>";
+
+                        item += "</div></div>";
+
+                        if( val.po_type == 0 || val.po_type == 2 )
+                        { //TIDAK JADI IT@250719  ~ HIDE KRN AMP JG MENGINPUT GI IT@170619
+                                
+                            <?php if( $user_role == 'PGA' ){ ?>
+
+                            /* BOX CHECK GI */
+                            item += "<div class='col-md-12 box-kode-asset-controller'><div class='row'>";
+                            item += "<span class='label bg-blue'><i class='fa fa-bars'></i> MATERIAL DOCUMENT / CHECK GI</span><br/><br/>";
+
+                            item += "<div class='col-md-4'> ";
+                            item += "<div class='form-group'><label for='' class='col-md-4'>NUMBER</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='md_number-"+val.no_reg_item+"' value='"+val.gi_number+"' id='md_number-"+val.no_reg_item+"' autocomplete='off'></div></div>";
+                            item += "</div>";
+
+                            item += "<div class='col-md-4'> ";
+                            item += "<div class='form-group'><label for='' class='col-md-4'>YEAR</label><div class='col-md-8'><input type='text' class='form-control input-sm md_year' name='md_year-"+val.no_reg_item+"' value='"+val.gi_year+"' id='md_year-"+val.no_reg_item+"' autocomplete='off' onkeyup='get_check_gi("+val.no_reg_item+","+val.po_type+")'></div></div>";
+                            item += "</div>";
+
+                            item += "<div class='col-md-4'>";
+                            
+                            if(tipe == 1)
+                            {
+                                item += "<div class='btn btn-warning btn-sm' OnClick='validasiGINumberYear("+val.po_type+","+val.no_reg_item+")'><i class='fa fa-save'></i> SAVE GI NUMBER & YEAR</div>";
+                            }
+
+                            item += "</div>";
+
+                            item += "</div></div>";
+                            /* END BOX CHECK GI */
+
+                            <?php } ?>
+
+                        }
+                    }
+                    /* END BOX KODE ASET CONTROLLER */
+
+                    /* FOR AMP & ASET LAIN */
+                    if( val.po_type == 1 || val.po_type == 2 )
+                    {
+                        item += "<div class='col-md-12 box-kode-asset-controller'><div class='row'>";
+                        item += "<span class='label bg-blue'><i class='fa fa-bars'></i> KODE ASET</span><br/><br/>";
+                        
+                        item += "<div class='col-md-4'> ";
+                        <?php if( $user_role == 'AC' ){ ?>
+                            item += "<div class='form-group'><label for='' class='col-md-4'>KODE ASET CONTROLLER</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='kode_aset_controller-"+val.no_reg_item+"' value='"+val.kode_asset_controller+"' id='kode_aset_controller-"+val.no_reg_item+"' autocomplete='off' onkeyup='get_kode_aset_amp("+val.no_reg_item+")'><input type='hidden' class='form-control input-sm' name='kode_aset_ams-"+val.no_reg_item+"' value='"+val.kode_asset_ams+"' id='kode_aset_ams-"+val.no_reg_item+"'>";
+                            
+                            if(tipe==1)
+                            {
+                                item += "<div class='btn btn-warning btn-sm' OnClick='validasiKodeAssetController("+val.po_type+","+val.no_reg_item+")' style='margin-right:25px;margin-top:5px;margin-bottom:5px'><i class='fa fa-save'></i> SAVE</div>";
+                                item += "<input type='text' class='form-control' placeholder='Jenis Kendaraan' id='jenis-kendaraan' name='jenis-kendaraan'>";
+                                item += "<div class='btn btn-info btn-sm' OnClick='printFormIO("+val.asset_po_id+","+val.no_reg_item+")' style='margin-right:25px;margin-top:5px'><i class='fa fa-print'></i> PRINT FORM IO</div>";
+                            }
+                            
+                            item += "</div></div></div>";
+                        <?php }else{ ?>
+                            item += "<div class='form-group'><label for='' class='col-md-4'>KODE ASET CONTROLLER</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='kode_aset_controller-"+val.no_reg_item+"' value='"+val.kode_asset_controller+"' id='kode_aset_controller-"+val.no_reg_item+"' autocomplete='off' onkeyup='get_kode_aset_amp("+val.no_reg_item+")'><input type='hidden' class='form-control input-sm' name='kode_aset_ams-"+val.no_reg_item+"' value='"+val.kode_asset_ams+"' id='kode_aset_ams-"+val.no_reg_item+"'></div></div>";
+                            item += "</div>";
+                        <?php } ?>
+                        
+                        item += "<div class='col-md-4'> ";
+                        item += "<div class='form-group'><label for='' class='col-md-4'>KODE ASET SAP</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='kode_aset_sap-"+val.no_reg_item+"' value='"+val.kode_asset_sap+"' id='kode_aset_sap-"+val.no_reg_item+"' autocomplete='off' readonly='1'></div></div>";
+                        item += "</div>";
+                        
+                        item += "<div class='col-md-4'> ";
+                        item += "<div class='form-group'><label for='' class='col-md-4'>KODE ASET FAMS</label><div class='col-md-8'><input type='text' class='form-control input-sm' name='kode_asset_ams-"+val.no_reg_item+"' value='"+val.kode_asset_ams+"' id='kode_asset_ams-"+val.no_reg_item+"' autocomplete='off' readonly='1'></div></div>";
+                        
+                        item += "</div>";
+                        item += "</div></div>";
+                    }
+                    
+                    item += "</div>";
+                    item += "</div>";
+
+                    num++;
+                });
+
+                item += "<div>";
+
+                item += "</div>";
+                item += "</div>";
+
+                if(tipe==3)
+                {
+                    $("#box-detail-item-disposal").fadeIn();
+                    $("#box-detail-item-disposal").html(item);
+                }
+                else
+                {
+                    //alert(tipe);
+                    $("#box-detail-item-history").fadeIn();
+                    $("#box-detail-item-history").html(item);
+                }
+
+                <?php if( $user_role == 'AMS' ){ ?>
+                $.each(data, function(key, val) 
+                {
+                    trigger_edit_asset(val.no_reg_item,val.jenis_asset,val.group,val.sub_group,val.uom_asset_sap);
+                });
+                <?php } ?>
+
+                var tipekendaraan = $.parseJSON(JSON.stringify(dataJson('{!! route("get.select_jenis_kendaraan") !!}')));
+                $('input[name="jenis-kendaraan"]').select2({
+                    data: tipekendaraan,
+                    width: '100%',
+                    placeholder: ' ',
+                    allowClear: true,
+                });
+            },
+            error: function(x) 
+            {                           
+                alert("Error: "+ "\r\n\r\n" + x.responseText);
+            }
+        });  
+        
+    }
+
     function trigger_edit_asset(no,jenis_asset,group,sub_group,uom)
     {
         //alert(sub_group); //return false;
@@ -1388,8 +2073,7 @@
 
         var ja_subgroup = sub_group.split('-');
         //var assetsubgroup = $.parseJSON(JSON.stringify(dataJson('{!! route("get.assetsubgroup") !!}?group=' + group )));
-        var assetsubgroup = $.parseJSON(JSON.stringify(dataJson('{!! route("get.select_subgroup_code_condition") !!}?group=' + ja_group[0] )));
-            //$('input[name="jenis_asset_subgroup-'+no+'"]').empty().select2({
+        var assetsubgroup = $.parseJSON(JSON.stringify(dataJson('{!! route("get.select_subgroup_code_condition") !!}?group='+ ja_group[0]+'&jenis_asset='+jenis_asset_code[0] )));
             $('input[name="jenis_asset_subgroup-'+no+'"]').select2({
                 data: assetsubgroup,
                 width: "100%",
@@ -1687,6 +2371,87 @@
         }
     }
 
+    function changeStatusDisposal(status)
+    {
+        var getnoreg = $("#getnoreg").val();
+        var no_registrasi= getnoreg.replace(/\//g, '-');
+        var specification = $("#specification-disposal").val();
+
+        if( status == 'A' ){ status_desc = 'approve'; }else
+        if( status == 'R' )
+        { 
+            status_desc = 'reject';
+            note_reject = $("#specification-disposal").val();
+
+            if( $.trim(note_reject) < 2 )
+            {
+                notify({
+                    type: 'warning',
+                    message: " Note Reject is required (min 2 char)"
+                });
+                return false;
+            } 
+
+        }else{ status_desc = 'cancel'; }
+
+        if(confirm('confirm '+status_desc+' data ?'))
+        {
+            //console.log(request_check_gi); return false;
+
+            //e.preventDefault();
+            var param = $("#request-form").serialize();
+            var request_ka = JSON.stringify(request_kode_aset_data);
+            var request_gi = JSON.stringify(request_check_gi);
+            //alert(param); //return false;
+
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            
+            $.ajax({
+                url: "{{ url('approval/update_status_disposal') }}/"+status+"/"+no_registrasi,
+                method: "POST",
+                data: param+"&parNote="+specification+"&request_ka="+request_ka+"&request_gi="+request_gi,
+                beforeSend: function() {
+                    jQuery('.loading-event').fadeIn();
+                },
+                success: function(result) 
+                {
+                    //alert(result.status);
+                    if (result.status) 
+                    {
+                        //SEND EMAIL 
+                        send_email_create_po(result.new_noreg);
+
+                        $("#approve-disposal-modal").modal("hide");
+                        $("#data-table").DataTable().ajax.reload();
+                        $("#data-table-history").DataTable().ajax.reload();
+                        notify({
+                            type: 'success',
+                            message: result.message
+                        });
+                    } 
+                    else 
+                    {
+                        request_check_gi = [];
+                        request_kode_aset_data = [];
+                        //$(".md_year").val("");
+                        notify({
+                            type: 'warning',
+                            message: result.message
+                        });
+                    }
+                    
+                },
+                complete: function() {
+                    jQuery('.loading-event').fadeOut();
+                }
+            });
+        }
+    }
+
     function history(id)
     {
         //alert(id); //return false;
@@ -1763,6 +2528,82 @@
         }); 
     }
 
+    function history_disposal(id)
+    {
+        //alert(id); //return false;
+        var kata = id;
+        var noreg= kata.replace(/\//g, '-');
+        //alert(noreg); return false;
+
+        $("#box-detail-item-history-disposal").hide();
+        $("#history-notes-disposal").hide();
+
+        $.ajax({
+            type: 'GET',
+            url: "{{ url('approval/view_disposal') }}/"+noreg,
+            data: "",
+            //async: false,
+            dataType: 'json',
+            success: function(data) 
+            { 
+                //alert(data.no_reg);
+                $("#request-form-history #no-reg").val(data.no_reg);
+                $("#request-form-history #type-transaksi").val(data.type_transaksi);
+                $("#request-form-history #po-type").val(data.po_type);
+                $("#request-form-history #business-area").val(data.business_area);
+                $("#request-form-history #requestor").val(data.requestor);
+                $("#request-form-history #tanggal-reg").val(data.tanggal_reg);
+                $("#request-form-history #kode-vendor").val(data.kode_vendor);
+                $("#request-form-history #nama-vendor").val(data.nama_vendor);
+
+                var item = '<table class="table xtable-condensed table-responsive table-striped" id="request-item-table" style="font-size:13px">';
+                item += '<th>NO.</th>';
+                item += '<th>KODE ASSET AMS</th>';
+                item += '<th>KODE ASSET SAP</th>';
+                item += '<th>NAMA MATERIAL</th>';
+                item += '<th>LOKASI BA CODE</th>';
+                item += '<th>NAMA ASSET</th>';
+                item += '<th>VIEW DETAIL</th>';
+                if (data.item_detail.length > 0) 
+                {
+                    var no = 1;
+                    $.each(data.item_detail, function(key, val) 
+                    {
+                        item += "<tr style='height: 30px !important;font-size:11px !important;'>";
+                        item += "<td>" + no + "</td>";
+                        item += "<td>" + val.kode_asset_ams + "</td>";
+                        item += "<td>" + val.kode_asset_sap + "</td>";
+                        item += "<td>" + val.nama_material + "</td>";
+                        item += "<td>" + val.lokasi_ba_description + "</td>";
+                        item += "<td>" + val.nama_asset_1 + "</td>";
+                        item += "<td><i class='fa fa-eye' OnClick='getDetailItem(\""+noreg+"\","+val.id+",2,"+no+")'></i></td>";
+                        item += "</tr>";
+                        no++;
+                    });
+                }
+                else
+                {
+                    item += '<tr>';
+                    item += ' <td colspan="7" style="text-align:center">No item selected</td>';
+                    item += '</tr>';
+                }
+                item += '</table>';
+
+                log_history(id,4);
+
+                $("#box-item-detail-history-disposal").html(item);
+
+                $("#history-modal-disposal .modal-title").html("<i class='fa fa-edit'></i>  History Disposal - <span style='color:#dd4b39'>" + data.no_reg + "</span><input type='hidden' id='getnoreg' name='getnoreg' value='"+data.no_reg+"' >");
+
+                $('#history-modal-disposal').modal('show');
+            },
+            error: function(x) 
+            {                           
+                alert("Error: "+ "\r\n\r\n" + x.responseText);
+            }
+        }); 
+    }
+
     function log_history(id,tipe)
     {
         //alert(tipe);
@@ -1819,9 +2660,17 @@
             {
                 $("#log-history-box").html(item);
             }
-            else
+            else if( tipe == 1 )
             {
                 $("#log-history-box-outstanding").html(item);
+            }
+            else if( tipe == 4 )
+            {
+                $("#log-history-box-disposal-history").html(item);
+            }
+            else
+            {
+                $("#log-history-box-disposal").html(item);
             }
 
         },
@@ -2326,55 +3175,23 @@
         $('#print-modal').modal('show');
     }
 
-    /*
-    function printFormIO_1(po_type,no_reg_item)
+    function delDisposal(noreg,kode_asset_ams)
     {
-        //alert(po_type); return false(); 
-        //alert(no_po); 
-        //alert(kode_vendor_update); //return false;
-
-        var getnoreg = $("#getnoreg").val(); alert(getnoreg); return false;
-        var no_registrasi= getnoreg.replace(/\//g, '-');
-        var kode_asset_controller = $("#kode_aset_controller-"+no_reg_item+"").val();
-        
-        if(po_type == 1 || po_type == 2 )
+        //alert(noreg)
+        if(confirm('Confirm Delete ?'))
         {
-            // AMP & LAIN
-            var kode_asset_nilai = $("#kode_asset_ams-"+no_reg_item+"").val();
-        }
-        else
-        {
-            // SAP
-            var kode_asset_nilai = $("#kode_aset_sap-"+no_reg_item+"").val();
-        }
-        
+            var no_registrasi= noreg.replace(/\//g, '-');
+            var param = '';
 
-        //alert(id+"_"+no_po+"_"+no_reg_item+"_"+no_registrasi);
-
-        var param = '';//$("#request-form-detail-asset-sap").serialize();
-        //alert(capitalized_on);
-
-        // VALIDASI COST CENTER HARUS 10 CHAR
-        if( $.trim(kode_asset_controller) < 2 )
-        {
-            notify({
-                type: 'warning',
-                message: " Kode Asset Controller belum diisi (min 2 char)"
-            });
-            return false;
-        } 
-
-        if(confirm('Confirm Update Code Asset Controller '+getnoreg+' ?'))
-        {
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
             $.ajax({
-                url: "{{ url('approval/update_kode_asset_controller') }}",
+                url: "{{ url('approval/delete_asset_disposal') }}",
                 method: "POST",
-                data: param+"&kode_asset_controller="+kode_asset_controller+"&getnoreg="+getnoreg+"&kode_asset_nilai="+kode_asset_nilai+"&no_reg_item="+no_reg_item+"&po_type="+po_type,
+                data: param+"&getnoreg="+no_registrasi+"&kode_asset_ams="+kode_asset_ams,
                 beforeSend: function() {
                     $('.loading-event').fadeIn();
                 },
@@ -2403,10 +3220,9 @@
                 complete: function() {
                     jQuery('.loading-event').fadeOut();
                 }
-            }); 
+            });
         }
     }
-    */
 
 </script>
 @stop

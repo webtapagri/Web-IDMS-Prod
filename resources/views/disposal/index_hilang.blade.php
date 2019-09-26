@@ -39,8 +39,9 @@
 				    minLength: 0,
 				    source: function (request, response) {
 				        var matcher = new RegExp($.ui.autocomplete.escapeRegex(request.term), "i");
-				        var array = $.grep(data_autocomplete, function (value) {
-				            return matcher.test(value.id) || matcher.test(value.name) || matcher.test(value.asset);
+				        var array = $.grep(data_autocomplete, function (value) 
+				        {
+				             return matcher.test(value.kode_asset_ams+' '+value.name+' '+value.lokasi_ba_description+' '+value.ba_pemilik_asset+' '+value.asset);
 				        });
 				        response(array);
 				    },
@@ -63,7 +64,7 @@
 					//alert(jenis_pengajuan); return false;
 
 				    return $("<li>")
-				        .append("<a href='disposal-hilang/add_hilang/"+item.id+"/2'>" + item.name + "<span class='sub-text' style='margin-left:15px;font-size:15px;font-weight:normal;color:red'>" + item.asset + " <i class='fa fa-plus'></i> Add </span></a> ")
+				        .append("<a href='disposal-hilang/add_hilang/"+item.id+"/2'>" + item.kode_asset_ams + " - " + item.name + "<span class='sub-text' style='xmargin-left:15px;font-size:15px;font-weight:normal;color:red'>" + item.asset + " ("+item.ba_pemilik_asset+" - "+item.lokasi_ba_description+") <i class='fa fa-plus'></i> Add </span></a> ")
 				        .appendTo(ul);
 				};
 
@@ -102,8 +103,9 @@
 				    minLength: 0,
 				    source: function (request, response) {
 				        var matcher = new RegExp($.ui.autocomplete.escapeRegex(request.term), "i");
-				        var array = $.grep(data_autocomplete, function (value) {
-				            return matcher.test(value.id) || matcher.test(value.name) || matcher.test(value.asset);
+				        var array = $.grep(data_autocomplete, function (value) 
+				        {
+				             return matcher.test(value.kode_asset_ams+' '+value.name+' '+value.lokasi_ba_description+' '+value.ba_pemilik_asset+' '+value.asset);
 				        });
 				        response(array);
 				    },
@@ -126,7 +128,7 @@
 					//alert(jenis_pengajuan); return false;
 
 				    return $("<li>")
-				        .append("<a href='disposal-hilang/add_hilang/"+item.id+"/2'>" + item.name + "<span class='sub-text' style='margin-left:15px;font-size:15px;font-weight:normal;color:red'>" + item.asset + " <i class='fa fa-plus'></i> Add </span></a> ")
+				        .append("<a href='disposal-hilang/add_hilang/"+item.id+"/2'>" + item.kode_asset_ams + " - " + item.name + "<span class='sub-text' style='xmargin-left:15px;font-size:15px;font-weight:normal;color:red'>" + item.asset + " ("+item.ba_pemilik_asset+" - "+item.lokasi_ba_description+") <i class='fa fa-plus'></i> Add </span></a> ")
 				        .appendTo(ul);
 				};
 
@@ -287,14 +289,14 @@ $("#fnama-material").autocomplete({
     minLength: 0,
     source: function (request, response) {
         var matcher = new RegExp($.ui.autocomplete.escapeRegex(request.term), "i");
-        var array = $.grep(data_autocomplete, function (value) {
-            return matcher.test(value.id) || matcher.test(value.name) || matcher.test(value.asset);
+        var array = $.grep(data_autocomplete, function (value) 
+        {
+            return matcher.test(value.kode_asset_ams+' '+value.name+' '+value.lokasi_ba_description+' '+value.ba_pemilik_asset+' '+value.asset);
         });
         response(array);
     },
     focus: function (event, ui) 
     {
-    	//alert(1);
         $("#fnama-material").val(ui.item.name);
         return false;
     },
@@ -311,7 +313,7 @@ $("#fnama-material").autocomplete({
 	var jenis_pengajuan = $("#fjenis-pengajuan").val();
 	
 	return $("<li>")
-    .append("<a href='disposal-hilang/add_hilang/"+item.id+"/2'>" + item.name + "<span class='sub-text' style='margin-left:15px;font-size:15px;font-weight:normal;color:red'>" + item.asset + " <i class='fa fa-plus'></i> Add </span></a> ")
+    .append("<a href='disposal-hilang/add_hilang/"+item.id+"/2'>" + item.kode_asset_ams + " - " + item.name + "<span class='sub-text' style='xmargin-left:15px;font-size:15px;font-weight:normal;color:red'>" + item.asset + " ("+item.ba_pemilik_asset+" - "+item.lokasi_ba_description+") <i class='fa fa-plus'></i> Add </span></a> ")
     .appendTo(ul);
     
 };

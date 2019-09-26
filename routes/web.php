@@ -85,6 +85,10 @@ Route::match(['get', 'post'], 'grid-approval-history', [
 ]);
 Route::get('/approval/berkas-amp/{no_reg}', 'ApprovalController@berkas_amp')->name('no_reg');
 Route::get('/printio/{noreg}/{asset_po_id}/{jenis_kendaraan}/{no_reg_item}', 'ApprovalController@print_io');
+Route::post('/approval/update_status_disposal/{status}/{no_reg}','ApprovalController@update_status_disposal');
+Route::get('/approval/view_disposal/{no_reg}', 'ApprovalController@view_disposal')->name('no_reg');
+Route::post('/approval/delete_asset_disposal', 'ApprovalController@delete_asset_disposal');
+
 Route::get('get-select_jenis_kendaraan', ['as' => 'get.select_jenis_kendaraan', 'uses' => 'Select2Controller@select_jenis_kendaraan']);
 
 Route::resource('/mutasi', 'MutasiController');
@@ -288,6 +292,7 @@ Route::get('/disposal-hilang/delete_hilang/{kode_asset_ams}', 'DisposalControlle
 
 Route::get('/disposal-rusak', 'DisposalController@index_rusak');
 Route::get('/disposal-rusak/add_rusak/{id}/{pengajuan}', 'DisposalController@add_rusak');
+Route::get('/disposal-rusak/delete_rusak/{kode_asset_ams}', 'DisposalController@remove_rusak');
 
 Route::post('/proses_disposal/{tipe}','DisposalController@proses');
 Route::post('/disposal/edit_harga', 'DisposalController@update_harga_perolehan');
