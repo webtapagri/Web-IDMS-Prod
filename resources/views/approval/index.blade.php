@@ -1033,76 +1033,9 @@
                 $("#request-form #kode-vendor").val(data.kode_vendor);
                 $("#request-form #nama-vendor").val(data.nama_vendor);
 
-                if(data.po_type == 'SAP')
-                {
-                    //VALIDASI SYNC VIEW SAP
-                    if(data.sync_sap != '')
-                    {
-                        $("#create-button-sync-sap").show();
-                        $("#create-button-sync-sap").html('<button type="button" class="btn btn-flat label-danger" OnClick="sinkronisasi()" style="margin-right: 5px;">SYNC SAP</button>');
-                        
-                        <?php if( $user_role == 'AC' ){ ?>
-                            $("#button-approve").hide();
-                            $(".button-reject").attr("disabled", false); 
-                        <?php } ?>
-                    }
-                    else
-                    {
-                        $("#create-button-sync-sap").hide();
-                        if(data.cek_reject==0){$("#button-approve").show();}
-                        //$(".button-reject").attr("disabled", true); 
-                        $(".button-reject").hide(); 
-                    }
-                }
-                else if( data.po_type == 'Asset Lainnya' )
-                {
-                    //alert(data.po_type);
-                    //VALIDASI SYNC ASET LAIN IT@080819
-                    if(data.sync_lain == 'SAP')
-                    {
-                        $("#create-button-sync-sap").show();
-                        $("#create-button-sync-sap").html('<button type="button" class="btn btn-flat label-danger" OnClick="sinkronisasi()" style="margin-right: 5px;">SYNC ASSET LAIN (SAP)</button>');
-                        <?php if( $user_role == 'AC' ){ ?>
-                            $("#button-approve").hide();
-                            $(".button-reject").attr("disabled", false); 
-                        <?php } ?>
-                    }
-                    else if(data.sync_lain == 'AMP')
-                    {
-                        $("#create-button-sync-sap").show();
-                        $("#create-button-sync-sap").html('<button type="button" class="btn btn-flat label-danger" OnClick="sinkronisasi_amp()" style="margin-right: 5px;">SYNC ASSET LAIN</button>');
-                        <?php if( $user_role == 'AC' ){ ?>
-                            $("#button-approve").hide();
-                            $(".button-reject").attr("disabled", false); 
-                        <?php } ?>
-                    }
-                    else
-                    {
-                        $("#create-button-sync-sap").hide();
-                        if(data.cek_reject==0){$("#button-approve").show();}
-                        $(".button-reject").hide(); 
-                    }
-                }
-                else
-                {
-                    //VALIDASI SYNC AMP IT@160719
-                    if(data.sync_amp != 0)
-                    {
-                        $("#create-button-sync-sap").show();
-                        $("#create-button-sync-sap").html('<button type="button" class="btn btn-flat label-danger" OnClick="sinkronisasi_amp()" style="margin-right: 5px;">SYNC AMP</button>');
-                        <?php if( $user_role == 'AC' ){ ?>
-                            $("#button-approve").hide();
-                            $(".button-reject").attr("disabled", false); 
-                        <?php } ?>
-                    }
-                    else
-                    {
-                        $("#create-button-sync-sap").hide();
-                        if(data.cek_reject==0){$("#button-approve").show();}
-                        $(".button-reject").show(); 
-                    }
-
-                }
+                $("#create-button-sync-sap").hide();
+                if(data.cek_reject==0){$("#button-approve").show();}
+                $(".button-reject").show(); 
                     
                 var item = '<table class="table table-responsive table-striped" id="request-item-table" style="font-size:13px">';
                 item += '<th>NO.</th>';

@@ -82,34 +82,20 @@ class ApprovalController extends Controller
         }
 
         // it@140619 JOIN W v_outstanding
-        $sql = '
-            SELECT DISTINCT(ASSET.ID) AS ID '.implode(", ", $selectedColumn).'
+        $sql = ' SELECT DISTINCT(ASSET.ID) AS ID '.implode(", ", $selectedColumn).'
             FROM v_outstanding AS APPROVAL 
                 LEFT JOIN TR_REG_ASSET AS ASSET ON ( APPROVAL.DOCUMENT_CODE = ASSET.NO_REG)
                 LEFT JOIN TBM_USER AS REQUESTOR ON (REQUESTOR.ID=ASSET.CREATED_BY)
-            WHERE 1=1
-        ';
-
-        
-        // it@140619 JOIN W v_outstanding
-        $sql1 = '
-            SELECT DISTINCT(ASSET.ID) AS ID '.implode(", ", $selectedColumn).'
-            FROM v_outstanding AS APPROVAL 
-                LEFT JOIN TR_REG_ASSET AS ASSET ON ( APPROVAL.DOCUMENT_CODE = ASSET.NO_REG)
-                INNER JOIN TBM_USER AS REQUESTOR ON (REQUESTOR.ID=ASSET.CREATED_BY)
-            WHERE ASSET.NO_REG > 0
-        ';
-
-        //$total_data = DB::select(DB::raw($sql));
+            WHERE 1=1 ';
 
         if($role_id != 4)
             $sql .= " AND APPROVAL.USER_ID = '{$user_id}' "; 
 
         if ($request->NO_PO)
-            $sql .= " AND ASSET.NO_PO  like '%" . $request->NO_PO . "%'";
+            $sql .= " AND ASSET.NO_PO like '%" . $request->NO_PO . "%'";
        
         if ($request->NO_REG)
-            $sql .= " AND ASSET.NO_REG  like '%" . $request->NO_REG . "%'";
+            $sql .= " AND APPROVAL.DOCUMENT_CODE  like '%" . $request->NO_REG . "%'";
 
         if ($request->REQUESTOR)
             $sql .= " AND requestor.NAME  like '%" . $request->REQUESTOR . "%'";
@@ -2694,24 +2680,6 @@ WHERE a.no_reg = '".$noreg."' AND b.MANDATORY_KODE_ASSET_CONTROLLER = 'X' ORDER 
     function update_status_disposal(Request $request, $status, $noreg)
     {
         $req = $request->all();
-        //echo $status.'==='.$noreg."<br/><pre>"; print_r($req); die();
-        /*
-        <pre>Array
-            (
-                [no-reg] => 19.09/AMS/DSPA/00002
-                [type-transaksi] => 
-                [po-type] => 
-                [kode-vendor] => 
-                [business-area] => 2121 - ESTATE BBB
-                [requestor] => PGA (Payroll & General Affair)
-                [tanggal-reg] => 20-09-2019
-                [nama-vendor] => 
-                [specification] => 
-                [parNote] => 
-                [request_ka] => []
-                [request_gi] => []
-            )
-        */
 
         $no_registrasi = str_replace("-", "/", $noreg);
         $user_id = Session::get('user_id');
@@ -2832,23 +2800,6 @@ WHERE a.no_reg = '".$noreg."' AND b.MANDATORY_KODE_ASSET_CONTROLLER = 'X' ORDER 
         $sql = " SELECT b.ASSET_PO_ID as ASSET_PO_ID,b.NO_REG as DOCUMENT_CODE, a.* FROM TR_DISPOSAL_ASSET_DETAIL a LEFT JOIN TR_REG_ASSET_DETAIL b ON a.kode_asset_ams = b.KODE_ASSET_AMS WHERE a.no_reg = '{$noreg}' AND (a.DELETED is null OR a.DELETED = '') ";
         $data = DB::SELECT($sql);
 
-        //echo "1<pre>"; print_r($data); die();
-        /*
-            [ID] => 5
-            [NO_REG] => 19.09/AMS/DSPA/00004
-            [KODE_ASSET_AMS] => 1240100046
-            [KODE_ASSET_SAP] => 
-            [NAMA_MATERIAL] => Chasis Toyota Dyna 130HT
-            [BA_PEMILIK_ASSET] => 1211
-            [LOKASI_BA_CODE] => 5521
-            [LOKASI_BA_DESCRIPTION] => 5521-NPN INTI-1
-            [NAMA_ASSET_1] => 
-            [HARGA_PEROLEHAN] => 51000000
-            [JENIS_PENGAJUAN] => 3
-            [CREATED_BY] => 22
-            [CREATED_AT] => 2019-09-23 11:45:10
-        */
-
         if($data)
         {
             foreach( $data as $k => $v )
@@ -2902,10 +2853,9 @@ WHERE a.no_reg = '".$noreg."' AND b.MANDATORY_KODE_ASSET_CONTROLLER = 'X' ORDER 
     function get_ac($noreg)
     {
         $sql = "SELECT b.ASSET_CONTROLLER
-                    FROM tr_disposal_asset_detail a 
-                    LEFT JOIN tm_mstr_asset b on a.KODE_ASSET_AMS = b.KODE_ASSET_AMS
-                    WHERE a.no_reg = '".$noreg."' 
-                    LIMIT 1";
+                    FROM TR_DISPOSAL_ASSET_DETAIL a 
+                    LEFT JOIN TM_MSTR_ASSET b on a.KODE_ASSET_AMS = b.KODE_ASSET_AMS
+                    WHERE a.NO_REG = '".$noreg."' LIMIT 1";
 
         $data = DB::SELECT($sql);
 
