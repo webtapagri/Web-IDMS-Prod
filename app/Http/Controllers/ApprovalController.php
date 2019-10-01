@@ -2689,6 +2689,7 @@ WHERE a.no_reg = '".$noreg."' AND b.MANDATORY_KODE_ASSET_CONTROLLER = 'X' ORDER 
         $asset_controller = $this->get_ac($no_registrasi); //get asset controller 
     
         $validasi_last_approve = $this->get_validasi_last_approve($no_registrasi);
+        //echo "2<pre>"; print_r($validasi_last_approve); die();
 
         if( $validasi_last_approve == 0 )
         {
@@ -2717,7 +2718,8 @@ WHERE a.no_reg = '".$noreg."' AND b.MANDATORY_KODE_ASSET_CONTROLLER = 'X' ORDER 
                 DB::beginTransaction();
                 try 
                 {
-                    DB::SELECT('CALL complete_document("'.$no_registrasi.'", "'.$user_id.'")');
+                    //echo '2 CALL complete_document("'.$no_registrasi.'", "'.$user_id.'")'; die();
+                    DB::SELECT('CALL complete_document_disposal("'.$no_registrasi.'", "'.$user_id.'")');
                     DB::commit();
                     return response()->json(['status' => true, "message" => 'Data is successfully ' . ($no_registrasi ? 'updated' : 'update'), "new_noreg"=>$no_registrasi]);
                 } 

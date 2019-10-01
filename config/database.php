@@ -65,13 +65,19 @@ return [
             ],
             'strict' => false,
             'driver'    => 'mysql',
-            'database'  => 'fams',
+            'database'  => 'tap_fams_dev',
             'username'  => 'root',
-            'password'  => 'jackass',
+            'port'      => env('DB_PORT', '3307'),
+            'password'  => '',
             'charset'   => 'utf8',
             'collation' => 'utf8_unicode_ci',
             'prefix'    => '',
-            'unix_socket'    => '/Applications/XAMPP/xamppfiles/var/mysql/mysql.sock'
+            //'unix_socket'    => '/Applications/XAMPP/xamppfiles/var/mysql/mysql.sock', <=== for mysql port 3306
+            'strict'    => false,
+            'options'  => array(
+                PDO::ATTR_PERSISTENT => env('DB_PERSISTENT', false),
+                PDO::ATTR_EMULATE_PREPARES => true
+            ),
         ],
 
         'pgsql' => [
