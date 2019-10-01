@@ -2829,7 +2829,7 @@ WHERE a.no_reg = '".$noreg."' AND b.MANDATORY_KODE_ASSET_CONTROLLER = 'X' ORDER 
     {
         $request = array();
         
-        $sql = " SELECT b.ASSET_PO_ID as ASSET_PO_ID,b.NO_REG as DOCUMENT_CODE, a.* FROM TR_DISPOSAL_ASSET_DETAIL a LEFT JOIN tr_reg_asset_detail b ON a.kode_asset_ams = b.KODE_ASSET_AMS WHERE a.no_reg = '{$noreg}' AND (a.DELETED is null OR a.DELETED = '') ";
+        $sql = " SELECT b.ASSET_PO_ID as ASSET_PO_ID,b.NO_REG as DOCUMENT_CODE, a.* FROM TR_DISPOSAL_ASSET_DETAIL a LEFT JOIN TR_REG_ASSET_DETAIL b ON a.kode_asset_ams = b.KODE_ASSET_AMS WHERE a.no_reg = '{$noreg}' AND (a.DELETED is null OR a.DELETED = '') ";
         $data = DB::SELECT($sql);
 
         //echo "1<pre>"; print_r($data); die();
