@@ -76,7 +76,6 @@ return [
             'strict'    => false,
             'options'  => array(
                 PDO::ATTR_PERSISTENT => env('DB_PERSISTENT', false),
-                PDO::ATTR_EMULATE_PREPARES => true
             ),
         ],
 
