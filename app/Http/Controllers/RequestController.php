@@ -246,14 +246,14 @@ class RequestController extends Controller
                 $asset_type = $validasi_asset_controller['message'];
             }
 
-            //2 INSERT DATABASE
+            // INSERT DATABASE
             $reg_no = $this->get_reg_no();
             $user_id = Session::get('user_id');
             $po_type = $request->po_type;
             if($po_type == 0){ $menu_code = 'P1'; }else{ $menu_code = 'P2'; }
             
             // INSERT TO PROCEDURE
-            DB::STATEMENT('call create_approval("'.$menu_code.'", "'.$request->business_area.'","","'.$reg_no.'","'.$user_id.'","'.$asset_type.'","")');
+            DB::SELECT('call create_approval("'.$menu_code.'", "'.$request->business_area.'","","'.$reg_no.'","'.$user_id.'","'.$asset_type.'","")');
 
             $asset_id = DB::table('TR_REG_ASSET')->insertGetId([
                 "CREATED_BY" => Session::get('user_id'),
