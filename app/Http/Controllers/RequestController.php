@@ -226,7 +226,7 @@ class RequestController extends Controller
     {
         $req = $request->all();
         $asset_type = "";
-        //echo "3<pre>"; print_r($req); die();
+        //echo "4<pre>"; print_r($req); die();
         //return response()->json(["status"=>true, "message"=>"Document Created!", "new_noreg"=>"ini noreg"]);
         
         DB::beginTransaction();
@@ -253,7 +253,7 @@ class RequestController extends Controller
             if($po_type == 0){ $menu_code = 'P1'; }else{ $menu_code = 'P2'; }
             
             // INSERT TO PROCEDURE
-            DB::SELECT('call create_approval("'.$menu_code.'", "'.$request->business_area.'","","'.$reg_no.'","'.$user_id.'","'.$asset_type.'","")');
+            DB::STATEMENT('call create_approval("'.$menu_code.'", "'.$request->business_area.'","","'.$reg_no.'","'.$user_id.'","'.$asset_type.'","")');
 
             $asset_id = DB::table('TR_REG_ASSET')->insertGetId([
                 "CREATED_BY" => Session::get('user_id'),

@@ -794,7 +794,7 @@ WHERE a.NO_REG = '{$no_registrasi}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KO
                     
                     try 
                     {
-                        DB::SELECT('CALL update_approval("'.$no_registrasi.'", "'.$user_id.'","'.$status.'", "'.$note.'", "'.$role_name.'", "'.$asset_type.'")');
+                        DB::STATEMENT('CALL update_approval("'.$no_registrasi.'", "'.$user_id.'","'.$status.'", "'.$note.'", "'.$role_name.'", "'.$asset_type.'")');
                         DB::commit();
                         return response()->json(['status' => true, "message" => 'Data is successfully ' . ($no_registrasi ? 'updated' : 'update'), "new_noreg"=>$no_registrasi]);
                     } 
@@ -815,7 +815,7 @@ WHERE a.NO_REG = '{$no_registrasi}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KO
                         DB::beginTransaction();
                         try 
                         {
-                            DB::SELECT('CALL complete_document("'.$no_registrasi.'", "'.$user_id.'")');
+                            DB::STATEMENT('CALL complete_document("'.$no_registrasi.'", "'.$user_id.'")');
                             DB::commit();
                             return response()->json(['status' => true, "message" => 'Data is successfully ' . ($no_registrasi ? 'updated' : 'update'), "new_noreg"=>$no_registrasi]);
                         } 
@@ -902,7 +902,7 @@ WHERE a.NO_REG = '{$no_registrasi}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KO
                     
                     try 
                     {
-                        DB::SELECT('CALL update_approval("'.$no_registrasi.'", "'.$user_id.'","'.$status.'", "'.$note.'", "'.$role_name.'", "'.$asset_type.'")');
+                        DB::STATEMENT('CALL update_approval("'.$no_registrasi.'", "'.$user_id.'","'.$status.'", "'.$note.'", "'.$role_name.'", "'.$asset_type.'")');
                         DB::commit();
                         return response()->json([ 'status' => true, "message" => 'Data is successfully ' . ($no_registrasi ? 'updated' : 'update'), "new_noreg"=>$no_registrasi ]);
                     } 
@@ -932,7 +932,7 @@ WHERE a.NO_REG = '{$no_registrasi}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KO
                         DB::beginTransaction();
                         try 
                         {
-                            DB::SELECT('CALL complete_document("'.$no_registrasi.'", "'.$user_id.'")');
+                            DB::STATEMENT('CALL complete_document("'.$no_registrasi.'", "'.$user_id.'")');
                             DB::commit();
                             return response()->json(['status' => true, "message" => 'Data is successfully ' . ($no_registrasi ? 'updated' : 'completed'), "new_noreg"=>$no_registrasi ]);
                         } 
@@ -1944,7 +1944,7 @@ WHERE a.NO_REG = '{$noreg}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KODE_ASSET
                     //3. CREATE CODE ASSET AMS
                     $sql_3 = " CALL create_kode_asset_ams('".$dt->NO_REG."', '".$ANLA_BUKRS."', '".$dt->JENIS_ASSET."', '".$data->item->MESSAGE_V1."') ";
                     //echo $sql_3; die();
-                    DB::SELECT($sql_3);
+                    DB::STATEMENT($sql_3);
 
                     return true;
                 }
@@ -2048,7 +2048,7 @@ WHERE a.NO_REG = '{$noreg}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KODE_ASSET
                     //3. CREATE CODE ASSET AMS
                     $sql_3 = " CALL create_kode_asset_ams('".$dt->NO_REG."', '".$ANLA_BUKRS."', '".$dt->JENIS_ASSET."', '".$data->item->MESSAGE_V1."') ";
                     //echo $sql_3; die();
-                    DB::SELECT($sql_3);
+                    DB::STATEMENT($sql_3);
 
                     return true;
                 }
@@ -2119,7 +2119,7 @@ WHERE a.NO_REG = '{$noreg}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KODE_ASSET
             //3. CREATE KODE ASSET AMS PROCEDURE
             $sql_3 = 'CALL create_kode_asset_ams("'.$noreg.'", "'.$ANLA_BUKRS.'", "'.$dt->JENIS_ASSET.'", "'.$dt->KODE_ASSET_SAP.'")';
             //echo $sql_3; die();
-            DB::SELECT($sql_3);
+            DB::STATEMENT($sql_3);
 
             DB::commit();
 
@@ -2144,7 +2144,7 @@ WHERE a.NO_REG = '{$noreg}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KODE_ASSET
         {   
             $sql = " CALL create_kode_asset_ams('".$noreg."', '".$ANLA_BUKRS."', '".$dt->JENIS_ASSET."', '-".$dt->ID."') ";
             //echo $sql; die();
-            DB::SELECT($sql);
+            DB::STATEMENT($sql);
             DB::commit();
 
             return true;
@@ -2712,8 +2712,7 @@ WHERE a.no_reg = '".$noreg."' AND b.MANDATORY_KODE_ASSET_CONTROLLER = 'X' ORDER 
                 DB::beginTransaction();
                 try 
                 {
-                    //echo '2 CALL complete_document("'.$no_registrasi.'", "'.$user_id.'")'; die();
-                    DB::SELECT('CALL complete_document_disposal("'.$no_registrasi.'", "'.$user_id.'")');
+                    DB::STATEMENT('CALL complete_document_disposal("'.$no_registrasi.'", "'.$user_id.'")');
                     DB::commit();
                     return response()->json(['status' => true, "message" => 'Data is successfully ' . ($no_registrasi ? 'updated' : 'update'), "new_noreg"=>$no_registrasi]);
                 } 
