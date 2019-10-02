@@ -414,14 +414,6 @@ class ApprovalController extends Controller
         {
             $user_id = Session::get('user_id');
 
-            /*
-            if( $total_asset_now == 1 )
-            {
-                //JALANKAN PROSEDURE REJECT
-                DB::SELECT('call update_approval("'.$no_registrasi.'", "'.$user_id.'","'.$status.'", "'.$note.'", "'.$role_id.'", "'.$asset_controller.'")');
-            }
-            */
-
             $sql = " UPDATE TR_REG_ASSET_DETAIL SET DELETED = 'X', UPDATED_AT = current_timestamp(), UPDATED_BY = '{$user_id}' WHERE ID = $id ";
                 DB::UPDATE($sql);    
 
@@ -2697,8 +2689,10 @@ WHERE a.no_reg = '".$noreg."' AND b.MANDATORY_KODE_ASSET_CONTROLLER = 'X' ORDER 
             
             try 
             {
-                DB::SELECT('CALL update_approval("'.$no_registrasi.'", "'.$user_id.'","'.$status.'", "'.$note.'", "'.$role_name.'", "'.$asset_controller.'")');
+                DB::STATEMENT('CALL update_approval("'.$no_registrasi.'", "'.$user_id.'","'.$status.'", "'.$note.'", "'.$role_name.'", "'.$asset_controller.'")');
+                
                 DB::commit();
+
                 return response()->json(['status' => true, "message" => 'Data is successfully ' . ($no_registrasi ? 'updated' : 'update'), "new_noreg"=>$no_registrasi]);
             } 
             catch (\Exception $e) 
