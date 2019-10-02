@@ -403,7 +403,7 @@ class DisposalController extends Controller
 
 				//echo $ac_awal; die();
 
-				DB::SELECT('call create_approval("'.$menu_code.'", "'.$data[0]->LOKASI_BA_CODE.'","","'.$reg_no.'","'.$user_id.'","'.$ac_awal.'","0")');
+				DB::STATEMENT('call create_approval("'.$menu_code.'", "'.$data[0]->LOKASI_BA_CODE.'","","'.$reg_no.'","'.$user_id.'","'.$ac_awal.'","0")');
 
 				$asset_id = DB::table('TR_DISPOSAL_ASSET')->insertGetId([
 	                "CREATED_BY" => Session::get('user_id'),
