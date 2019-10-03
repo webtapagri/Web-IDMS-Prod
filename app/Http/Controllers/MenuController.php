@@ -184,10 +184,22 @@ class MenuController extends Controller
     public function select2()
     {
         $data = DB::table('TBM_MENU')
+            ->select('menu_code as id', 'name as text')
+            ->where('deleted', 0)
+            ->get();
+
+        return response()->json(array("data" => $data));
+    }
+
+    /* HIDE IT@031019 REV MOD Workflow, edit / add menggunakan menu_code column
+    public function select2()
+    {
+        $data = DB::table('TBM_MENU')
             ->select('id', 'name as text')
             ->where('deleted', 0)
             ->get();
 
         return response()->json(array("data" => $data));
     }
+    */
 }

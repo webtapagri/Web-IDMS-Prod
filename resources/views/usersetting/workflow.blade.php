@@ -90,6 +90,8 @@
                                 <th>SEQUENCE</th>
                                 <th>OPERATION</th>
                                 <th>LINTAS</th>
+                                <th>NEXT APPROVE</th>
+                                <th>LIMIT APPROVE</th>
                                 <th width="8%">ACTION</th>
                             </tr>
                             <tr role="row" class="filter">
@@ -99,6 +101,8 @@
                                 <th><input type="text" class="form-control input-xs form-filter" name="seq" autocomplete="off"></th>
                                 <th><input type="text" class="form-control input-xs form-filter" name="operation" autocomplete="off"></th>
                                 <th><input type="text" class="form-control input-xs form-filter" name="lintas" autocomplete="off"></th>
+                                <th><input type="text" class="form-control input-xs form-filter" name="next_approve" autocomplete="off"></th>
+                                <th><input type="text" class="form-control input-xs form-filter" name="limit_approve" autocomplete="off"></th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -135,7 +139,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-flat btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-flat btn-default tbm-menu" data-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-flat btn-danger" style="margin-right: 5px;">Submit</button>
                 </div>
             </form>
@@ -206,9 +210,17 @@
                             <label class="control-label" for="operation">Operation</label>
                             <input class="form-control" name='operation' id="operation" maxlength="400" requried>
                         </div>
-                         <div class="col-xs-12">
+                        <div class="col-xs-12">
                             <label class="control-label" for="lintas">Lintas</label>
                             <input class="form-control" name='lintas' id="lintas" maxlength="400" requried>
+                        </div>
+                        <div class="col-xs-12">
+                            <label class="control-label" for="">Next Approve</label>
+                            <input class="form-control" name='next_approve' id="next_approve" maxlength="400" requried>
+                        </div>
+                        <div class="col-xs-12">
+                            <label class="control-label" for="">Limit Approve</label>
+                            <input class="form-control" name='limit_approve' id="limit_approve" maxlength="400" requried>
                         </div>
                     </div>
                 </div>
@@ -352,7 +364,7 @@
         });
 
         var role_detail_job_role = jQuery.parseJSON(JSON.stringify(dataJson('{!! route("get.select_workflow_detail_role") !!}')));
-        $('input[name="id_role"], #id_role').select2({
+        $('input[name="id_role"], #id_role, #next_approve').select2({
             data: role_detail_job_role,
             width: '100%',
             placeholder: ' ',
@@ -556,6 +568,11 @@
                 });
 
             }
+        });
+
+        $('.tbm-menu').on('click', function() 
+        {
+            location.reload("{{ url('/') }}")
         });
     });
 
@@ -832,6 +849,14 @@
                             name: 'lintas'
                         },
                         {
+                            data: 'next_approve',
+                            name: 'next_approve'
+                        },
+                        {
+                            data: 'limit_approve',
+                            name: 'limit_approve'
+                        },
+                        {
                             "render": function(data, type, row) {
                                 var update = "{{ $data['access']->update }}";
                                 var remove = "{{ $data['access']->delete }}";
@@ -874,6 +899,9 @@
         $("#seq_job").val(result.seq);
         $("#operation").val(result.operation);
         $("#lintas").val(result.lintas);
+        $("#next_approve").val(result.next_approve);
+        $("#next_approve").trigger("change");
+        $("#limit_approve").val(result.limit_approve);
 
         $("#add-data-modal-detail-job .modal-title").html("<i class='fa fa-edit'></i> Update data detail job "+result.workflow_job_code);
         $("#add-data-modal-detail-job").modal("show");

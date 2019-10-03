@@ -263,7 +263,7 @@ class WorkflowController extends Controller
         $sortColumn = "";
         $selectedColumn[] = "";
 
-        $selectedColumn = ['a.workflow_job_code','b.workflow_group_name', 'c.name', 'a.seq', 'a.operation', 'a.lintas'];
+        $selectedColumn = ['a.workflow_job_code','b.workflow_group_name', 'c.name', 'a.seq', 'a.operation', 'a.lintas', 'd.name as next_approve', 'a.limit_approve'];
 
         if ($orderColumn) {
             $order = explode("as", $selectedColumn[$orderColumn]);
@@ -279,6 +279,7 @@ class WorkflowController extends Controller
                 FROM TR_WORKFLOW_JOB a 
                     LEFT JOIN TR_WORKFLOW_DETAIL b ON a.workflow_detail_code = b.workflow_detail_code
                     LEFT JOIN TBM_ROLE c ON a.id_role = c.id
+                    LEFT JOIN TBM_ROLE d ON a.next_approve = d.id
                 WHERE a.workflow_detail_code = '.$req_id.'
         ';
 
@@ -390,6 +391,8 @@ class WorkflowController extends Controller
             $data->seq = $request->seq_job;
             $data->operation = $request->operation;
             $data->lintas = $request->lintas;
+            $data->next_approve = $request->next_approve;
+            $data->limit_approve = $request->limit_approve;
 
             $data->save();
 

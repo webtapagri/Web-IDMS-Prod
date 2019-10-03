@@ -61,7 +61,7 @@ class DisposalController extends Controller
 
     	$sql = " SELECT a.kode_asset_ams AS kode_asset_ams, a.kode_material AS kode_material, a.nama_material AS nama_material, a.nama_asset_1 AS nama_asset_1, a.kode_asset_sap AS kode_asset_sap, a.lokasi_ba_description, a.ba_pemilik_asset 
     				FROM TM_MSTR_ASSET a 
-    					WHERE (a.kode_asset_ams IS NOT NULL OR a.kode_asset_ams != '') and (a.nama_material IS NOT NULL OR a.nama_material != '' ) $where
+    					WHERE (a.kode_asset_ams IS NOT NULL OR a.kode_asset_ams != '') and (a.nama_material IS NOT NULL OR a.nama_material != '' ) AND (a.DISPOSAL_FLAG IS NULL OR a.DISPOSAL_FLAG = '' ) $where
     				ORDER BY a.nama_material ASC ";//echo $sql;
  		$data = DB::SELECT($sql); 
 
