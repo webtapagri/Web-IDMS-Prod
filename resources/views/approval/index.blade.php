@@ -1044,6 +1044,7 @@
                 item += '<th>NAMA MATERIAL</th>';
                 item += '<th>LOKASI BA CODE</th>';
                 item += '<th>NAMA ASSET</th>';
+                item += '<th>HARGA PEROLEHAN (RP)</th>';
                 item += '<th>VIEW DETAIL</th>';
                 if (data.item_detail.length > 0) 
                 {
@@ -1052,6 +1053,18 @@
                     {
                         var doc_no = val.document_code.replace(/\//g, '-');
                         var kode_fams = btoa(val.kode_asset_ams);
+                        var jenis_pengajuan = val.jenis_pengajuan;
+                        
+                        if( jenis_pengajuan == 1 )
+                        {
+                            pengajuan = 'Penjualan';
+                        }
+                        else if( jenis_pengajuan == 2 )
+                        {
+                            pengajuan = 'Hilang';
+                        }else{
+                            pengajuan = 'Rusak';
+                        }
 
                         item += "<tr style='height: 30px !important;font-size:11px !important;'>";
                         item += "<td>" + no + "</td>";
@@ -1060,8 +1073,7 @@
                         item += "<td>" + val.nama_material + "</td>";
                         item += "<td>" + val.lokasi_ba_description + "</td>";
                         item += "<td>" + val.nama_asset_1 + "</td>";
-                        
-                        /*item += "<td><i class='fa fa-eye' OnClick='getDetailItemDisposal(\""+doc_no+"\","+val.asset_po_id+",3,"+no+")'></i> &nbsp;&nbsp;&nbsp; <i class='fa fa-trash' style='color:red' OnClick='delDisposal(\""+data.no_reg+"\","+val.kode_asset_ams+")'></i> </td>";*/
+                        item += "<td>" + val.harga_perolehan + "</td>";
 
                         item += "<td><a href='<?php {{ echo url("/master-asset/show-data"); }} ?>/"+kode_fams+"' target='_blank'><i class='fa fa-eye'></i></a> &nbsp;&nbsp;&nbsp; <i class='fa fa-trash' style='color:red' OnClick='delDisposal(\""+data.no_reg+"\","+val.kode_asset_ams+")'></i> </td>";
 
@@ -1082,7 +1094,7 @@
                 log_history(id,3);
                 $("#box-item-detail-history-disposal").html(item);
 
-                $("#approve-disposal-modal .modal-title").html("<i class='fa fa-edit'></i> Approval Disposal - <span style='color:#dd4b39'>" + data.no_reg + "</span><input type='hidden' id='getnoreg' name='getnoreg' value='"+data.no_reg+"' >");
+                $("#approve-disposal-modal .modal-title").html("<i class='fa fa-edit'></i> Approval Disposal "+ pengajuan +" - <span style='color:#dd4b39'>" + data.no_reg + "</span><input type='hidden' id='getnoreg' name='getnoreg' value='"+data.no_reg+"' >");
 
                 $('#approve-disposal-modal').modal('show');
             },
@@ -2501,6 +2513,7 @@
                 item += '<th>NAMA MATERIAL</th>';
                 item += '<th>LOKASI BA CODE</th>';
                 item += '<th>NAMA ASSET</th>';
+                item += '<th>HARGA PEROLEHAN (RP)</th>';
                 item += '<th>VIEW DETAIL</th>';
                 if (data.item_detail.length > 0) 
                 {
@@ -2509,6 +2522,18 @@
                     $.each(data.item_detail, function(key, val) 
                     {
                         var kode_fams = btoa(val.kode_asset_ams);
+                        var jenis_pengajuan = val.jenis_pengajuan;
+                        
+                        if( jenis_pengajuan == 1 )
+                        {
+                            pengajuan = 'Penjualan';
+                        }
+                        else if( jenis_pengajuan == 2 )
+                        {
+                            pengajuan = 'Hilang';
+                        }else{
+                            pengajuan = 'Rusak';
+                        }
 
                         item += "<tr style='height: 30px !important;font-size:11px !important;'>";
                         item += "<td>" + no + "</td>";
@@ -2517,6 +2542,8 @@
                         item += "<td>" + val.nama_material + "</td>";
                         item += "<td>" + val.lokasi_ba_description + "</td>";
                         item += "<td>" + val.nama_asset_1 + "</td>";
+                        item += "<td>" + val.harga_perolehan + "</td>";
+
                         item += "<td><a href='<?php {{ echo url("/master-asset/show-data"); }} ?>/"+kode_fams+"' target='_blank'><i class='fa fa-eye'></i></a></td>";
                         //item += "<td><i class='fa fa-eye' OnClick='getDetailItem(\""+noreg+"\","+val.id+",2,"+no+")'></i></td>";
                         item += "</tr>";
@@ -2536,7 +2563,7 @@
 
                 $("#box-item-detail-history-disposal").html(item);
 
-                $("#history-modal-disposal .modal-title").html("<i class='fa fa-edit'></i>  History Disposal - <span style='color:#dd4b39'>" + data.no_reg + "</span><input type='hidden' id='getnoreg' name='getnoreg' value='"+data.no_reg+"' >");
+                $("#history-modal-disposal .modal-title").html("<i class='fa fa-edit'></i>  History Disposal "+ pengajuan +" - <span style='color:#dd4b39'>" + data.no_reg + "</span><input type='hidden' id='getnoreg' name='getnoreg' value='"+data.no_reg+"' >");
 
                 $('#history-modal-disposal').modal('show');
             },
@@ -3143,7 +3170,7 @@
                     //alert(result.status);
                     if (result.status) 
                     {
-                        //$("#approve-modal").modal("hide");
+                        $("#approve-disposal-modal").modal("hide");
                         //$("#data-table").DataTable().ajax.reload();
                         notify({
                             type: 'success',

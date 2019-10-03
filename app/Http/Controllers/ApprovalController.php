@@ -415,7 +415,7 @@ class ApprovalController extends Controller
             $user_id = Session::get('user_id');
 
             $sql = " UPDATE TR_REG_ASSET_DETAIL SET DELETED = 'X', UPDATED_AT = current_timestamp(), UPDATED_BY = '{$user_id}' WHERE ID = $id ";
-                DB::UPDATE($sql);    
+            DB::UPDATE($sql);    
 
             DB::commit();
             return response()->json(['status' => true, "message" => 'Data is successfully ' . ($id ? 'updated' : 'update')]);
@@ -2812,7 +2812,7 @@ WHERE a.no_reg = '".$noreg."' AND b.MANDATORY_KODE_ASSET_CONTROLLER = 'X' ORDER 
                     'lokasi_ba_code' => trim($v->LOKASI_BA_CODE),
                     'lokasi_ba_description' => trim($v->LOKASI_BA_DESCRIPTION),
                     'nama_asset_1' => trim($v->NAMA_ASSET_1),
-                    'harga_perolehan' => trim($v->HARGA_PEROLEHAN),
+                    'harga_perolehan' => number_format(trim($v->HARGA_PEROLEHAN),0,',','.'),
                     'jenis_pengajuan' => trim($v->JENIS_PENGAJUAN),
                     'created_by' => trim($v->CREATED_BY),
                     'created_at' => trim($v->CREATED_AT)
@@ -2833,13 +2833,18 @@ WHERE a.no_reg = '".$noreg."' AND b.MANDATORY_KODE_ASSET_CONTROLLER = 'X' ORDER 
         {
             $user_id = Session::get('user_id');
 
-            $sql = " UPDATE TR_DISPOSAL_ASSET_DETAIL SET DELETED = 'X', UPDATED_AT = current_timestamp(), UPDATED_BY = '{$user_id}' WHERE NO_REG = '".$no_reg."' AND KODE_ASSET_AMS = ".$request->kode_asset_ams." ";
-            //echo $sql; die();
-                DB::UPDATE($sql);    
+            DB::DELETE(" DELETE FROM TR_DISPOSAL_ASSET_DETAIL WHERE NO_REG = '".$no_reg."' AND KODE_ASSET_AMS = ".$request->kode_asset_ams." ");
+
+            /*
+            $sql1 = " UPDATE TR_DISPOSAL_ASSET_DETAIL SET DELETED = 'X', UPDATED_AT = current_timestamp(), UPDATED_BY = '{$user_id}' WHERE NO_REG = '".$no_reg."' AND KODE_ASSET_AMS = ".$request->kode_asset_ams." ";
+            DB::UPDATE($sql1);
+            */    
 
             DB::commit();
             return response()->json(['status' => true, "message" => 'Data is successfully ' . ($request->kode_asset_ams ? 'deleted' : 'delete')]);
-        } catch (\Exception $e) {
+        } 
+        catch (\Exception $e) 
+        {
             DB::rollback();
             return response()->json(['status' => false, "message" => $e->getMessage()]);
         }
