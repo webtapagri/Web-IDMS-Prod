@@ -377,7 +377,7 @@ class DisposalController extends Controller
 					if( $vac['result'] != 1 )
 					{
 						DB::rollback();DB::commit();
-	           	 		Session::flash('alert',$vlb['message']);
+	           	 		Session::flash('alert',$vac['message']);
 						return Redirect::to('/disposal-'.$jp.'');
 						exit;
 					}
@@ -408,6 +408,7 @@ class DisposalController extends Controller
 				$asset_id = DB::table('TR_DISPOSAL_ASSET')->insertGetId([
 	                "CREATED_BY" => Session::get('user_id'),
 	                "NO_REG" => $reg_no,
+	                "TYPE_TRANSAKSI" => $jp,
 	                "BUSINESS_AREA" => $data[0]->LOKASI_BA_CODE,
 	                "TANGGAL_REG" => date("Y-m-d")
 	            ]);
@@ -551,7 +552,7 @@ class DisposalController extends Controller
 
     	if( $lokasi_awal == $nilai->LOKASI_BA_CODE )
     	{
-    		$result = array('result'=> 1, 'message'=> "success");
+    		$result = array('result'=> 1, 'message'=> "success validasi_lokasi_bacode");
 	    	return $result;
     	}
     	else
@@ -597,7 +598,7 @@ class DisposalController extends Controller
     	}
     	else if( $ac == $ac_awal )
     	{
-    		$result = array('result'=> 1, 'message'=> "success");
+    		$result = array('result'=> 1, 'message'=> "success validasi_asset_controller");
 	    	return $result;
     	}
     	else
