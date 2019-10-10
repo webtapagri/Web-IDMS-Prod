@@ -190,8 +190,10 @@ class DisposalController extends Controller
 			try 
 			{
 
-				$sql = "INSERT INTO TR_DISPOSAL_TEMP(KODE_ASSET_AMS,KODE_ASSET_SAP,NAMA_MATERIAL,BA_PEMILIK_ASSET,LOKASI_BA_CODE,LOKASI_BA_DESCRIPTION,NAMA_ASSET_1,CREATED_BY,JENIS_PENGAJUAN,CHECKLIST)
-							VALUES('{$row->KODE_ASSET_AMS}','{$row->KODE_ASSET_SAP}','{$row->NAMA_MATERIAL}','{$row->BA_PEMILIK_ASSET}','{$row->LOKASI_BA_CODE}','{$row->LOKASI_BA_DESCRIPTION}','{$row->NAMA_ASSET_1}','{$user_id}','{$jenis_pengajuan}',0)";
+				$HARGA_PEROLEHAN = $this->get_harga_perolehan($row);
+
+				$sql = "INSERT INTO TR_DISPOSAL_TEMP(KODE_ASSET_AMS,KODE_ASSET_SAP,NAMA_MATERIAL,BA_PEMILIK_ASSET,LOKASI_BA_CODE,LOKASI_BA_DESCRIPTION,NAMA_ASSET_1,CREATED_BY,JENIS_PENGAJUAN,CHECKLIST,HARGA_PEROLEHAN)
+							VALUES('{$row->KODE_ASSET_AMS}','{$row->KODE_ASSET_SAP}','{$row->NAMA_MATERIAL}','{$row->BA_PEMILIK_ASSET}','{$row->LOKASI_BA_CODE}','{$row->LOKASI_BA_DESCRIPTION}','{$row->NAMA_ASSET_1}','{$user_id}','{$jenis_pengajuan}',0,'{$HARGA_PEROLEHAN}')";
 				//	echo $sql; die();
 				DB::insert($sql);
 				DB::commit();
@@ -224,7 +226,7 @@ class DisposalController extends Controller
     	$total = 0;
 
     	// #1 VALIDASI DI DISPOSAL ASET DETAIL
-    	$sql1 = "SELECT COUNT(*) AS TOTAL FROM TR_DISPOSAL_ASSET_DETAIL WHERE KODE_ASSET_AMS = '{$kode_asset_ams}'";
+    	$sql1 = "SELECT COUNT(*) AS TOTAL FROM TR_DISPOSAL_ASSET_DETAIL WHERE KODE_ASSET_AMS = '{$kode_asset_ams}' AND DELETED != 'R' ";
     	$data = DB::SELECT($sql1);
 
     	if( $data[0]->TOTAL == 0)
@@ -606,6 +608,64 @@ class DisposalController extends Controller
     		$result = array('result'=> 0, 'message'=> 'Gagal Proses, AC Controller tidak sama (KODE ASSET AMS : '.$kode_asset_ams.' ) ');
 	    	return $result;
     	}
+    }
+
+    function get_harga_perolehan($row)
+    {
+    	
+    	$BUKRS = substr($row->BA_PEMILIK_ASSET,0,2);
+    	$YEAR = date('Y');
+
+    	$ANLN1 = $this->get_anln1($row->KODE_ASSET_SAP);
+    	
+    	if( $row->KODE_ASSET_SUBNO_SAP == '') 
+    	{
+    		$ANLN2 = '0000';
+    	}
+    	else
+    	{
+    		$ANLN2 = $row->KODE_ASSET_SUBNO_SAP;
+    	}
+
+    	$service = API::exec(array(
+            'request' => 'GET',
+            'host' => 'ldap',
+            'method' => "assets_price?BUKRS={$BUKRS}&ANLN1={$ANLN1}&ANLN2=$ANLN2&AFABE=15&GJAHR={$YEAR}", 
+            //'method' => "assets_price?BUKRS=41&ANLN1=000060100612&ANLN2=0000&AFABE=1&GJAHR=2019", 
+            //http://tap-ldapdev.tap-agri.com/data-sap/assets_price?BUKRS=41&ANLN1=000060100612&ANLN2=0000&AFABE=1&GJAHR=2019
+        ));
+        
+        $data = $service;
+
+        if(!empty($data))
+        {
+        	$nilai = $data;
+        }
+        else
+        {
+        	$nilai = 0;
+        }
+
+        return $nilai*100;
+    }
+
+    function get_anln1($kode)
+    {
+    	$total = strlen($kode); //12 DIGIT
+
+    	if( $total == 8 )
+    	{
+    		$ksap = '0000'.$kode.'';
+    	}
+    	elseif( $total == 7 )
+    	{
+    		$ksap = '00000'.$kode.'';
+    	}
+    	else
+    	{
+    		$ksap = '0000'.$kode.'';
+    	}
+    	return $ksap;
     }
 }
 

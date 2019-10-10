@@ -1804,16 +1804,11 @@ WHERE a.NO_REG = '{$noreg}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KODE_ASSET
 
     function synchronize_sap(Request $request)
     {
-        //$req = $request->all();
-        //echo "<pre>"; print_r($req); die();
-        //echo "<pre>"; print_r($request->noreg); die();
         $no_reg = @$request->noreg;
 
         $sql = " SELECT a.*, date_format(a.CAPITALIZED_ON,'%d.%m.%Y') AS CAPITALIZED_ON, date_format(a.DEACTIVATION_ON,'%d.%m.%Y') AS DEACTIVATION_ON FROM TR_REG_ASSET_DETAIL a WHERE a.NO_REG = '{$no_reg}' AND (a.KODE_ASSET_SAP = '' OR a.KODE_ASSET_SAP is null) AND (a.DELETED is null OR a.DELETED = '') ";
-        //echo $sql; die();
 
         $data = DB::SELECT($sql); 
-        //echo "<pre>"; print_r($data); die();
 
         $params = array();
 
@@ -1836,43 +1831,30 @@ WHERE a.NO_REG = '{$noreg}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KODE_ASSET
                     return response()->json(['status' => false, "message" => $proses['message']]);
                     die();
                 }
-                /*
-                else
-                {
-                    return response()->json(['status' => false, "message" => "Client Error"]);
-                    die();
-                }
-                */
-
-                //return response()->json(['status' => true, "message" => "Synchronize SAP Success "]);
             }
 
-            //return response()->json(['status' => true, "message" => "Synchronize SAP success"]);
             return response()->json(['status' => true, "message" => "Synchronize success"]);
 
-            /* SKIP IT@150719
-            #### PROSES CREATE KODE ASSET AMS 
-            //$execute_create_kode_asset_ams = true; 
-            $execute_create_kode_asset_ams = $this->execute_create_kode_asset_ams($v);
-            if( $execute_create_kode_asset_ams )
+            /* SKIP DULU KRN DOUBLE CREATE KODE SAP NANTI DISAP NYA IT@101019.1348
+            // CEK KEMBALI JIKA KODE_ASSET_SAP & ASSET_CONTROLLER MASIH KOSONG MAKA SYNCHRONIZE DIULANG IT@101019
+            $cek_kas_ac = $this->cek_kas_ac($no_reg);
+
+            if($cek_kas_ac['status'] == true)
             {
-                return response()->json(['status' => true, "message" => "Synchronize SAP success"]);
+                return response()->json(['status' => true, "message" => "Synchronize success"]);
             }
             else
             {
-                $sql = " UPDATE TR_REG_ASSET_DETAIL SET KODE_ASSET_SAP = '' WHERE NO_REG = '{$no_reg}' "; 
-                DB::UPDATE($sql);
-
-                return response()->json(['status' => false, "message" => "Create Kode Asset AMS failed"]);
+                return response()->json(['status' => false, "message" => "Synchronize failed, try again <br/>".$cek_kas_ac['message'] ]);
             }
+            // END IT@101019
             */
         }
         else
         {
             $sql = " UPDATE TR_REG_ASSET_DETAIL SET KODE_ASSET_SAP = '' WHERE NO_REG = '{$no_reg}' "; 
                 DB::UPDATE($sql);
-            //return response()->json(['status' => false, "message" => "Synchronize SAP failed, data not found"]);
-                return response()->json(['status' => false, "message" => "Synchronize failed, data not found"]);
+            return response()->json(['status' => false, "message" => "Synchronize failed, data not found"]);
         }
     }
 
@@ -2689,6 +2671,13 @@ WHERE a.no_reg = '".$noreg."' AND b.MANDATORY_KODE_ASSET_CONTROLLER = 'X' ORDER 
             
             try 
             {
+                if($status=='R')
+                {
+                    // SEMENTARA DI DELETE DULU JIKA DI REJECT IT@081019 
+                    //DB::DELETE(" DELETE FROM TR_DISPOSAL_ASSET_DETAIL WHERE NO_REG = '".$no_registrasi."' ");
+                    DB::UPDATE(" UPDATE TR_DISPOSAL_ASSET_DETAIL SET DELETED = 'R' WHERE NO_REG = '".$no_registrasi."' "); 
+                }
+
                 DB::STATEMENT('CALL update_approval("'.$no_registrasi.'", "'.$user_id.'","'.$status.'", "'.$note.'", "'.$role_name.'", "'.$asset_controller.'")');
                 
                 DB::commit();
@@ -2792,7 +2781,10 @@ WHERE a.no_reg = '".$noreg."' AND b.MANDATORY_KODE_ASSET_CONTROLLER = 'X' ORDER 
     {
         $request = array();
         
-        $sql = " SELECT b.ASSET_PO_ID as ASSET_PO_ID,b.NO_REG as DOCUMENT_CODE, a.* FROM TR_DISPOSAL_ASSET_DETAIL a LEFT JOIN TR_REG_ASSET_DETAIL b ON a.kode_asset_ams = b.KODE_ASSET_AMS WHERE a.no_reg = '{$noreg}' AND (a.DELETED is null OR a.DELETED = '') ";
+        $sql = " SELECT b.ASSET_PO_ID as ASSET_PO_ID,b.NO_REG as DOCUMENT_CODE, a.* FROM TR_DISPOSAL_ASSET_DETAIL a LEFT JOIN TR_REG_ASSET_DETAIL b ON a.kode_asset_ams = b.KODE_ASSET_AMS WHERE a.no_reg = '{$noreg}' ";
+
+        /*$sql1 = " SELECT b.ASSET_PO_ID as ASSET_PO_ID,b.NO_REG as DOCUMENT_CODE, a.* FROM TR_DISPOSAL_ASSET_DETAIL a LEFT JOIN TR_REG_ASSET_DETAIL b ON a.kode_asset_ams = b.KODE_ASSET_AMS WHERE a.no_reg = '{$noreg}' AND (a.DELETED is null OR a.DELETED = '') ";*/
+
         $data = DB::SELECT($sql);
 
         if($data)
@@ -2833,12 +2825,7 @@ WHERE a.no_reg = '".$noreg."' AND b.MANDATORY_KODE_ASSET_CONTROLLER = 'X' ORDER 
         {
             $user_id = Session::get('user_id');
 
-            DB::DELETE(" DELETE FROM TR_DISPOSAL_ASSET_DETAIL WHERE NO_REG = '".$no_reg."' AND KODE_ASSET_AMS = ".$request->kode_asset_ams." ");
-
-            /*
-            $sql1 = " UPDATE TR_DISPOSAL_ASSET_DETAIL SET DELETED = 'X', UPDATED_AT = current_timestamp(), UPDATED_BY = '{$user_id}' WHERE NO_REG = '".$no_reg."' AND KODE_ASSET_AMS = ".$request->kode_asset_ams." ";
-            DB::UPDATE($sql1);
-            */    
+            DB::DELETE(" DELETE FROM TR_DISPOSAL_ASSET_DETAIL WHERE NO_REG = '".$no_reg."' AND KODE_ASSET_AMS = ".$request->kode_asset_ams." "); 
 
             DB::commit();
             return response()->json(['status' => true, "message" => 'Data is successfully ' . ($request->kode_asset_ams ? 'deleted' : 'delete')]);
@@ -2869,5 +2856,32 @@ WHERE a.no_reg = '".$noreg."' AND b.MANDATORY_KODE_ASSET_CONTROLLER = 'X' ORDER 
         }
 
         return $ac;
+    }
+
+    function cek_kas_ac($noreg)
+    {
+        $sql = " SELECT NO_REG_ITEM, KODE_MATERIAL, NAMA_MATERIAL, NO_PO, NAMA_ASSET, INFORMASI FROM TR_REG_ASSET_DETAIL WHERE NO_REG = '{$noreg}' AND (KODE_ASSET_SAP IS NULL OR KODE_ASSET_SAP = '') ";
+
+        $data = DB::SELECT($sql);
+        $total = count($data);
+        //echo "1<br/>".$total; die();
+
+        $msg = "";
+
+        if(!empty($data))
+        {
+            foreach($data as $k => $v)
+            {
+                $msg .= " KODE MATERIAL : {$v->KODE_MATERIAL} / NO REG ITEM : {$v->NO_REG_ITEM} / NAMA ASSET : {$v->NAMA_ASSET} <br/> ";
+            }
+            
+            $result = array('status'=>false,'message'=>$msg);
+        }
+        else
+        {
+            $result = array('status'=>true,'message'=>"all synchronize sap success");
+        }
+
+        return $result;
     }
 }

@@ -219,7 +219,7 @@
                         <br>
                         <span class="label bg-blue"><i class="fa fa-bars"></i> ITEM DETAIL</span> <br/><br/>
                         <div class="form-group">
-                            <div class="col-md-12" id="box-item-detail">
+                            <div class="col-md-12 table-scroll" id="box-item-detail">
                             </div>
                         </div>
                         
@@ -322,7 +322,7 @@
                             <br>
                             <span class="label bg-blue"><i class="fa fa-bars"></i> ITEM DETAIL</span> <br/><br/>
                             <div class="form-group">
-                                <div class="col-md-12" id="box-item-detail-history"></div>
+                                <div class="col-md-12 table-scroll" id="box-item-detail-history"></div>
                             </div>
                             
                             <!-- ITEM DETAIL HISTORY -->
