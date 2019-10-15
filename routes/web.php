@@ -98,6 +98,10 @@ Route::get('/mutasi/edit/', 'MutasiController@show');
 Route::post('/mutasi/inactive', 'MutasiController@inactive');
 Route::post('/mutasi/active', 'MutasiController@active');
 Route::get('grid-mutasi', ['as' => 'get.mutasi_grid', 'uses' => 'MutasiController@dataGrid']);
+Route::match(['get', 'post'], 'grid-asset-mutasi', [
+    'as' => 'get.grid_asset_mutasi',
+    'uses' => 'MutasiController@dataGridAssetMutasi'
+]);
 
 /* USER SETTINGS */
 //Route::get('/', 'HomeController@index')->name('home');
@@ -175,6 +179,7 @@ Route::get('get-select_menu', ['as' => 'get.select_menu', 'uses' => 'MenuControl
 Route::get('get-select_role', ['as' => 'get.select_role', 'uses' => 'RolesController@select2']);
 Route::get('get-generaldataplant', ['as' => 'get.generaldataplant', 'uses' => 'Select2Controller@generaldataplant']);
 Route::get('get-assetgroup', ['as' => 'get.assetgroup', 'uses' => 'Select2Controller@assetgroup']);
+Route::get('get-assetgroupcondition', ['as' => 'get.assetgroupcondition', 'uses' => 'Select2Controller@assetgroupcondition']);
 Route::get('get-assetsubgroup', ['as' => 'get.assetsubgroup', 'uses' => 'Select2Controller@assetsubgroup']);
 Route::get( 'get-jenisasset', ['as' => 'get.jenisasset', 'uses' => 'Select2Controller@jenisasset']);
 Route::get('get-select_workflow_code', ['as' => 'get.select_workflow_code', 'uses' => 'WorkflowController@workflowcode']);
@@ -191,6 +196,7 @@ Route::get('get-generaldata-assetcontroller', ['as' => 'get.generaldata_assetcon
 Route::get('get-select_role_idname', ['as' => 'get.select_role_idname', 'uses' => 'RolesController@select_role']);
 Route::get('get-select_user', ['as' => 'get.select_user', 'uses' => 'UsersController@select2']);
 Route::get('get-select_uom', ['as' => 'get.select_uom', 'uses' => 'Select2Controller@select_uom']);
+Route::get('get-tujuan_business_area', ['as' => 'get.tujuan_business_area', 'uses' => 'Select2Controller@tujuan_business_area']);
 
 /* WORKFLOW SETTING */
 Route::resource('/setting/workflow', 'WorkflowController');

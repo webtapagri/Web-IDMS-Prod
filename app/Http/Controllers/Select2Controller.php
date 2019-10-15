@@ -120,6 +120,25 @@ class Select2Controller extends Controller
         return response()->json(array('data' => $arr));
     }
 
+    public function assetgroupcondition(Request $request) 
+    {
+        $data = DB::table( 'TM_GROUP_ASSET')
+        ->select('GROUP_CODE as id',DB::raw('CONCAT(GROUP_CODE,"-",GROUP_DESCRIPTION) as text'))
+        ->where( "JENIS_ASSET_CODE", $request->type)
+        ->get();
+
+        $arr = array();
+        $arr[] = array("id"=>"","text"=>"");
+        foreach ($data as $row) {
+            $arr[] = array(
+                "id" => $row->id,
+                "text" => $row->id .'-' . $row->text
+            );
+        }
+
+        return response()->json(array('data' => $arr));
+    }
+
     public function assetsubgroup(Request $request) 
     {
         $data = DB::table( 'TM_SUBGROUP_ASSET AS SUBGROUP')
@@ -220,5 +239,30 @@ class Select2Controller extends Controller
         ->orderby('description', 'asc')
         ->get();
         return response()->json(array("data"=>$data));
+    }
+
+    public function tujuan_business_area(Request $request) 
+    {
+        $data = DB::table('TM_GENERAL_DATA')
+        ->select('DESCRIPTION_CODE as id', 'DESCRIPTION as text')
+        //->select('DESCRIPTION_CODE as id', DB::raw('CONCAT(DESCRIPTION_CODE,"-",DESCRIPTION) as text'))
+        ->where( 
+            array(
+                "GENERAL_CODE" => "plant",
+            )
+        )
+        ->where("DESCRIPTION_CODE", "like", "".$request->type."%")
+        ->get();
+
+        $arr = array();
+        $arr[] = array("id"=>"","text"=>"");
+        foreach ($data as $row) {
+            $arr[] = array(
+                "id" => $row->id,
+                "text" => $row->id .'-' . $row->text
+            );
+        }
+
+        return response()->json(array('data' => $arr));
     }
 }

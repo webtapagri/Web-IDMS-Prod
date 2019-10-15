@@ -744,10 +744,10 @@
                 "dom": "<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'<'table-group-actions pull-right'>>r>t<'row'<'col-md-8 col-sm-12'pli><'col-md-4 col-sm-12'>>",
                 "bStateSave": true, // save datatable state(pagination, sort, etc) in cookie.
                 "lengthMenu": [
-                    [10, 20, 50, 100, 150],
-                    [10, 20, 50, 100, 150]
+                    [50, 100, 250, 500, 1000],
+                    [50, 100, 250, 500, 1000]
                 ],
-                "pageLength": 10,
+                "pageLength": 50,
                 "ajax": {
                     url: "{!! route('get.approval_grid_history') !!}"
                 },
@@ -2011,8 +2011,8 @@
         $('input[name="jenis_asset-'+no+'"]').val(jenis_asset_code[0]).trigger('change');
 
         var ja_group = group.split('-'); 
-        //var assetgroup = jQuery.parseJSON(JSON.stringify(dataJson('{!! route("get.assetgroup") !!}?type=' + jenis_asset )));
-        var assetgroup = $.parseJSON(JSON.stringify(dataJson('{!! route("get.select_group_code") !!}' )));
+        var assetgroup = jQuery.parseJSON(JSON.stringify(dataJson('{!! route("get.assetgroupcondition") !!}?type=' + jenis_asset_code[0] )));
+        //var assetgroup = $.parseJSON(JSON.stringify(dataJson('{!! route("get.select_group_code") !!}' )));
         $('input[name="jenis_asset_group-'+no+'"]').select2({
             data: assetgroup,
             width: "100%",

@@ -79,7 +79,7 @@ class MutasiController extends Controller
     {
         $data["page_title"] = "Create Mutasi";
         $data['ctree_mod'] = 'Mutasi';
-        $data['ctree'] = 'mutasi';
+        $data['ctree'] = 'mutasi/create/1';
 
         $data['type'] = ($request->type == "amp" ? 'Melalui PO AMP':'Melalui PO Sendiri');
         return view('mutasi.add')->with(compact('data'));
@@ -165,5 +165,106 @@ class MutasiController extends Controller
         } catch (\Exception $e) {
             return response()->json(['status' => false, "message" => $e->getMessage()]);
         }
+    }
+
+    public function dataGridAssetMutasi(Request $request)
+    {
+        //echo "<pre>"; print_r($request->all()); die();
+        $role_id = Session::get('role_id');
+        $user_id = Session::get('user_id');
+
+        $orderColumn = $request->order[0]["column"];
+        $dirColumn = $request->order[0]["dir"];
+        $sortColumn = "";
+        $selectedColumn[] = "";
+        $addwhere = "";
+        
+        $field = array
+        (
+            array("index" => "1", "field" => "ASSET.KODE_ASSET_SAP", "alias" => "KODE_ASSET_SAP"),
+            array("index" => "2", "field" => "ASSET.NAMA_MATERIAL ", "alias" => "NAMA_MATERIAL"),
+            array("index" => "3", "field" => "ASSET.NAMA_ASSET", "alias" => "NAMA_ASSET"),
+            array("index" => "4", "field" => "ASSET.BA_PEMILIK_ASSET", "alias" => "BA_PEMILIK_ASSET"),
+            array("index" => "5", "field" => "ASSET.LOKASI_BA_DESCRIPTION", "alias" => "LOKASI_BA_DESCRIPTION"),
+            array("index" => "6", "field" => "ASSET.ASSET_CONTROLLER", "alias" => "ASSET_CONTROLLER"),
+            array("index" => "7", "field" => "ASSET.LOKASI_BA_CODE", "alias" => "LOKASI_BA_CODE")
+        );
+
+        foreach ($field as $row) 
+        {
+            if ($row["alias"]) {
+                $selectedColumn[] = $row["field"] . " as " . $row["alias"];
+            } else {
+                $selectedColumn[] = $row["field"];
+            }
+
+            if ($row["index"] == $orderColumn) {
+                $orderColumnName = $row["field"];
+            }
+        }
+
+        // it@140619 JOIN W v_outstanding
+        $sql = ' SELECT DISTINCT(ASSET.KODE_ASSET_AMS) AS KODE_ASSET_AMS '.implode(", ", $selectedColumn).'
+            FROM TM_MSTR_ASSET AS ASSET 
+            WHERE (DISPOSAL_FLAG IS NULL OR DISPOSAL_FLAG = "") ';
+
+        /*if($role_id != 4)
+            $sql .= " AND ASSET.CREATED_BY = '{$user_id}' ";*/ 
+
+        if ($request->KODE_ASSET_AMS)
+            $sql .= " AND ASSET.KODE_ASSET_AMS like '%" . $request->KODE_ASSET_AMS . "%'";
+       
+        if ($request->KODE_ASSET_SAP)
+            $sql .= " AND ASSET.KODE_ASSET_SAP  like '%" . $request->KODE_ASSET_SAP . "%'";
+
+        if ($request->NAMA_MATERIAL)
+            $sql .= " AND ASSET.NAMA_MATERIAL  like '%" . $request->NAMA_MATERIAL . "%'";
+
+        if ($request->NAMA_ASSET)
+            $sql .= " AND ASSET.NAMA_ASSET  like '%".$request->NAMA_ASSET."%'";
+
+        if ($request->BA_PEMILIK_ASSET)
+            $sql .= " AND ASSET.BA_PEMILIK_ASSET  like '%".$request->BA_PEMILIK_ASSET."%'";
+
+        if ($request->LOKASI_BA_DESCRIPTION)
+            $sql .= " AND ASSET.LOKASI_BA_DESCRIPTION like '%".$request->LOKASI_BA_DESCRIPTION."%'" ;
+
+        if ($request->ASSET_CONTROLLER)
+            $sql .= " AND ASSET.ASSET_CONTROLLER like '%".$request->ASSET_CONTROLLER."%'";
+
+        if ($orderColumn != "") {
+            $sql .= " ORDER BY " . $field[$orderColumn]['field'] . " " . $dirColumn;
+        }
+        else
+        {
+            $sql .= " ORDER BY ASSET.NAMA_ASSET ASC ";
+        }
+
+        $data = DB::select(DB::raw($sql));
+
+        $iTotalRecords = count($data);
+        $iDisplayLength = intval($request->length);
+        $iDisplayLength = $iDisplayLength < 0 ? $iTotalRecords : $iDisplayLength;
+        $iDisplayStart = intval($request->start);
+        $sEcho = intval($request->draw);
+        $records = array();
+        $records["data"] = array();
+
+        $end = $iDisplayStart + $iDisplayLength;
+        $end = $end > $iTotalRecords ? $iTotalRecords : $end;
+
+        for ($i = $iDisplayStart; $i < $end; $i++) {
+            $records["data"][] =  $data[$i];
+        }
+
+        if (isset($_REQUEST["customActionType"]) && $_REQUEST["customActionType"] == "group_action") {
+            $records["customActionStatus"] = "OK"; // pass custom message(useful for getting status of group actions)
+            $records["customActionMessage"] = "Group action successfully has been completed. Well done!"; // pass custom message(useful for getting status of group actions)
+        }
+
+        $records["draw"] = $sEcho;
+        $records["recordsTotal"] = $iTotalRecords;
+        $records["recordsFiltered"] = $iTotalRecords;
+        return response()->json($records);
     }
 }

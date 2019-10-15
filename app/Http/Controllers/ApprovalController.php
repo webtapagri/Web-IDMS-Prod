@@ -571,10 +571,14 @@ class ApprovalController extends Controller
         $sql = '
             SELECT b.po_type AS po_type, a.user_id AS user_id '.implode(", ", $selectedColumn).'
                 FROM v_history a LEFT JOIN TR_REG_ASSET b ON a.document_code = b.no_reg
-            WHERE a.user_id = '.$user_id.'
+            WHERE 1=1 
         ';
 
         $total_data = DB::select(DB::raw($sql));
+
+        // IF ROLE = SUPER ADMINISTRATOR, SHOW ALL DATA IT@111019
+        if( $role_id != 4 )
+            $sql .= " AND a.user_id = '{$user_id}' ";
 
         if ($request->document_code)
             $sql .= " AND a.document_code like '%".$request->document_code."%'";
@@ -602,10 +606,7 @@ class ApprovalController extends Controller
             $sql .= " ORDER BY a.DOCUMENT_CODE DESC ";
         }
 
-        //echo $sql; die();
-
         $data = DB::select(DB::raw($sql));
-        //echo "<pre>"; print_r($data); die();
 
         $iTotalRecords = count($data);
         $iDisplayLength = intval($request->length);
