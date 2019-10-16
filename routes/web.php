@@ -302,6 +302,9 @@ Route::get('/disposal-rusak/delete_rusak/{kode_asset_ams}', 'DisposalController@
 
 Route::post('/proses_disposal/{tipe}','DisposalController@proses');
 Route::post('/disposal/edit_harga', 'DisposalController@update_harga_perolehan');
+Route::post('/disposal/upload_berkas_hilang', 'DisposalController@upload_berkas_hilang');
+Route::post('/disposal/upload_berkas_rusak', 'DisposalController@upload_berkas_rusak');
+Route::post('/disposal/upload_berkas', 'DisposalController@upload_berkas');
 /* END DISPOSAL */
 
 

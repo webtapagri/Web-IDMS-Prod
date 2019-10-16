@@ -166,6 +166,7 @@
 								<th nowrap="nowrap">LOKASI ASSET</th>
 								<th nowrap="nowrap">NAMA ASSET</th>
 								<th>HARGA PEROLEHAN</th>
+								<th>BERKAS</th>
 								<th>ACTION</th>
 							  </tr>
 							  </thead>
@@ -173,10 +174,21 @@
 
 					if(!empty($data['data']))
 					{
+						$list_skip_harga_perolehan = $data['list_skip_harga_perolehan'];
+
 						foreach($data['data'] as $k => $v)
 						{
 							$HARGA_PEROLEHAN = $v->HARGA_PEROLEHAN;
 							$hp = number_format($HARGA_PEROLEHAN,0,',','.');
+
+							if( in_array($v->BA_PEMILIK_ASSET,$list_skip_harga_perolehan))
+							{
+								$edit_hp = "";
+							}
+							else
+							{
+								$edit_hp = "<a href='#' id='edit-data' idcontent='{$v->KODE_ASSET_AMS}' namaasset='{$v->NAMA_ASSET_1}' hargaperolehan='{$v->HARGA_PEROLEHAN}' class='btn btn-icon-toggle' title='Edit Data' data-toggle='modal' data-target='#mymodal_detil_edit'><i class='fa fa-edit'></i></a>";
+							}
 
 							$l .= "
 								<tr class='MyClass'>
@@ -187,9 +199,10 @@
 									<td>{$v->LOKASI_BA_DESCRIPTION}</td>
 									<td>{$v->NAMA_ASSET_1}</td>
 									<td>{$hp}</td>
+									<td><a href='#' id='edit-berkas' idcontent='{$v->KODE_ASSET_AMS}' namaasset='{$v->NAMA_ASSET_1}' hargaperolehan='{$v->HARGA_PEROLEHAN}' class='btn btn-icon-toggle' title='Edit Berkas' data-toggle='modal' data-target='#modal_upload_berkas'><i class='fa fa-upload'></i></a></td>
 									<td nowrap='nowrap'>
 
-										<a href='#' id='edit-data' idcontent='{$v->KODE_ASSET_AMS}' namaasset='{$v->NAMA_ASSET_1}' hargaperolehan='{$v->HARGA_PEROLEHAN}' class='btn btn-icon-toggle' title='Edit Data' data-toggle='modal' data-target='#mymodal_detil_edit'><i class='fa fa-edit'></i></a>
+										".$edit_hp."
 
 										<a href='".url('/disposal-rusak/delete_rusak/'.$v->KODE_ASSET_AMS.'')."' id='delete-data' idcontent='{$v->KODE_ASSET_SAP}' class='btn btn-icon-toggle' title='Delete Data' data-toggle='modal'>
 											<i class='fa fa-trash'></i></a>
@@ -262,6 +275,77 @@
 		        <div class="modal-footer">
 					<button class="btn btn-flat btn-lg btn-info" data-dismiss="modal" aria-hidden="true">Cancel</button>
 					<input type="submit" class="btn btn-flat btn-lg btn-danger" id="" value="Update">
+		        </div>
+		    </form>
+
+		</div>	
+	</div>
+</div>
+
+<div class="modal fade" id="modal_upload_berkas" xtabindex="-1" role="dialog" aria-labelledby="largeModal" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			
+			<div class="modal-header">
+		        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+		        <h3 class="modal-title" id="myModalLabel">Upload Berkas</h3>
+		    </div>
+		    
+		    <form id="form-detil" name="form-detil" class="form-horizontal" method="POST" action="{{ url('/disposal/upload_berkas_rusak') }}" enctype="multipart/form-data">
+
+		    	{!! csrf_field() !!}
+				<input type="hidden" name="_token" value="{{ csrf_token() }}">
+				<input type="hidden" class="form-control" id="tipe" name="tipe" value="3"/>
+		        
+		        <div class="modal-body">
+
+		        	<div class="form-group">
+		                <label class="control-label col-xs-4" >KODE ASSET AMS</label>
+		                <div class="col-xs-8">
+		                    <input type="text" class="form-control" id="kode_asset_ams" name="kode_asset_ams" value="" readonly="readonly" />
+		                </div>
+		            </div>
+
+		            <?php 
+
+			            if(!empty($data['list_kategori_upload']))
+			            {
+			            	$l = '';
+			            	foreach( $data['list_kategori_upload'] as $k => $v )
+			            	{
+								$DESCRIPTION_CODE = str_replace(" ", "_", $v->DESCRIPTION);
+
+			            		$l .= '<div class="form-group">
+							                <label class="control-label col-xs-4" >'.strtoupper($v->DESCRIPTION).'</label>
+							                <div class="col-xs-8">
+							                    <input type="file" class="form-control" id="'.$DESCRIPTION_CODE.'" name="'.$DESCRIPTION_CODE.'" value="" placeholder="Upload '.$v->DESCRIPTION.'"/>
+							                </div>
+							            </div>';
+			            	}
+			            	echo $l;
+			            }
+
+		            ?>
+
+		            <div class="form-group">
+		                <label class="control-label col-xs-4" >SERAH TERIMA</label>
+		                <div class="col-xs-8">
+		                    <input type="file" class="form-control" id="serah_terima" name="serah_terima" value="" placeholder="Upload berkas serah terima" required/>
+		                </div>
+		            </div>
+
+		            <div class="form-group">
+		                <label class="control-label col-xs-4" >NOTES</label>
+		                <div class="col-xs-8">
+		                    <textarea class="form-control" id="notes_asset" name="notes_asset" required></textarea>
+		                </div>
+		            </div>
+
+		        </div>
+		        	
+		        <div class="modal-footer">
+					<button class="btn btn-flat btn-lg btn-info" data-dismiss="modal" aria-hidden="true">Cancel</button>
+					<input type="submit" class="btn btn-flat btn-lg btn-danger" id="" value="Upload">
 		        </div>
 		    </form>
 

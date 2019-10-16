@@ -724,6 +724,12 @@
             detail_ac.val("");
             detail_tujuan_company.val("");
             detail_tujuan_area.val("");
+            detail_milik_company.val("");
+            detail_milik_area.val("");
+            detail_lokasi_company.val("");
+            detail_lokasi_area.val("");
+            detail_tujuan_company.val("");
+            
             //qty.val(1);
         }
     }
@@ -864,7 +870,8 @@
         changePage(1);
     }
 
-    function assetInfo(index) {
+    function assetInfo(index) 
+    {
         var obj = index - 1;
         var key = jQuery('#detail_item_selected').val();
         var request = request_item[key];

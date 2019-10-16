@@ -27,6 +27,8 @@ class LDAPController extends Controller
 
     public function login(Request $request) 
     {
+        $data = array();
+
         $this->validate($request, [
             'username' => 'required',
             'password' => 'required'
@@ -71,7 +73,7 @@ class LDAPController extends Controller
         )
         */
         
-        if($data->status) 
+        if(!empty($data->status)) 
         {
             Session::put('authenticated', time());
             Session::put('user', $username);
