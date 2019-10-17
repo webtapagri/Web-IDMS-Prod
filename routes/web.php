@@ -305,6 +305,8 @@ Route::post('/disposal/edit_harga', 'DisposalController@update_harga_perolehan')
 Route::post('/disposal/upload_berkas_hilang', 'DisposalController@upload_berkas_hilang');
 Route::post('/disposal/upload_berkas_rusak', 'DisposalController@upload_berkas_rusak');
 Route::post('/disposal/upload_berkas', 'DisposalController@upload_berkas');
+Route::get('/approval/berkas-disposal/{no_reg}', 'ApprovalController@berkas_disposal')->name('no_reg');
+Route::get('/disposal/view-berkas/{no_reg}', 'DisposalController@berkas_disposal')->name('no_reg');
 /* END DISPOSAL */
 
 

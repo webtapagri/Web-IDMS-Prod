@@ -651,10 +651,17 @@
                         {
                             var content = '';
                             var no_registrasi= btoa(row.NO_REG);
+                            var noreg = row.NO_REG.replace(/\//g, '-');
+                            var dspa = noreg.includes("DSPA");
 
                             if (row.PO_TYPE == 1 || row.PO_TYPE == 2) 
                             {
                                 content += '<a href="{{ url("approval/berkas-amp") }}/'+no_registrasi+'" target="_blank"><span class="label label-default"><i class="fa fa-download"></i></span></a>';
+                            }
+                            else if( dspa )
+                            {
+                                //alert("berkas");
+                                content += '<a href="{{ url("approval/berkas-disposal") }}/'+no_registrasi+'" target="_blank"><span class="label label-default"><i class="fa fa-download"></i></span></a>';
                             }
                             else
                             {

@@ -141,8 +141,7 @@ class DisposalController extends Controller
     {	
 		
 		DB::DELETE(" DELETE FROM TR_DISPOSAL_TEMP WHERE KODE_ASSET_AMS = '{$kode_asset_ams}' ");
-		
-        //Cart::remove($rowid);
+		DB::DELETE(" DELETE FROM TR_DISPOSAL_FILE_TEMP WHERE KODE_ASSET_AMS = '{$kode_asset_ams}' ");
         return Redirect::to('/disposal-penjualan');
     }
 
@@ -232,7 +231,7 @@ class DisposalController extends Controller
     	$total = 0;
 
     	// #1 VALIDASI DI DISPOSAL ASET DETAIL
-    	$sql1 = "SELECT COUNT(*) AS TOTAL FROM TR_DISPOSAL_ASSET_DETAIL WHERE KODE_ASSET_AMS = '{$kode_asset_ams}' AND DELETED != 'R' ";
+    	$sql1 = "SELECT COUNT(*) AS TOTAL FROM TR_DISPOSAL_ASSET_DETAIL WHERE KODE_ASSET_AMS = '{$kode_asset_ams}' ";
     	$data = DB::SELECT($sql1);
 
     	if( $data[0]->TOTAL == 0)
@@ -585,6 +584,7 @@ class DisposalController extends Controller
     function remove_rusak($kode_asset_ams)
     {	
 		DB::DELETE(" DELETE FROM TR_DISPOSAL_TEMP WHERE KODE_ASSET_AMS = '{$kode_asset_ams}' ");
+		DB::DELETE(" DELETE FROM TR_DISPOSAL_FILE_TEMP WHERE KODE_ASSET_AMS = '{$kode_asset_ams}' ");
         return Redirect::to('/disposal-rusak');
     }
 
@@ -741,7 +741,7 @@ class DisposalController extends Controller
 		}
 		//END MULTIPLE UPLOAD
 
-		$file_upload = addslashes(file_get_contents($_FILES['serah_terima']['tmp_name']));
+		$file_upload = base64_encode(file_get_contents(addslashes($_FILES['serah_terima']['tmp_name'])));
 		$file_name = str_replace(" ", "_", $_FILES['serah_terima']['name']);
 		$user_id = Session::get('user_id');
 		$file_category = 'serah_terima';
@@ -750,7 +750,7 @@ class DisposalController extends Controller
 		$max_docsize = 1000000;
 		if( $_FILES['serah_terima']['size'] > $max_docsize )
 		{
-			Session::flash('message', $e->getMessage()); 
+			Session::flash('message', 'Gagal upload, ukuran file maksimal 1MB'); 
 			return Redirect::to('/disposal-hilang');
 		}
 
@@ -841,10 +841,6 @@ class DisposalController extends Controller
 
     function upload_multiple_berkas($req, $desc_code)
     {
-    	//echo "5<pre>"; print_r($req); //die();
-    	//echo "4<pre>";print_r($desc_code);
-    	//echo "3<pre>"; print_r($_FILES); die();
-
     	if( @$req['tipe'] == 2 )
     	{
     		$tipe = 'hilang';
@@ -859,7 +855,7 @@ class DisposalController extends Controller
     	
     	if( @$_FILES[''.$desc_code.'']['name'] != '')
     	{
-    		$file_upload = addslashes(file_get_contents($_FILES[''.$desc_code.'']['tmp_name']));
+    		$file_upload = base64_encode(file_get_contents(addslashes($_FILES[''.$desc_code.'']['tmp_name'])));
 			$file_name = str_replace(" ", "_", $_FILES[''.$desc_code.'']['name']);
 			$user_id = Session::get('user_id');
 			$file_category = $desc_code;
@@ -868,7 +864,7 @@ class DisposalController extends Controller
 			$max_docsize = 1000000;
 			if( $_FILES[''.$desc_code.'']['size'] > $max_docsize )
 			{
-				Session::flash('message', $e->getMessage()); 
+				Session::flash('message', 'Gagal upload, ukuran file maksimal 1MB'); 
 				return Redirect::to('/disposal-'.$tipe.'');
 			}
 
@@ -937,7 +933,7 @@ class DisposalController extends Controller
 		}
 		//END MULTIPLE UPLOAD
 
-		$file_upload = addslashes(file_get_contents($_FILES['serah_terima']['tmp_name']));
+		$file_upload = base64_encode(file_get_contents(addslashes($_FILES['serah_terima']['tmp_name'])));
 		$file_name = str_replace(" ", "_", $_FILES['serah_terima']['name']);
 		$user_id = Session::get('user_id');
 		$file_category = 'serah_terima';
@@ -946,7 +942,7 @@ class DisposalController extends Controller
 		$max_docsize = 1000000;
 		if( $_FILES['serah_terima']['size'] > $max_docsize )
 		{
-			Session::flash('message', $e->getMessage()); 
+			Session::flash('message', 'Gagal upload, ukuran file maksimal 1MB'); 
 			return Redirect::to('/disposal-rusak');
 		}
 
@@ -1015,7 +1011,7 @@ class DisposalController extends Controller
 		}
 		//END MULTIPLE UPLOAD
 
-		$file_upload = addslashes(file_get_contents($_FILES['serah_terima']['tmp_name']));
+		$file_upload = base64_encode(file_get_contents(addslashes($_FILES['serah_terima']['tmp_name'])));
 		$file_name = str_replace(" ", "_", $_FILES['serah_terima']['name']);
 		$user_id = Session::get('user_id');
 		$file_category = 'serah_terima';
@@ -1024,7 +1020,7 @@ class DisposalController extends Controller
 		$max_docsize = 1000000;
 		if( $_FILES['serah_terima']['size'] > $max_docsize )
 		{
-			Session::flash('message', $e->getMessage()); 
+			Session::flash('alert', 'Gagal upload, ukuran file maksimal 1MB'); 
 			return Redirect::to('/disposal-penjualan');
 		}
 
@@ -1073,6 +1069,50 @@ class DisposalController extends Controller
 			Session::flash('message', $e->getMessage()); 
 			return Redirect::to('/disposal-penjualan');
 		}
+    }
+
+    function berkas_disposal($kode_asset_ams)
+    {
+        $sql = " SELECT b.DOC_SIZE, b.FILE_NAME, b.FILE_CATEGORY, b.FILE_UPLOAD, b.JENIS_FILE
+FROM TR_DISPOSAL_FILE_TEMP b
+WHERE b.KODE_ASSET_AMS = '".$kode_asset_ams."' "; 
+        $data = DB::SELECT($sql);
+        
+        $l = "";
+        if(!empty($data))
+        {
+            $l .= '<center>';
+            $l .= '<h1>'.$kode_asset_ams.'</h1><br/>';
+
+            foreach($data as $k => $v)
+            {
+                $file_category = str_replace("_", " ", $v->FILE_CATEGORY);
+
+                if( $v->JENIS_FILE == 'image/jpeg' || $v->JENIS_FILE == 'image/png' )
+                {
+                    $l .= '<div class="caption"><h3>'.strtoupper($file_category).'<br/><img src="data:image/jpeg;base64,'.$v->FILE_UPLOAD.'"/><br/>'. $v->FILE_NAME. '</h3></div>';
+                }
+                else if($v->JENIS_FILE == 'application/pdf')
+                {
+                    $l .= ''.strtoupper($file_category).'<br/> <object data="data:application/pdf;base64,'.$v->FILE_UPLOAD.'" type="'.$v->JENIS_FILE.'" style="height:100%;width:100%"></object><br/>'. $v->FILE_NAME. '';
+                }
+                else
+                {
+                    $data_excel = explode(",",$v->FILE_UPLOAD);
+                    header('Content-type: application/vnd.ms-excel');
+                    header('Content-Disposition: attachment; filename="'.$v->FILE_NAME.'"');
+                    print $data_excel[1];
+                    die();
+                }
+            }
+        }
+        else
+        {
+            $l .= "FILE NOT FOUND";
+        }
+
+        $l .= '</center>';
+        echo $l; 
     }
 }
 

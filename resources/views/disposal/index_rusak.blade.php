@@ -199,7 +199,12 @@
 									<td>{$v->LOKASI_BA_DESCRIPTION}</td>
 									<td>{$v->NAMA_ASSET_1}</td>
 									<td>{$hp}</td>
-									<td><a href='#' id='edit-berkas' idcontent='{$v->KODE_ASSET_AMS}' namaasset='{$v->NAMA_ASSET_1}' hargaperolehan='{$v->HARGA_PEROLEHAN}' class='btn btn-icon-toggle' title='Edit Berkas' data-toggle='modal' data-target='#modal_upload_berkas'><i class='fa fa-upload'></i></a></td>
+									<td nowrap='nowrap'>
+										<a href='".url('/disposal/view-berkas/'.$v->KODE_ASSET_AMS.'')."' target='_blank'>
+											<i class='fa fa-file'></i></a>
+
+										<a href='#' id='edit-berkas' idcontent='{$v->KODE_ASSET_AMS}' namaasset='{$v->NAMA_ASSET_1}' hargaperolehan='{$v->HARGA_PEROLEHAN}' class='btn btn-icon-toggle' title='Edit Berkas' data-toggle='modal' data-target='#modal_upload_berkas'><i class='fa fa-upload'></i></a>
+									</td>
 									<td nowrap='nowrap'>
 
 										".$edit_hp."

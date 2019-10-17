@@ -2152,51 +2152,19 @@ WHERE a.NO_REG = '{$noreg}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KODE_ASSET
     function berkas_amp($noreg)
     {
         $noreg = base64_decode($noreg);
-        //echo "1<pre>"; print_r($noreg);
-        $request = array();
-        $datax = '';
+
         $sql = " SELECT DOC_SIZE,FILENAME,FILE_CATEGORY,FILE_UPLOAD FROM TR_REG_ASSET_FILE a WHERE a.no_reg = '{$noreg}' ";
         $data = DB::SELECT($sql);
-        //echo "<pre>"; print_r($data); die();
+        
         $l = "";
-
         if(!empty($data))
         {
-            /*
-            //$datax .= $data[0]->TOTAL;
-            foreach( $data as $k => $v )
-            {
-                //$request[] = array('SYNC_AMP' => trim($v->TOTAL),);
-                echo "<pre>"; print_r($v);
-                /*
-                stdClass Object(
-                    [FILENAME] => Issue FAMS (29.07.2019).xlsx
-                    [FILE_CATEGORY] => application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
-                    [FILE_UPLOAD] => '')
-                
-            }
-            die();
-            */
-
             $l .= '<center>';
 
             if( $data[0]->FILE_CATEGORY == 'image/jpeg' || $data[0]->FILE_CATEGORY == 'image/png' )
             {
-                //header('Content-length: '.$data[0]->DOC_SIZE.'');
-                //header('Content-type: '.$data[0]->FILE_CATEGORY.'');
-                //header('Content-Disposition: attachment; filename="'.$data[0]->FILENAME.'"');
-                //ob_clean();
-                //flush();
-                //print $data[0]->FILE_UPLOAD;
-                //exit; 
-
-                //print $data[0]->FILE_UPLOAD;
-
-                //$l .= '<img src="data:image/jpeg;base64,'.base64_encode( $data[0]->FILE_UPLOAD ).'"/>';
                 $l .= '<h1>'.$noreg.'</h1><br/>';
                 $l .= '<div class="caption"><h3><img src="'.$data[0]->FILE_UPLOAD.'"/><br/>'. $data[0]->FILENAME. '</h3></div>';
-
-                //die();
             }
             else if($data[0]->FILE_CATEGORY == 'application/pdf')
             {
@@ -2205,13 +2173,11 @@ WHERE a.NO_REG = '{$noreg}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KODE_ASSET
             else
             {
                 $data_excel = explode(",",$data[0]->FILE_UPLOAD);
-                //echo "1<pre>"; print_r($data);die();
                 header('Content-type: application/vnd.ms-excel');
                 header('Content-Disposition: attachment; filename="'.$data[0]->FILENAME.'"');
                 print $data_excel[1];
                 die();
             }
-
         }
         else
         {
@@ -2220,16 +2186,10 @@ WHERE a.NO_REG = '{$noreg}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KODE_ASSET
 
         $l .= '</center>';
         echo $l; 
-
-        //return $datax;
     }
 
     function get_sinkronisasi_lain($noreg)
     {
-
-        //$cek_amp = $this->get_sinkronisasi_amp($noreg);
-        //echo "1<pre>"; print_r($cek_amp);die();
-
         #1 CEK SYNC SAP / TIDAK 
         $cek_sap = $this->get_sinkronisasi_sap($noreg);
         //echo "1<pre>"; print_r($cek_sap);die();
@@ -2884,5 +2844,51 @@ WHERE a.no_reg = '".$noreg."' AND b.MANDATORY_KODE_ASSET_CONTROLLER = 'X' ORDER 
         }
 
         return $result;
+    }
+
+    function berkas_disposal($noreg)
+    {
+        $noreg = base64_decode($noreg); //echo $noreg; die();
+
+        $sql = " SELECT b.DOC_SIZE, b.FILE_NAME, b.FILE_CATEGORY, b.FILE_UPLOAD, b.JENIS_FILE
+FROM TR_DISPOSAL_ASSET_DETAIL a LEFT JOIN TR_DISPOSAL_FILE_TEMP b ON a.KODE_ASSET_AMS = b.KODE_ASSET_AMS
+WHERE a.NO_REG = '".$noreg."' "; 
+        $data = DB::SELECT($sql);
+        
+        $l = "";
+        if(!empty($data))
+        {
+            $l .= '<center>';
+            $l .= '<h1>'.$noreg.'</h1><br/>';
+
+            foreach($data as $k => $v)
+            {
+                $file_category = str_replace("_", " ", $v->FILE_CATEGORY);
+
+                if( $v->JENIS_FILE == 'image/jpeg' || $v->JENIS_FILE == 'image/png' )
+                {
+                    $l .= '<div class="caption"><h3>'.strtoupper($file_category).'<br/><img src="data:image/jpeg;base64,'.$v->FILE_UPLOAD.'"/><br/>'. $v->FILE_NAME. '</h3></div>';
+                }
+                else if($v->JENIS_FILE == 'application/pdf')
+                {
+                    $l .= ''.strtoupper($file_category).'<br/><object data="data:application/pdf;base64,'.$v->FILE_UPLOAD.'" type="'.$v->JENIS_FILE.'" style="height:100%;width:100%"></object><br/>'. $v->FILE_NAME. '';
+                }
+                else
+                {
+                    $data_excel = explode(",",$v->FILE_UPLOAD);
+                    header('Content-type: application/vnd.ms-excel');
+                    header('Content-Disposition: attachment; filename="'.$v->FILE_NAME.'"');
+                    print $data_excel[1];
+                    die();
+                }
+            }
+        }
+        else
+        {
+            $l .= "FILE NOT FOUND";
+        }
+
+        $l .= '</center>';
+        echo $l; 
     }
 }
