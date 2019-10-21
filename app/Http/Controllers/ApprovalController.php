@@ -2848,11 +2848,9 @@ WHERE a.no_reg = '".$noreg."' AND b.MANDATORY_KODE_ASSET_CONTROLLER = 'X' ORDER 
 
     function berkas_disposal($noreg)
     {
-        $noreg = base64_decode($noreg); //echo $noreg; die();
+        $noreg = base64_decode($noreg); 
 
-        $sql = " SELECT b.DOC_SIZE, b.FILE_NAME, b.FILE_CATEGORY, b.FILE_UPLOAD, b.JENIS_FILE
-FROM TR_DISPOSAL_ASSET_DETAIL a LEFT JOIN TR_DISPOSAL_FILE_TEMP b ON a.KODE_ASSET_AMS = b.KODE_ASSET_AMS
-WHERE a.NO_REG = '".$noreg."' "; 
+        $sql = " SELECT b.DOC_SIZE, b.FILE_NAME, b.FILE_CATEGORY, b.FILE_UPLOAD, b.JENIS_FILE FROM TR_DISPOSAL_ASSET_FILE b WHERE b.NO_REG = '".$noreg."' "; 
         $data = DB::SELECT($sql);
         
         $l = "";

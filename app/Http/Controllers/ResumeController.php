@@ -35,7 +35,7 @@ class ResumeController extends Controller
     	DB::beginTransaction();
         try 
         {   
-            DB::SELECT('CALL resume_approval("'.$no_document.'")');
+            DB::STATEMENT('CALL resume_approval("'.$no_document.'")');
             DB::commit();
 
             $result = array('status'=>true,'message'=> "Resume is successfully updated");
@@ -71,7 +71,7 @@ class ResumeController extends Controller
     	DB::beginTransaction();
         try 
         {   
-            DB::SELECT(' CALL resume_user("'.$user_id_old.'","'.$user_id_new.'") ');
+            DB::STATEMENT(' CALL resume_user("'.$user_id_old.'","'.$user_id_new.'") ');
 
             DB::INSERT(' INSERT iNTO TR_LOG_RESUME_USER(user_id_old,user_id_new,created_by,created_on)VALUES('.$user_id_old.','.$user_id_new.','.$user_id.', current_timestamp() ) ');
 

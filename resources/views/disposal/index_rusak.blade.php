@@ -1,3 +1,5 @@
+<?php //echo "3<pre>"; print_r($data['list_kategori_upload']); die(); ?>
+
 @extends('adminlte::page')
 @section('title', 'FAMS - Disposal')
 
@@ -67,10 +69,62 @@
 					var idcontent = $( this ).attr("idcontent");//alert(idcontent);return false;
 					var nama_asset = $( this ).attr("namaasset");
 					var harga_perolehan = $( this ).attr("hargaperolehan");
+					var jenis_pengajuan = 3;
 
 					$("#form-detil #kode_asset_ams").val(idcontent);
 					$("#form-detil #nama_asset").val(nama_asset);
 					$("#form-detil #harga_perolehan").val(harga_perolehan);
+
+					//ALL BERKAS
+					$.ajax({
+						type: 'GET',
+						url: "{{ url('disposal/list-kategori-upload') }}/"+idcontent+"/"+jenis_pengajuan,
+						data: "",
+						//async: false,
+						dataType: 'html',
+						success: function(data) 
+						{
+							$("#list-kategori-upload").html(data);
+						},
+					    error: function(x) 
+					    {                           
+					        alert("Error: "+ "\r\n\r\n" + x.responseText);
+					    }
+					});
+
+					//BERKAS SERAH TERIMA
+					$.ajax({
+						type: 'GET',
+						url: "{{ url('disposal/view-berkas-serah-terima') }}/"+idcontent,
+						data: "",
+						//async: false,
+						dataType: 'html',
+						success: function(data) 
+						{
+							$("#berkas-serah-terima").html(data);
+						},
+					    error: function(x) 
+					    {                           
+					        alert("Error: "+ "\r\n\r\n" + x.responseText);
+					    }
+					});  
+
+					//BERKAS NOTES
+					$.ajax({
+						type: 'GET',
+						url: "{{ url('disposal/view-berkas-notes') }}/"+idcontent,
+						data: "",
+						//async: false,
+						dataType: 'json',
+						success: function(data) 
+						{
+							$("#notes_asset").val(data.notes);
+						},
+					    error: function(x) 
+					    {                           
+					        alert("Error: "+ "\r\n\r\n" + x.responseText);
+					    }
+					});
 				});
 				
 			</script>
@@ -131,10 +185,62 @@
 					var idcontent = $( this ).attr("idcontent");//alert(idcontent);return false;
 					var nama_asset = $( this ).attr("namaasset");
 					var harga_perolehan = $( this ).attr("hargaperolehan");
+					var jenis_pengajuan = 3;
 
 					$("#form-detil #kode_asset_ams").val(idcontent);
 					$("#form-detil #nama_asset").val(nama_asset);
 					$("#form-detil #harga_perolehan").val(harga_perolehan);
+
+					//ALL BERKAS
+					$.ajax({
+						type: 'GET',
+						url: "{{ url('disposal/list-kategori-upload') }}/"+idcontent+"/"+jenis_pengajuan,
+						data: "",
+						//async: false,
+						dataType: 'html',
+						success: function(data) 
+						{
+							$("#list-kategori-upload").html(data);
+						},
+					    error: function(x) 
+					    {                           
+					        alert("Error: "+ "\r\n\r\n" + x.responseText);
+					    }
+					});
+
+					//BERKAS SERAH TERIMA
+					$.ajax({
+						type: 'GET',
+						url: "{{ url('disposal/view-berkas-serah-terima') }}/"+idcontent,
+						data: "",
+						//async: false,
+						dataType: 'html',
+						success: function(data) 
+						{
+							$("#berkas-serah-terima").html(data);
+						},
+					    error: function(x) 
+					    {                           
+					        alert("Error: "+ "\r\n\r\n" + x.responseText);
+					    }
+					});  
+
+					//BERKAS NOTES
+					$.ajax({
+						type: 'GET',
+						url: "{{ url('disposal/view-berkas-notes') }}/"+idcontent,
+						data: "",
+						//async: false,
+						dataType: 'json',
+						success: function(data) 
+						{
+							$("#notes_asset").val(data.notes);
+						},
+					    error: function(x) 
+					    {                           
+					        alert("Error: "+ "\r\n\r\n" + x.responseText);
+					    }
+					});
 				});
 
 			</script>
@@ -311,31 +417,45 @@
 		                </div>
 		            </div>
 
-		            <?php 
+		            <span id="list-kategori-upload"></span>
 
-			            if(!empty($data['list_kategori_upload']))
+		            <?php 
+			            /*if(!empty($data['list_kategori_upload']))
 			            {
 			            	$l = '';
+			            	
 			            	foreach( $data['list_kategori_upload'] as $k => $v )
-			            	{
-								$DESCRIPTION_CODE = str_replace(" ", "_", $v->DESCRIPTION);
+			            	{	
+								$DESCRIPTION_CODE = str_replace(" ", "_", $v['DESCRIPTION']);
 
 			            		$l .= '<div class="form-group">
-							                <label class="control-label col-xs-4" >'.strtoupper($v->DESCRIPTION).'</label>
+							                <label class="control-label col-xs-4" >'.strtoupper($v['DESCRIPTION']).'</label>
 							                <div class="col-xs-8">
-							                    <input type="file" class="form-control" id="'.$DESCRIPTION_CODE.'" name="'.$DESCRIPTION_CODE.'" value="" placeholder="Upload '.$v->DESCRIPTION.'"/>
-							                </div>
+							                    <input type="file" class="form-control" id="'.$DESCRIPTION_CODE.'" name="'.$DESCRIPTION_CODE.'" value="" placeholder="Upload '.$v['DESCRIPTION'].'"/>
+							                    ';
+
+							                if( !empty($v['DETAIL']) )
+											{
+
+												foreach( $v['DETAIL'] as $kk => $vv )
+												{
+													$l .= '<a href="'.url('disposal/view-berkas/'.$vv->KODE_ASSET_AMS.'').'" target="_blank"><i class="fa fa-cloud-download"></i> '.$vv->FILE_NAME.'</a>';
+												}
+											}
+
+							    $l .= '      </div>
 							            </div>';
+			            		
 			            	}
 			            	echo $l;
-			            }
-
+			            }*/
 		            ?>
 
 		            <div class="form-group">
 		                <label class="control-label col-xs-4" >SERAH TERIMA</label>
 		                <div class="col-xs-8">
 		                    <input type="file" class="form-control" id="serah_terima" name="serah_terima" value="" placeholder="Upload berkas serah terima" required/>
+		                    <div id="berkas-serah-terima"></div>
 		                </div>
 		            </div>
 
@@ -407,10 +527,62 @@ $('#table-disposal-rusak').on('click', 'a', function (e)
 	var idcontent = $( this ).attr("idcontent");//alert(idcontent);return false;
 	var nama_asset = $( this ).attr("namaasset");
 	var harga_perolehan = $( this ).attr("hargaperolehan");
+	var jenis_pengajuan = 3;
 
 	$("#form-detil #kode_asset_ams").val(idcontent);
 	$("#form-detil #nama_asset").val(nama_asset);
 	$("#form-detil #harga_perolehan").val(harga_perolehan);
+
+	//ALL BERKAS
+	$.ajax({
+		type: 'GET',
+		url: "{{ url('disposal/list-kategori-upload') }}/"+idcontent+"/"+jenis_pengajuan,
+		data: "",
+		//async: false,
+		dataType: 'html',
+		success: function(data) 
+		{
+			$("#list-kategori-upload").html(data);
+		},
+	    error: function(x) 
+	    {                           
+	        alert("Error: "+ "\r\n\r\n" + x.responseText);
+	    }
+	});
+
+	//BERKAS SERAH TERIMA
+	$.ajax({
+		type: 'GET',
+		url: "{{ url('disposal/view-berkas-serah-terima') }}/"+idcontent,
+		data: "",
+		//async: false,
+		dataType: 'html',
+		success: function(data) 
+		{
+			$("#berkas-serah-terima").html(data);
+		},
+	    error: function(x) 
+	    {                           
+	        alert("Error: "+ "\r\n\r\n" + x.responseText);
+	    }
+	});  
+
+	//BERKAS NOTES
+	$.ajax({
+		type: 'GET',
+		url: "{{ url('disposal/view-berkas-notes') }}/"+idcontent,
+		data: "",
+		//async: false,
+		dataType: 'json',
+		success: function(data) 
+		{
+			$("#notes_asset").val(data.notes);
+		},
+	    error: function(x) 
+	    {                           
+	        alert("Error: "+ "\r\n\r\n" + x.responseText);
+	    }
+	});  
 });
 
 function validate(form) 

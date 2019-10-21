@@ -685,39 +685,42 @@
 
     function addItem() 
     {
-        //alert(addItem); return false;
         if (validateItem()) 
         {
             var id = makeInt(5);
-            var kode_aset = jQuery("#detail_kode_aset");
+     
+            var kode_aset = $("#detail_kode_aset");
             var detail_nama_asset = $("#detail_nama_asset");
             var detail_ac = $("#detail_ac");
-            var detail_milik_company = jQuery("#detail_milik_company");
-            var detail_milik_area = jQuery("#detail_milik_area");
-            var detail_lokasi_company = jQuery("#detail_lokasi_company");
-            var detail_lokasi_area = jQuery("#detail_lokasi_area");
-            var detail_tujuan_company = jQuery("#detail_tujuan_company");
-            var detail_tujuan_area = jQuery("#detail_tujuan_area");
-            
-            request_item[id] = {
-                id: id,
-                kode_aset: kode_aset.val(),
-                detail_nama_asset: detail_nama_asset.val(),
-                detail_ac:detail_ac.val(),
-                detail_milik_company: detail_milik_company.val(),
-                detail_milik_area: detail_milik_area.val(),
-                detail_lokasi_company: detail_lokasi_company.val(),
-                detail_lokasi_area: detail_lokasi_area.val(),
-                detail_tujuan_company: detail_tujuan_company.val(),
-                detail_tujuan_area: detail_tujuan_area.val(),
-                //qty: 0,
-                //request_qty: qty.val(),
-                //outstanding_qty: 0,
-                detail: []
-            };
+            var detail_milik_company = $("#detail_milik_company");
+            var detail_milik_area = $("#detail_milik_area");
+            var detail_lokasi_company = $("#detail_lokasi_company");
+            var detail_lokasi_area = $("#detail_lokasi_area");
+            var detail_tujuan_company = $("#detail_tujuan_company");
+            var detail_tujuan_area = $("#detail_tujuan_area");
 
-            //createPage(id);
-            createItemRequestTable();
+            if(validate_additem(detail_ac,kode_aset,detail_milik_company,request_item))
+            {
+                request_item[id] = 
+                {
+                    id: id,
+                    kode_aset: kode_aset.val(),
+                    detail_nama_asset: detail_nama_asset.val(),
+                    detail_ac:detail_ac.val(),
+                    detail_milik_company: detail_milik_company.val(),
+                    detail_milik_area: detail_milik_area.val(),
+                    detail_lokasi_company: detail_lokasi_company.val(),
+                    detail_lokasi_area: detail_lokasi_area.val(),
+                    detail_tujuan_company: detail_tujuan_company.val(),
+                    detail_tujuan_area: detail_tujuan_area.val(),
+                    detail: []
+                };
+
+                //console.log(request_item); 
+                //return false;
+
+                createItemRequestTable();
+            }
 
             kode_aset.val("");
             detail_nama_asset.val("");
@@ -730,7 +733,6 @@
             detail_lokasi_area.val("");
             detail_tujuan_company.val("");
             
-            //qty.val(1);
         }
     }
 
@@ -1321,6 +1323,50 @@
         });
 
         $('#data-asset-modal').modal('toggle');
+    }
+
+    function validate_additem(ac,kode_asset_ams,kepemilikan,request_item)
+    {
+        var valid = true;
+        $.each(request_item, function(key, val) 
+        {
+            if( val.detail_ac != ac.val() )
+            {
+                notify({
+                    type: 'warning',
+                    message: 'Asset Controller tidak sama'
+                });
+
+                valid = false;
+                return valid;
+            }
+
+            if( val.kode_aset == kode_asset_ams.val() )
+            {
+                notify({
+                    type: 'warning',
+                    message: 'Kode Asset AMS sudah diinput'
+                });
+
+                valid = false;
+                return valid;
+            }
+
+            if( val.detail_milik_company != kepemilikan.val() )
+            {
+                notify({
+                    type: 'warning',
+                    message: 'Kepemilikan tidak sama'
+                });
+
+                valid = false;
+                return valid;
+            }
+            
+            return valid;
+        });
+        
+        return valid;
     }
 
 </script>
