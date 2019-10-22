@@ -105,10 +105,11 @@ class MutasiController extends Controller
 
     public function store(Request $request)
     {
-        //echo "<pre>"; print_r($_POST); die();
-        $request_date = $request->input('request_date');
-        $kode_aset = $request->input('kode_aset');
-        echo "$request_date <br/> <pre>"; print_r($kode_aset); die(); 
+        $req = $request->all();
+        $user_id = Session::get('user_id');
+
+        //echo "1<pre>"; print_r($req); die();
+        //echo "$request_date <br/> <pre>"; print_r($kode_aset); die(); 
         /*
         23 May 2019
         Array
@@ -120,49 +121,66 @@ class MutasiController extends Controller
         */
 
         /*
-            [request_date] => 23 May 2019
-            [detail_kode_aset] => 121140300120
-            [detail_milik_company] => 12
-            [detail_milik_area] => 1211
-            [detail_lokasi_company] => 52
-            [detail_lokasi_area] => 5221
-            [detail_tujuan_company] => 
-            [detail_tujuan_area] => 
-            [kode_aset] => Array
+            1<pre>Array
+            (
+                [request_date] => 21 Oct 2019
+                [detail_kode_aset] => 
+                [detail_nama_asset] => 
+                [detail_ac] => 
+                [detail_milik_company] => 
+                [detail_milik_area] => 
+                [detail_lokasi_company] => 
+                [detail_lokasi_area] => 
+                [detail_tujuan_company] => 
+                [detail_tujuan_area] => 
+                [kode_aset] => Array
                 (
-                    [0] => 121140300120_2_3
-                    [1] => 121140300120_1_2
+                    [0] => 2160101060_21_2112_NC
+                    [1] => 2110100017_21_2113_NC
                 )
+
+            )
         */
 
-        try {
-            foreach($request as $k => $row) 
+        DB::beginTransaction();
+
+        try 
+        {
+            // INSERT HEADER
+            $NO_REG = $this->get_reg_no();
+            DB::INSERT(" INSERT INTO TR_MUTASI_ASSET (NO_REG,TYPE_TRANSAKSI,CREATED_BY) VALUES ('".$NO_REG."',1,'".$user_id."') ");
+
+            // INSERT DETAIL
+            foreach($req['kode_aset'] as $k => $v) 
             {
-                //echo "<pre>"; print_r($k);
-                /*
-                if($row["access_id"]) {
-                    $data = RoleAccess::find( $row["access_id"]);
-                    $data->updated_by = Session::get('user_id');
-                } else {
-                    $data = new RoleAccess();
-                    $data->created_by = Session::get('user_id');
+                $data = explode("_", $v);
+
+                $KODE_ASSET_AMS = $data[0];
+                $TUJUAN_COMPANY_CODE = $data[1];
+                $TUJUAN_CODE = $data[2];
+                $ASSET_CONTROLLER = $data[3];
+
+                $validasi_store = $this->validasi_store($KODE_ASSET_AMS);
+
+                if($validasi_store > 0)
+                {
+                    return array('status'=>false,'message'=> 'Proses Gagal, Data sudah pernah diinput (KODE ASSET AMS : '.$KODE_ASSET_AMS.')');
                 }
 
-                $data->role_id = $row["role_id"];
-                $data->module_id = $row["module_id"];
-                $data->menu_id = $row["menu_id"];
-                $data->create = $row["create"];
-                $data->read = $row["read"];
-                $data->update = $row["update"];
-                $data->delete = $row["remove"];
-                $data->save();
-                */
+                //echo $KODE_ASSET_AMS.'<br/>'.$TUJUAN_CODE.'<br/>'.$ASSET_CONTROLLER; 
+
+                DB::INSERT(" INSERT INTO TR_MUTASI_ASSET_DETAIL (NO_REG,KODE_ASSET_AMS,TUJUAN,ASSET_CONTROLLER,CREATED_BY) VALUES ('".$NO_REG."','".$KODE_ASSET_AMS."','".$TUJUAN_CODE."','".$ASSET_CONTROLLER."','".$user_id."') ");
 
             }
-            die();
+            //die();
 
-            return response()->json(['status' => true, "message" => 'Data is successfully ' . ($request->edit_id ? 'updated' : 'added')]);
-        } catch (\Exception $e) {
+            DB::commit();
+
+            return response()->json(['status' => true, "message" => 'Data is successfully, Document Created ('.$NO_REG.')']);
+        } 
+        catch (\Exception $e) 
+        {
+            DB::rollback();
             return response()->json(['status' => false, "message" => $e->getMessage()]);
         }
     }
@@ -266,5 +284,25 @@ class MutasiController extends Controller
         $records["recordsTotal"] = $iTotalRecords;
         $records["recordsFiltered"] = $iTotalRecords;
         return response()->json($records);
+    }
+
+    public function get_reg_no()
+    {
+        $sql = "SELECT count(*) AS total FROM TR_MUTASI_ASSET WHERE YEAR(CREATED_AT) = YEAR(CURDATE()) AND MONTH(CREATED_AT) = MONTH(curdate())";
+        $data = DB::select($sql);
+        $maxno = $data[0]->total+1;
+        $year= date('y');
+        $month = date('m');
+        $year=$year.'.';
+        $n=$maxno;
+        $n = str_pad($n + 1, 5, 0, STR_PAD_LEFT);
+        $number=$year.$month.'/AMS/MTSA/'.$n;
+        return $number;
+    }
+
+    function validasi_store($KODE_ASSET_AMS)
+    {
+        $data = DB::SELECT(" SELECT COUNT(*) AS TOTAL FROM TR_MUTASI_ASSET_DETAIL WHERE KODE_ASSET_AMS = '".$KODE_ASSET_AMS."' ");
+        return $data[0]->TOTAL;  
     }
 }

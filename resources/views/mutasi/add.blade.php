@@ -490,47 +490,47 @@
 
         $('.submit-data').on('click', function(e)
         {
-            //alert("oke 1")
-            
-            e.preventDefault();
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-            var param = $('#request-form').serialize();
-
-            $.ajax({
-                url: "{{ url('mutasi/post') }}",
-                type: "POST",
-                data: param,
-                //contentType: false,
-                //processData: false,
-                //cache: false,
-                beforeSend: function() {
-                    jQuery('.loading-event').fadeIn();
-                },
-                success: function(result) 
-                {
-                    /*if (result.status) {
-                        notify({
-                            type: 'success',
-                            message: result.message
-                        });
-                        window.location.href = "{{ url('mastermaterial') }}";
-                    } else {
-                        notify({
-                            type: 'warning',
-                            message: result.message
-                        });
+            if(confirm('Confirm submit data?'))
+            {
+                e.preventDefault();
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     }
-                    */
-                },
-                complete: function() {
-                    $('.loading-event').fadeOut();
-                }
-            });
+                });
+                var param = $('#request-form').serialize();
 
+                $.ajax({
+                    url: "{{ url('mutasi/post') }}",
+                    type: "POST",
+                    data: param,
+                    //contentType: false,
+                    //processData: false,
+                    //cache: false,
+                    beforeSend: function() {
+                        jQuery('.loading-event').fadeIn();
+                    },
+                    success: function(result) 
+                    {
+                        if (result.status) {
+                            notify({
+                                type: 'success',
+                                message: result.message
+                            });
+                            setTimeout(reload_page, 2000);
+                        } else {
+                            notify({
+                                type: 'warning',
+                                message: result.message
+                            });
+                        }
+                        
+                    },
+                    complete: function() {
+                        $('.loading-event').fadeOut();
+                    }
+                });
+            }
         });
 
         $('#data-asset-modal').on('hidden.bs.modal', function () 
@@ -720,18 +720,18 @@
                 //return false;
 
                 createItemRequestTable();
-            }
 
-            kode_aset.val("");
-            detail_nama_asset.val("");
-            detail_ac.val("");
-            detail_tujuan_company.val("");
-            detail_tujuan_area.val("");
-            detail_milik_company.val("");
-            detail_milik_area.val("");
-            detail_lokasi_company.val("");
-            detail_lokasi_area.val("");
-            detail_tujuan_company.val("");
+                kode_aset.val("");
+                detail_nama_asset.val("");
+                detail_ac.val("");
+                detail_tujuan_company.val("");
+                detail_tujuan_area.val("");
+                detail_milik_company.val("");
+                detail_milik_area.val("");
+                detail_lokasi_company.val("");
+                detail_lokasi_area.val("");
+                detail_tujuan_company.val("");
+            }
             
         }
     }
@@ -836,7 +836,7 @@
             if (val.kode_aset) 
             {
                 item += "<tr>";
-                item += "<td><input type='hidden' id='kode_aset' name='kode_aset[]' value='"+val.kode_aset+"_"+val.detail_tujuan_company+"_"+val.detail_tujuan_area+"'>" + val.kode_aset + "</td>";
+                item += "<td><input type='hidden' id='kode_aset' name='kode_aset[]' value='"+val.kode_aset+"_"+val.detail_tujuan_company+"_"+val.detail_tujuan_area+"_"+val.detail_ac+"'>" + val.kode_aset + "</td>";
                 item += "<td>"+val.detail_nama_asset+"</td>";
                 item += "<td>"+val.detail_ac+"</td>";
                 item += "<td>" + val.detail_milik_company + " / " + val.detail_milik_area + "</td>";
@@ -1368,6 +1368,8 @@
         
         return valid;
     }
+
+    function reload_page(){window.location.href = "{{ url('/mutasi/create/1') }}";}
 
 </script>
 

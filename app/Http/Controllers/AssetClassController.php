@@ -716,7 +716,8 @@ class AssetClassController extends Controller
         ->where(
             array(
                 'jenis_asset_code' => $request->jenis_asset,
-                'group_code' => $request->group
+                'group_code' => $request->group,
+                'subgroup_code' => $request->subgroup
             )
         )
         ->orderby('subgroup_description', 'asc')
