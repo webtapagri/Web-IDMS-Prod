@@ -176,7 +176,7 @@ class MutasiController extends Controller
 
             DB::commit();
 
-            return response()->json(['status' => true, "message" => 'Data is successfully, Document Created ('.$NO_REG.')']);
+            return response()->json(['status' => true, "message" => 'Data is successfully created ('.$NO_REG.')']);
         } 
         catch (\Exception $e) 
         {

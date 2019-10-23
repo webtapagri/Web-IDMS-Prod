@@ -123,7 +123,8 @@ class ApprovalController extends Controller
         }
         else
         {
-            $sql .= " ORDER BY ASSET.ID DESC ";
+            $sql .= " ORDER BY APPROVAL.APPROVAL_DETAIL_CODE DESC ";
+            //$sql .= " ORDER BY ASSET.ID DESC ";
         }
 
        // echo $sql; die();
