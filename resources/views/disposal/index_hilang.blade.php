@@ -316,7 +316,7 @@
 									<td>{$hp}</td>
 									<td nowrap='nowrap'>
 									<a href='".url('/disposal/view-berkas/'.$v->KODE_ASSET_AMS.'')."' target='_blank'>
-										<i class='fa fa-file'></i></a>
+										<i class='fa fa-file-text'></i></a>
 									<a href='#' id='edit-berkas' idcontent='{$v->KODE_ASSET_AMS}' namaasset='{$v->NAMA_ASSET_1}' hargaperolehan='{$v->HARGA_PEROLEHAN}' class='btn btn-icon-toggle' title='Edit Berkas' data-toggle='modal' data-target='#modal_upload_berkas'><i class='fa fa-upload'></i></a></td>
 									<td nowrap='nowrap'>
 									
@@ -462,7 +462,7 @@
 		            <div class="form-group">
 		                <label class="control-label col-xs-4" >SERAH TERIMA</label>
 		                <div class="col-xs-8">
-		                    <input type="file" class="form-control" id="serah_terima" name="serah_terima" value="" placeholder="Upload berkas serah terima" required/>
+		                    <input type="file" class="form-control" id="serah_terima" name="serah_terima" value="" placeholder="Upload berkas serah terima"/>
 		                    <div id="berkas-serah-terima"></div>
 		                </div>
 		            </div>

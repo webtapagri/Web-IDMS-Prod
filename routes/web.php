@@ -311,6 +311,7 @@ Route::get('/disposal/view-berkas-serah-terima/{kode_asset_ams}', 'DisposalContr
 Route::get('/disposal/view-berkas-detail/{kode_asset_ams}/{file_category}', 'DisposalController@berkas_disposal_detail')->name('kode_asset_ams');
 Route::get('/disposal/list-kategori-upload/{kode_asset_ams}/{jenis_pengajuan}', 'DisposalController@list_file_category')->name('kode_asset_ams');
 Route::get('/disposal/view-berkas-notes/{kode_asset_ams}', 'DisposalController@berkas_notes')->name('kode_asset_ams');
+Route::get('/disposal/view-berkas-by-type/{kode_asset_ams}/{file_category}', 'DisposalController@file_download')->name('kode_asset_ams');
 /* END DISPOSAL */
 
 

@@ -304,7 +304,7 @@
 									<td>{$hp}</td>
 									<td nowrap='nowrap'>
 										<a href='".url('/disposal/view-berkas/'.$v->KODE_ASSET_AMS.'')."' target='_blank'>
-											<i class='fa fa-file'></i></a>
+											<i class='fa fa-file-text'></i></a>
 										<a href='#' id='edit-berkas' idcontent='{$v->KODE_ASSET_AMS}' namaasset='{$v->NAMA_ASSET_1}' hargaperolehan='{$v->HARGA_PEROLEHAN}' class='btn btn-icon-toggle' title='Edit Berkas' data-toggle='modal' data-target='#modal_upload_berkas'><i class='fa fa-upload'></i></a>
 										
 									</td>
@@ -416,38 +416,10 @@
 
 		            <span id="list-kategori-upload"></span>
 
-		            <?php 
-		            	/*
-			            if(!empty($data['list_kategori_upload']))
-			            {
-			            	$l = '';
-			            	foreach( $data['list_kategori_upload'] as $k => $v )
-			            	{
-								$DESCRIPTION_CODE = str_replace(" ", "_", $v['DESCRIPTION']);
-
-			            		$l .= '<div class="form-group">
-							                <label class="control-label col-xs-4" >'.strtoupper($v['DESCRIPTION']).'</label>
-							                <div class="col-xs-8">
-							                    <input type="file" class="form-control" id="'.$DESCRIPTION_CODE.'" name="'.$DESCRIPTION_CODE.'" value="" placeholder="Upload '.$v['DESCRIPTION'].'"/>';
-							    			if( !empty($v['DETAIL']) )
-											{
-												foreach( $v['DETAIL'] as $kk => $vv )
-												{
-													$l .= '<a href="'.url('disposal/view-berkas/'.$vv->KODE_ASSET_AMS.'').'" target="_blank"><i class="fa fa-cloud-download"></i>'.$vv->FILE_NAME.'</a>';	
-												}
-											}
-							    $l .= '</div>
-							            </div>';
-			            	}
-			            	echo $l;
-			            }
-						*/
-		            ?>
-
 		            <div class="form-group">
 		                <label class="control-label col-xs-4" >SERAH TERIMA</label>
 		                <div class="col-xs-8">
-		                    <input type="file" class="form-control" id="serah_terima" name="serah_terima" value="" placeholder="Upload berkas serah terima" required/>
+		                    <input type="file" class="form-control" id="serah_terima" name="serah_terima" value="" placeholder="Upload berkas serah terima"/>
 		                    <div id="berkas-serah-terima"></div>
 		                </div>
 		            </div>

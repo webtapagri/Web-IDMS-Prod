@@ -82,7 +82,7 @@
                                         <th>TUJUAN</th>
                                     </tr>
                                     <tr>
-                                        <td colspan="8" style="text-align:center;font-size: 12px;color: #808484"><br>Data not found </td>
+                                        <td colspan="8" style="text-align:center;font-size: 12px;color: #808484"><br>Belum ada data </td>
                                     </tr>
                                 </table>
                             </div>
@@ -699,7 +699,7 @@
             var detail_tujuan_company = $("#detail_tujuan_company");
             var detail_tujuan_area = $("#detail_tujuan_area");
 
-            if(validate_additem(detail_ac,kode_aset,detail_milik_company,request_item))
+            if(validate_additem(detail_ac,kode_aset,detail_milik_area,request_item))
             {
                 request_item[id] = 
                 {
@@ -808,12 +808,14 @@
         return text;
     }
 
-    function remove(obj) {
+    function remove(obj) 
+    {
         var conf = confirm("Are you sure you want to delete this data?");
-        if (conf == true) {
+        if (conf == true) 
+        {
             request_item[obj] = [];
             data_detail[obj] = [];
-
+            //console.log(request_item);
             createItemRequestTable();
         }
     }
@@ -828,22 +830,24 @@
         item += '<th>KEPEMILIKAN</th>';
         item += '<th>LOKASI</th>';
         item += '<th>TUJUAN</th>';
-        item += '<th style="width: 40px"></th>';
+        item += '<th></th>';
         item += '</tr>';
 
         $.each(request_item, function(key, val) 
         {
+            var kode_asset_ams = btoa(val.kode_aset);
+
             if (val.kode_aset) 
             {
                 item += "<tr>";
-                item += "<td><input type='hidden' id='kode_aset' name='kode_aset[]' value='"+val.kode_aset+"_"+val.detail_tujuan_company+"_"+val.detail_tujuan_area+"_"+val.detail_ac+"'>" + val.kode_aset + "</td>";
+                item += "<td><input type='hidden' id='kode_aset' name='kode_aset[]' value='"+val.kode_aset+"_"+val.detail_tujuan_company+"_"+val.detail_tujuan_area+"_"+val.detail_ac+"'><a href='{{ url('master-asset/show-data') }}/"+kode_asset_ams+"' target='_blank'>" + val.kode_aset + "</a></td>";
                 item += "<td>"+val.detail_nama_asset+"</td>";
                 item += "<td>"+val.detail_ac+"</td>";
                 item += "<td>" + val.detail_milik_company + " / " + val.detail_milik_area + "</td>";
                 item += "<td>" + val.detail_lokasi_company + " / " + val.detail_lokasi_area + "</td>";
                 item += "<td>" + val.detail_tujuan_company + " / " + val.detail_tujuan_area + "</td>";
                 //item += "<td>" + val.bisnis_area + "</td>";
-                item += '<td width="30px" style="text-align:center"><button type="button" class="btn btn-flat btn-xs btn-danger" onClick="remove(\'' + val.id + '\');"><i class="fa fa-trash"></i></button></td>';
+                item += '<td style="text-align:center" rowspan="rowspan"><button type="button" class="btn btn-flat btn-xs btn-danger" onClick="remove(\'' + val.id + '\');"><i class="fa fa-trash"></i></button></td>';
                 item += "</tr>";
             }
         });
@@ -1325,43 +1329,56 @@
         $('#data-asset-modal').modal('toggle');
     }
 
-    function validate_additem(ac,kode_asset_ams,kepemilikan,request_item)
+    function validate_additem(ac,kode_asset_ams,kepemilikan_area,request_item)
     {
+        //console.log(request_item);
+        //alert(ac.val());
+
         var valid = true;
+        
         $.each(request_item, function(key, val) 
         {
-            if( val.detail_ac != ac.val() )
-            {
-                notify({
-                    type: 'warning',
-                    message: 'Asset Controller tidak sama'
-                });
+            //alert(val.detail_ac);
+            //if( val.detail_ac === "undefined" ){
+                if( val.detail_ac != ac.val() )
+                {
+                    notify({
+                        type: 'warning',
+                        message: 'Asset Controller tidak sama'
+                    });
 
-                valid = false;
-                return valid;
-            }
+                    valid = false;
+                    return valid;
+                }
+                //return valid;
+            //}
 
-            if( val.kode_aset == kode_asset_ams.val() )
-            {
-                notify({
-                    type: 'warning',
-                    message: 'Kode Asset AMS sudah diinput'
-                });
+            
+            //if( val.kode_aset === "undefined" ){
+                if( val.kode_aset == kode_asset_ams.val() )
+                {
+                    notify({
+                        type: 'warning',
+                        message: 'Kode Asset AMS sudah diinput'
+                    });
 
-                valid = false;
-                return valid;
-            }
+                    valid = false;
+                    return valid;
+                }
+            //}
 
-            if( val.detail_milik_company != kepemilikan.val() )
-            {
-                notify({
-                    type: 'warning',
-                    message: 'Kepemilikan tidak sama'
-                });
+            //if( val.detail_milik_area === "undefined" ){
+                if( val.detail_milik_area != kepemilikan_area.val() )
+                {
+                    notify({
+                        type: 'warning',
+                        message: 'Kepemilikan Business Area tidak sama'
+                    });
 
-                valid = false;
-                return valid;
-            }
+                    valid = false;
+                    return valid;
+                }
+            //}
             
             return valid;
         });

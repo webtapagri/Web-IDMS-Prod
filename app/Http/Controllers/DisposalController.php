@@ -720,7 +720,18 @@ class DisposalController extends Controller
     	}
     	else
     	{
-    		$result = array('result'=> 1, 'message'=> "success validasi_berkas_peraset");
+    		//Validasi Berkas Serah Terima
+    		$sql2 = " SELECT COUNT(*) AS TOTAL FROM TR_DISPOSAL_TEMP_FILE WHERE KODE_ASSET_AMS = '".$kode_asset_ams."' AND FILE_CATEGORY = 'serah_terima' ";
+    		$data2 = DB::SELECT($sql2); 
+
+    		if( $data2[0]->TOTAL == 0 )
+    		{
+    			$result = array('result'=> 0, 'message'=> 'Gagal Proses, file berkas terima belum di upload (KODE ASSET AMS : '.$kode_asset_ams.' ) ');
+    		}
+    		else
+    		{
+    			$result = array('result'=> 1, 'message'=> "success validasi_berkas_peraset");
+    		}
     	}
 
 		return $result;
@@ -746,63 +757,90 @@ class DisposalController extends Controller
 		}
 		//END MULTIPLE UPLOAD
 
-		$file_upload = base64_encode(file_get_contents(addslashes($_FILES['serah_terima']['tmp_name'])));
-		$file_name = str_replace(" ", "_", $_FILES['serah_terima']['name']);
-		$user_id = Session::get('user_id');
-		$file_category = 'serah_terima';
-		$file_category_label = strtoupper(str_replace("_", " ", $file_category));
-
-		// #1 VALIDASI SIZE DOC MAX 1 MB
-		$max_docsize = 1000000;
-		if( $_FILES['serah_terima']['size'] > $max_docsize )
+		if( $_FILES['serah_terima']['name'] != '' )
 		{
-			Session::flash('alert', 'Gagal upload '.$file_name.' ('.$file_category_label.'), ukuran file maksimal 1MB'); 
-			return Redirect::to('/disposal-hilang');
-		}
+			$file_name = str_replace(" ", "_", $_FILES['serah_terima']['name']);
+			$user_id = Session::get('user_id');
+			$file_category = 'serah_terima';
+			$file_category_label = strtoupper(str_replace("_", " ", $file_category));
 
-		// #2 VALIDASI FILE UPLOAD EXIST
-		$validasi_file_exist = $this->validasi_file_exist($request->kode_asset_ams,$file_category);
-		if( $validasi_file_exist == 0 )
-		{
-			$sql = "INSERT INTO TR_DISPOSAL_TEMP_FILE(
-						KODE_ASSET_AMS,
-						FILE_CATEGORY,
-						JENIS_FILE,
-						FILE_NAME,
-						DOC_SIZE,
-						JENIS_PENGAJUAN,
-						FILE_UPLOAD,
-						NOTES,
-						CREATED_BY)
-							VALUES('{$request->kode_asset_ams}',
-						'serah_terima',
-						'".$_FILES['serah_terima']['type']."',
-						'{$file_name}',
-						'".$_FILES['serah_terima']['size']."',
-						'{$request->tipe}',
-						'{$file_upload}',
-						'{$request->notes_asset}',
-						'{$user_id}')";
+			// #1 VALIDASI SIZE DOC MAX 1 MB
+			$max_docsize = 1000000;
+			if( $_FILES['serah_terima']['size'] != 0 )
+			{
+				if( $_FILES['serah_terima']['size'] > $max_docsize )
+				{
+					Session::flash('alert', 'Gagal upload '.$file_name.' ('.$file_category_label.'), ukuran file maksimal 1MB'); 
+					return Redirect::to('/disposal-hilang');
+				}
+			}
+			else
+			{
+				Session::flash('alert', 'Gagal upload '.$file_name.' ('.$file_category_label.'), ukuran file 0 MB'); 
+					return Redirect::to('/disposal-hilang');
+			}
+
+			/*
+			// #1 VALIDASI SIZE DOC MAX 1 MB
+			$max_docsize = 1000000;
+			if( $_FILES['serah_terima']['size'] > $max_docsize )
+			{
+				Session::flash('alert', 'Gagal upload '.$file_name.' ('.$file_category_label.'), ukuran file maksimal 1MB'); 
+				return Redirect::to('/disposal-hilang');
+			}
+			*/
+
+			$file_upload = base64_encode(file_get_contents(addslashes($_FILES['serah_terima']['tmp_name'])));
+
+			// #2 VALIDASI FILE UPLOAD EXIST
+			$validasi_file_exist = $this->validasi_file_exist($request->kode_asset_ams,$file_category);
+			if( $validasi_file_exist == 0 )
+			{
+				$sql = "INSERT INTO TR_DISPOSAL_TEMP_FILE(
+							KODE_ASSET_AMS,
+							FILE_CATEGORY,
+							JENIS_FILE,
+							FILE_NAME,
+							DOC_SIZE,
+							JENIS_PENGAJUAN,
+							FILE_UPLOAD,
+							NOTES,
+							CREATED_BY)
+								VALUES('{$request->kode_asset_ams}',
+							'serah_terima',
+							'".$_FILES['serah_terima']['type']."',
+							'{$file_name}',
+							'".$_FILES['serah_terima']['size']."',
+							'{$request->tipe}',
+							'{$file_upload}',
+							'{$request->notes_asset}',
+							'{$user_id}')";
+			}
+			else
+			{
+				$sql = "UPDATE TR_DISPOSAL_TEMP_FILE SET JENIS_FILE = '".$_FILES['serah_terima']['type']."', FILE_NAME = '{$file_name}', DOC_SIZE = '".$_FILES['serah_terima']['size']."', FILE_UPLOAD = '{$file_upload}', NOTES = '{$request->notes_asset}', UPDATED_BY = '{$user_id}', UPDATED_AT = current_timestamp() WHERE KODE_ASSET_AMS = {$request->kode_asset_ams} AND FILE_CATEGORY = '{$file_category}' ";
+			}
+
+			DB::beginTransaction();
+
+			try 
+			{
+				DB::insert($sql);
+				DB::commit();
+
+				Session::flash('message', 'Success upload data! (KODE AMS : '.$request->kode_asset_ams.') ');
+				return Redirect::to('/disposal-hilang');
+			} 
+			catch (\Exception $e) 
+			{
+				DB::rollback();
+				Session::flash('message', $e->getMessage()); 
+				return Redirect::to('/disposal-hilang');
+			}
 		}
 		else
 		{
-			$sql = "UPDATE TR_DISPOSAL_TEMP_FILE SET JENIS_FILE = '".$_FILES['serah_terima']['type']."', FILE_NAME = '{$file_name}', DOC_SIZE = '".$_FILES['serah_terima']['size']."', FILE_UPLOAD = '{$file_upload}', NOTES = '{$request->notes_asset}', UPDATED_BY = '{$user_id}', UPDATED_AT = current_timestamp() WHERE KODE_ASSET_AMS = {$request->kode_asset_ams} AND FILE_CATEGORY = '{$file_category}' ";
-		}
-
-		DB::beginTransaction();
-
-		try 
-		{
-			DB::insert($sql);
-			DB::commit();
-
 			Session::flash('message', 'Success upload data! (KODE AMS : '.$request->kode_asset_ams.') ');
-			return Redirect::to('/disposal-hilang');
-		} 
-		catch (\Exception $e) 
-		{
-			DB::rollback();
-			Session::flash('message', $e->getMessage()); 
 			return Redirect::to('/disposal-hilang');
 		}
     }
@@ -861,6 +899,7 @@ class DisposalController extends Controller
 
     function upload_multiple_berkas($req, $desc_code)
     {
+    	//echo "1<pre>"; print_r($req); die();
     	if( @$req['tipe'] == 2 )
     	{
     		$tipe = 'hilang';
@@ -883,11 +922,29 @@ class DisposalController extends Controller
 
 			// #1 VALIDASI SIZE DOC MAX 1 MB
 			$max_docsize = 1000000;
+			if( $_FILES[''.$desc_code.'']['size'] != 0 )
+			{
+				if( $_FILES[''.$desc_code.'']['size'] > $max_docsize )
+				{
+					Session::flash('alert', 'Gagal upload '.$file_name.' ('.$file_category_label.'), ukuran file maksimal 1MB'); 
+					return Redirect::to('/disposal-'.$tipe.'');
+				}
+			}
+			else
+			{
+				Session::flash('alert', 'Gagal upload '.$file_name.' ('.$file_category_label.'), ukuran file 0 MB'); 
+					return Redirect::to('/disposal-'.$tipe.'');
+			}
+
+			/*
+			// #1 VALIDASI SIZE DOC MAX 1 MB
+			$max_docsize = 1000000;
 			if( $_FILES[''.$desc_code.'']['size'] > $max_docsize )
 			{
 				Session::flash('alert', 'Gagal upload '.$file_name.' ('.$file_category_label.'), ukuran file maksimal 1MB'); 
 				return Redirect::to('/disposal-'.$tipe.'');
 			}
+			*/
 
 			// #2 VALIDASI FILE UPLOAD EXIST
 			$validasi_file_exist = $this->validasi_file_exist($req['kode_asset_ams'],$file_category);
@@ -954,63 +1011,89 @@ class DisposalController extends Controller
 		}
 		//END MULTIPLE UPLOAD
 
-		$file_upload = base64_encode(file_get_contents(addslashes($_FILES['serah_terima']['tmp_name'])));
-		$file_name = str_replace(" ", "_", $_FILES['serah_terima']['name']);
-		$user_id = Session::get('user_id');
-		$file_category = 'serah_terima';
-		$file_category_label = strtoupper(str_replace("_", " ", $file_category));
-
-		// #1 VALIDASI SIZE DOC MAX 1 MB
-		$max_docsize = 1000000;
-		if( $_FILES['serah_terima']['size'] > $max_docsize )
+		if( $_FILES['serah_terima']['name'] != '' )
 		{
-			Session::flash('alert', 'Gagal upload '.$file_name.' ('.$file_category_label.'), ukuran file maksimal 1MB'); 
-			return Redirect::to('/disposal-rusak');
-		}
+			
+			$file_name = str_replace(" ", "_", $_FILES['serah_terima']['name']);
+			$user_id = Session::get('user_id');
+			$file_category = 'serah_terima';
+			$file_category_label = strtoupper(str_replace("_", " ", $file_category));
 
-		// #2 VALIDASI FILE UPLOAD EXIST
-		$validasi_file_exist = $this->validasi_file_exist($request->kode_asset_ams,$file_category);
-		if( $validasi_file_exist == 0 )
-		{
-			$sql = "INSERT INTO TR_DISPOSAL_TEMP_FILE(
-						KODE_ASSET_AMS,
-						FILE_CATEGORY,
-						JENIS_FILE,
-						FILE_NAME,
-						DOC_SIZE,
-						JENIS_PENGAJUAN,
-						FILE_UPLOAD,
-						NOTES,
-						CREATED_BY)
-							VALUES('{$request->kode_asset_ams}',
-						'serah_terima',
-						'".$_FILES['serah_terima']['type']."',
-						'{$file_name}',
-						'".$_FILES['serah_terima']['size']."',
-						'{$request->tipe}',
-						'{$file_upload}',
-						'{$request->notes_asset}',
-						'{$user_id}')";
+			// #1 VALIDASI SIZE DOC MAX 1 MB
+			$max_docsize = 1000000;
+			if( $_FILES['serah_terima']['size'] != 0 )
+			{
+				if( $_FILES['serah_terima']['size'] > $max_docsize )
+				{
+					Session::flash('alert', 'Gagal upload '.$file_name.' ('.$file_category_label.'), ukuran file maksimal 1MB'); 
+					return Redirect::to('/disposal-rusak');
+				}
+			}
+			else
+			{
+				Session::flash('alert', 'Gagal upload '.$file_name.' ('.$file_category_label.'), ukuran file 0 MB'); 
+					return Redirect::to('/disposal-rusak');
+			}
+
+			/* // #1 VALIDASI SIZE DOC MAX 1 MB
+			$max_docsize = 1000000;
+			if( $_FILES['serah_terima']['size'] > $max_docsize )
+			{
+				Session::flash('alert', 'Gagal upload '.$file_name.' ('.$file_category_label.'), ukuran file maksimal 1MB'); 
+				return Redirect::to('/disposal-rusak');
+			}*/
+
+			$file_upload = base64_encode(file_get_contents(addslashes($_FILES['serah_terima']['tmp_name'])));
+
+			// #2 VALIDASI FILE UPLOAD EXIST
+			$validasi_file_exist = $this->validasi_file_exist($request->kode_asset_ams,$file_category);
+			if( $validasi_file_exist == 0 )
+			{
+				$sql = "INSERT INTO TR_DISPOSAL_TEMP_FILE(
+							KODE_ASSET_AMS,
+							FILE_CATEGORY,
+							JENIS_FILE,
+							FILE_NAME,
+							DOC_SIZE,
+							JENIS_PENGAJUAN,
+							FILE_UPLOAD,
+							NOTES,
+							CREATED_BY)
+								VALUES('{$request->kode_asset_ams}',
+							'serah_terima',
+							'".$_FILES['serah_terima']['type']."',
+							'{$file_name}',
+							'".$_FILES['serah_terima']['size']."',
+							'{$request->tipe}',
+							'{$file_upload}',
+							'{$request->notes_asset}',
+							'{$user_id}')";
+			}
+			else
+			{
+				$sql = "UPDATE TR_DISPOSAL_TEMP_FILE SET JENIS_FILE = '".$_FILES['serah_terima']['type']."', FILE_NAME = '{$file_name}', DOC_SIZE = '".$_FILES['serah_terima']['size']."', FILE_UPLOAD = '{$file_upload}', NOTES = '{$request->notes_asset}', UPDATED_BY = '{$user_id}', UPDATED_AT = current_timestamp() WHERE KODE_ASSET_AMS = {$request->kode_asset_ams} AND FILE_CATEGORY = '{$file_category}' ";
+			}
+
+			DB::beginTransaction();
+
+			try 
+			{
+				DB::insert($sql);
+				DB::commit();
+
+				Session::flash('message', 'Success upload data! (KODE AMS : '.$request->kode_asset_ams.') ');
+				return Redirect::to('/disposal-rusak');
+			} 
+			catch (\Exception $e) 
+			{
+				DB::rollback();
+				Session::flash('message', $e->getMessage()); 
+				return Redirect::to('/disposal-rusak');
+			}
 		}
 		else
 		{
-			$sql = "UPDATE TR_DISPOSAL_TEMP_FILE SET JENIS_FILE = '".$_FILES['serah_terima']['type']."', FILE_NAME = '{$file_name}', DOC_SIZE = '".$_FILES['serah_terima']['size']."', FILE_UPLOAD = '{$file_upload}', NOTES = '{$request->notes_asset}', UPDATED_BY = '{$user_id}', UPDATED_AT = current_timestamp() WHERE KODE_ASSET_AMS = {$request->kode_asset_ams} AND FILE_CATEGORY = '{$file_category}' ";
-		}
-
-		DB::beginTransaction();
-
-		try 
-		{
-			DB::insert($sql);
-			DB::commit();
-
 			Session::flash('message', 'Success upload data! (KODE AMS : '.$request->kode_asset_ams.') ');
-			return Redirect::to('/disposal-rusak');
-		} 
-		catch (\Exception $e) 
-		{
-			DB::rollback();
-			Session::flash('message', $e->getMessage()); 
 			return Redirect::to('/disposal-rusak');
 		}
     }
@@ -1033,63 +1116,82 @@ class DisposalController extends Controller
 		}
 		//END MULTIPLE UPLOAD
 
-		$file_upload = base64_encode(file_get_contents(addslashes($_FILES['serah_terima']['tmp_name'])));
-		$file_name = str_replace(" ", "_", $_FILES['serah_terima']['name']);
-		$user_id = Session::get('user_id');
-		$file_category = 'serah_terima';
-		$file_category_label = strtoupper(str_replace("_", " ", $file_category));
+		//echo "3<pre>"; print_r($_FILES); die();
 
-		// #1 VALIDASI SIZE DOC MAX 1 MB
-		$max_docsize = 1000000;
-		if( $_FILES['serah_terima']['size'] > $max_docsize )
+		if( $_FILES['serah_terima']['name'] != '' )
 		{
-			Session::flash('alert', 'Gagal upload '.$file_name.' ('.$file_category_label.'), ukuran file maksimal 1MB'); 
-			return Redirect::to('/disposal-penjualan');
-		}
+			$file_name = str_replace(" ", "_", $_FILES['serah_terima']['name']);
+			$file_category = 'serah_terima';
+			$file_category_label = strtoupper(str_replace("_", " ", $file_category));
+			$user_id = Session::get('user_id');
 
-		// #2 VALIDASI FILE UPLOAD EXIST
-		$validasi_file_exist = $this->validasi_file_exist($request->kode_asset_ams,$file_category);
-		if( $validasi_file_exist == 0 )
-		{
-			$sql = "INSERT INTO TR_DISPOSAL_TEMP_FILE(
-						KODE_ASSET_AMS,
-						FILE_CATEGORY,
-						JENIS_FILE,
-						FILE_NAME,
-						DOC_SIZE,
-						JENIS_PENGAJUAN,
-						FILE_UPLOAD,
-						NOTES,
-						CREATED_BY)
-							VALUES('{$request->kode_asset_ams}',
-						'serah_terima',
-						'".$_FILES['serah_terima']['type']."',
-						'{$file_name}',
-						'".$_FILES['serah_terima']['size']."',
-						'{$request->tipe}',
-						'{$file_upload}',
-						'{$request->notes_asset}',
-						'{$user_id}')";
+			// #1 VALIDASI SIZE DOC MAX 1 MB
+			$max_docsize = 1000000;
+			if( $_FILES['serah_terima']['size'] != 0 )
+			{
+				if( $_FILES['serah_terima']['size'] > $max_docsize )
+				{
+					Session::flash('alert', 'Gagal upload '.$file_name.' ('.$file_category_label.'), ukuran file maksimal 1MB'); 
+					return Redirect::to('/disposal-penjualan');
+				}
+			}
+			else
+			{
+				Session::flash('alert', 'Gagal upload '.$file_name.' ('.$file_category_label.'), ukuran file 0 MB'); 
+					return Redirect::to('/disposal-penjualan');
+			}
+
+			$file_upload = base64_encode(file_get_contents(addslashes($_FILES['serah_terima']['tmp_name'])));
+
+			// #2 VALIDASI FILE UPLOAD EXIST
+			$validasi_file_exist = $this->validasi_file_exist($request->kode_asset_ams,$file_category);
+			if( $validasi_file_exist == 0 )
+			{
+				$sql = "INSERT INTO TR_DISPOSAL_TEMP_FILE(
+							KODE_ASSET_AMS,
+							FILE_CATEGORY,
+							JENIS_FILE,
+							FILE_NAME,
+							DOC_SIZE,
+							JENIS_PENGAJUAN,
+							FILE_UPLOAD,
+							NOTES,
+							CREATED_BY)
+								VALUES('{$request->kode_asset_ams}',
+							'serah_terima',
+							'".$_FILES['serah_terima']['type']."',
+							'{$file_name}',
+							'".$_FILES['serah_terima']['size']."',
+							'{$request->tipe}',
+							'{$file_upload}',
+							'{$request->notes_asset}',
+							'{$user_id}')";
+			}
+			else
+			{
+				$sql = "UPDATE TR_DISPOSAL_TEMP_FILE SET JENIS_FILE = '".$_FILES['serah_terima']['type']."', FILE_NAME = '{$file_name}', DOC_SIZE = '".$_FILES['serah_terima']['size']."', FILE_UPLOAD = '{$file_upload}', NOTES = '{$request->notes_asset}', UPDATED_BY = '{$user_id}', UPDATED_AT = current_timestamp() WHERE KODE_ASSET_AMS = {$request->kode_asset_ams} AND FILE_CATEGORY = '{$file_category}' ";
+			}
+
+			DB::beginTransaction();
+
+			try 
+			{
+				DB::insert($sql);
+				DB::commit();
+
+				Session::flash('message', 'Success upload data! (KODE AMS : '.$request->kode_asset_ams.') ');
+				return Redirect::to('/disposal-penjualan');
+			} 
+			catch (\Exception $e) 
+			{
+				DB::rollback();
+				Session::flash('message', $e->getMessage()); 
+				return Redirect::to('/disposal-penjualan');
+			}
 		}
 		else
 		{
-			$sql = "UPDATE TR_DISPOSAL_TEMP_FILE SET JENIS_FILE = '".$_FILES['serah_terima']['type']."', FILE_NAME = '{$file_name}', DOC_SIZE = '".$_FILES['serah_terima']['size']."', FILE_UPLOAD = '{$file_upload}', NOTES = '{$request->notes_asset}', UPDATED_BY = '{$user_id}', UPDATED_AT = current_timestamp() WHERE KODE_ASSET_AMS = {$request->kode_asset_ams} AND FILE_CATEGORY = '{$file_category}' ";
-		}
-
-		DB::beginTransaction();
-
-		try 
-		{
-			DB::insert($sql);
-			DB::commit();
-
 			Session::flash('message', 'Success upload data! (KODE AMS : '.$request->kode_asset_ams.') ');
-			return Redirect::to('/disposal-penjualan');
-		} 
-		catch (\Exception $e) 
-		{
-			DB::rollback();
-			Session::flash('message', $e->getMessage()); 
 			return Redirect::to('/disposal-penjualan');
 		}
     }
@@ -1121,11 +1223,7 @@ WHERE b.KODE_ASSET_AMS = '".$kode_asset_ams."' ";
                 }
                 else
                 {
-                    $data_excel = explode(",",$v->FILE_UPLOAD);
-                    header('Content-type: application/vnd.ms-excel');
-                    header('Content-Disposition: attachment; filename="'.$v->FILE_NAME.'"');
-                    print $data_excel[1];
-                    die();
+                	$l .= '<div class="caption"><h3><u>'.strtoupper($file_category).'</u><br/><br/><a href="'.url("/disposal/view-berkas-by-type/".$kode_asset_ams."/".$v->FILE_CATEGORY."").'">'. $v->FILE_NAME. '</a></h3></div>';
                 }
             }
         }
@@ -1137,6 +1235,19 @@ WHERE b.KODE_ASSET_AMS = '".$kode_asset_ams."' ";
         $l .= '</center>';
         echo $l; 
     }
+
+    function file_download($kode_asset_ams,$file_category)  
+    {
+    	$data = DB::SELECT(" SELECT FILE_UPLOAD FROM TR_DISPOSAL_TEMP_FILE WHERE KODE_ASSET_AMS = {$kode_asset_ams} AND FILE_CATEGORY = '{$file_category}' ");
+    	echo "<pre>"; print_r($data); die();
+
+	    header('Content-type: application/vnd.ms-excel');
+	    header('Content-Disposition: attachment; filename="report.xls"');
+
+	    print $bytes;
+
+	    die();
+	}
 
     function proses_upload_file($kode_asset_ams,$no_reg,$jenis_pengajuan)
     {
@@ -1207,11 +1318,15 @@ WHERE b.KODE_ASSET_AMS = '".$kode_asset_ams."' AND b.FILE_CATEGORY = 'serah_teri
                 }
                 else
                 {
+                	$l .= $v->FILE_NAME;
+
+                	/*
                     $data_excel = explode(",",$v->FILE_UPLOAD);
                     header('Content-type: application/vnd.ms-excel');
                     header('Content-Disposition: attachment; filename="'.$v->FILE_NAME.'"');
                     print $data_excel[1];
                     die();
+                    */
                 }
             }
         }
