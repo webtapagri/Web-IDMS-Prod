@@ -427,7 +427,7 @@ class DisposalController extends Controller
                     ]); 
 				}
 
-				DB::STATEMENT('call create_approval("'.$menu_code.'", "'.$data[0]->LOKASI_BA_CODE.'","","'.$reg_no.'","'.$user_id.'","'.$ac_awal.'","0")');
+				DB::STATEMENT('call create_approval("'.$menu_code.'", "'.$data[0]->LOKASI_BA_CODE.'","","'.$reg_no.'","'.$user_id.'","'.$ac_awal.'","'.$data[0]->HARGA_PEROLEHAN.'")');
 
 				$asset_id = DB::table('TR_DISPOSAL_ASSET')->insertGetId([
 	                "CREATED_BY" => Session::get('user_id'),
@@ -1238,14 +1238,18 @@ WHERE b.KODE_ASSET_AMS = '".$kode_asset_ams."' ";
 
     function file_download($kode_asset_ams,$file_category)  
     {
-    	$data = DB::SELECT(" SELECT FILE_UPLOAD FROM TR_DISPOSAL_TEMP_FILE WHERE KODE_ASSET_AMS = {$kode_asset_ams} AND FILE_CATEGORY = '{$file_category}' ");
-    	echo "<pre>"; print_r($data); die();
-
-	    header('Content-type: application/vnd.ms-excel');
-	    header('Content-Disposition: attachment; filename="report.xls"');
-
-	    print $bytes;
-
+    	$data = DB::SELECT(" SELECT * FROM TR_DISPOSAL_TEMP_FILE WHERE KODE_ASSET_AMS = {$kode_asset_ams} AND FILE_CATEGORY = '{$file_category}' ");
+    	//echo "4<pre>"; print_r($data); die();
+    	if(!empty($data))
+    	{
+    		//if( $data[0]->JENIS_FILE == 'application/vnd.openxmlformats-officedocument.spre' || $data[0]->JENIS_FILE == 'application/vnd.ms-excel' ){
+    			header('Content-type: '.$data[0]->JENIS_FILE.';base64');
+	    		header('Content-Disposition: attachment; filename="'.$data[0]->FILE_NAME.'"');
+    		//}
+	    		print $data[0]->FILE_UPLOAD;
+    	}
+    	//header('Content-type: '.$data[0]->JENIS_FILE.'');
+	    //header('Content-Disposition: attachment; filename="'.$data[0]->FILE_NAME.'"');
 	    die();
 	}
 
@@ -1418,7 +1422,7 @@ WHERE b.KODE_ASSET_AMS = '".$kode_asset_ams."' AND b.FILE_CATEGORY = '".$file_ca
 						{
 							foreach( $detail as $kk => $vv )
 							{
-								$l .= '<a href="'.url('disposal/view-berkas-detail/'.$vv->KODE_ASSET_AMS.'/'.$DESCRIPTION_CODE.'').'" target="_blank">'.$vv->FILE_NAME.'</a>';	
+								$l .= '<span id="file-berkas-'.$vv->KODE_ASSET_AMS.'"><a href="'.url('disposal/view-berkas-detail/'.$vv->KODE_ASSET_AMS.'/'.$DESCRIPTION_CODE.'').'" target="_blank">'.$vv->FILE_NAME.'</a> <a href="#"><i class="fa fa-trash del-berkas" onClick="delete_berkas('.$vv->KODE_ASSET_AMS.',\''.$vv->FILE_CATEGORY.'\')"></i></a></span> ';	
 							}
 						}
 
@@ -1452,6 +1456,40 @@ WHERE b.KODE_ASSET_AMS = '".$kode_asset_ams."' AND b.FILE_CATEGORY = '".$file_ca
             $records[0] = array();
         }
         echo json_encode($records[0]);
+    }
+
+    function delete_berkas_temp(Request $request)
+    {
+    	$req = $request->all();
+    	//echo "1<pre>"; print_r($req);die();
+        /*
+        	1
+			Array
+			(
+			    [kode_asset_ams] => 4640100034
+			    [file_category] => berita_acara_penjualan
+			)
+        */
+
+        //$total_asset_now = 100; //$this->getInfo;
+
+        DB::beginTransaction();
+
+        try 
+        {
+            $user_id = Session::get('user_id');
+
+            DB::DELETE(" DELETE FROM TR_DISPOSAL_TEMP_FILE WHERE KODE_ASSET_AMS = {$request->kode_asset_ams} AND FILE_CATEGORY = '{$request->file_category}' ");
+
+            //$sql = " UPDATE TR_REG_ASSET_DETAIL SET DELETED = 'X', UPDATED_AT = current_timestamp(), UPDATED_BY = '{$user_id}' WHERE ID = $id ";
+            //DB::UPDATE($sql);    
+
+            DB::commit();
+            return response()->json(['status' => true, "message" => 'Data is successfully updated']);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json(['status' => false, "message" => $e->getMessage()]);
+        }
     }
 }
 
