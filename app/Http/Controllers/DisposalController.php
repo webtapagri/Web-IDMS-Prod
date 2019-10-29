@@ -230,22 +230,8 @@ class DisposalController extends Controller
     {
     	$total = 0;
 
-    	// #1 VALIDASI DI DISPOSAL ASET DETAIL
-    	$sql1 = "SELECT COUNT(*) AS TOTAL FROM TR_DISPOSAL_ASSET_DETAIL WHERE KODE_ASSET_AMS = '{$kode_asset_ams}' ";
-    	$data = DB::SELECT($sql1);
-
-    	if( $data[0]->TOTAL == 0)
-    	{
-    		// #2 JIKA ASET DETAIL NULL VALIDASI DI DISPOSAL ASET TEMP
-    		$sql2 = "SELECT COUNT(*) AS TOTAL FROM TR_DISPOSAL_TEMP WHERE KODE_ASSET_AMS = '{$kode_asset_ams}' ";
-    		$dt = DB::SELECT($sql2);
-
-    		$total = $dt[0]->TOTAL;
-    	}
-    	else
-    	{
-    		$total = $data[0]->TOTAL;
-    	}
+    	$data = DB::SELECT(" SELECT COUNT(*) AS TOTAL FROM v_asset_submitted WHERE KODE_ASSET_AMS = '{$kode_asset_ams}' ");
+    	$total = $data[0]->TOTAL;
 
     	return $total;
     }
