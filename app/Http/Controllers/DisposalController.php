@@ -388,6 +388,7 @@ class DisposalController extends Controller
 						exit;
 					}
 
+					
 					// #4 VALIDASI BERKAS MASING2 ASET
 					$vbks = $this->validasi_berkas_peraset($v->KODE_ASSET_AMS);
 					if( $vbks['result'] != 1 )
@@ -397,7 +398,6 @@ class DisposalController extends Controller
 						return Redirect::to('/disposal-'.$jp.'');
 						exit;
 					}
-					
 				}
 
 				foreach($data as $k => $v)
@@ -719,6 +719,7 @@ class DisposalController extends Controller
     	}
     	else
     	{
+    		/*
     		//Validasi Berkas Serah Terima
     		$sql2 = " SELECT COUNT(*) AS TOTAL FROM TR_DISPOSAL_TEMP_FILE WHERE KODE_ASSET_AMS = '".$kode_asset_ams."' AND FILE_CATEGORY = 'serah_terima' ";
     		$data2 = DB::SELECT($sql2); 
@@ -731,6 +732,8 @@ class DisposalController extends Controller
     		{
     			$result = array('result'=> 1, 'message'=> "success validasi_berkas_peraset");
     		}
+    		*/
+    		$result = array('result'=> 1, 'message'=> "success validasi_berkas_peraset");
     	}
 
 		return $result;
@@ -756,7 +759,7 @@ class DisposalController extends Controller
 		}
 		//END MULTIPLE UPLOAD
 
-		if( $_FILES['serah_terima']['name'] != '' )
+		if( !empty($_FILES['serah_terima']['name']) )
 		{
 			$file_name = str_replace(" ", "_", $_FILES['serah_terima']['name']);
 			$user_id = Session::get('user_id');
@@ -1010,7 +1013,7 @@ class DisposalController extends Controller
 		}
 		//END MULTIPLE UPLOAD
 
-		if( $_FILES['serah_terima']['name'] != '' )
+		if( !empty($_FILES['serah_terima']['name']) )
 		{
 			
 			$file_name = str_replace(" ", "_", $_FILES['serah_terima']['name']);
@@ -1115,9 +1118,9 @@ class DisposalController extends Controller
 		}
 		//END MULTIPLE UPLOAD
 
+		
 		//echo "3<pre>"; print_r($_FILES); die();
-
-		if( $_FILES['serah_terima']['name'] != '' )
+		if( !empty($_FILES['serah_terima']['name']) )
 		{
 			$file_name = str_replace(" ", "_", $_FILES['serah_terima']['name']);
 			$file_category = 'serah_terima';
@@ -1193,6 +1196,7 @@ class DisposalController extends Controller
 			Session::flash('message', 'Success upload data! (KODE AMS : '.$request->kode_asset_ams.') ');
 			return Redirect::to('/disposal-penjualan');
 		}
+
     }
 
     function berkas_disposal($kode_asset_ams)
@@ -1406,16 +1410,39 @@ WHERE b.KODE_ASSET_AMS = '".$kode_asset_ams."' AND b.FILE_CATEGORY = '".$file_ca
     	
     	if(!empty($data))
     	{
+    		$mandatory = "";
+    		$mandatory_label = "";
     		foreach($data as $k => $v)
     		{
-				$DESCRIPTION_CODE = str_replace(" ", "_", $v->DESCRIPTION);
+    			$DESCRIPTION_CODE = str_replace(" ", "_", $v->DESCRIPTION);
+
+    			$detail = DB::SELECT("SELECT * FROM TR_DISPOSAL_TEMP_FILE WHERE FILE_CATEGORY = '".$DESCRIPTION_CODE."' AND KODE_ASSET_AMS = '".$kode_asset_ams."' ");
+				$total_detail = count($detail); 
+
+    			if( $v->DESCRIPTION == 'berita acara rusak' || $v->DESCRIPTION == 'berita acara hilang' )
+    			{
+    				if( $total_detail == 0 )
+    				{	
+    					$mandatory = 'required';
+    					$mandatory_label = '<span style="color:red">*</span>';	
+    				}
+    				else
+    				{
+    					$mandatory = "";
+    					$mandatory_label = "";
+    				}
+    				
+    			}
+    			else
+    			{
+    				$mandatory = "";
+    				$mandatory_label = "";
+    			}
 
         		$l .= '<div class="form-group">
-			                <label class="control-label col-xs-4" >'.strtoupper($v->DESCRIPTION).'</label>
+			                <label class="control-label col-xs-4" >'.strtoupper($v->DESCRIPTION).' '.$mandatory_label.'</label>
 			                <div class="col-xs-8">
-			                    <input type="file" class="form-control" id="'.$DESCRIPTION_CODE.'" name="'.$DESCRIPTION_CODE.'" value="" placeholder="Upload '.$v->DESCRIPTION.'"/>';
-			    			
-			    		$detail = DB::SELECT("SELECT * FROM TR_DISPOSAL_TEMP_FILE WHERE FILE_CATEGORY = '".$DESCRIPTION_CODE."' AND KODE_ASSET_AMS = '".$kode_asset_ams."' ");
+			                    <input type="file" class="form-control" id="'.$DESCRIPTION_CODE.'" name="'.$DESCRIPTION_CODE.'" value="" placeholder="Upload '.$v->DESCRIPTION.'" '.$mandatory.'/>';
 
 			    		if( !empty($detail) )
 						{

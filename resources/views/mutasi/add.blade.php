@@ -106,6 +106,7 @@ Array
                                         <th>KEPEMILIKAN</th>
                                         <th>LOKASI</th>
                                         <th>TUJUAN</th>
+                                        <th></th>
                                     </tr>
                                     
                                     <?php 
@@ -115,13 +116,16 @@ Array
                                             $l = "";
                                             foreach($data['data'] as $k => $v)
                                             {
+                                                $kode_asset_ams = base64_encode($v->KODE_ASSET_AMS);
+
                                                 $l .= "<tr>";
-                                                $l .= "<td>".$v->KODE_ASSET_AMS."</td>";
+                                                $l .= "<td><input type='hidden' id='kode_aset' name='kode_aset[]' value='".$v->KODE_ASSET_AMS."_".$v->TUJUAN_COMPANY."_".$v->TUJUAN."_".$v->ASSET_CONTROLLER."'><a href='".url('master-asset/show-data')."/".$kode_asset_ams."' target='_blank'>".$v->KODE_ASSET_AMS."</a></td>";
                                                 $l .= "<td>".$v->NAMA_ASSET."</td>";
                                                 $l .= "<td>".$v->ASSET_CONTROLLER."</td>";
-                                                $l .= "<td>".$v->BA_PEMILIK_ASSET_COMPANY."</td>";
-                                                $l .= "<td>".$v->LOKASI_BA_CODE_COMPANY."</td>";
-                                                $l .= "<td>".$v->TUJUAN_COMPANY."</td>";
+                                                $l .= "<td>".$v->BA_PEMILIK_ASSET_COMPANY."/".$v->BA_PEMILIK_ASSET."</td>";
+                                                $l .= "<td>".$v->LOKASI_BA_CODE_COMPANY."/".$v->LOKASI_BA_DESCRIPTION."</td>";
+                                                $l .= "<td>".$v->TUJUAN_COMPANY."/".$v->TUJUAN."</td>";
+                                                $l .= "<td style='text-align:center' rowspan='rowspan'><a href='#' id='edit-berkas' idcontent='".$v->KODE_ASSET_AMS."' class='btn btn-icon-toggle' title='Edit Berkas' data-toggle='modal' data-target='#modal_upload_berkas'><i class='fa fa-upload'></i></a>&nbsp;<button type='button' class='btn btn-flat btn-xs btn-danger' onClick='remove_data_temp({$v->KODE_ASSET_AMS})'><i class='fa fa-trash'></i></button></td>";
                                                 $l .= "</tr>";
                                             }
                                             echo $l;
@@ -1597,6 +1601,20 @@ Array
     }
 
     function reload_page(){window.location.href = "{{ url('/mutasi/create/1') }}";}
+
+    function remove_data_temp(kode_asset_ams) 
+    {
+        
+        var conf = confirm("Are you sure you want to delete this data?");
+        if (conf == true) 
+        {
+            alert(kode_asset_ams);return false;
+            ///request_item[obj] = [];
+            //data_detail[obj] = [];
+            //console.log(request_item);
+            //createItemRequestTable();
+        }
+    }
 
 </script>
 

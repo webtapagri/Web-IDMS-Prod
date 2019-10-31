@@ -75,13 +75,13 @@ html, body {
                 <th>DISPOSAL</th>
             </tr>";
 
+            $b = "";
+            $bp = "";
+            $rltp = "";
+            $status_document = "";
+
             foreach( $data['report'] as $k => $v )
             {
-                //echo "12<pre>"; print_r($v); die();
-
-                $b = "";
-                $bp = "";
-                $rltp = "";
 
                 if($v['KONDISI_ASSET'] == 'B')
                 {
@@ -96,6 +96,11 @@ html, body {
                 if($v['KONDISI_ASSET'] == 'RLTP')
                 {
                     $rltp = "<i class='fa fa-check'></i>";
+                }
+
+                if($v['STATUS_DOCUMENT'] != '')
+                {
+                    $status_document = "<i class='fa fa-check'></i>";
                 }
 
                 $l .= "<tr> 
@@ -139,7 +144,7 @@ html, body {
                     <td>".$v['SUB_GROUP']."</td>
                     <td></td>
                     <td></td>
-                    <td></td>
+                    <td>".$status_document."</td>
                 </tr>
                 ";
 

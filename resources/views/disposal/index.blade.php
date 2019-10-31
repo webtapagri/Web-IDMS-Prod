@@ -499,6 +499,7 @@
 
 		            <span id="list-kategori-upload"></span>
 
+		            <?php /*
 		            <div class="form-group">
 		                <label class="control-label col-xs-4" >SERAH TERIMA</label>
 		                <div class="col-xs-8">
@@ -506,6 +507,7 @@
 		                    <div id="berkas-serah-terima"></div>
 		                </div>
 		            </div>
+		            */ ?>
 
 		            <div class="form-group">
 		                <label class="control-label col-xs-4" >NOTES</label>

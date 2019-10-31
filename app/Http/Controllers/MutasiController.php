@@ -77,6 +77,9 @@ class MutasiController extends Controller
 
     public function create(Request $request) 
     {
+        if (empty(Session::get('authenticated')))
+            return redirect('/login');
+        
         $data["page_title"] = "Create Mutasi";
         $data['ctree_mod'] = 'Mutasi';
         $data['ctree'] = 'mutasi/create/1';

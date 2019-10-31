@@ -125,6 +125,48 @@
 					        alert("Error: "+ "\r\n\r\n" + x.responseText);
 					    }
 					});
+
+					function delete_berkas(kode_asset_ams,file_category)
+					{
+						//alert(file_category);
+						// AJAX DELETE BERKAS DI TR_DISPOSAL_TEMP_FILE
+						var param = $(this).serialize();
+					    $.ajaxSetup({
+					        headers: {
+					            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+					        }
+					    });
+					    $.ajax({
+					        url: "{{ url('disposal/delete_berkas_temp') }}/",
+					        method: "GET",
+					        //data: param,
+					        data: param+"&kode_asset_ams="+kode_asset_ams+"&file_category="+file_category,
+					        beforeSend: function() {
+					            jQuery('.loading-event').fadeIn();
+					        },
+					        success: function(result) 
+					        {
+					        	//alert(result.status);
+					        	if(result.status)
+					        	{
+					        		$("#file-berkas-"+kode_asset_ams+"").hide();
+					    		}
+					    		else
+					    		{
+					    			notify({
+					                    type: 'warning',
+					                    message: result.message
+					                });
+					    		}
+					        },
+					        complete: function() {
+					            jQuery('.loading-event').fadeOut();
+					        }
+					    });
+
+						return false;
+					}
+
 				});
 				
 			</script>
@@ -242,6 +284,47 @@
 					    }
 					});
 				});
+
+				function delete_berkas(kode_asset_ams,file_category)
+				{
+					//alert(file_category);
+					// AJAX DELETE BERKAS DI TR_DISPOSAL_TEMP_FILE
+					var param = $(this).serialize();
+				    $.ajaxSetup({
+				        headers: {
+				            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+				        }
+				    });
+				    $.ajax({
+				        url: "{{ url('disposal/delete_berkas_temp') }}/",
+				        method: "GET",
+				        //data: param,
+				        data: param+"&kode_asset_ams="+kode_asset_ams+"&file_category="+file_category,
+				        beforeSend: function() {
+				            jQuery('.loading-event').fadeIn();
+				        },
+				        success: function(result) 
+				        {
+				        	//alert(result.status);
+				        	if(result.status)
+				        	{
+				        		$("#file-berkas-"+kode_asset_ams+"").hide();
+				    		}
+				    		else
+				    		{
+				    			notify({
+				                    type: 'warning',
+				                    message: result.message
+				                });
+				    		}
+				        },
+				        complete: function() {
+				            jQuery('.loading-event').fadeOut();
+				        }
+				    });
+
+					return false;
+				}
 
 			</script>
 			@stop 
@@ -451,13 +534,14 @@
 			            }*/
 		            ?>
 
+		            <?php /*
 		            <div class="form-group">
 		                <label class="control-label col-xs-4" >SERAH TERIMA</label>
 		                <div class="col-xs-8">
 		                    <input type="file" class="form-control" id="serah_terima" name="serah_terima" value="" placeholder="Upload berkas serah terima"/>
 		                    <div id="berkas-serah-terima"></div>
 		                </div>
-		            </div>
+		            </div> */ ?>
 
 		            <div class="form-group">
 		                <label class="control-label col-xs-4" >NOTES</label>
@@ -596,6 +680,47 @@ function validate(form)
     else {
         return confirm('Confirm proses disposal ?');
     }
+}
+
+function delete_berkas(kode_asset_ams,file_category)
+{
+	//alert(file_category);
+	// AJAX DELETE BERKAS DI TR_DISPOSAL_TEMP_FILE
+	var param = $(this).serialize();
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+    $.ajax({
+        url: "{{ url('disposal/delete_berkas_temp') }}/",
+        method: "GET",
+        //data: param,
+        data: param+"&kode_asset_ams="+kode_asset_ams+"&file_category="+file_category,
+        beforeSend: function() {
+            jQuery('.loading-event').fadeIn();
+        },
+        success: function(result) 
+        {
+        	//alert(result.status);
+        	if(result.status)
+        	{
+        		$("#file-berkas-"+kode_asset_ams+"").hide();
+    		}
+    		else
+    		{
+    			notify({
+                    type: 'warning',
+                    message: result.message
+                });
+    		}
+        },
+        complete: function() {
+            jQuery('.loading-event').fadeOut();
+        }
+    });
+
+	return false;
 }
 
 </script>
