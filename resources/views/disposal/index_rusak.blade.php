@@ -398,7 +398,7 @@
 
 										".$edit_hp."
 
-										<a href='".url('/disposal-rusak/delete_rusak/'.$v->KODE_ASSET_AMS.'')."' id='delete-data' idcontent='{$v->KODE_ASSET_SAP}' class='btn btn-icon-toggle' title='Delete Data' data-toggle='modal'>
+										<a href='".url('/disposal-rusak/delete_rusak/'.$v->KODE_ASSET_AMS.'')."' class='btn btn-icon-toggle' title='Delete Data'>
 											<i class='fa fa-trash'></i></a>
 								</td>
 								</tr>";

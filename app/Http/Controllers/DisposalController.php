@@ -139,10 +139,28 @@ class DisposalController extends Controller
 
 	function remove($kode_asset_ams)
     {	
-		
-		DB::DELETE(" DELETE FROM TR_DISPOSAL_TEMP WHERE KODE_ASSET_AMS = '{$kode_asset_ams}' ");
-		DB::DELETE(" DELETE FROM TR_DISPOSAL_TEMP_FILE WHERE KODE_ASSET_AMS = '{$kode_asset_ams}' ");
-        return Redirect::to('/disposal-penjualan');
+		//echo $kode_asset_ams; die();
+
+		DB::beginTransaction();
+
+		try 
+		{
+
+			DB::DELETE(" DELETE FROM TR_DISPOSAL_TEMP WHERE KODE_ASSET_AMS = '{$kode_asset_ams}' ");
+			DB::DELETE(" DELETE FROM TR_DISPOSAL_TEMP_FILE WHERE KODE_ASSET_AMS = '{$kode_asset_ams}' ");
+
+			DB::commit();
+
+			Session::flash('message', 'Success delete data disposal! (KODE AMS : '.$kode_asset_ams.') ');
+			return Redirect::to('/disposal-penjualan');
+		} 
+		catch (\Exception $e) 
+		{
+			DB::rollback();
+			Session::flash('message', $e->getMessage()); 
+			return Redirect::to('/disposal-penjualan');
+		}
+
     }
 
     public function index_hilang()
@@ -220,10 +238,27 @@ class DisposalController extends Controller
 
 	function remove_hilang($kode_asset_ams)
     {	
-		DB::DELETE(" DELETE FROM TR_DISPOSAL_TEMP WHERE KODE_ASSET_AMS = '{$kode_asset_ams}' ");
-		DB::DELETE(" DELETE FROM TR_DISPOSAL_TEMP_FILE WHERE KODE_ASSET_AMS = '{$kode_asset_ams}' ");
 
-        return Redirect::to('/disposal-hilang');
+		DB::beginTransaction();
+
+		try 
+		{
+
+			DB::DELETE(" DELETE FROM TR_DISPOSAL_TEMP WHERE KODE_ASSET_AMS = '{$kode_asset_ams}' ");
+			DB::DELETE(" DELETE FROM TR_DISPOSAL_TEMP_FILE WHERE KODE_ASSET_AMS = '{$kode_asset_ams}' ");
+
+			DB::commit();
+
+			Session::flash('message', 'Success delete data disposal! (KODE AMS : '.$kode_asset_ams.') ');
+			return Redirect::to('/disposal-hilang');
+		} 
+		catch (\Exception $e) 
+		{
+			DB::rollback();
+			Session::flash('message', $e->getMessage()); 
+			return Redirect::to('/disposal-hilang');
+		}
+
     }
 
     function check_asset($kode_asset_ams,$jenis_pengajuan)
@@ -587,9 +622,25 @@ class DisposalController extends Controller
 
     function remove_rusak($kode_asset_ams)
     {	
-		DB::DELETE(" DELETE FROM TR_DISPOSAL_TEMP WHERE KODE_ASSET_AMS = '{$kode_asset_ams}' ");
-		DB::DELETE(" DELETE FROM TR_DISPOSAL_TEMP_FILE WHERE KODE_ASSET_AMS = '{$kode_asset_ams}' ");
-        return Redirect::to('/disposal-rusak');
+    	DB::beginTransaction();
+
+		try 
+		{
+
+			DB::DELETE(" DELETE FROM TR_DISPOSAL_TEMP WHERE KODE_ASSET_AMS = '{$kode_asset_ams}' ");
+			DB::DELETE(" DELETE FROM TR_DISPOSAL_TEMP_FILE WHERE KODE_ASSET_AMS = '{$kode_asset_ams}' ");
+
+			DB::commit();
+
+			Session::flash('message', 'Success delete data disposal! (KODE AMS : '.$kode_asset_ams.') ');
+			return Redirect::to('/disposal-rusak');
+		} 
+		catch (\Exception $e) 
+		{
+			DB::rollback();
+			Session::flash('message', $e->getMessage()); 
+			return Redirect::to('/disposal-rusak');
+		}
     }
 
     function get_ac_awal($kode_asset_ams)
