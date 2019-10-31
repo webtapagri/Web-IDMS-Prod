@@ -782,16 +782,6 @@ class DisposalController extends Controller
 					return Redirect::to('/disposal-hilang');
 			}
 
-			/*
-			// #1 VALIDASI SIZE DOC MAX 1 MB
-			$max_docsize = 1000000;
-			if( $_FILES['serah_terima']['size'] > $max_docsize )
-			{
-				Session::flash('alert', 'Gagal upload '.$file_name.' ('.$file_category_label.'), ukuran file maksimal 1MB'); 
-				return Redirect::to('/disposal-hilang');
-			}
-			*/
-
 			$file_upload = base64_encode(file_get_contents(addslashes($_FILES['serah_terima']['tmp_name'])));
 
 			// #2 VALIDASI FILE UPLOAD EXIST
@@ -916,7 +906,7 @@ class DisposalController extends Controller
     	
     	if( @$_FILES[''.$desc_code.'']['name'] != '')
     	{
-    		$file_upload = base64_encode(file_get_contents(addslashes($_FILES[''.$desc_code.'']['tmp_name'])));
+  
 			$file_name = str_replace(" ", "_", $_FILES[''.$desc_code.'']['name']);
 			$user_id = Session::get('user_id');
 			$file_category = $desc_code;
@@ -938,15 +928,7 @@ class DisposalController extends Controller
 					return Redirect::to('/disposal-'.$tipe.'');
 			}
 
-			/*
-			// #1 VALIDASI SIZE DOC MAX 1 MB
-			$max_docsize = 1000000;
-			if( $_FILES[''.$desc_code.'']['size'] > $max_docsize )
-			{
-				Session::flash('alert', 'Gagal upload '.$file_name.' ('.$file_category_label.'), ukuran file maksimal 1MB'); 
-				return Redirect::to('/disposal-'.$tipe.'');
-			}
-			*/
+			$file_upload = base64_encode(file_get_contents(addslashes($_FILES[''.$desc_code.'']['tmp_name'])));
 
 			// #2 VALIDASI FILE UPLOAD EXIST
 			$validasi_file_exist = $this->validasi_file_exist($req['kode_asset_ams'],$file_category);
@@ -1036,14 +1018,6 @@ class DisposalController extends Controller
 				Session::flash('alert', 'Gagal upload '.$file_name.' ('.$file_category_label.'), ukuran file 0 MB'); 
 					return Redirect::to('/disposal-rusak');
 			}
-
-			/* // #1 VALIDASI SIZE DOC MAX 1 MB
-			$max_docsize = 1000000;
-			if( $_FILES['serah_terima']['size'] > $max_docsize )
-			{
-				Session::flash('alert', 'Gagal upload '.$file_name.' ('.$file_category_label.'), ukuran file maksimal 1MB'); 
-				return Redirect::to('/disposal-rusak');
-			}*/
 
 			$file_upload = base64_encode(file_get_contents(addslashes($_FILES['serah_terima']['tmp_name'])));
 
