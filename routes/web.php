@@ -102,6 +102,9 @@ Route::match(['get', 'post'], 'grid-asset-mutasi', [
     'as' => 'get.grid_asset_mutasi',
     'uses' => 'MutasiController@dataGridAssetMutasi'
 ]);
+Route::get('/mutasi/list-upload/{kode_asset_ams}/{jenis_pengajuan}', 'MutasiController@list_file_category')->name('kode_asset_ams');
+Route::post('/mutasi/upload_berkas_amp', 'MutasiController@upload_berkas_amp');
+Route::post('/mutasi/add_temp', 'MutasiController@add_temp');
 
 /* USER SETTINGS */
 //Route::get('/', 'HomeController@index')->name('home');
@@ -312,6 +315,7 @@ Route::get('/disposal/view-berkas-detail/{kode_asset_ams}/{file_category}', 'Dis
 Route::get('/disposal/list-kategori-upload/{kode_asset_ams}/{jenis_pengajuan}', 'DisposalController@list_file_category')->name('kode_asset_ams');
 Route::get('/disposal/view-berkas-notes/{kode_asset_ams}', 'DisposalController@berkas_notes')->name('kode_asset_ams');
 Route::get('/disposal/view-berkas-by-type/{kode_asset_ams}/{file_category}', 'DisposalController@file_download')->name('kode_asset_ams');
+Route::get('/disposal/delete_berkas_temp','DisposalController@delete_berkas_temp');
 /* END DISPOSAL */
 
 

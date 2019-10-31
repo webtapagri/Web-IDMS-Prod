@@ -1,3 +1,27 @@
+<?php //echo "2<pre>"; print_r($data['data']); die(); 
+/*
+Array
+(
+    [0] => stdClass Object
+        (
+            [ID] => 1
+            [KODE_ASSET_AMS] => 5240100049
+            [NAMA_ASSET] => BIN CONTAINER KAP. 5 TON
+            [ASSET_CONTROLLER] => HT
+            [BA_PEMILIK_ASSET_COMPANY] => 52
+            [BA_PEMILIK_ASSET] => 5221
+            [LOKASI_BA_CODE_COMPANY] => 52
+            [LOKASI_BA_DESCRIPTION] => 5221-SLE ESTATE
+            [TUJUAN_COMPANY] => 52
+            [TUJUAN] => 5211
+            [JENIS_PENGAJUAN] => amp
+            [CREATED_BY] => 22
+            [CREATED_AT] => 2019-10-30 15:12:58
+        )
+)
+*/
+?>
+
 @extends('adminlte::page')
 @section('title', 'FAMS - Request')
 
@@ -40,6 +64,8 @@
                             <div class="col-md-2">
                                 <label>NAMA ASSET </label>
                                 <input type="text" class="form-control input-sm" name="detail_nama_asset" id="detail_nama_asset" placeholder="Nama Asset" value="" readonly="readonly">
+                                <br/>
+                                <!--input type="file" id="berkas_asset" name="berkas_asset" placeholder="Upload Berkas"-->
                             </div>
                             <div class="col-md-2">
                                 <label>ASSET CONTROLLER </label>
@@ -61,7 +87,7 @@
                                 <label>TUJUAN <sup style="color:red">*</sup></label>
                                 <input type="text" class="form-control input-sm" name="detail_tujuan_company" id="detail_tujuan_company" placeholder="Tujuan Company" value="" readonly="readonly">
                                 <br/>
-                                <input type="text" class="form-control input-sm" name="detail_tujuan_area" id="detail_tujuan_area" placeholder="Tujuan Business Area">
+                                <input type="text" class="form-control input-sm" name="detail_tujuan_area" id="detail_tujuan_area" placeholder="Tujuan Business Area" required="required">
                             </div>
                             <div class="col-md-1">
                                 <label>&nbsp;</label>
@@ -81,9 +107,35 @@
                                         <th>LOKASI</th>
                                         <th>TUJUAN</th>
                                     </tr>
-                                    <tr>
-                                        <td colspan="8" style="text-align:center;font-size: 12px;color: #808484"><br>Belum ada data </td>
-                                    </tr>
+                                    
+                                    <?php 
+
+                                        if(!empty($data['data']))
+                                        {
+                                            $l = "";
+                                            foreach($data['data'] as $k => $v)
+                                            {
+                                                $l .= "<tr>";
+                                                $l .= "<td>".$v->KODE_ASSET_AMS."</td>";
+                                                $l .= "<td>".$v->NAMA_ASSET."</td>";
+                                                $l .= "<td>".$v->ASSET_CONTROLLER."</td>";
+                                                $l .= "<td>".$v->BA_PEMILIK_ASSET_COMPANY."</td>";
+                                                $l .= "<td>".$v->LOKASI_BA_CODE_COMPANY."</td>";
+                                                $l .= "<td>".$v->TUJUAN_COMPANY."</td>";
+                                                $l .= "</tr>";
+                                            }
+                                            echo $l;
+                                        }
+                                        else
+                                        {
+                                    ?>
+                                        <tr>
+                                            <td colspan="8" style="text-align:center;font-size: 12px;color: #808484"><br>Belum ada data </td>
+                                        </tr>
+                                    <?php
+                                        }
+                                    ?>
+                                    
                                 </table>
                             </div>
                         </div>
@@ -144,6 +196,51 @@
                 <button type="button" class="btn btn-flat btn-default" data-dismiss="modal">Close</button>
             </div-->
         </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal_upload_berkas" xtabindex="-1" role="dialog" aria-labelledby="largeModal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+                <h3 class="modal-title" id="myModalLabel">Upload Berkas</h3>
+            </div>
+            
+            <form id="form-detil" name="form-detil" class="form-horizontal" method="POST" action="{{ url('/mutasi/upload_berkas_amp') }}" enctype="multipart/form-data">
+
+                {!! csrf_field() !!}
+                <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                <input type="hidden" class="form-control" id="tipe" name="tipe" value="2"/>
+                
+                <div class="modal-body">
+
+                    <div class="form-group">
+                        <label class="control-label col-xs-4" >KODE ASSET AMS</label>
+                        <div class="col-xs-8">
+                            <input type="text" class="form-control" id="kode_asset_ams" name="kode_asset_ams" value="" readonly="readonly" />
+                        </div>
+                    </div>
+
+                    <span id="list-mutasi-upload"></span>
+
+                    <div class="form-group">
+                        <label class="control-label col-xs-4" >NOTES</label>
+                        <div class="col-xs-8">
+                            <textarea class="form-control" id="notes_asset" name="notes_asset" required></textarea>
+                        </div>
+                    </div>
+
+                </div>
+                    
+                <div class="modal-footer">
+                    <button class="btn btn-flat btn-lg btn-info" data-dismiss="modal" aria-hidden="true">Cancel</button>
+                    <input type="submit" class="btn btn-flat btn-lg btn-danger" id="" value="Upload">
+                </div>
+            </form>
+
+        </div>  
     </div>
 </div>
 
@@ -537,7 +634,30 @@
         {
             $('#data-table-asset').dataTable().fnDestroy();
         });
+        $('#request-item-table').on('click', 'a', function (e) 
+        {
+            var idcontent = $( this ).attr("idcontent"); //alert(idcontent);return false;
+            var jenis_pengajuan = 'amp';
+            $("#form-detil #kode_asset_ams").val(idcontent);
 
+            //ALL BERKAS
+            $.ajax({
+                type: 'GET',
+                url: "{{ url('mutasi/list-upload') }}/"+idcontent+"/"+jenis_pengajuan,
+                data: "",
+                //async: false,
+                dataType: 'html',
+                success: function(data) 
+                {
+                    $("#list-mutasi-upload").html(data);
+                },
+                error: function(x) 
+                {                           
+                    alert("Error: "+ "\r\n\r\n" + x.responseText);
+                }
+            });
+
+        });
     });
 
     function save(status) {
@@ -683,7 +803,77 @@
 
     }
 
-    function addItem() 
+    function addItem()
+    {
+        //alert("add item"); return false;
+
+        var id = makeInt(5);
+     
+        var kode_aset = $("#detail_kode_aset");
+        var detail_nama_asset = $("#detail_nama_asset");
+        var detail_ac = $("#detail_ac");
+        var detail_milik_company = $("#detail_milik_company");
+        var detail_milik_area = $("#detail_milik_area");
+        var detail_lokasi_company = $("#detail_lokasi_company");
+        var detail_lokasi_area = $("#detail_lokasi_area");
+        var detail_tujuan_company = $("#detail_tujuan_company");
+        var detail_tujuan_area = $("#detail_tujuan_area");
+        var jenis_pengajuan = 'amp';
+
+        if( detail_tujuan_area.val() == '' )
+        {
+            notify({
+                type: 'warning',
+                message: 'Tujuan Business Area is required'
+            });
+            return false;
+        }
+        
+        //if(confirm('Confirm Add ?')){
+            var param = '';
+
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                url: "{{ url('mutasi/add_temp') }}",
+                method: "POST",
+                data: param+"&jenis="+jenis_pengajuan+"&kode_asset_ams="+kode_aset.val()+"&nama_aset="+detail_nama_asset.val()+"&asset_controller="+detail_ac.val()+"&milik_company="+detail_milik_company.val()+"&milik_area="+detail_milik_area.val()+"&lokasi_company="+detail_lokasi_company.val()+"&lokasi_area="+detail_lokasi_area.val()+"&tujuan_company="+detail_tujuan_company.val()+"&tujuan_area="+detail_tujuan_area.val(),
+                beforeSend: function() {
+                    $('.loading-event').fadeIn();
+                },
+                success: function(result) 
+                {
+                    //alert(result.status); return false;
+                    if (result.status) 
+                    {
+                        //$("#approve-disposal-modal").modal("hide");
+                        //$("#data-table").DataTable().ajax.reload();
+                        notify({
+                            type: 'success',
+                            message: result.message
+                        });
+                        setTimeout(reload_page, 1000); 
+                    } 
+                    else 
+                    {
+                        notify({
+                            type: 'warning',
+                            message: result.message
+                        });
+                    }
+                    
+                },
+                complete: function() {
+                    jQuery('.loading-event').fadeOut();
+                }
+            });
+        //}
+    }
+
+    function addItem_v1() 
     {
         if (validateItem()) 
         {
@@ -698,6 +888,28 @@
             var detail_lokasi_area = $("#detail_lokasi_area");
             var detail_tujuan_company = $("#detail_tujuan_company");
             var detail_tujuan_area = $("#detail_tujuan_area");
+
+            if( detail_tujuan_area.val() == '' )
+            {
+                notify({
+                    type: 'warning',
+                    message: 'Tujuan Business Area is required'
+                });
+                return false;
+            }
+
+            //var detail_berkas = $("#berkas_asset");
+
+            /*
+            $('#berkas_asset').change(function(e)
+            {
+                var fileName = e.target.files[0].name;
+                alert('The file "' + fileName +  '" has been selected.');
+            });
+            */
+            //alert(detail_berkas); 
+            //console.log(detail_berkas[0].files[0].name); return false;
+            //console.log(detail_berkas[0].files[0].size); return false;
 
             if(validate_additem(detail_ac,kode_aset,detail_milik_area,request_item))
             {
@@ -847,7 +1059,7 @@
                 item += "<td>" + val.detail_lokasi_company + " / " + val.detail_lokasi_area + "</td>";
                 item += "<td>" + val.detail_tujuan_company + " / " + val.detail_tujuan_area + "</td>";
                 //item += "<td>" + val.bisnis_area + "</td>";
-                item += '<td style="text-align:center" rowspan="rowspan"><button type="button" class="btn btn-flat btn-xs btn-danger" onClick="remove(\'' + val.id + '\');"><i class="fa fa-trash"></i></button></td>';
+                item += '<td style="text-align:center" rowspan="rowspan"><a href="#" id="edit-berkas" idcontent="'+val.kode_aset+'" class="btn btn-icon-toggle" title="Edit Berkas" data-toggle="modal" data-target="#modal_upload_berkas"><i class="fa fa-upload"></i></a>&nbsp;<button type="button" class="btn btn-flat btn-xs btn-danger" onClick="remove(\'' + val.id + '\');"><i class="fa fa-trash"></i></button></td>';
                 item += "</tr>";
             }
         });
@@ -905,8 +1117,6 @@
         } else {
             jQuery("input[name='asset_condition']").prop("checked", false);
         }
-
-
 
         jQuery('#asset_location').val(item.asset_location);
         jQuery('#asset_location').trigger('change');
