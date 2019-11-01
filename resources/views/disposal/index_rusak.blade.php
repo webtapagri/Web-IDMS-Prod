@@ -92,23 +92,6 @@
 					    }
 					});
 
-					//BERKAS SERAH TERIMA
-					$.ajax({
-						type: 'GET',
-						url: "{{ url('disposal/view-berkas-serah-terima') }}/"+idcontent,
-						data: "",
-						//async: false,
-						dataType: 'html',
-						success: function(data) 
-						{
-							$("#berkas-serah-terima").html(data);
-						},
-					    error: function(x) 
-					    {                           
-					        alert("Error: "+ "\r\n\r\n" + x.responseText);
-					    }
-					});  
-
 					//BERKAS NOTES
 					$.ajax({
 						type: 'GET',
@@ -248,24 +231,7 @@
 					    {                           
 					        alert("Error: "+ "\r\n\r\n" + x.responseText);
 					    }
-					});
-
-					//BERKAS SERAH TERIMA
-					$.ajax({
-						type: 'GET',
-						url: "{{ url('disposal/view-berkas-serah-terima') }}/"+idcontent,
-						data: "",
-						//async: false,
-						dataType: 'html',
-						success: function(data) 
-						{
-							$("#berkas-serah-terima").html(data);
-						},
-					    error: function(x) 
-					    {                           
-					        alert("Error: "+ "\r\n\r\n" + x.responseText);
-					    }
-					});  
+					}); 
 
 					//BERKAS NOTES
 					$.ajax({
@@ -633,23 +599,6 @@ $('#table-disposal-rusak').on('click', 'a', function (e)
 	        alert("Error: "+ "\r\n\r\n" + x.responseText);
 	    }
 	});
-
-	//BERKAS SERAH TERIMA
-	$.ajax({
-		type: 'GET',
-		url: "{{ url('disposal/view-berkas-serah-terima') }}/"+idcontent,
-		data: "",
-		//async: false,
-		dataType: 'html',
-		success: function(data) 
-		{
-			$("#berkas-serah-terima").html(data);
-		},
-	    error: function(x) 
-	    {                           
-	        alert("Error: "+ "\r\n\r\n" + x.responseText);
-	    }
-	});  
 
 	//BERKAS NOTES
 	$.ajax({

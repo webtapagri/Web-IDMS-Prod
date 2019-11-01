@@ -139,7 +139,6 @@ class DisposalController extends Controller
 
 	function remove($kode_asset_ams)
     {	
-		//echo $kode_asset_ams; die();
 
 		DB::beginTransaction();
 
@@ -423,7 +422,6 @@ class DisposalController extends Controller
 						exit;
 					}
 
-					
 					// #4 VALIDASI BERKAS MASING2 ASET
 					$vbks = $this->validasi_berkas_peraset($v->KODE_ASSET_AMS);
 					if( $vbks['result'] != 1 )
@@ -496,7 +494,7 @@ class DisposalController extends Controller
     {
         $sql = "SELECT count(*) AS total FROM TR_DISPOSAL_ASSET WHERE YEAR(tanggal_reg) = YEAR(CURDATE()) AND MONTH(tanggal_reg) = MONTH(curdate())";
         $data = DB::select($sql);
-        $maxno = $data[0]->total+1;
+        $maxno = $data[0]->total;
         $year= date('y');
         $month = date('m');
         $year=$year.'.';
@@ -802,7 +800,10 @@ class DisposalController extends Controller
 		{
 			foreach($data as $k => $v)
 			{
-				$desc_code = str_replace(" ", "_", $v->DESCRIPTION);
+				$dc = explode("-",$v->DESCRIPTION);
+				$desc_code = str_replace(" ", "_", $dc[0]);
+				//echo $desc_code;
+				//$desc_code = str_replace(" ", "_", $v->DESCRIPTION);
 				//echo "1<pre>"; print_r($v);
 				$this->upload_multiple_berkas($req, $desc_code);
 			}
@@ -942,7 +943,8 @@ class DisposalController extends Controller
 
     function upload_multiple_berkas($req, $desc_code)
     {
-    	//echo "1<pre>"; print_r($req); die();
+    	//echo "2<pre>"; print_r($_FILES); die();
+    	
     	if( @$req['tipe'] == 2 )
     	{
     		$tipe = 'hilang';
@@ -957,7 +959,6 @@ class DisposalController extends Controller
     	
     	if( @$_FILES[''.$desc_code.'']['name'] != '')
     	{
-  
 			$file_name = str_replace(" ", "_", $_FILES[''.$desc_code.'']['name']);
 			$user_id = Session::get('user_id');
 			$file_category = $desc_code;
@@ -1040,7 +1041,8 @@ class DisposalController extends Controller
 		{
 			foreach($data as $k => $v)
 			{
-				$desc_code = str_replace(" ", "_", $v->DESCRIPTION);
+				$dc = explode("-",$v->DESCRIPTION);
+				$desc_code = str_replace(" ", "_", $dc[0]);
 				$this->upload_multiple_berkas($req, $desc_code);
 			}
 		}
@@ -1137,7 +1139,9 @@ class DisposalController extends Controller
 		{
 			foreach($data as $k => $v)
 			{
-				$desc_code = str_replace(" ", "_", $v->DESCRIPTION);
+				$dc = explode("-",$v->DESCRIPTION);
+				$desc_code = str_replace(" ", "_", $dc[0]);
+				//$desc_code = str_replace(" ", "_", $v->DESCRIPTION);
 				$this->upload_multiple_berkas($req, $desc_code);
 			}
 		}
@@ -1439,35 +1443,36 @@ WHERE b.KODE_ASSET_AMS = '".$kode_asset_ams."' AND b.FILE_CATEGORY = '".$file_ca
     		$mandatory_label = "";
     		foreach($data as $k => $v)
     		{
-    			$DESCRIPTION_CODE = str_replace(" ", "_", $v->DESCRIPTION);
+    			$dc = explode("-",$v->DESCRIPTION);
+
+    			$DESCRIPTION_CODE = str_replace(" ", "_", $dc[0]);
 
     			$detail = DB::SELECT("SELECT * FROM TR_DISPOSAL_TEMP_FILE WHERE FILE_CATEGORY = '".$DESCRIPTION_CODE."' AND KODE_ASSET_AMS = '".$kode_asset_ams."' ");
 				$total_detail = count($detail); 
 
-    			if( $v->DESCRIPTION == 'berita acara rusak' || $v->DESCRIPTION == 'berita acara hilang' )
-    			{
-    				if( $total_detail == 0 )
+				if( !empty($dc[1]) )
+				{
+					if( $total_detail == 0 )
     				{	
     					$mandatory = 'required';
     					$mandatory_label = '<span style="color:red">*</span>';	
     				}
     				else
     				{
-    					$mandatory = "";
-    					$mandatory_label = "";
+    					$mandatory = '';
+    					$mandatory_label = '<span style="color:red">*</span>';
     				}
-    				
-    			}
-    			else
-    			{
-    				$mandatory = "";
-    				$mandatory_label = "";
-    			}
+				}
+				else
+				{
+					$mandatory = '';
+    				$mandatory_label = '';
+				}
 
         		$l .= '<div class="form-group">
-			                <label class="control-label col-xs-4" >'.strtoupper($v->DESCRIPTION).' '.$mandatory_label.'</label>
+			                <label class="control-label col-xs-4" >'.strtoupper(trim($dc[0])).' '.$mandatory_label.'</label>
 			                <div class="col-xs-8">
-			                    <input type="file" class="form-control" id="'.$DESCRIPTION_CODE.'" name="'.$DESCRIPTION_CODE.'" value="" placeholder="Upload '.$v->DESCRIPTION.'" '.$mandatory.'/>';
+			                    <input type="file" class="form-control" id="'.$DESCRIPTION_CODE.'" name="'.$DESCRIPTION_CODE.'" value="" placeholder="Upload '.$DESCRIPTION_CODE.'" '.$mandatory.'/>';
 
 			    		if( !empty($detail) )
 						{
@@ -1512,17 +1517,6 @@ WHERE b.KODE_ASSET_AMS = '".$kode_asset_ams."' AND b.FILE_CATEGORY = '".$file_ca
     function delete_berkas_temp(Request $request)
     {
     	$req = $request->all();
-    	//echo "1<pre>"; print_r($req);die();
-        /*
-        	1
-			Array
-			(
-			    [kode_asset_ams] => 4640100034
-			    [file_category] => berita_acara_penjualan
-			)
-        */
-
-        //$total_asset_now = 100; //$this->getInfo;
 
         DB::beginTransaction();
 
@@ -1530,10 +1524,7 @@ WHERE b.KODE_ASSET_AMS = '".$kode_asset_ams."' AND b.FILE_CATEGORY = '".$file_ca
         {
             $user_id = Session::get('user_id');
 
-            DB::DELETE(" DELETE FROM TR_DISPOSAL_TEMP_FILE WHERE KODE_ASSET_AMS = {$request->kode_asset_ams} AND FILE_CATEGORY = '{$request->file_category}' ");
-
-            //$sql = " UPDATE TR_REG_ASSET_DETAIL SET DELETED = 'X', UPDATED_AT = current_timestamp(), UPDATED_BY = '{$user_id}' WHERE ID = $id ";
-            //DB::UPDATE($sql);    
+            DB::DELETE(" DELETE FROM TR_DISPOSAL_TEMP_FILE WHERE KODE_ASSET_AMS = {$request->kode_asset_ams} AND FILE_CATEGORY = '{$request->file_category}' ");    
 
             DB::commit();
             return response()->json(['status' => true, "message" => 'Data is successfully updated']);

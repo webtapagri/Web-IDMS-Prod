@@ -98,23 +98,6 @@
 					    {                           
 					        alert("Error: "+ "\r\n\r\n" + x.responseText);
 					    }
-					});
-
-					//BERKAS SERAH TERIMA
-					$.ajax({
-						type: 'GET',
-						url: "{{ url('disposal/view-berkas-serah-terima') }}/"+idcontent,
-						data: "",
-						//async: false,
-						dataType: 'html',
-						success: function(data) 
-						{
-							$("#berkas-serah-terima").html(data);
-						},
-					    error: function(x) 
-					    {                           
-					        alert("Error: "+ "\r\n\r\n" + x.responseText);
-					    }
 					});  
 
 					//BERKAS NOTES
@@ -257,23 +240,6 @@
 					        alert("Error: "+ "\r\n\r\n" + x.responseText);
 					    }
 					});
-
-					//BERKAS SERAH TERIMA
-					$.ajax({
-						type: 'GET',
-						url: "{{ url('disposal/view-berkas-serah-terima') }}/"+idcontent,
-						data: "",
-						//async: false,
-						dataType: 'html',
-						success: function(data) 
-						{
-							$("#berkas-serah-terima").html(data);
-						},
-					    error: function(x) 
-					    {                           
-					        alert("Error: "+ "\r\n\r\n" + x.responseText);
-					    }
-					});  
 
 					//BERKAS NOTES
 					$.ajax({
@@ -508,49 +474,6 @@
 
 		            <span id="list-kategori-upload"></span>
 
-		            <?php 
-
-			            /* if(!empty($data['list_kategori_upload']))
-			            {
-			            	$l = '';
-			            	foreach( $data['list_kategori_upload'] as $k => $v )
-			            	{
-								$DESCRIPTION_CODE = str_replace(" ", "_", $v['DESCRIPTION']);
-
-			            		$l .= '<div class="form-group">
-							                <label class="control-label col-xs-4" >'.strtoupper($v['DESCRIPTION']).'</label>
-							                <div class="col-xs-8">
-							                    <input type="file" class="form-control" id="'.$DESCRIPTION_CODE.'" name="'.$DESCRIPTION_CODE.'" value="" placeholder="Upload '.$v['DESCRIPTION'].'"/>';
-							                if( !empty($v['DETAIL']) )
-											{
-												$kode_asset_ams = '1240100056';
-												foreach( $v['DETAIL'] as $kk => $vv )
-												{
-													if( $kode_asset_ams == $vv->KODE_ASSET_AMS )
-													{
-														$l .= '<a href="'.url('disposal/view-berkas/'.$vv->KODE_ASSET_AMS.'').'" target="_blank"><i class="fa fa-cloud-download"></i> '.$vv->FILE_NAME.'</a>';
-													}
-												}
-											}
-
-							    $l .= '</div>
-							            </div>';
-			            	}
-			            	echo $l;
-			            } */
-
-		            ?>
-
-		            <?php /*
-		            <div class="form-group">
-		                <label class="control-label col-xs-4" >SERAH TERIMA</label>
-		                <div class="col-xs-8">
-		                    <input type="file" class="form-control" id="serah_terima" name="serah_terima" value="" placeholder="Upload berkas serah terima"/>
-		                    <div id="berkas-serah-terima"></div>
-		                </div>
-		            </div>
-		            */ ?>
-
 		            <div class="form-group">
 		                <label class="control-label col-xs-4" >NOTES</label>
 		                <div class="col-xs-8">
@@ -653,23 +576,6 @@ $('#table-disposal-hilang').on('click', 'a', function (e)
 	        alert("Error: "+ "\r\n\r\n" + x.responseText);
 	    }
 	});
-
-	//BERKAS SERAH TERIMA
-	$.ajax({
-		type: 'GET',
-		url: "{{ url('disposal/view-berkas-serah-terima') }}/"+idcontent,
-		data: "",
-		//async: false,
-		dataType: 'html',
-		success: function(data) 
-		{
-			$("#berkas-serah-terima").html(data);
-		},
-	    error: function(x) 
-	    {                           
-	        alert("Error: "+ "\r\n\r\n" + x.responseText);
-	    }
-	});  
 
 	//BERKAS NOTES
 	$.ajax({
