@@ -54,7 +54,18 @@ class FamsEmail extends Mailable
                    ->with(
                     [
                         'nama' => 'PEMBERITAHUAN CREATE DOCUMENT SAP',
-                        'website' => 'http://amsdev.tap-agri.com/',
+                        'website' => 'http://ams.tap-agri.com/',
+                    ]);
+        }
+        else if( $this->data->jenis_pemberitahuan == 'DISPOSAL' )
+        {
+            return $this->from('no-reply@tap-agri.com')
+                   ->subject("Permohonan Disposal Persetujuan Aset ( {$this->data->noreg[0]} )")
+                   ->view('email.email_disposal')
+                   ->with(
+                    [
+                        'nama' => 'PEMBERITAHUAN DISPOSAL DOCUMENT',
+                        'website' => 'http://ams.tap-agri.com/',
                     ]);
         }
         else
@@ -63,8 +74,8 @@ class FamsEmail extends Mailable
                    ->view('email.email_template')
                    ->with(
                     [
-                        'nama' => 'Fams Website',
-                        'website' => 'http://amsdev.tap-agri.com/',
+                        'nama' => 'FAMS Website',
+                        'website' => 'http://ams.tap-agri.com/',
                     ]);
         }
 

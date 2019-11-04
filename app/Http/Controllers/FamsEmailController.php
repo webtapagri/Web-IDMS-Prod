@@ -17,6 +17,19 @@ class FamsEmailController extends Controller
 		$req = $request->all();
 		$no_registrasi = $req['noreg'];
 		$document_code = str_replace("-", "/", $no_registrasi); 
+		$jenis_document = "";
+		
+		if (strpos($document_code, 'PDFA') !== false) 
+		{
+			$jenis_document = 'PENDAFTARAN';
+		}
+		else if (strpos($document_code, 'DSPA') !== false) 
+		{ 
+			$jenis_document = "DISPOSAL";}
+		else
+		{
+			$jenis_document = "MUTASI";
+		}
 	
 		// 1. DATA ASSET
 		$sql = " SELECT distinct(a.document_code) as document_code, a.KODE_MATERIAL, a.NAMA_MATERIAL, a.LOKASI_BA_CODE, a.PO_TYPE, a.NO_PO, a.BA_PEMILIK_ASSET, b.DESCRIPTION as LOKASI_BA_CODE_DESC, c.DESCRIPTION as BA_PEMILIK_ASSET_DESC   
@@ -25,10 +38,6 @@ class FamsEmailController extends Controller
 					LEFT JOIN TM_GENERAL_DATA c ON a.BA_PEMILIK_ASSET = c.DESCRIPTION_CODE AND c.GENERAL_CODE = 'PLANT'
 					WHERE a.document_code = '{$document_code}'
 					order by a.nama_material ";
-		
-		/*$sql2 = " SELECT distinct(document_code) as document_code, KODE_MATERIAL, NAMA_MATERIAL, LOKASI_BA_CODE, PO_TYPE, NO_PO, BA_PEMILIK_ASSET FROM v_email_approval WHERE document_code = '{$document_code}' order by nama_material "; */
-		//$sql1 = " SELECT * FROM v_email_approval WHERE document_code = '{$document_code}' ";
-		
 		$dt = DB::SELECT($sql);
 
 		// 2. HISTORY APPROVAL 
@@ -38,7 +47,7 @@ class FamsEmailController extends Controller
 		// 3. EMAIL TO
 		$data = new \stdClass();
         $data->noreg = array($document_code,1,2);
-        $data->jenis_pemberitahuan = 'PENDAFTARAN';
+        $data->jenis_pemberitahuan = $jenis_document;
         $data->sender = 'TAP Agri';
         $data->datax = $dt;
         $data->history_approval = $dt_history_approval;
