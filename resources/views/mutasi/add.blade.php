@@ -216,7 +216,7 @@ Array
 
                 {!! csrf_field() !!}
                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                <input type="hidden" class="form-control" id="tipe" name="tipe" value="2"/>
+                <input type="hidden" class="form-control" id="tipe" name="tipe" value="amp"/>
                 
                 <div class="modal-body">
 
@@ -660,6 +660,23 @@ Array
                     alert("Error: "+ "\r\n\r\n" + x.responseText);
                 }
             });
+
+            //BERKAS NOTES
+            $.ajax({
+                type: 'GET',
+                url: "{{ url('mutasi/view-berkas-notes') }}/"+idcontent,
+                data: "",
+                //async: false,
+                dataType: 'json',
+                success: function(data) 
+                {
+                    $("#notes_asset").val(data.notes);
+                },
+                error: function(x) 
+                {                           
+                    alert("Error: "+ "\r\n\r\n" + x.responseText);
+                }
+            });  
 
         });
     });
@@ -1608,12 +1625,83 @@ Array
         var conf = confirm("Are you sure you want to delete this data?");
         if (conf == true) 
         {
-            alert(kode_asset_ams);return false;
-            ///request_item[obj] = [];
-            //data_detail[obj] = [];
-            //console.log(request_item);
-            //createItemRequestTable();
+            var param = '';
+
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                url: "{{ url('mutasi/delete_data_temp') }}",
+                method: "POST",
+                data: param+"&kode_asset_ams="+kode_asset_ams,
+                beforeSend: function() {
+                    $('.loading-event').fadeIn();
+                },
+                success: function(result) 
+                {
+                    //alert(result.status); return false;
+                    if (result.status) 
+                    {
+                        notify({
+                            type: 'success',
+                            message: result.message
+                        });
+                        setTimeout(reload_page, 500); 
+                    } 
+                    else 
+                    {
+                        notify({
+                            type: 'warning',
+                            message: result.message
+                        });
+                    }
+                    
+                },
+                complete: function() {
+                    jQuery('.loading-event').fadeOut();
+                }
+            });
+
         }
+    }
+
+    function delete_berkas(kode_asset_ams,file_category)
+    {
+        var param = '';
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        $.ajax({
+            url: "{{ url('mutasi/delete_berkas_temp') }}",
+            method: "POST",
+            data: param+"&kode_asset_ams="+kode_asset_ams+"&file_category="+file_category,
+            beforeSend: function() {
+                $('.loading-event').fadeIn();
+            },
+            success: function(result) 
+            {
+                //alert(result.status); return false;
+                if (result.status) 
+                {
+                    $("#file-berkas-"+kode_asset_ams+"").hide();
+                } 
+                else 
+                {
+                    notify({
+                        type: 'warning',
+                        message: result.message
+                    });
+                }
+                
+            },
+            complete: function() {
+                jQuery('.loading-event').fadeOut();
+            }
+        });
     }
 
 </script>

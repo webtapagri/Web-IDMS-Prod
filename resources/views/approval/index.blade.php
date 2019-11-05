@@ -534,10 +534,18 @@
 
     $(document).ready(function() 
     {
-        <?php 
+        <?php
+
             if($email_noreg != '')
             {
-                echo " approval('{$email_noreg}') ";
+                if (strpos($email_noreg, 'PDFA') !== false) 
+                {
+                    echo " approval('{$email_noreg}') ";
+                }
+                else
+                {
+                    echo " approval_disposal('{$email_noreg}') ";
+                }
             } 
         ?>
 

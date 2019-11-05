@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Http\Request;
 use App\TrUser;
 use function GuzzleHttp\json_encode;
@@ -113,40 +114,6 @@ class MutasiController extends Controller
         $req = $request->all();
         $user_id = Session::get('user_id');
 
-        //echo "1<pre>"; print_r($req); die();
-        //echo "$request_date <br/> <pre>"; print_r($kode_aset); die(); 
-        /*
-        23 May 2019
-        Array
-        (
-            [0] => 121140300120_1_2
-            [1] => 121140300120_3_4
-        )
-
-        */
-
-        /*
-            1<pre>Array
-            (
-                [request_date] => 21 Oct 2019
-                [detail_kode_aset] => 
-                [detail_nama_asset] => 
-                [detail_ac] => 
-                [detail_milik_company] => 
-                [detail_milik_area] => 
-                [detail_lokasi_company] => 
-                [detail_lokasi_area] => 
-                [detail_tujuan_company] => 
-                [detail_tujuan_area] => 
-                [kode_aset] => Array
-                (
-                    [0] => 2160101060_21_2112_NC
-                    [1] => 2110100017_21_2113_NC
-                )
-
-            )
-        */
-
         DB::beginTransaction();
 
         try 
@@ -172,12 +139,20 @@ class MutasiController extends Controller
                     return array('status'=>false,'message'=> 'Proses Gagal, Data sudah pernah diinput (KODE ASSET AMS : '.$KODE_ASSET_AMS.')');
                 }
 
-                //echo $KODE_ASSET_AMS.'<br/>'.$TUJUAN_CODE.'<br/>'.$ASSET_CONTROLLER; 
-
                 DB::INSERT(" INSERT INTO TR_MUTASI_ASSET_DETAIL (NO_REG,KODE_ASSET_AMS,TUJUAN,ASSET_CONTROLLER,CREATED_BY) VALUES ('".$NO_REG."','".$KODE_ASSET_AMS."','".$TUJUAN_CODE."','".$ASSET_CONTROLLER."','".$user_id."') ");
-
             }
-            //die();
+
+            // INSERT FILE UPLOAD DARI TABLE TR_MUTASI_TEMP_FILE
+            $jenis = "amp";
+            $proses_upload_file = $this->proses_upload_file($KODE_ASSET_AMS,$NO_REG,$jenis);
+            if(!$proses_upload_file['status'])
+            {
+                Session::flash('alert', $proses_upload_file['message']);
+                return Redirect::to('/mutasi/create/1');
+            }
+
+            DB::DELETE(" DELETE FROM TR_MUTASI_TEMP WHERE KODE_ASSET_AMS = $KODE_ASSET_AMS ");
+            DB::DELETE(" DELETE FROM TR_MUTASI_TEMP_FILE WHERE KODE_ASSET_AMS = $KODE_ASSET_AMS ");
 
             DB::commit();
 
@@ -295,7 +270,7 @@ class MutasiController extends Controller
     {
         $sql = "SELECT count(*) AS total FROM TR_MUTASI_ASSET WHERE YEAR(CREATED_AT) = YEAR(CURDATE()) AND MONTH(CREATED_AT) = MONTH(curdate())";
         $data = DB::select($sql);
-        $maxno = $data[0]->total+1;
+        $maxno = $data[0]->total;
         $year= date('y');
         $month = date('m');
         $year=$year.'.';
@@ -331,22 +306,48 @@ class MutasiController extends Controller
         
         if(!empty($data))
         {
+            $mandatory = "";
+            $mandatory_label = "";
+
             foreach($data as $k => $v)
             {
-                $DESCRIPTION_CODE = str_replace(" ", "_", $v->DESCRIPTION);
+                $dc = explode("-",$v->DESCRIPTION);
+                $DESCRIPTION_CODE = str_replace(" ", "_", $dc[0]);
+
+                //echo $DESCRIPTION_CODE; die();
+                $detail = DB::SELECT("SELECT * FROM TR_MUTASI_TEMP_FILE WHERE FILE_CATEGORY = '".$DESCRIPTION_CODE."' AND KODE_ASSET_AMS = '".$kode_asset_ams."' ");
+                //echo "1<pre>"; print_r($detail); die();
+                $total_detail = count($detail); 
+
+                if( !empty($dc[1]) )
+                {
+                    if( $total_detail == 0 )
+                    {   
+                        $mandatory = 'required';
+                        $mandatory_label = '<span style="color:red">*</span>';  
+                    }
+                    else
+                    {
+                        $mandatory = '';
+                        $mandatory_label = '<span style="color:red">*</span>';
+                    }
+                }
+                else
+                {
+                    $mandatory = '';
+                    $mandatory_label = '';
+                }
 
                 $l .= '<div class="form-group">
-                            <label class="control-label col-xs-4" >'.strtoupper($v->DESCRIPTION).'</label>
+                            <label class="control-label col-xs-4" >'.strtoupper(trim($dc[0])).' '.$mandatory_label.'</label>
                             <div class="col-xs-8">
-                                <input type="file" class="form-control" id="'.$DESCRIPTION_CODE.'" name="'.$DESCRIPTION_CODE.'" value="" placeholder="Upload '.$v->DESCRIPTION.'"/>';
-                            
-                        $detail = DB::SELECT("SELECT * FROM TR_DISPOSAL_TEMP_FILE WHERE FILE_CATEGORY = '".$DESCRIPTION_CODE."' AND KODE_ASSET_AMS = '".$kode_asset_ams."' ");
+                                <input type="file" class="form-control" id="'.$DESCRIPTION_CODE.'" name="'.$DESCRIPTION_CODE.'" value="" placeholder="Upload '.$v->DESCRIPTION.'" '.$mandatory.'/>';
 
                         if( !empty($detail) )
                         {
                             foreach( $detail as $kk => $vv )
                             {
-                                $l .= '<span id="file-berkas-'.$vv->KODE_ASSET_AMS.'"><a href="'.url('disposal/view-berkas-detail/'.$vv->KODE_ASSET_AMS.'/'.$DESCRIPTION_CODE.'').'" target="_blank">'.$vv->FILE_NAME.'</a> <a href="#"><i class="fa fa-trash del-berkas" onClick="delete_berkas('.$vv->KODE_ASSET_AMS.',\''.$vv->FILE_CATEGORY.'\')"></i></a></span> ';    
+                                $l .= '<span id="file-berkas-'.$vv->KODE_ASSET_AMS.'"><a href="'.url('mutasi/view-berkas-detail/'.$vv->KODE_ASSET_AMS.'/'.$DESCRIPTION_CODE.'').'" target="_blank">'.$vv->FILE_NAME.'</a> <a href="#"><i class="fa fa-trash del-berkas" onClick="delete_berkas('.$vv->KODE_ASSET_AMS.',\''.$vv->FILE_CATEGORY.'\')"></i></a></span> ';    
                             }
                         }
 
@@ -361,7 +362,7 @@ class MutasiController extends Controller
     function upload_berkas_amp(Request $request)
     {
         $req = $request->all();
-        echo "1<pre>"; print_r($req); die();
+        //echo "1<pre>"; print_r($req); die();
 
         //MULTIPLE UPLOAD
         $sql = " SELECT DESCRIPTION FROM TM_GENERAL_DATA WHERE GENERAL_CODE = 'ba_mutasi_upload' AND DESCRIPTION_CODE = 'amp' ";
@@ -371,33 +372,33 @@ class MutasiController extends Controller
         {
             foreach($data as $k => $v)
             {
-                $desc_code = str_replace(" ", "_", $v->DESCRIPTION);
+                $dc = explode("-",$v->DESCRIPTION);
+                $desc_code = str_replace(" ", "_", $dc[0]);
+                //$desc_code = str_replace(" ", "_", $v->DESCRIPTION);
                 //echo "1<pre>"; print_r($v);
                 $this->upload_multiple_berkas($req, $desc_code);
             }
             //die();
         }
         //END MULTIPLE UPLOAD
+
+        Session::flash('message', 'Success upload data! (KODE AMS : '.$request->kode_asset_ams.') ');
+        return Redirect::to('/mutasi/create/1');
     }
 
     function upload_multiple_berkas($req, $desc_code)
-    {
+    {   
         //echo "1<pre>"; print_r($req); die();
-        if( @$req['tipe'] == 2 )
-        {
-            $tipe = 'hilang';
-        }
-        else if( @$req['tipe'] == 3 )
-        {
-            $tipe = 'rusak';
-        }else
-        {
-            $tipe = 'penjualan';
-        }
+        /*
+            [_token] => YVlkZMdIbQaEvlVBxlQlmQQEM7TgXQG4ncWac5OS
+            [tipe] => amp
+            [kode_asset_ams] => 2140100250
+            [notes_asset] => 221
+            [Berita_Serah_Terima] =>
+        */
         
         if( @$_FILES[''.$desc_code.'']['name'] != '')
         {
-            $file_upload = base64_encode(file_get_contents(addslashes($_FILES[''.$desc_code.'']['tmp_name'])));
             $file_name = str_replace(" ", "_", $_FILES[''.$desc_code.'']['name']);
             $user_id = Session::get('user_id');
             $file_category = $desc_code;
@@ -410,20 +411,22 @@ class MutasiController extends Controller
                 if( $_FILES[''.$desc_code.'']['size'] > $max_docsize )
                 {
                     Session::flash('alert', 'Gagal upload '.$file_name.' ('.$file_category_label.'), ukuran file maksimal 1MB'); 
-                    return Redirect::to('/disposal-'.$tipe.'');
+                    return Redirect::to('/mutasi/create/1');
                 }
             }
             else
             {
                 Session::flash('alert', 'Gagal upload '.$file_name.' ('.$file_category_label.'), ukuran file 0 MB'); 
-                    return Redirect::to('/disposal-'.$tipe.'');
+                    return Redirect::to('/mutasi/create/1');
             }
+
+            $file_upload = base64_encode(file_get_contents(addslashes($_FILES[''.$desc_code.'']['tmp_name'])));
 
             // #2 VALIDASI FILE UPLOAD EXIST
             $validasi_file_exist = $this->validasi_file_exist($req['kode_asset_ams'],$file_category);
             if( $validasi_file_exist == 0 )
             {
-                $sql = "INSERT INTO TR_DISPOSAL_TEMP_FILE(
+                $sql = "INSERT INTO TR_MUTASI_TEMP_FILE(
                             KODE_ASSET_AMS,
                             FILE_CATEGORY,
                             JENIS_FILE,
@@ -445,7 +448,7 @@ class MutasiController extends Controller
             }
             else
             {
-                $sql = "UPDATE TR_DISPOSAL_TEMP_FILE SET JENIS_FILE = '".$_FILES[''.$desc_code.'']['type']."', FILE_NAME = '{$file_name}', DOC_SIZE = '".$_FILES[''.$desc_code.'']['size']."', FILE_UPLOAD = '{$file_upload}', NOTES = '".$req['notes_asset']."', UPDATED_BY = '{$user_id}', UPDATED_AT = current_timestamp() WHERE KODE_ASSET_AMS = '".$req['kode_asset_ams']."' AND FILE_CATEGORY = '{$file_category}' ";
+                $sql = "UPDATE TR_MUTASI_TEMP_FILE SET JENIS_FILE = '".$_FILES[''.$desc_code.'']['type']."', FILE_NAME = '{$file_name}', DOC_SIZE = '".$_FILES[''.$desc_code.'']['size']."', FILE_UPLOAD = '{$file_upload}', NOTES = '".$req['notes_asset']."', UPDATED_BY = '{$user_id}', UPDATED_AT = current_timestamp() WHERE KODE_ASSET_AMS = '".$req['kode_asset_ams']."' AND FILE_CATEGORY = '{$file_category}' ";
             }
 
             //echo $sql; die();
@@ -617,6 +620,161 @@ class MutasiController extends Controller
 
         
         return $dt;
+    }
+
+    function delete_data_temp(Request $request)
+    {
+        $req = $request->all();
+
+        DB::beginTransaction();
+
+        try 
+        {
+            $user_id = Session::get('user_id');
+
+            DB::DELETE(" DELETE FROM TR_MUTASI_TEMP WHERE KODE_ASSET_AMS = {$request->kode_asset_ams} ");
+            DB::DELETE(" DELETE FROM TR_MUTASI_TEMP_FILE WHERE KODE_ASSET_AMS = {$request->kode_asset_ams} ");    
+
+            DB::commit();
+            return response()->json(['status' => true, "message" => 'Data is successfully deleted']);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json(['status' => false, "message" => $e->getMessage()]);
+        }
+    }
+
+    function validasi_file_exist($kode_asset_ams,$file_category)
+    {
+        $sql = " SELECT COUNT(*) AS TOTAL FROM TR_MUTASI_TEMP_FILE WHERE KODE_ASSET_AMS = '{$kode_asset_ams}' AND FILE_CATEGORY = '{$file_category}' ";
+        $data = DB::SELECT($sql); 
+
+        if($data[0]->TOTAL == 0)
+        {
+            return 0;
+        }
+        else
+        {
+            return 1;
+        }
+    }
+
+    function berkas_detail($kode_asset_ams,$file_category)
+    {
+        $sql = " SELECT b.DOC_SIZE, b.FILE_NAME, b.FILE_CATEGORY, b.FILE_UPLOAD, b.JENIS_FILE
+FROM TR_MUTASI_TEMP_FILE b
+WHERE b.KODE_ASSET_AMS = '".$kode_asset_ams."' AND b.FILE_CATEGORY = '".$file_category."' "; 
+        $data = DB::SELECT($sql);
+        
+        $l = "";
+        if(!empty($data))
+        {
+            $l .= '<center>';
+            $l .= '<h1>'.$kode_asset_ams.'</h1><br/>';
+
+            foreach($data as $k => $v)
+            {
+                $file_category = str_replace("_", " ", $v->FILE_CATEGORY);
+
+                if( $v->JENIS_FILE == 'image/jpeg' || $v->JENIS_FILE == 'image/png' )
+                {
+                    $l .= '<div class="caption"><h3>'.strtoupper($file_category).'<br/><img src="data:image/jpeg;base64,'.$v->FILE_UPLOAD.'"/><br/>'. $v->FILE_NAME. '</h3></div>';
+                }
+                else if($v->JENIS_FILE == 'application/pdf')
+                {
+                    $l .= ''.strtoupper($file_category).'<br/> <object data="data:application/pdf;base64,'.$v->FILE_UPLOAD.'" type="'.$v->JENIS_FILE.'" style="height:100%;width:100%"></object><br/>'. $v->FILE_NAME. '';
+                }
+                else
+                {
+                    $data_excel = explode(",",$v->FILE_UPLOAD);
+                    header('Content-type: application/vnd.ms-excel');
+                    header('Content-Disposition: attachment; filename="'.$v->FILE_NAME.'"');
+                    print $data_excel[1];
+                    die();
+                }
+            }
+        }
+        else
+        {
+            $l .= "<center><h1>FILE NOT FOUND</h1></center>";
+        }
+
+        $l .= '</center>';
+        echo $l; 
+    }
+
+    function delete_berkas_temp(Request $request)
+    {
+        $req = $request->all();
+
+        DB::beginTransaction();
+
+        try 
+        {
+            $user_id = Session::get('user_id');
+
+            DB::DELETE(" DELETE FROM TR_MUTASI_TEMP_FILE WHERE KODE_ASSET_AMS = {$request->kode_asset_ams} AND FILE_CATEGORY = '{$request->file_category}' ");    
+
+            DB::commit();
+            return response()->json(['status' => true, "message" => 'Data is successfully updated']);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json(['status' => false, "message" => $e->getMessage()]);
+        }
+    }
+
+    function berkas_notes($kode_asset_ams)
+    {
+        $records = array();
+
+        $sql = " SELECT DISTINCT(NOTES) AS CATATAN FROM TR_MUTASI_TEMP_FILE WHERE KODE_ASSET_AMS = '".$kode_asset_ams."' ";
+        $data = DB::SELECT($sql);
+        
+        if($data)
+        {
+            foreach ($data as $k => $v) 
+            {
+                $records[] = array(
+                    'notes' => trim($v->CATATAN),
+                );
+
+            }
+        }
+        else
+        {
+            $records[0] = array();
+        }
+        echo json_encode($records[0]);
+    }
+
+    function proses_upload_file($kode_asset_ams,$no_reg,$jenis_pengajuan)
+    {
+        $data = DB::SELECT(" SELECT * FROM TR_MUTASI_TEMP_FILE WHERE KODE_ASSET_AMS = '{$kode_asset_ams}' ");
+        //echo "1<pre>"; print_r($data); die();
+
+        if(!empty($data))
+        {
+            foreach ($data as $k => $v) 
+            {
+                DB::beginTransaction();
+
+               try 
+               {
+                    DB::INSERT(" INSERT INTO TR_MUTASI_ASSET_FILE(NO_REG,KODE_ASSET_AMS,FILE_CATEGORY,JENIS_FILE,FILE_NAME,FILE_UPLOAD,DOC_SIZE,JENIS_PENGAJUAN,NOTES,CREATED_BY)VALUES('".$no_reg."','".$v->KODE_ASSET_AMS."','".$v->FILE_CATEGORY."','".$v->JENIS_FILE."','".$v->FILE_NAME."','".$v->FILE_UPLOAD."','".$v->DOC_SIZE."','".$v->JENIS_PENGAJUAN."','".$v->NOTES."','".Session::get('user_id')."') ");
+
+                    DB::DELETE(" DELETE FROM TR_MUTASI_TEMP_FILE WHERE KODE_ASSET_AMS = {$v->KODE_ASSET_AMS} ");
+
+                    DB::commit();
+               } 
+               catch (\Exception $e) 
+               {
+                    DB::rollback();
+                    return array('status'=>false,'message'=> $e->getMessage());
+               }
+            }
+
+        }
+
+        return array('status'=>true,'message'=> 'Success insert file');
     }
 
 }

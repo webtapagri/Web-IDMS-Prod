@@ -105,6 +105,10 @@ Route::match(['get', 'post'], 'grid-asset-mutasi', [
 Route::get('/mutasi/list-upload/{kode_asset_ams}/{jenis_pengajuan}', 'MutasiController@list_file_category')->name('kode_asset_ams');
 Route::post('/mutasi/upload_berkas_amp', 'MutasiController@upload_berkas_amp');
 Route::post('/mutasi/add_temp', 'MutasiController@add_temp');
+Route::post('/mutasi/delete_data_temp','MutasiController@delete_data_temp');
+Route::get('/mutasi/view-berkas-detail/{kode_asset_ams}/{file_category}', 'MutasiController@berkas_detail')->name('kode_asset_ams');
+Route::post('/mutasi/delete_berkas_temp','MutasiController@delete_berkas_temp');
+Route::get('/mutasi/view-berkas-notes/{kode_asset_ams}', 'MutasiController@berkas_notes')->name('kode_asset_ams');
 
 /* USER SETTINGS */
 //Route::get('/', 'HomeController@index')->name('home');
