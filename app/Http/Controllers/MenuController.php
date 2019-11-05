@@ -39,7 +39,7 @@ class MenuController extends Controller
         $sortColumn = "";
         $selectedColumn[] = "";
 
-        $selectedColumn = ["menu.sort", 'module.name as module_name', "menu.name", "menu.url", "menu.deleted", 'module.id as module_id', 'menu.id'];
+        $selectedColumn = ["menu.sort", "module.name as module_name", "menu.menu_code", "menu.name", "menu.url", "menu.deleted", "module.id as module_id", "menu.id"];
 
         if ($orderColumn) {
             $order = explode("as", $selectedColumn[$orderColumn]);
@@ -60,8 +60,11 @@ class MenuController extends Controller
 
         if ($request->module)
             $sql .= " AND module.id ='" . $request->module . "'";
+
+        if ($request->menu_code)
+            $sql .= " AND menu.menu_code like'%" . $request->menu_code . "%'";
        
-            if ($request->name)
+        if ($request->name)
             $sql .= " AND menu.name like'%" . $request->name . "%'";
 
 
@@ -108,16 +111,21 @@ class MenuController extends Controller
 
     public function store(Request $request)
     {
-        try {
-            if ($request->edit_id) {
+        try 
+        {
+            if ($request->edit_id) 
+            {
                 $data = Menu::find($request->edit_id);
                 $data->updated_by = Session::get('user_id');
-            } else {
+            } 
+            else 
+            {
                 $data = new Menu();
                 $data->created_by = Session::get('user_id');
             }
 
             $data->module_id = $request->module;
+            $data->menu_code = $request->menu_code;
             $data->name = $request->name;
             $data->sort = $request->sorting;
             $data->url = $request->url;
@@ -125,7 +133,9 @@ class MenuController extends Controller
             $data->save();
 
             return response()->json(['status' => true, "message" => 'Data is successfully ' . ($request->edit_id ? 'updated' : 'added')]);
-        } catch (\Exception $e) {
+        } 
+        catch (\Exception $e) 
+        {
             return response()->json(['status' => false, "message" => $e->getMessage()]);
         }
     }

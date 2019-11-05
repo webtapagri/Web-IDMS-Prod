@@ -1,7 +1,4 @@
 <?php 
-    
-    //echo "8<pre>"; print_r($data); die();
-
     $user_role = Session::get('role');
     if( !empty($_GET) )
     {
@@ -110,28 +107,16 @@
                                 <th>AREA CODE</th>
                                 <th>ROLE NAME</th>
                                 <th>STATUS DOCUMENT</th>
-                                <?php /* <th>STATUS APPROVAL</th> */ ?>
-                                <?php /* <th>NOTES</th> */ ?>
                                 <th>DATE</th>
                                 <th>BERKAS</th>
                             </tr>
                             <tr role="row" class="filter">
                                 <th><input type="text" class="form-control input-xs form-filter" name="document_code"></th>
                                 <th>
-                                    <!--select type="text" class="form-control input-xs form-filter" name="area_code" id="area_code">
-                                        <option></option>
-                                    </select-->
                                     <input type="text" class="form-control input-xs form-filter" name="area_code">
                                 </th>
-                                <!--th>
-                                    <select class="form-control input-xs form-filter" name="user_id" id="user_id">
-                                        <option></option>
-                                    </select>
-                                </th-->
                                 <th><input type="text" class="form-control input-xs form-filter" name="name"></th>
                                 <th><input type="text" class="form-control input-xs form-filter" name="status_dokumen"></th>
-                                <?php /* <th><input type="text" class="form-control input-xs form-filter" name="status_approval"></th> */ ?>
-                                <?php /*<th><input type="text" class="form-control input-xs form-filter" name="notes"></th>*/ ?>
                                 <th><input type="text" class="form-control input-xs form-filter datepicker" name="date_history" id="date_history" autocomplete="off"></th>
                                 <th></th>
                             </tr>
@@ -542,9 +527,13 @@
                 {
                     echo " approval('{$email_noreg}') ";
                 }
-                else
+                else if (strpos($email_noreg, 'DSPA') !== false) 
                 {
                     echo " approval_disposal('{$email_noreg}') ";
+                }
+                else
+                {
+                    echo " approval_mutasi('{$email_noreg}') ";
                 }
             } 
         ?>
@@ -1443,7 +1432,7 @@
                             if(tipe == 1)
                             {
                                 item += "<div class='btn btn-warning btn-sm' OnClick='validasiKodeAssetController("+val.po_type+","+val.no_reg_item+")' style='margin-right:25px;margin-top:5px;margin-bottom:5px'><i class='fa fa-save'></i> SAVE</div>";
-                                item += "<input type='text' class='form-control' placeholder='Jenis Kendaraan' id='jenis-kendaraan' name='jenis-kendaraan'>";
+                                item += "<input type='text' class='form-control' placeholder='Jenis Kendaraan' id='jenis-kendaraan-"+val.no_reg_item+"' name='jenis-kendaraan-"+val.no_reg_item+"'>";
                                 item += "<div class='btn btn-info btn-sm' OnClick='printFormIO("+val.asset_po_id+","+val.no_reg_item+")' style='margin-right:25px;margin-top:5px'><i class='fa fa-print'></i> PRINT FORM IO</div>";
                             }
                             
@@ -1512,7 +1501,7 @@
                             if(tipe==1)
                             {
                                 item += "<div class='btn btn-warning btn-sm' OnClick='validasiKodeAssetController("+val.po_type+","+val.no_reg_item+")' style='margin-right:25px;margin-top:5px;margin-bottom:5px'><i class='fa fa-save'></i> SAVE</div>";
-                                item += "<input type='text' class='form-control' placeholder='Jenis Kendaraan' id='jenis-kendaraan' name='jenis-kendaraan'>";
+                                item += "<input type='text' class='form-control' placeholder='Jenis Kendaraan' id='jenis-kendaraan-"+val.no_reg_item+"' name='jenis-kendaraan-"+val.no_reg_item+"'>";
                                 item += "<div class='btn btn-info btn-sm' OnClick='printFormIO("+val.asset_po_id+","+val.no_reg_item+")' style='margin-right:25px;margin-top:5px'><i class='fa fa-print'></i> PRINT FORM IO</div>";
                             }
                             
@@ -1570,14 +1559,12 @@
                 });
                 <?php } ?>
 
-                //alert("tipe kendaraan a");
-                var tipekendaraan = $.parseJSON(JSON.stringify(dataJson('{!! route("get.select_jenis_kendaraan") !!}')));
-                $('input[name="jenis-kendaraan"]').select2({
-                    data: tipekendaraan,
-                    width: '100%',
-                    placeholder: ' ',
-                    allowClear: true,
+                <?php if( $user_role == 'AC' ){ ?>
+                $.each(data, function(key, val) 
+                {
+                    opt_tipe_kendaraan(val.no_reg_item);
                 });
+                <?php } ?>                    
             },
             error: function(x) 
             {                           
@@ -3140,7 +3127,7 @@
         //alert(asset_po_id);
         var getnoreg = $("#getnoreg").val(); //alert(getnoreg); return false;
         var no_registrasi= getnoreg.replace(/\//g, '-');
-        var jenis_kendaraan = $("#jenis-kendaraan").val();
+        var jenis_kendaraan = $("#jenis-kendaraan-"+no_reg_item+"").val();
 
         if( jenis_kendaraan == '' )
         {
@@ -3207,6 +3194,17 @@
                 }
             });
         }
+    }
+
+    function opt_tipe_kendaraan(no_reg_item)
+    {
+        var tipekendaraan = $.parseJSON(JSON.stringify(dataJson('{!! route("get.select_jenis_kendaraan") !!}')));
+        $('input[name="jenis-kendaraan-'+no_reg_item+'"]').select2({
+            data: tipekendaraan,
+            width: '100%',
+            placeholder: ' ',
+            allowClear: true,
+        });
     }
 
 </script>

@@ -16,12 +16,12 @@ if($data)
     $l .= "<table width='100%' style='margin-top:10px'>";
     $l .= "<tr class='alt' style='width:175px'><td>KODE PERUSAHAAN</td>
                 <td>:</td>
-                <td>".substr($data[0]['business_area'],0,2)."</td>
+                <td>".substr($data[0]['lokasi_ba_code'],0,2)."</td>
             </tr>";
     $l .= "<tr align='center'><td style='margin-left:100px' colspan='3'></td></tr>";
     $l .= "<tr><td style='width:175px'>ESTATE CODE</td>
                 <td>:</td>
-                <td>".substr($data[0]['business_area'],2,2)."</td>
+                <td>".substr($data[0]['lokasi_ba_code'],2,2)."</td>
             </tr>";
     $l .= "<tr align='center'><td style='margin-left:100px' colspan='3'></td></tr>";
     $l .= "<tr style='width:175px' class='alt'><td>JENIS KENDARAAN</td>

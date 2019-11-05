@@ -19,6 +19,7 @@
                             <tr role="row" class="heading">
                                 <th width="8%">Sort</th>
                                 <th width="15%">Module</th>
+                                <th>Code</th>
                                 <th>Name</th>
                                 <th>Url</th>
                                 <th>Active</th>
@@ -27,6 +28,7 @@
                             <tr role="row" class="filter">
                                 <th><input type="text" class="form-control input-xs form-filter" name="sort" autocomplete="off"></th>
                                 <th><input type="text" class="form-control input-xs form-filter" name="module" autocomplete="off"></th>
+                                <th><input type="text" class="form-control input-xs form-filter" name="menu_code" autocomplete="off"></th>
                                 <th><input type="text" class="form-control input-xs form-filter" name="name" autocomplete="off"></th>
                                 <th><input type="text" class="form-control input-xs form-filter" name="url" autocomplete="off"></th>
                                 <th><input type="text" class="form-control input-xs form-filter" name="status" autocomplete="off"></th>
@@ -53,11 +55,15 @@
                         <div class="col-xs-12">
                             <label class="control-label" for="module">Module</label>
                             <input class="form-control" name='module' id="module" requried>
+                            <input type="hidden" name='edit_id' id="edit_id">
                         </div>
                         <div class="col-xs-12">
                             <label class="control-label" for="name">Nama</label>
                             <input class="form-control" name='name' id="name" maxlength="200" requried>
-                            <input type="hidden" name='edit_id' id="edit_id">
+                        </div>
+                        <div class="col-xs-12">
+                            <label class="control-label" for="menu_code">Menu Code</label>
+                            <input class="form-control" name='menu_code' id="menu_code" maxlength="200" requried>
                         </div>
                         <div class="col-xs-12">
                             <label class="control-label" for="url">Url</label>
@@ -115,6 +121,10 @@
                     {
                         data: 'module_name',
                         name: 'module_name'
+                    },
+                    {
+                        data: 'menu_code',
+                        name: 'menu_code'
                     },
                     {
                         data: 'name',
@@ -252,18 +262,20 @@
         })
     });
 
-    function edit(id) {
+    function edit(id) 
+    {
         document.getElementById("data-form").reset();
-        jQuery("#edit_id").val(id);
-        var result = jQuery.parseJSON(JSON.stringify(dataJson("{{ url('menu/edit/?id=') }}" + id)));
+        $("#edit_id").val(id);
+        var result = $.parseJSON(JSON.stringify(dataJson("{{ url('menu/edit/?id=') }}" + id)));
 
-        jQuery("#name").val(result.name);
-        jQuery("#url").val(result.url);
-        jQuery("#sorting").val(result.sort);
-        jQuery("#module").val(result.module_id);
-        jQuery("#module").trigger("change");
-        jQuery("#add-data-modal .modal-title").html("<i class='fa fa-edit'></i> Update data " + result.name);
-        jQuery("#add-data-modal").modal("show");
+        $("#name").val(result.name);
+        $("#url").val(result.url);
+        $("#sorting").val(result.sort);
+        $("#module").val(result.module_id);
+        $("#menu_code").val(result.menu_code);
+        $("#module").trigger("change");
+        $("#add-data-modal .modal-title").html("<i class='fa fa-edit'></i> Update data " + result.name);
+        $("#add-data-modal").modal("show");
     }
 
     function inactive(id) {

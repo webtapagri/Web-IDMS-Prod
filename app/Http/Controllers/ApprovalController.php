@@ -2548,6 +2548,7 @@ WHERE a.NO_REG = '{$noreg}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KODE_ASSET
                     'no_rangka_or_no_seri' => trim($v->NO_RANGKA_OR_NO_SERI),
                     'no_mesin_or_imei' => trim($v->NO_MESIN_OR_IMEI),
                     'no_polisi' => trim($v->NO_POLISI),
+                    'lokasi_ba_code' => trim($v->LOKASI_BA_CODE),
                     'lokasi' => trim($v->LOKASI_BA_DESCRIPTION),
                     'tahun' => trim($v->TAHUN_ASSET),
                     'nama_penanggung_jawab_asset' => trim($v->NAMA_PENANGGUNG_JAWAB_ASSET),
