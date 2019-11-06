@@ -117,9 +117,11 @@ Array
                                             foreach($data['data'] as $k => $v)
                                             {
                                                 $kode_asset_ams = base64_encode($v->KODE_ASSET_AMS);
+                                                $lokasi = explode("-",$v->LOKASI_BA_DESCRIPTION);
+                                                $LOKASI_CODE = @$lokasi[0];
 
                                                 $l .= "<tr>";
-                                                $l .= "<td><input type='hidden' id='kode_aset' name='kode_aset[]' value='".$v->KODE_ASSET_AMS."_".$v->TUJUAN_COMPANY."_".$v->TUJUAN."_".$v->ASSET_CONTROLLER."'><a href='".url('master-asset/show-data')."/".$kode_asset_ams."' target='_blank'>".$v->KODE_ASSET_AMS."</a></td>";
+                                                $l .= "<td><input type='hidden' id='kode_aset' name='kode_aset[]' value='".$v->KODE_ASSET_AMS."_".$v->TUJUAN_COMPANY."_".$v->TUJUAN."_".$v->ASSET_CONTROLLER."_".$LOKASI_CODE."'><a href='".url('master-asset/show-data')."/".$kode_asset_ams."' target='_blank'>".$v->KODE_ASSET_AMS."</a></td>";
                                                 $l .= "<td>".$v->NAMA_ASSET."</td>";
                                                 $l .= "<td>".$v->ASSET_CONTROLLER."</td>";
                                                 $l .= "<td>".$v->BA_PEMILIK_ASSET_COMPANY."/".$v->BA_PEMILIK_ASSET."</td>";

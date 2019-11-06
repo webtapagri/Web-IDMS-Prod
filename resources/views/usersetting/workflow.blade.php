@@ -35,7 +35,7 @@
             <div id="row-detail" style="margin-top:10px;display:none">
                 <div class="callout callout-info">
                     <h4>DETAIL WORKFLOW</h4>
-                    <p>WORKFLOW CODE : <span id="workflow-code-detail"></span> </p>
+                    <p><span id="workflow-code-detail"></span> </p>
                 </div>
                
                 <div class="table-container">
@@ -71,8 +71,8 @@
 
             <div id="row-detail-job" style="margin-top:10px;display:none">
                 <div class="callout callout-info">
-                    <h4>JOB DETAIL WORKFLOW</h4>
-                    <p>WORKFLOW DETAIL CODE : <span id="workflow-detail-code"></span> </p>
+                    <h4>JOB WORKFLOW</h4>
+                    <p><span id="workflow-detail-code"></span> </p>
                 </div>
                 <div class="table-container">
                      <div class="xtable-actions-wrapper pull-right">
@@ -156,6 +156,10 @@
             <form id="data-form-detail">
                 <div class="modal-body">
                     <div class="box-body">
+                        
+                        <input type="hidden" name='edit_workflow_code_detail' id="edit_workflow_code_detail">
+                        <input type="hidden" name='workflow_code_hide' id="workflow_code_hide">
+
                         <div class="col-xs-12">
                             <label class="control-label" for="workflow-code">Workflow Code</label>
                             <input class="form-control" name='workflow_code' id="workflow_code" requried>
@@ -163,7 +167,6 @@
                         <div class="col-xs-12">
                             <label class="control-label" for="group-name">Group Name</label>
                             <input class="form-control" name='workflow_group_name' id="workflow_group_name" maxlength="400" requried>
-                            <input type="hidden" name='edit_workflow_code_detail' id="edit_workflow_code_detail">
                         </div>
                         <div class="col-xs-12">
                             <label class="control-label" for="seq">Seq</label>
@@ -193,6 +196,10 @@
             <form id="data-form-detail-job">
                 <div class="modal-body">
                     <div class="box-body">
+
+                        <input type="hidden" name='edit_workflow_code_detail_job' id="edit_workflow_code_detail_job">
+                        <input type="hidden" name='workflow_detail_code_hide' id="workflow_detail_code_hide">
+
                         <div class="col-xs-12">
                             <label class="control-label" for="workflow-detail-code">Workflow Detail Code</label>
                             <input class="form-control" name='workflow_detail_code' id="workflow_detail_code" requried>
@@ -200,7 +207,6 @@
                         <div class="col-xs-12">
                             <label class="control-label" for="id-role">ID Role</label>
                             <input class="form-control" name='id_role' id="id_role" maxlength="400" requried>
-                            <input type="hidden" name='edit_workflow_code_detail_job' id="edit_workflow_code_detail_job">
                         </div>
                         <div class="col-xs-12">
                             <label class="control-label" for="seq">Seq</label>
@@ -240,6 +246,7 @@
     jQuery(document).ready(function() 
     {
         $("#row-detail").hide();
+        $("#row-detail-job").hide();
 
         jQuery.ajaxSetup({
             headers: {
@@ -287,34 +294,14 @@
                             if (update == 1) 
                             {
                                 content += '<button class="btn btn-flat btn-xs btn-danger btn-action btn-edit" title="edit data ' + row.workflow_code + '" onClick="edit(' + row.workflow_code + ')"><i class="fa fa-pencil"></i></button>';
-                                content += '<button class="btn btn-flat btn-xs btn-danger btn-action btn-view" title="detail data ' + row.workflow_code + '" onClick="detail('+row.workflow_code+')"><i class="fa fa-clone"></i></button>';
+                                content += '<button class="btn btn-flat btn-xs btn-danger btn-action btn-view" title="detail data ' + row.workflow_code + '" onClick="detail(\''+row.workflow_code+'\',\''+row.workflow_name+'\')"><i class="fa fa-clone"></i></button>';
                             }
-                            
-                            /*
-                            if (remove == 1) 
-                            {
-                                content += '<button class="btn btn-flat btn-xs btn-danger btn-action btn-activated  {{ ($data["access"]->delete == 1 ? "":"hide") }}  ' + (row.deleted == 0 ? '' : 'hide') + '" style="margin-left:5px"  onClick="inactive(' + row.id + ')"><i class="fa fa-trash"></i></button>';
-                                content += '<button class="btn btn-flat btn-xs btn-danger btn-action btn-inactivated {{ ($data["access"]->delete == 1 ? "":"hide") }}  ' + (row.deleted == 1 ? '' : 'hide') + '" style="margin-left:5px"  onClick="active(' + row.id + ')"><i class="fa fa-check"></i></button>';
-                            }
-                            */
 
                             return content;
                         }
                     }
                 ],
-                columnDefs: [
-                    /*{
-                        targets: [0],
-                        className: 'text-center',
-                        orderable: false
-                    },
-                    {
-                        targets: [2],
-                        className: 'text-center',
-                        orderable: false,
-                        width: '10%'
-                    }*/
-                ],
+                columnDefs: [],
                 oLanguage: {
                     sProcessing: "<div id='datatable-loader'></div>",
                     sEmptyTable: "Data tidak di temukan",
@@ -324,7 +311,7 @@
             }
         });
 
-        jQuery("input[name='status']").select2({
+        $("input[name='status']").select2({
             data: [{
                     id: 0,
                     text: 'Y'
@@ -339,7 +326,7 @@
             allowClear: true
         });
 
-        var role = jQuery.parseJSON(JSON.stringify(dataJson('{!! route("get.select_menu") !!}')));
+        var role = $.parseJSON(JSON.stringify(dataJson('{!! route("get.select_menu") !!}')));
         $('input[name="menu_code"], #menu_code').select2({
             data: role,
             width: '100%',
@@ -393,38 +380,54 @@
         $('.btn-add-detail').on('click', function() 
         {
             document.getElementById("data-form-detail").reset();
+
             $('#role_id').prop('disabled', false);
             $("#edit_workflow_code_detail").val("");
             $("#font-awesome-result").removeClass();
+            $('#workflow_code').val("");
+            $('#workflow_code').val($("#workflow_code_hide").val()).trigger('change');
+
             $("#add-data-modal-detail").modal({
                 backdrop: 'static',
                 keyboard: false
             });
+            
             $("#add-data-modal-detail .modal-title").html("<i class='fa fa-plus'></i> Create new data detail");
             $("#add-data-modal-detail").modal("show");
         });
 
         $('.btn-add-detail-job').on('click', function() 
         {
+            var workflow_detail_code_hide = $("#workflow_detail_code_hide").val();
+            //alert(workflow_detail_code_hide);
+
+            $('#workflow_detail_code').val("");
+            $('#workflow_detail_code').val(workflow_detail_code_hide).trigger('change');
+
             document.getElementById("data-form-detail-job").reset();
+            
             $('#role_id').prop('disabled', false);
             $("#edit_workflow_code_detail-job").val("");
             $("#font-awesome-result").removeClass();
+
             $("#add-data-modal-detail-job").modal({
                 backdrop: 'static',
                 keyboard: false
             });
+            
             $("#add-data-modal-detail-job .modal-title").html("<i class='fa fa-plus'></i> Create new data detail job");
             $("#add-data-modal-detail-job").modal("show");
         });
 
-        jQuery('.btn-edit').on('click', function() {
-            jQuery("#add-data-modal").modal({
+        $('.btn-edit').on('click', function() 
+        {
+            $("#add-data-modal").modal({
                 backdrop: 'static',
                 keyboard: false
             });
-            jQuery("#add-data-modal .modal-title").html("<i class='fa fa-pencil'></i> Edit data");
-            jQuery("#add-data-modal").modal("show");
+            
+            $("#add-data-modal .modal-title").html("<i class='fa fa-pencil'></i> Edit data");
+            $("#add-data-modal").modal("show");
         });
 
         jQuery('#data-form').on('submit', function(e) 
@@ -449,8 +452,8 @@
                     success: function(result) 
                     {
                         if (result.status) {
-                            jQuery("#add-data-modal").modal("hide");
-                            jQuery("#data-table").DataTable().ajax.reload();
+                            $("#add-data-modal").modal("hide");
+                            $("#data-table").DataTable().ajax.reload();
                             notify({
                                 type: 'success',
                                 message: result.message
@@ -471,7 +474,7 @@
 
         $('.btn-edit-detail').on('click', function() 
         {
-            alert("dialog detail");
+            //alert("dialog detail");
             $("#add-data-modal-detail").modal({
                 backdrop: 'static',
                 keyboard: false
@@ -570,28 +573,32 @@
             }
         });
 
-        $('.tbm-menu').on('click', function() 
-        {
-            location.reload("{{ url('/') }}")
+        $('.tbm-menu').on('click', function() {
+            $("#menu_code").val("");
         });
+
     });
 
     function edit(id) 
     {
-        //alert(id);
         document.getElementById("data-form").reset();
-        jQuery("#edit_workflow_code").val(id);
-        var result = jQuery.parseJSON(JSON.stringify(dataJson("{{ url('workflow/edit/?workflow_code=') }}" + id)));
-        jQuery("#edit_workflow_code").val(result.workflow_code);
-        jQuery("#workflow_name").val(result.workflow_name);
-        $("#menu_code").val(result.menu_code);
-        $("#menu_code").trigger("change");
+        
+        $("#edit_workflow_code").val(id);
+        
+        var result = $.parseJSON(JSON.stringify(dataJson("{{ url('workflow/edit/?workflow_code=') }}" + id)));
+        
+        $("#edit_workflow_code").val(result.workflow_code);
+        $("#workflow_name").val(result.workflow_name);
+        
+        $("#add-data-modal .modal-title").html("<i class='fa fa-edit'></i> Update data " + result.workflow_name);
+        $("#add-data-modal").modal("show");
 
-        jQuery("#add-data-modal .modal-title").html("<i class='fa fa-edit'></i> Update data " + result.workflow_name);
-        jQuery("#add-data-modal").modal("show");
+        $("#menu_code").val("");
+        $("#menu_code").val(result.menu_code).trigger("change");
     }
 
-    function inactive(id) {
+    function inactive(id) 
+    {
         jQuery.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -668,10 +675,11 @@
         //alert(name);
         $("#data-table-detail").DataTable().destroy()
 
-        //alert(id);
+        $("#row-detail-job").fadeOut();
         $("#row-detail").fadeOut();
-        $("#workflow-code-detail").html(id);
+        $("#workflow-code-detail").html(' <b>'+id+' - '+name.toUpperCase()+'</b>');
         $("#workflow-code-name").html('('+name+')');
+        $("#workflow_code_hide").val(id);
         $("#row-detail").fadeIn();
 
         //if ( ! $.fn.DataTable.isDataTable( '#data-table-detail' ) ) {
@@ -729,34 +737,14 @@
                                 if (update == 1) 
                                 {
                                     content += '<button class="btn btn-flat btn-xs btn-danger btn-action btn-edit-detail" title="edit data detail : ' + row.workflow_code + '" onClick="edit_detail(' + row.workflow_detail_code + ')"><i class="fa fa-pencil"></i></button>';
-                                    content += '<button class="btn btn-flat btn-xs btn-danger btn-action btn-view-detail" title="detail data ' + row.workflow_code + '" onClick="detail_job(' + row.workflow_detail_code + ')"><i class="fa fa-clone"></i></button>';
+                                    content += '<button class="btn btn-flat btn-xs btn-danger btn-action btn-view-detail" title="detail data ' + row.workflow_code + '" onClick="detail_job(\''+row.workflow_detail_code+'\',\''+row.workflow_name+'\',\''+row.workflow_group_name+'\')"><i class="fa fa-clone"></i></button>';
                                 }
-                                
-                                /*
-                                if (remove == 1) 
-                                {
-                                    content += '<button class="btn btn-flat btn-xs btn-danger btn-action btn-activated  {{ ($data["access"]->delete == 1 ? "":"hide") }}  ' + (row.deleted == 0 ? '' : 'hide') + '" style="margin-left:5px"  onClick="inactive(' + row.id + ')"><i class="fa fa-trash"></i></button>';
-                                    content += '<button class="btn btn-flat btn-xs btn-danger btn-action btn-inactivated {{ ($data["access"]->delete == 1 ? "":"hide") }}  ' + (row.deleted == 1 ? '' : 'hide') + '" style="margin-left:5px"  onClick="active(' + row.id + ')"><i class="fa fa-check"></i></button>';
-                                }
-                                */
 
                                 return content;
                             }
                         }
                     ],
-                    columnDefs: [
-                        /*{
-                            targets: [0],
-                            className: 'text-center',
-                            orderable: false
-                        },
-                        {
-                            targets: [2],
-                            className: 'text-center',
-                            orderable: false,
-                            width: '10%'
-                        }*/
-                    ],
+                    columnDefs: [],
                     oLanguage: {
                         sProcessing: "<div id='datatable-loader'></div>",
                         sEmptyTable: "Data tidak di temukan",
@@ -785,17 +773,19 @@
         $("#add-data-modal-detail").modal("show");
     }
 
-    function detail_job(id)
+    function detail_job(id,name,group_name)
     {
-        //alert(id); return false;
+        //alert(id); //   return false;
         //alert(name);
         $("#data-table-detail-job").DataTable().destroy()
 
         //alert(id);
         $("#row-detail-job").fadeOut();
-        $("#workflow-detail-code").html(id);
+        $("#workflow-detail-code").html(" <b>"+id+" - "+name.toUpperCase()+" | "+group_name.toUpperCase()+"</b>");
         //$("#workflow-code-name").html('('+name+')');
         $("#row-detail-job").fadeIn();
+        $("#workflow_detail_code_hide").val("");
+        $("#workflow_detail_code_hide").val(id);
 
         //if ( ! $.fn.DataTable.isDataTable( '#data-table-detail' ) ) {
 

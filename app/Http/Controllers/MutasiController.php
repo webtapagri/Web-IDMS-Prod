@@ -131,6 +131,7 @@ class MutasiController extends Controller
                 $TUJUAN_COMPANY_CODE = $data[1];
                 $TUJUAN_CODE = $data[2];
                 $ASSET_CONTROLLER = $data[3];
+                $LOKASI_CODE = $data[4];
 
                 $validasi_store = $this->validasi_store($KODE_ASSET_AMS);
 
@@ -140,19 +141,21 @@ class MutasiController extends Controller
                 }
 
                 DB::INSERT(" INSERT INTO TR_MUTASI_ASSET_DETAIL (NO_REG,KODE_ASSET_AMS,TUJUAN,ASSET_CONTROLLER,CREATED_BY) VALUES ('".$NO_REG."','".$KODE_ASSET_AMS."','".$TUJUAN_CODE."','".$ASSET_CONTROLLER."','".$user_id."') ");
+
+                // INSERT FILE UPLOAD DARI TABLE TR_MUTASI_TEMP_FILE
+                $jenis = "amp";
+                $proses_upload_file = $this->proses_upload_file($KODE_ASSET_AMS,$NO_REG,$jenis);
+                if(!$proses_upload_file['status'])
+                {
+                    Session::flash('alert', $proses_upload_file['message']);
+                    return Redirect::to('/mutasi/create/1');
+                }
+
+                DB::DELETE(" DELETE FROM TR_MUTASI_TEMP WHERE KODE_ASSET_AMS = '".$KODE_ASSET_AMS."' ");
+                DB::DELETE(" DELETE FROM TR_MUTASI_TEMP_FILE WHERE KODE_ASSET_AMS = '".$KODE_ASSET_AMS."' ");
             }
 
-            // INSERT FILE UPLOAD DARI TABLE TR_MUTASI_TEMP_FILE
-            $jenis = "amp";
-            $proses_upload_file = $this->proses_upload_file($KODE_ASSET_AMS,$NO_REG,$jenis);
-            if(!$proses_upload_file['status'])
-            {
-                Session::flash('alert', $proses_upload_file['message']);
-                return Redirect::to('/mutasi/create/1');
-            }
-
-            DB::DELETE(" DELETE FROM TR_MUTASI_TEMP WHERE KODE_ASSET_AMS = $KODE_ASSET_AMS ");
-            DB::DELETE(" DELETE FROM TR_MUTASI_TEMP_FILE WHERE KODE_ASSET_AMS = $KODE_ASSET_AMS ");
+            DB::STATEMENT('call create_approval("M1", "'.$LOKASI_CODE.'","'.$TUJUAN_CODE.'","'.$NO_REG.'","'.$user_id.'","'.$ASSET_CONTROLLER.'","0")');
 
             DB::commit();
 
