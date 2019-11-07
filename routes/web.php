@@ -88,6 +88,8 @@ Route::get('/printio/{noreg}/{asset_po_id}/{jenis_kendaraan}/{no_reg_item}', 'Ap
 Route::post('/approval/update_status_disposal/{status}/{no_reg}','ApprovalController@update_status_disposal');
 Route::get('/approval/view_disposal/{no_reg}', 'ApprovalController@view_disposal')->name('no_reg');
 Route::post('/approval/delete_asset_disposal', 'ApprovalController@delete_asset_disposal');
+Route::get('/approval/view_mutasi/{no_reg}', 'ApprovalController@view_mutasi')->name('no_reg');
+Route::post('/approval/update_status_mutasi/{status}/{no_reg}','ApprovalController@update_status_mutasi');
 
 Route::get('get-select_jenis_kendaraan', ['as' => 'get.select_jenis_kendaraan', 'uses' => 'Select2Controller@select_jenis_kendaraan']);
 
@@ -313,6 +315,7 @@ Route::post('/disposal/upload_berkas_hilang', 'DisposalController@upload_berkas_
 Route::post('/disposal/upload_berkas_rusak', 'DisposalController@upload_berkas_rusak');
 Route::post('/disposal/upload_berkas', 'DisposalController@upload_berkas');
 Route::get('/approval/berkas-disposal/{no_reg}', 'ApprovalController@berkas_disposal')->name('no_reg');
+Route::get('/approval/berkas-mutasi/{no_reg}', 'ApprovalController@berkas_disposal')->name('no_reg');
 Route::get('/disposal/view-berkas/{no_reg}', 'DisposalController@berkas_disposal')->name('no_reg');
 Route::get('/disposal/view-berkas-serah-terima/{kode_asset_ams}', 'DisposalController@berkas_serah_terima')->name('kode_asset_ams');
 Route::get('/disposal/view-berkas-detail/{kode_asset_ams}/{file_category}', 'DisposalController@berkas_disposal_detail')->name('kode_asset_ams');

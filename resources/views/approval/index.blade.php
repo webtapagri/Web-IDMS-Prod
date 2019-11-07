@@ -509,6 +509,167 @@
     </div>
 </div>
 
+<div id="history-modal-mutasi" class="modal fade" role="dialog" aria-labelledby="largeModal" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+                <h4 class="modal-title"></h4>
+            </div>
+            <div class="modal-body">
+                <div class="box-body">
+                    <form id="request-form-history" class="form-horizontal" style="font-size:13px !important">
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                
+                                <div class="form-group">
+                                    <label for="plant" class="col-md-4">NO REGISTRASI</label>
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-control xinput-sm" value="" id="no-reg" name="no-reg" readonly>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="plant" class="col-md-4">TANGGAL PENGAJUAN</label>
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-control input-sm" value="" id="tanggal-reg" name="tanggal-reg" readonly>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="plant" class="col-md-4">BUSINESS AREA</label>
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-control input-sm" value="" id="business-area" name="business-area" readonly>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="plant" class="col-md-4">REQUESTOR</label>
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-control input-sm" value="" id="requestor" name="requestor" readonly>
+                                    </div>
+                                </div> 
+                            </div>
+                        </div>
+                        <div class="row">
+                        
+                            <br>
+                            <span class="label bg-blue"><i class="fa fa-bars"></i> ITEM DETAIL</span> <br/><br/>
+                            <div class="form-group">
+                                <div class="col-md-12" id="box-item-detail-history-mutasi"></div>
+                            </div>
+                            
+                            <!-- ITEM DETAIL HISTORY -->
+                            <div id="box-detail-item-history-mutasi"></div>
+
+                            <div class="form-group" id="history-notes-mutasi">
+                                <label class="col-md-2"><span class="label bg-blue"><i class="fa fa-bars"></i> NOTE</span></label>
+                                <div class="col-md-8">
+                                    <textarea type="text" class="form-control input-sm attr-material-group" row="3" name="specification-mutasi" id="specification-mutasi" readonly></textarea>
+                                </div>
+                            </div>
+
+                            <!-- LOG HISTORY -->
+                            <div id="log-history-box-mutasi" class="table-scroll"></div>
+                        
+                        </div><!-- ROW -->                        
+                        
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-flat btn-default" data-dismiss="modal">Close</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div id="approve-mutasi-modal" class="modal fade" role="dialog" aria-labelledby="largeModal" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+                <h4 class="modal-title"></h4>
+            </div>
+            <div class="modal-body">
+                <div class="box-body">
+                    <form id="request-form" class="form-horizontal" style="font-size:13px !important">
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="plant" class="col-md-4">NO REGISTRASI</label>
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-control xinput-sm" value="" id="no-reg" name="no-reg" readonly>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="plant" class="col-md-4">TANGGAL PENGAJUAN</label>
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-control input-sm" value="" id="tanggal-reg" name="tanggal-reg" readonly>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="plant" class="col-md-4">BUSINESS AREA</label>
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-control input-sm" value="" id="business-area" name="business-area" readonly>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="plant" class="col-md-4">REQUESTOR</label>
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-control input-sm" value="" id="requestor" name="requestor" readonly>
+                                    </div>
+                                </div>
+                                
+                                
+                            </div>
+                        </div>                        
+                        
+                        <br>
+                        <span class="label bg-blue"><i class="fa fa-bars"></i> ITEM DETAIL</span> <br/><br/>
+                        <div class="form-group">
+                            <div class="col-md-12" id="box-item-detail-mutasi">
+                            </div>
+                        </div>
+                        
+                        <!-- ITEM DETAIL OUTSTANDING -->
+                        <div id="box-detail-item-mutasi"></div>
+
+                        <!-- LOG HISTORY OUTSTANDING --> 
+                        <div id="log-history-box-mutasi" class="table-scroll"></div>
+
+                        <div class="form-group">
+                            <label class="col-md-2">NOTE</label>
+                            <div class="col-md-8">
+                                <textarea type="text" class="form-control input-sm attr-material-group" row="3" name="specification-mutasi-approval" id="specification-mutasi-approval"></textarea>
+                            </div>
+                        </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <?php if($user_role == 'AC'){ ?> 
+                   <span id="create-button-sync-sap"></span>
+                <?php }  ?>
+                <?php if($user_role != 'Super Administrator'){ if($data['outstanding'] != 0 ){ ?> 
+                    <span id="button-approve">
+                        <button type="button" class="btn btn-flat label-danger" OnClick="changeStatusMutasi('A')" style="margin-right: 5px;">APPROVE</button>
+                    </span>
+                    <button type="button" class="btn btn-flat label-danger button-reject" OnClick="changeStatusMutasi('R')" style="margin-right: 5px;">REJECT</button>
+                <?php }} ?>
+                
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 @stop
 @section('js')
 <script>
@@ -571,14 +732,15 @@
                         {
                             var no_registrasi= row.NO_REG.replace(/\//g, '-');
                             var disposal = no_registrasi.includes("DSPA");
+                            var mutasi = no_registrasi.includes("MTSA");
 
                             if(disposal)
                             {
-                                //var kode_asset_ams = btoa(row.KODE_ASSET_AMS); //alert(kode_asset_ams);
-                                //return '<a href="{{ url("master-asset/show-data") }}/'+kode_asset_ams+'" style="font-weight:bold" target="_blank">' + row.NO_REG + '</a>';
-
                                 return '<a href="javascript:;" style="font-weight:bold" OnClick="approval_disposal(\'' + no_registrasi + '\')">' + row.NO_REG + '</a>'; 
-
+                            }
+                            else if(mutasi)
+                            {
+                                return '<a href="javascript:;" style="font-weight:bold" OnClick="approval_mutasi(\'' + no_registrasi + '\')">' + row.NO_REG + '</a>';
                             }
                             else
                             {
@@ -605,13 +767,17 @@
                     }, {
                         "render": function(data, type, row) 
                         {
-                            
+                            var no_registrasi= row.NO_REG.replace(/\//g, '-');
+                            var mutasi = no_registrasi.includes("MTSA");
+
                             if (row.PO_TYPE == 0) {
                                 var content = '<span class="label label-primary">SAP</span>';
                             } else if (row.PO_TYPE == 1) {
                                 var content = '<span class="label label-danger">AMP</span>';
                             }else if (row.PO_TYPE == 2) {
                                 var content = '<span class="label label-warning">ASSET LAIN</span>';
+                            }else if (mutasi) {
+                                var content = '<span class="label label-success">MUTASI</span>';
                             }else{
                                 var content = '<span class="label label-default">DISPOSAL</span>';
                             }
@@ -650,15 +816,16 @@
                             var no_registrasi= btoa(row.NO_REG);
                             var noreg = row.NO_REG.replace(/\//g, '-');
                             var dspa = noreg.includes("DSPA");
+                            var mutasi = noreg.includes("MTSA");
 
                             if (row.PO_TYPE == 1 || row.PO_TYPE == 2) 
                             {
                                 content += '<a href="{{ url("approval/berkas-amp") }}/'+no_registrasi+'" target="_blank"><span class="label label-default"><i class="fa fa-download"></i></span></a>';
                             }
-                            else if( dspa )
+                            else if( dspa || mutasi )
                             {
                                 //alert("berkas");
-                                content += '<a href="{{ url("approval/berkas-disposal") }}/'+no_registrasi+'" target="_blank"><span class="label label-default"><i class="fa fa-download"></i></span></a>';
+                                content += '<a href="{{ url("approval/berkas-mutasi") }}/'+no_registrasi+'" target="_blank"><span class="label label-default"><i class="fa fa-download"></i></span></a>';
                             }
                             else
                             {
@@ -760,10 +927,15 @@
                         {
                             var no_registrasi= row.document_code.replace(/\//g, '-');
                             var disposal = no_registrasi.includes("DSPA");
+                            var mutasi = no_registrasi.includes("MTSA");
 
                             if(disposal)
                             {
                                 return '<a href="javascript:;" style="font-weight:bold" OnClick="history_disposal(\'' + no_registrasi + '\')">' + row.document_code + '</a>';
+                            }
+                            else if(mutasi)
+                            {
+                                return '<a href="javascript:;" style="font-weight:bold" OnClick="history_mutasi(\'' + no_registrasi + '\')">' + row.document_code + '</a>';
                             }
                             else
                             {
@@ -793,12 +965,19 @@
                         {
                             var content = '';
                             var no_registrasi= btoa(row.document_code);
+                            var noreg = row.document_code.replace(/\//g, '-');
+                            var dspa = noreg.includes("DSPA");
 
                             //alert(row.po_type);
 
                             if (row.po_type == 1 || row.po_type == 2) 
                             {
                                 content += '<a href="{{ url("approval/berkas-amp") }}/'+no_registrasi+'" target="_blank"><span class="label label-default"><i class="fa fa-download"></i></span></a>';
+                            }
+                            else if( dspa )
+                            {
+                                //alert("berkas");
+                                content += '<a href="{{ url("approval/berkas-disposal") }}/'+no_registrasi+'" target="_blank"><span class="label label-default"><i class="fa fa-download"></i></span></a>';
                             }
                             else
                             {
@@ -999,7 +1178,7 @@
                 log_history(id,1);
                 $("#box-item-detail-history").html(item);
 
-                $("#approve-modal .modal-title").html("<i class='fa fa-edit'></i>  Approval Pendaftaran - <span style='color:#dd4b39'>" + data.no_reg + "</span><input type='hidden' id='getnoreg' name='getnoreg' value='"+data.no_reg+"' >");
+                $("#approve-modal .modal-title").html("<i class='fa fa-edit'></i>  APPROVAL PENDAFTARAN - <span style='color:#dd4b39'>" + data.no_reg + "</span><input type='hidden' id='getnoreg' name='getnoreg' value='"+data.no_reg+"' >");
 
                 $('#approve-modal').modal('show');
             },
@@ -1061,13 +1240,13 @@
                         
                         if( jenis_pengajuan == 1 )
                         {
-                            pengajuan = 'Penjualan';
+                            pengajuan = 'PENJUALAN';
                         }
                         else if( jenis_pengajuan == 2 )
                         {
-                            pengajuan = 'Hilang';
+                            pengajuan = 'HILANG';
                         }else{
-                            pengajuan = 'Rusak';
+                            pengajuan = 'RUSAK';
                         }
 
                         item += "<tr style='height: 30px !important;font-size:11px !important;'>";
@@ -1098,7 +1277,7 @@
                 log_history(id,3);
                 $("#box-item-detail-history-disposal").html(item);
 
-                $("#approve-disposal-modal .modal-title").html("<i class='fa fa-edit'></i> Approval Disposal "+ pengajuan +" - <span style='color:#dd4b39'>" + data.no_reg + "</span><input type='hidden' id='getnoreg' name='getnoreg' value='"+data.no_reg+"' >");
+                $("#approve-disposal-modal .modal-title").html("<i class='fa fa-edit'></i> APPROVAL DISPOSAL "+ pengajuan +" - <span style='color:#dd4b39'>" + data.no_reg + "</span><input type='hidden' id='getnoreg' name='getnoreg' value='"+data.no_reg+"' >");
 
                 $('#approve-disposal-modal').modal('show');
             },
@@ -2469,7 +2648,7 @@
 
                 $("#box-item-detail-history").html(item);
 
-                $("#history-modal .modal-title").html("<i class='fa fa-edit'></i>  History Approval Pendaftaran - <span style='color:#dd4b39'>" + data.no_reg + "</span><input type='hidden' id='getnoreg' name='getnoreg' value='"+data.no_reg+"' >");
+                $("#history-modal .modal-title").html("<i class='fa fa-edit'></i>  HISTORY APPROVAL PENDAFTARAN - <span style='color:#dd4b39'>" + data.no_reg + "</span><input type='hidden' id='getnoreg' name='getnoreg' value='"+data.no_reg+"' >");
 
                 $('#history-modal').modal('show');
             },
@@ -2528,13 +2707,13 @@
                         
                         if( jenis_pengajuan == 1 )
                         {
-                            pengajuan = 'Penjualan';
+                            pengajuan = 'PENJUALAN';
                         }
                         else if( jenis_pengajuan == 2 )
                         {
-                            pengajuan = 'Hilang';
+                            pengajuan = 'HILANG';
                         }else{
-                            pengajuan = 'Rusak';
+                            pengajuan = 'RUSAK';
                         }
 
                         item += "<tr style='height: 30px !important;font-size:11px !important;'>";
@@ -2565,7 +2744,7 @@
 
                 $("#box-item-detail-history-disposal").html(item);
 
-                $("#history-modal-disposal .modal-title").html("<i class='fa fa-edit'></i>  History Disposal "+ pengajuan +" - <span style='color:#dd4b39'>" + data.no_reg + "</span><input type='hidden' id='getnoreg' name='getnoreg' value='"+data.no_reg+"' >");
+                $("#history-modal-disposal .modal-title").html("<i class='fa fa-edit'></i>  HISTORY DISPOSAL "+ pengajuan +" - <span style='color:#dd4b39'>" + data.no_reg + "</span><input type='hidden' id='getnoreg' name='getnoreg' value='"+data.no_reg+"' >");
 
                 $('#history-modal-disposal').modal('show');
             },
@@ -2639,6 +2818,10 @@
             else if( tipe == 4 )
             {
                 $("#log-history-box-disposal-history").html(item);
+            }
+            else if( tipe == 5 )
+            {
+                $("#log-history-box-mutasi").html(item);
             }
             else
             {
@@ -3205,6 +3388,277 @@
             placeholder: ' ',
             allowClear: true,
         });
+    }
+
+    function history_mutasi(id)
+    {
+        //alert(id); return false;
+        var kata = id;
+        var noreg= kata.replace(/\//g, '-');
+        //alert(noreg); return false;
+
+        //$("#box-detail-item-history-mutasi").hide();
+        $("#history-notes-mutasi").hide();
+
+        $.ajax({
+            type: 'GET',
+            url: "{{ url('approval/view_mutasi') }}/"+noreg,
+            data: "",
+            //async: false,
+            dataType: 'json',
+            success: function(data) 
+            { 
+                //alert(data.no_reg);
+                $("#request-form-history #no-reg").val(data.no_reg);
+                $("#request-form-history #type-transaksi").val(data.type_transaksi);
+                $("#request-form-history #po-type").val(data.po_type);
+                $("#request-form-history #business-area").val(data.business_area);
+                $("#request-form-history #requestor").val(data.requestor);
+                $("#request-form-history #tanggal-reg").val(data.tanggal_reg);
+                $("#request-form-history #kode-vendor").val(data.kode_vendor);
+                $("#request-form-history #nama-vendor").val(data.nama_vendor);
+
+                var item = '<table class="table xtable-condensed table-responsive table-striped" id="request-item-table" style="font-size:13px">';
+                item += '<th>NO.</th>';
+                item += '<th>KODE ASSET AMS</th>';
+                item += '<th>KODE ASSET SAP</th>';
+                item += '<th>NAMA MATERIAL</th>';
+                item += '<th>LOKASI BA CODE</th>';
+                item += '<th>NAMA ASSET</th>';
+                //item += '<th>HARGA PEROLEHAN (RP)</th>';
+                item += '<th>VIEW DETAIL</th>';
+                if (data.item_detail.length > 0) 
+                {
+                    var no = 1;
+
+                    $.each(data.item_detail, function(key, val) 
+                    {
+                        var kode_fams = btoa(val.kode_asset_ams);
+                        var jenis_pengajuan = val.jenis_pengajuan;
+                        
+                        if( jenis_pengajuan == 1 )
+                        {
+                            pengajuan = 'AMP';
+                        }
+                        else{
+                            pengajuan = 'NON AMP';
+                        }
+
+                        item += "<tr style='height: 30px !important;font-size:11px !important;'>";
+                        item += "<td>" + no + "</td>";
+                        item += "<td>" + val.kode_asset_ams + "</td>";
+                        item += "<td>" + val.kode_asset_sap + "</td>";
+                        item += "<td>" + val.nama_material + "</td>";
+                        item += "<td>" + val.lokasi_ba_description + "</td>";
+                        item += "<td>" + val.nama_asset_1 + "</td>";
+                        //item += "<td>" + val.harga_perolehan + "</td>";
+
+                        item += "<td><a href='<?php {{ echo url("/master-asset/show-data"); }} ?>/"+kode_fams+"' target='_blank'><i class='fa fa-eye'></i></a></td>";
+                        //item += "<td><i class='fa fa-eye' OnClick='getDetailItem(\""+noreg+"\","+val.id+",2,"+no+")'></i></td>";
+                        item += "</tr>";
+                        no++;
+                        
+                    });
+                }
+                else
+                {
+                    item += '<tr>';
+                    item += ' <td colspan="7" style="text-align:center">No item selected</td>';
+                    item += '</tr>';
+                }
+                item += '</table>';
+
+                log_history(id,5);
+
+                $("#box-item-detail-history-mutasi").html(item);
+
+                $("#history-modal-mutasi .modal-title").html("<i class='fa fa-edit'></i>  HISTORY MUTASI "+ pengajuan +" - <span style='color:#dd4b39'>" + data.no_reg + "</span><input type='hidden' id='getnoreg' name='getnoreg' value='"+data.no_reg+"' >");
+
+                $('#history-modal-mutasi').modal('show');
+            },
+            error: function(x) 
+            {                           
+                alert("Error: "+ "\r\n\r\n" + x.responseText);
+            }
+        }); 
+    }
+
+    function approval_mutasi(id)
+    {
+        //alert(id); return false;
+        var kata = id;
+        var noreg= kata.replace(/\//g, '-');
+        //alert(noreg); //return false;
+
+        $("#box-detail-item-mutasi").hide();
+
+        $.ajax({
+            type: 'GET',
+            url: "{{ url('approval/view_mutasi') }}/"+noreg,
+            data: "",
+            //async: false,
+            dataType: 'json',
+            success: function(data) 
+            { 
+                //alert(data.cek_reject);
+                $("#request-form #no-reg").val(data.no_reg);
+                $("#request-form #type-transaksi").val(data.type_transaksi);
+                $("#request-form #po-type").val(data.po_type);
+                $("#request-form #business-area").val(data.business_area);
+                $("#request-form #requestor").val(data.requestor);
+                $("#request-form #tanggal-reg").val(data.tanggal_reg);
+                $("#request-form #kode-vendor").val(data.kode_vendor);
+                $("#request-form #nama-vendor").val(data.nama_vendor);
+
+                $("#create-button-sync-sap").hide();
+                if(data.cek_reject==0){$("#button-approve").show();}
+                $(".button-reject").show(); 
+                    
+                var item = '<table class="table table-responsive table-striped" id="request-item-table" style="font-size:13px">';
+                item += '<th>NO.</th>';
+                item += '<th>KODE ASSET AMS</th>';
+                item += '<th>KODE ASSET SAP</th>';
+                item += '<th>NAMA MATERIAL</th>';
+                item += '<th>LOKASI BA CODE</th>';
+                item += '<th>NAMA ASSET</th>';
+                //item += '<th>HARGA PEROLEHAN (RP)</th>';
+                item += '<th>VIEW DETAIL</th>';
+                if (data.item_detail.length > 0) 
+                {
+                    var no = 1;
+                    $.each(data.item_detail, function(key, val) 
+                    {
+                        var doc_no = val.document_code.replace(/\//g, '-');
+                        var kode_fams = btoa(val.kode_asset_ams);
+                        var jenis_pengajuan = val.jenis_pengajuan;
+                        
+                        if( jenis_pengajuan == 1 )
+                        {
+                            pengajuan = 'AMP';
+                        }
+                        else{
+                            pengajuan = 'NON AMP';
+                        }
+
+                        item += "<tr style='height: 30px !important;font-size:11px !important;'>";
+                        item += "<td>" + no + "</td>";
+                        item += "<td>" + val.kode_asset_ams + "</td>";
+                        item += "<td>" + val.kode_asset_sap + "</td>";
+                        item += "<td>" + val.nama_material + "</td>";
+                        item += "<td>" + val.lokasi_ba_description + "</td>";
+                        item += "<td>" + val.nama_asset_1 + "</td>";
+                        //item += "<td>" + val.harga_perolehan + "</td>";
+
+                        item += "<td><a href='<?php {{ echo url("/master-asset/show-data"); }} ?>/"+kode_fams+"' target='_blank'><i class='fa fa-eye'></i></a> &nbsp;&nbsp;&nbsp; <i class='fa fa-trash' style='color:red' OnClick='delMutasi(\""+data.no_reg+"\","+val.kode_asset_ams+")'></i> </td>";
+
+                        item += "</tr>";
+                        no++;
+                    });
+                }
+                else
+                {
+                    item += '<tr>';
+                    item += ' <td colspan="7" style="text-align:center">No item selected</td>';
+                    item += '</tr>';
+                }
+                item += '</table>';
+
+                $("#box-item-detail-mutasi").html(item);
+
+                log_history(id,6);
+                $("#box-item-detail-history-mutasi").html(item);
+
+                $("#approve-mutasi-modal .modal-title").html("<i class='fa fa-edit'></i> APPROVAL MUTASI "+ pengajuan +" - <span style='color:#dd4b39'>" + data.no_reg + "</span><input type='hidden' id='getnoreg' name='getnoreg' value='"+data.no_reg+"' >");
+
+                $('#approve-mutasi-modal').modal('show');
+            },
+            error: function(x) 
+            {                           
+                alert("Error: "+ "\r\n\r\n" + x.responseText);
+            }
+        }); 
+    }
+
+    function changeStatusMutasi(status)
+    {
+        //alert(status); return false;
+        var getnoreg = $("#getnoreg").val(); //alert(getnoreg); return false;
+        var no_registrasi= getnoreg.replace(/\//g, '-');
+        var specification = $("#specification-mutasi-approval").val();
+
+        if( status == 'A' ){ status_desc = 'approve'; }else
+        if( status == 'R' )
+        { 
+            status_desc = 'reject';
+            note_reject = $("#specification-mutasi-approval").val();
+
+            if( $.trim(note_reject) < 2 )
+            {
+                notify({
+                    type: 'warning',
+                    message: " Note Reject is required (min 2 char)"
+                });
+                return false;
+            } 
+
+        }else{ status_desc = 'cancel'; }
+
+        if(confirm('confirm '+status_desc+' data ?'))
+        {
+            //console.log(request_check_gi); return false;
+
+            //e.preventDefault();
+            var param = $("#request-form").serialize();
+            var request_ka = JSON.stringify(request_kode_aset_data);
+            var request_gi = JSON.stringify(request_check_gi);
+            //alert(param); //return false;
+
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            
+            $.ajax({
+                url: "{{ url('approval/update_status_mutasi') }}/"+status+"/"+no_registrasi,
+                method: "POST",
+                data: param+"&parNote="+specification+"&request_ka="+request_ka+"&request_gi="+request_gi,
+                beforeSend: function() {
+                    jQuery('.loading-event').fadeIn();
+                },
+                success: function(result) 
+                {
+                    //alert(result.status);
+                    if (result.status) 
+                    {
+                        //SEND EMAIL 
+                        send_email_create_po(result.new_noreg);
+
+                        $("#approve-mutasi-modal").modal("hide");
+                        $("#data-table").DataTable().ajax.reload();
+                        $("#data-table-history").DataTable().ajax.reload();
+                        notify({
+                            type: 'success',
+                            message: result.message
+                        });
+                    } 
+                    else 
+                    {
+                        request_check_gi = [];
+                        request_kode_aset_data = [];
+                        //$(".md_year").val("");
+                        notify({
+                            type: 'warning',
+                            message: result.message
+                        });
+                    }
+                    
+                },
+                complete: function() {
+                    jQuery('.loading-event').fadeOut();
+                }
+            });
+        }
     }
 
 </script>

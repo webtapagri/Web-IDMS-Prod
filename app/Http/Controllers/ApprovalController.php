@@ -127,7 +127,7 @@ class ApprovalController extends Controller
             //$sql .= " ORDER BY ASSET.ID DESC ";
         }
 
-       // echo $sql; die();
+        //echo $sql; die();
 
         $data = DB::select(DB::raw($sql));
 
@@ -2890,5 +2890,199 @@ WHERE a.no_reg = '".$noreg."' AND b.MANDATORY_KODE_ASSET_CONTROLLER = 'X' ORDER 
 
         $l .= '</center>';
         echo $l; 
+    }
+
+    function view_mutasi($id)
+    {
+        //echo "<pre>"; print_r($id);die();
+        $noreg = str_replace("-", "/", $id);
+
+        $records = array();
+
+        $sql = " SELECT a.*, date_format(a.created_at,'%d-%m-%Y') AS TANGGAL_REG, c.name AS REQUESTOR FROM TR_MUTASI_ASSET a LEFT JOIN TBM_USER c ON a.created_by = c.id WHERE a.no_reg = '$noreg' "; 
+        $data = DB::SELECT($sql);
+        //echo "1<pre>"; print_r($data); die();
+        
+        if($data)
+        {
+            $type_transaksi = array(
+                1 => 'AMP',
+                2 => 'NON AMP',
+            );
+
+            $po_type = array(
+                0 => 'SAP',
+                1 => 'AMP',
+                2 => 'Asset Lainnya'
+            );
+
+            foreach ($data as $k => $v) 
+            {
+                $records[] = array(
+                    'no_reg' => trim($v->NO_REG),
+                    'type_transaksi' => trim($type_transaksi[$v->TYPE_TRANSAKSI]),
+                    //'po_type' => '', //trim($po_type[$v->PO_TYPE]),
+                    'business_area' => '',//trim($v->LOKASI_BA_DESCRIPTION),
+                    'requestor' => trim($v->REQUESTOR),
+                    'tanggal_reg' => trim($v->TANGGAL_REG),
+                    'item_detail' => $this->get_item_detail_mutasi($noreg),
+                    'sync_sap' => '',//$this->get_sinkronisasi_sap($noreg),
+                    'sync_amp' => '',//$this->get_sinkronisasi_amp($noreg),
+                    'sync_lain' => '',//$this->get_sinkronisasi_lain($noreg),
+                    'cek_reject' => $this->get_cek_reject($noreg),
+                    'vendor' => '', //trim($v->KODE_VENDOR).' - '.trim($v->NAMA_VENDOR),
+                    'kode_vendor' => '', //trim($v->KODE_VENDOR),
+                    'nama_vendor' => '', //trim($v->NAMA_VENDOR),
+                );
+
+            }
+        }
+        else
+        {
+            $records[0] = array();
+        }
+
+        echo json_encode($records[0]);
+    }
+
+    function get_item_detail_mutasi($noreg)
+    {
+        $request = array();
+        
+        $sql = " SELECT b.*, b.NO_REG as DOCUMENT_CODE, a.* FROM TR_MUTASI_ASSET_DETAIL a LEFT JOIN TM_MSTR_ASSET b ON a.kode_asset_ams = b.KODE_ASSET_AMS WHERE a.no_reg = '{$noreg}' ";
+
+        $data = DB::SELECT($sql);
+
+        if($data)
+        {
+            foreach( $data as $k => $v )
+            {
+                $request[] = array
+                (
+                    'asset_po_id' => trim($v->ITEM_PO),
+                    'document_code' => trim($v->DOCUMENT_CODE),
+                    'id' => trim($v->ID),
+                    'no_reg' => trim($v->NO_REG),
+                    'kode_asset_ams' => trim($v->KODE_ASSET_AMS),
+                    'kode_asset_sap' => trim($v->KODE_ASSET_SAP),
+                    'nama_material' => trim($v->NAMA_MATERIAL),
+                    'ba_pemilik_asset' => trim($v->BA_PEMILIK_ASSET),
+                    'lokasi_ba_code' => trim($v->LOKASI_BA_CODE),
+                    'lokasi_ba_description' => trim($v->LOKASI_BA_DESCRIPTION),
+                    'nama_asset_1' => trim($v->NAMA_ASSET_1),
+                    'harga_perolehan' => '',//number_format(trim($v->HARGA_PEROLEHAN),0,',','.'),
+                    'jenis_pengajuan' => trim($v->JENIS_PENGAJUAN),
+                    'created_by' => trim($v->CREATED_BY),
+                    'created_at' => trim($v->CREATED_AT)
+                );
+            }
+        }
+
+        return $request;
+    }
+
+    function update_status_mutasi(Request $request, $status, $noreg)
+    {
+        $req = $request->all();
+        //echo "1<pre>"; print_r($req); die();
+        /*
+        Array
+        (
+            [no-reg] => 19.11/AMS/MTSA/00007
+            [type-transaksi] => AMP
+            [po-type] => 
+            [kode-vendor] => 
+            [business-area] => 
+            [requestor] => PGA (Payroll & General Affair)
+            [tanggal-reg] => 05-11-2019
+            [nama-vendor] => 
+            [specification] => 
+            [parNote] => 123
+            [request_ka] => []
+            [request_gi] => []
+        )
+        */
+
+        $no_registrasi = str_replace("-", "/", $noreg);
+        $user_id = Session::get('user_id');
+        $note = $request->parNote;
+        $role_id = Session::get('role_id');
+        $role_name = Session::get('role'); //get role id user
+        $asset_controller = $this->get_ac_mutasi($no_registrasi); //get asset controller 
+    
+        $validasi_last_approve = $this->get_validasi_last_approve($no_registrasi);
+        //echo "2<pre>"; print_r($validasi_last_approve); die();
+
+        if( $validasi_last_approve == 0 )
+        {
+            DB::beginTransaction();
+            
+            try 
+            {
+                if($status=='R')
+                {
+                    DB::UPDATE(" UPDATE TR_MUTASI_ASSET_DETAIL SET DELETED = 'R' WHERE NO_REG = '".$no_registrasi."' "); 
+                }
+
+                DB::STATEMENT('CALL update_approval("'.$no_registrasi.'", "'.$user_id.'","'.$status.'", "'.$note.'", "'.$role_name.'", "'.$asset_controller.'")');
+                
+                DB::commit();
+
+                return response()->json(['status' => true, "message" => 'Data is successfully ' . ($no_registrasi ? 'updated' : 'update'), "new_noreg"=>$no_registrasi]);
+            } 
+            catch (\Exception $e) 
+            {
+                DB::rollback();
+                return response()->json(['status' => false, "message" => $e->getMessage()]);
+            }
+        }    
+        else
+        {
+            //$validasi_check_gi_amp = $this->get_validasi_check_gi_amp($request,$no_registrasi); //true;
+            //echo "1<pre>"; print_r($validasi_check_gi_amp); die();
+            $validasi_check_gi_amp['status'] = 'success';
+
+            if($validasi_check_gi_amp['status'] == 'success')
+            {
+                DB::beginTransaction();
+                try 
+                {
+                    DB::STATEMENT('CALL complete_document_disposal("'.$no_registrasi.'", "'.$user_id.'")');
+                    DB::commit();
+                    return response()->json(['status' => true, "message" => 'Data is successfully ' . ($no_registrasi ? 'updated' : 'update'), "new_noreg"=>$no_registrasi]);
+                } 
+                catch (\Exception $e) 
+                {
+                    DB::rollback();
+                    return response()->json(['status' => false, "message" => $e->getMessage()]);
+                }
+            }
+            else
+            {
+                return response()->json(['status' => false, "message" => "Error Validasi GI"]);
+            }
+           
+        }
+    }
+
+    function get_ac_mutasi($noreg)
+    {
+        $sql = "SELECT b.ASSET_CONTROLLER
+                    FROM TR_MUTASI_ASSET_DETAIL a 
+                    LEFT JOIN TM_MSTR_ASSET b on a.KODE_ASSET_AMS = b.KODE_ASSET_AMS
+                    WHERE a.NO_REG = '".$noreg."' LIMIT 1";
+
+        $data = DB::SELECT($sql);
+
+        if(!empty($data))
+        {   
+            $ac = $data[0]->ASSET_CONTROLLER;
+        }
+        else
+        {
+            $ac = "";
+        }
+
+        return $ac;
     }
 }

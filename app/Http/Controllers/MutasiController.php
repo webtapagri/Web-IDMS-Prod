@@ -140,7 +140,7 @@ class MutasiController extends Controller
                     return array('status'=>false,'message'=> 'Proses Gagal, Data sudah pernah diinput (KODE ASSET AMS : '.$KODE_ASSET_AMS.')');
                 }
 
-                DB::INSERT(" INSERT INTO TR_MUTASI_ASSET_DETAIL (NO_REG,KODE_ASSET_AMS,TUJUAN,ASSET_CONTROLLER,CREATED_BY) VALUES ('".$NO_REG."','".$KODE_ASSET_AMS."','".$TUJUAN_CODE."','".$ASSET_CONTROLLER."','".$user_id."') ");
+                DB::INSERT(" INSERT INTO TR_MUTASI_ASSET_DETAIL (NO_REG,KODE_ASSET_AMS,TUJUAN,ASSET_CONTROLLER,CREATED_BY,JENIS_PENGAJUAN) VALUES ('".$NO_REG."','".$KODE_ASSET_AMS."','".$TUJUAN_CODE."','".$ASSET_CONTROLLER."','".$user_id."','1') ");
 
                 // INSERT FILE UPLOAD DARI TABLE TR_MUTASI_TEMP_FILE
                 $jenis = "amp";
@@ -498,6 +498,7 @@ class MutasiController extends Controller
         $role_name = Session::get('role'); //get role id user
         $asset_controller = $request->asset_controller; //get asset controller
         $milik_area = $request->milik_area; 
+        $tujuan_area = $request->tujuan_area;
     
         #1 VALIDASI ASSET CONTROLLER HARUS SAMA
         $validasi_asset_controller = $this->validasi_asset_controller($user_id,$asset_controller);
@@ -519,6 +520,13 @@ class MutasiController extends Controller
         {
             return response()->json(['status' => false, "message" => "Kepemilikan Area tidak sama"]);
         }
+
+        #4 VALIDASI TUJUAN HARUS SAMA
+        $validasi_tujuan = $this->validasi_tujuan_area($user_id,$tujuan_area);
+        if( $validasi_tujuan == 0 )
+        {
+            return response()->json(['status' => false, "message" => "Tujuan Area tidak sama"]);
+        }        
 
         DB::beginTransaction();
             
@@ -609,6 +617,34 @@ class MutasiController extends Controller
         else
         {
             $sql = " SELECT COUNT(*) AS JML FROM TR_MUTASI_TEMP WHERE BA_PEMILIK_ASSET = '$milik_area' AND CREATED_BY = '{$user_id}' ";
+            $data = DB::SELECT($sql);
+            
+            if($data)
+            { 
+                $dt = $data[0]->JML; 
+            }
+            else
+            { 
+                $dt = 0; 
+            }
+        }
+
+        
+        return $dt;
+    }
+
+    public function validasi_tujuan_area($user_id,$tujuan_area)
+    {
+        $data_temp = $this->get_data_temp("amp");
+        //echo count($data_temp); die();
+
+        if( count($data_temp) == 0 )
+        {
+            $dt = 1;
+        }
+        else
+        {
+            $sql = " SELECT COUNT(*) AS JML FROM TR_MUTASI_TEMP WHERE TUJUAN = '$tujuan_area' AND CREATED_BY = '{$user_id}' ";
             $data = DB::SELECT($sql);
             
             if($data)
