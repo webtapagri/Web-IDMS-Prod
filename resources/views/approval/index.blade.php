@@ -616,9 +616,9 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="plant" class="col-md-4">BUSINESS AREA</label>
+                                    <label for="plant" class="col-md-4">PEMILIK ASET</label>
                                     <div class="col-md-6">
-                                        <input type="text" class="form-control input-sm" value="" id="business-area" name="business-area" readonly>
+                                        <input type="text" class="form-control input-sm" value="" id="ba-pemilik-asset" name="ba-pemilik-asset" readonly>
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -643,7 +643,7 @@
                         <div id="box-detail-item-mutasi"></div>
 
                         <!-- LOG HISTORY OUTSTANDING --> 
-                        <div id="log-history-box-mutasi" class="table-scroll"></div>
+                        <div id="log-history-outstanding-mutasi" class="table-scroll"></div>
 
                         <div class="form-group">
                             <label class="col-md-2">NOTE</label>
@@ -2834,6 +2834,10 @@
             {
                 $("#log-history-box-mutasi").html(item);
             }
+            else if( tipe == 6 )
+            {
+                $("#log-history-outstanding-mutasi").html(item);
+            }
             else
             {
                 $("#log-history-box-disposal").html(item);
@@ -3515,7 +3519,7 @@
                 $("#request-form #no-reg").val(data.no_reg);
                 $("#request-form #type-transaksi").val(data.type_transaksi);
                 $("#request-form #po-type").val(data.po_type);
-                $("#request-form #business-area").val(data.business_area);
+                $("#request-form #ba-pemilik-asset").val(data.ba_pemilik_asset);
                 $("#request-form #requestor").val(data.requestor);
                 $("#request-form #tanggal-reg").val(data.tanggal_reg);
                 $("#request-form #kode-vendor").val(data.kode_vendor);
@@ -3529,11 +3533,11 @@
                 item += '<th>NO.</th>';
                 item += '<th>KODE ASSET AMS</th>';
                 item += '<th>KODE ASSET SAP</th>';
-                item += '<th>NAMA MATERIAL</th>';
-                item += '<th>LOKASI BA CODE</th>';
                 item += '<th>NAMA ASSET</th>';
-                //item += '<th>HARGA PEROLEHAN (RP)</th>';
+                item += '<th>LOKASI BA CODE</th>';
+                item += '<th>TUJUAN</th>';
                 item += '<th>VIEW DETAIL</th>';
+
                 if (data.item_detail.length > 0) 
                 {
                     var no = 1;
@@ -3555,11 +3559,10 @@
                         item += "<td>" + no + "</td>";
                         item += "<td>" + val.kode_asset_ams + "</td>";
                         item += "<td>" + val.kode_asset_sap + "</td>";
-                        item += "<td>" + val.nama_material + "</td>";
-                        item += "<td>" + val.lokasi_ba_description + "</td>";
                         item += "<td>" + val.nama_asset_1 + "</td>";
-                        //item += "<td>" + val.harga_perolehan + "</td>";
-
+                        item += "<td>" + val.lokasi_ba_description + "</td>";
+                        item += "<td>" + val.tujuan + "</td>";
+                                        
                         item += "<td><a href='<?php {{ echo url("/master-asset/show-data"); }} ?>/"+kode_fams+"' target='_blank'><i class='fa fa-eye'></i></a> &nbsp;&nbsp;&nbsp; <i class='fa fa-trash' style='color:red' OnClick='delMutasi(\""+data.no_reg+"\","+val.kode_asset_ams+")'></i> </td>";
 
                         item += "</tr>";
@@ -3577,7 +3580,7 @@
                 $("#box-item-detail-mutasi").html(item);
 
                 log_history(id,6);
-                $("#box-item-detail-history-mutasi").html(item);
+                $("#log-history-box-mutasi").html(item);
 
                 $("#approve-mutasi-modal .modal-title").html("<i class='fa fa-edit'></i> APPROVAL MUTASI "+ pengajuan +" - <span style='color:#dd4b39'>" + data.no_reg + "</span><input type='hidden' id='getnoreg' name='getnoreg' value='"+data.no_reg+"' >");
 
@@ -3658,6 +3661,55 @@
                         request_check_gi = [];
                         request_kode_aset_data = [];
                         //$(".md_year").val("");
+                        notify({
+                            type: 'warning',
+                            message: result.message
+                        });
+                    }
+                    
+                },
+                complete: function() {
+                    jQuery('.loading-event').fadeOut();
+                }
+            });
+        }
+    }
+
+    function delMutasi(noreg,kode_asset_ams)
+    {
+        //alert(noreg); return false;
+        if(confirm('Confirm Delete ?'))
+        {
+            var no_registrasi= noreg.replace(/\//g, '-');
+            var param = '';
+
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                url: "{{ url('approval/delete_asset_mutasi') }}",
+                method: "POST",
+                data: param+"&getnoreg="+no_registrasi+"&kode_asset_ams="+kode_asset_ams,
+                beforeSend: function() {
+                    $('.loading-event').fadeIn();
+                },
+                success: function(result) 
+                {
+                    //alert(result.status);
+                    if (result.status) 
+                    {
+                        $("#approve-mutasi-modal").modal("hide");
+                        //$("#data-table").DataTable().ajax.reload();
+                        notify({
+                            type: 'success',
+                            message: result.message
+                        });
+                        //setTimeout(reload_page, 1000); 
+                    } 
+                    else 
+                    {
                         notify({
                             type: 'warning',
                             message: result.message

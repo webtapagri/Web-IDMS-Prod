@@ -287,7 +287,48 @@ Array
         $('#request-detail-page').addClass('sub-loader');
         $(".btn-cancel").on('click', function() 
         {
-            if (confirm("Are you sure you want to cancel this request?")) {
+            if (confirm("Confirm Delete All Data ?")) 
+            {
+
+                var param = '';
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+                $.ajax({
+                    url: "{{ url('mutasi/delete_all_berkas_temp') }}",
+                    method: "POST",
+                    data: param,
+                    beforeSend: function() {
+                        $('.loading-event').fadeIn();
+                    },
+                    success: function(result) 
+                    {
+                        //alert(result.status); return false;
+                        if (result.status) 
+                        {
+                            notify({
+                                type: 'success',
+                                message: result.message
+                            });
+                            setTimeout(reload_page, 500);
+                        } 
+                        else 
+                        {
+                            notify({
+                                type: 'warning',
+                                message: result.message
+                            });
+                        }
+                        
+                    },
+                    complete: function() {
+                        jQuery('.loading-event').fadeOut();
+                    }
+                });
+
+                /* =================================================
                 request_item = [];
                 request_item_page = [];
                 createItemRequestTable();
@@ -297,11 +338,12 @@ Array
 
                 /* jQuery('#business_area').val('');
                 jQuery('#business_area').trigger('change'); */
-                notify({
+                /* notify({
                     type: 'error',
                     message: 'form has been cleared!'
                 });
                 document.getElementById("request-form").reset();
+                ====================================================== */ 
             }
         });
 

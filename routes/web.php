@@ -90,6 +90,7 @@ Route::get('/approval/view_disposal/{no_reg}', 'ApprovalController@view_disposal
 Route::post('/approval/delete_asset_disposal', 'ApprovalController@delete_asset_disposal');
 Route::get('/approval/view_mutasi/{no_reg}', 'ApprovalController@view_mutasi')->name('no_reg');
 Route::post('/approval/update_status_mutasi/{status}/{no_reg}','ApprovalController@update_status_mutasi');
+Route::post('/approval/delete_asset_mutasi', 'ApprovalController@delete_asset_mutasi');
 
 Route::get('get-select_jenis_kendaraan', ['as' => 'get.select_jenis_kendaraan', 'uses' => 'Select2Controller@select_jenis_kendaraan']);
 
@@ -111,6 +112,7 @@ Route::post('/mutasi/delete_data_temp','MutasiController@delete_data_temp');
 Route::get('/mutasi/view-berkas-detail/{kode_asset_ams}/{file_category}', 'MutasiController@berkas_detail')->name('kode_asset_ams');
 Route::post('/mutasi/delete_berkas_temp','MutasiController@delete_berkas_temp');
 Route::get('/mutasi/view-berkas-notes/{kode_asset_ams}', 'MutasiController@berkas_notes')->name('kode_asset_ams');
+Route::post('/mutasi/delete_all_berkas_temp','MutasiController@delete_all_berkas_temp');
 
 /* USER SETTINGS */
 //Route::get('/', 'HomeController@index')->name('home');

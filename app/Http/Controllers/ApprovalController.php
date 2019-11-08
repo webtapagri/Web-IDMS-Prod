@@ -2899,9 +2899,13 @@ WHERE a.no_reg = '".$noreg."' AND b.MANDATORY_KODE_ASSET_CONTROLLER = 'X' ORDER 
 
         $records = array();
 
-        $sql = " SELECT a.*, date_format(a.created_at,'%d-%m-%Y') AS TANGGAL_REG, c.name AS REQUESTOR FROM TR_MUTASI_ASSET a LEFT JOIN TBM_USER c ON a.created_by = c.id WHERE a.no_reg = '$noreg' "; 
+        $sql = " SELECT a.*, date_format(a.created_at,'%d-%m-%Y') AS TANGGAL_REG, c.name AS REQUESTOR, 
+ (SELECT BA_PEMILIK_ASSET FROM TM_MSTR_ASSET WHERE KODE_ASSET_AMS = (
+SELECT KODE_ASSET_AMS FROM TR_MUTASI_ASSET_DETAIL a WHERE NO_REG = '$noreg' LIMIT 1)) AS BA_PEMILIK_ASSET 
+                    FROM TR_MUTASI_ASSET a        
+                        LEFT JOIN TBM_USER c ON a.created_by = c.id 
+                    WHERE a.no_reg = '$noreg' "; 
         $data = DB::SELECT($sql);
-        //echo "1<pre>"; print_r($data); die();
         
         if($data)
         {
@@ -2922,7 +2926,7 @@ WHERE a.no_reg = '".$noreg."' AND b.MANDATORY_KODE_ASSET_CONTROLLER = 'X' ORDER 
                     'no_reg' => trim($v->NO_REG),
                     'type_transaksi' => trim($type_transaksi[$v->TYPE_TRANSAKSI]),
                     //'po_type' => '', //trim($po_type[$v->PO_TYPE]),
-                    'business_area' => '',//trim($v->LOKASI_BA_DESCRIPTION),
+                    'ba_pemilik_asset' => trim($v->BA_PEMILIK_ASSET),
                     'requestor' => trim($v->REQUESTOR),
                     'tanggal_reg' => trim($v->TANGGAL_REG),
                     'item_detail' => $this->get_item_detail_mutasi($noreg),
@@ -2972,6 +2976,7 @@ WHERE a.no_reg = '".$noreg."' AND b.MANDATORY_KODE_ASSET_CONTROLLER = 'X' ORDER 
                     'nama_asset_1' => trim($v->NAMA_ASSET_1),
                     'harga_perolehan' => '',//number_format(trim($v->HARGA_PEROLEHAN),0,',','.'),
                     'jenis_pengajuan' => trim($v->JENIS_PENGAJUAN),
+                    'tujuan' => trim($v->TUJUAN),
                     'created_by' => trim($v->CREATED_BY),
                     'created_at' => trim($v->CREATED_AT)
                 );
@@ -3084,5 +3089,28 @@ WHERE a.no_reg = '".$noreg."' AND b.MANDATORY_KODE_ASSET_CONTROLLER = 'X' ORDER 
         }
 
         return $ac;
+    }
+
+    function delete_asset_mutasi(Request $request)
+    {
+        $no_reg = str_replace("-", "/", $request->getnoreg);
+
+        DB::beginTransaction();
+
+        try 
+        {
+            $user_id = Session::get('user_id');
+
+            DB::DELETE(" DELETE FROM TR_MUTASI_ASSET_DETAIL WHERE NO_REG = '".$no_reg."' AND KODE_ASSET_AMS = ".$request->kode_asset_ams." ");
+            DB::DELETE(" DELETE FROM TR_MUTASI_ASSET_FILE WHERE NO_REG = '".$no_reg."' AND KODE_ASSET_AMS = ".$request->kode_asset_ams." "); 
+
+            DB::commit();
+            return response()->json(['status' => true, "message" => 'Data is successfully ' . ($request->kode_asset_ams ? 'deleted' : 'delete')]);
+        } 
+        catch (\Exception $e) 
+        {
+            DB::rollback();
+            return response()->json(['status' => false, "message" => $e->getMessage()]);
+        }
     }
 }
