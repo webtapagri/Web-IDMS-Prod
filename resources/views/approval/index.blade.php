@@ -540,9 +540,9 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="plant" class="col-md-4">BUSINESS AREA</label>
+                                    <label for="plant" class="col-md-4">PEMILIK ASET</label>
                                     <div class="col-md-6">
-                                        <input type="text" class="form-control input-sm" value="" id="business-area" name="business-area" readonly>
+                                        <input type="text" class="form-control input-sm" value="" id="ba-pemilik-asset" name="ba-pemilik-asset" readonly>
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -3427,7 +3427,7 @@
                 $("#request-form-history #no-reg").val(data.no_reg);
                 $("#request-form-history #type-transaksi").val(data.type_transaksi);
                 $("#request-form-history #po-type").val(data.po_type);
-                $("#request-form-history #business-area").val(data.business_area);
+                $("#request-form-history #ba-pemilik-asset").val(data.ba_pemilik_asset);
                 $("#request-form-history #requestor").val(data.requestor);
                 $("#request-form-history #tanggal-reg").val(data.tanggal_reg);
                 $("#request-form-history #kode-vendor").val(data.kode_vendor);
@@ -3437,10 +3437,9 @@
                 item += '<th>NO.</th>';
                 item += '<th>KODE ASSET AMS</th>';
                 item += '<th>KODE ASSET SAP</th>';
-                item += '<th>NAMA MATERIAL</th>';
-                item += '<th>LOKASI BA CODE</th>';
                 item += '<th>NAMA ASSET</th>';
-                //item += '<th>HARGA PEROLEHAN (RP)</th>';
+                item += '<th>LOKASI BA CODE</th>';
+                item += '<th>TUJUAN</th>';
                 item += '<th>VIEW DETAIL</th>';
                 if (data.item_detail.length > 0) 
                 {
@@ -3463,13 +3462,11 @@
                         item += "<td>" + no + "</td>";
                         item += "<td>" + val.kode_asset_ams + "</td>";
                         item += "<td>" + val.kode_asset_sap + "</td>";
-                        item += "<td>" + val.nama_material + "</td>";
-                        item += "<td>" + val.lokasi_ba_description + "</td>";
                         item += "<td>" + val.nama_asset_1 + "</td>";
-                        //item += "<td>" + val.harga_perolehan + "</td>";
+                        item += "<td>" + val.lokasi_ba_description + "</td>";
+                        item += "<td>" + val.tujuan + "</td>";
 
                         item += "<td><a href='<?php {{ echo url("/master-asset/show-data"); }} ?>/"+kode_fams+"' target='_blank'><i class='fa fa-eye'></i></a></td>";
-                        //item += "<td><i class='fa fa-eye' OnClick='getDetailItem(\""+noreg+"\","+val.id+",2,"+no+")'></i></td>";
                         item += "</tr>";
                         no++;
                         
