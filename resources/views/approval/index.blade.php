@@ -822,7 +822,12 @@
                             {
                                 content += '<a href="{{ url("approval/berkas-amp") }}/'+no_registrasi+'" target="_blank"><span class="label label-default"><i class="fa fa-download"></i></span></a>';
                             }
-                            else if( dspa || mutasi )
+                            else if( dspa )
+                            {
+                                //alert("berkas");
+                                content += '<a href="{{ url("approval/berkas-disposal") }}/'+no_registrasi+'" target="_blank"><span class="label label-default"><i class="fa fa-download"></i></span></a>';
+                            }
+                            else if( mutasi )
                             {
                                 //alert("berkas");
                                 content += '<a href="{{ url("approval/berkas-mutasi") }}/'+no_registrasi+'" target="_blank"><span class="label label-default"><i class="fa fa-download"></i></span></a>';
@@ -967,6 +972,7 @@
                             var no_registrasi= btoa(row.document_code);
                             var noreg = row.document_code.replace(/\//g, '-');
                             var dspa = noreg.includes("DSPA");
+                            var mutasi = noreg.includes("MTSA");
 
                             //alert(row.po_type);
 
@@ -978,6 +984,11 @@
                             {
                                 //alert("berkas");
                                 content += '<a href="{{ url("approval/berkas-disposal") }}/'+no_registrasi+'" target="_blank"><span class="label label-default"><i class="fa fa-download"></i></span></a>';
+                            }
+                            else if( mutasi )
+                            {
+                                //alert("berkas");
+                                content += '<a href="{{ url("approval/berkas-mutasi") }}/'+no_registrasi+'" target="_blank"><span class="label label-default"><i class="fa fa-download"></i></span></a>';
                             }
                             else
                             {

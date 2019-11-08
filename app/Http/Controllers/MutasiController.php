@@ -140,6 +140,13 @@ class MutasiController extends Controller
                     return array('status'=>false,'message'=> 'Proses Gagal, Data sudah pernah diinput (KODE ASSET AMS : '.$KODE_ASSET_AMS.')');
                 }
 
+                $validasi_berkas = $this->validasi_berkas($KODE_ASSET_AMS);
+
+                if($validasi_store == 0)
+                {
+                    return array('status'=>false,'message'=> 'Proses Gagal, Belum ada berkas yang di upload (KODE ASSET AMS : '.$KODE_ASSET_AMS.')');
+                }
+
                 DB::INSERT(" INSERT INTO TR_MUTASI_ASSET_DETAIL (NO_REG,KODE_ASSET_AMS,TUJUAN,ASSET_CONTROLLER,CREATED_BY,JENIS_PENGAJUAN) VALUES ('".$NO_REG."','".$KODE_ASSET_AMS."','".$TUJUAN_CODE."','".$ASSET_CONTROLLER."','".$user_id."','1') ");
 
                 // INSERT FILE UPLOAD DARI TABLE TR_MUTASI_TEMP_FILE
@@ -814,6 +821,14 @@ WHERE b.KODE_ASSET_AMS = '".$kode_asset_ams."' AND b.FILE_CATEGORY = '".$file_ca
         }
 
         return array('status'=>true,'message'=> 'Success insert file');
+    }
+
+    function validasi_berkas($kode_asset_ams)
+    {
+
+        $sql = " SELECT COUNT(*) AS TOTAL FROM TR_MUTASI_TEMP_FILE WHERE KODE_ASSET_AMS = '".$kode_asset_ams."' ";
+        $data = DB::SELECT($sql); 
+        return $data[0]->TOTAL;
     }
 
 }

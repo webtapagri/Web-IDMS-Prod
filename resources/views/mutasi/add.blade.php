@@ -151,7 +151,7 @@ Array
                         
                         <button type="button" class="submit-data btn btn-danger btn-flat pull-right" style="margin-right: 5px;">Submit</button>
                         
-                        <button type="button" class="btn btn-default btn-flat btn-cancel pull-right" style="margin-right: 5px;">Clear</button>
+                        <button type="button" class="btn btn-default btn-flat btn-cancel pull-right" style="margin-right: 5px;">Delete</button>
                     </div>
                 </div>
             </form>
