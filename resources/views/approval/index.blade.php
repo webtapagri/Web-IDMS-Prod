@@ -1269,7 +1269,14 @@
                         item += "<td>" + val.nama_asset_1 + "</td>";
                         item += "<td>" + val.harga_perolehan + "</td>";
 
-                        item += "<td><a href='<?php {{ echo url("/master-asset/show-data"); }} ?>/"+kode_fams+"' target='_blank'><i class='fa fa-eye'></i></a> &nbsp;&nbsp;&nbsp; <i class='fa fa-trash' style='color:red' OnClick='delDisposal(\""+data.no_reg+"\","+val.kode_asset_ams+")'></i> </td>";
+                        if( data.item_detail.length != 1 )
+                        {
+                            item += "<td><a href='<?php {{ echo url("/master-asset/show-data"); }} ?>/"+kode_fams+"' target='_blank'><i class='fa fa-eye'></i></a> &nbsp;&nbsp;&nbsp; <i class='fa fa-trash' style='color:red' OnClick='delDisposal(\""+data.no_reg+"\","+val.kode_asset_ams+")'></i> </td>";
+                        }
+                        else
+                        {
+                            item += "<td><a href='<?php {{ echo url("/master-asset/show-data"); }} ?>/"+kode_fams+"' target='_blank'><i class='fa fa-eye'></i></a></td>";
+                        }
 
                         item += "</tr>";
                         no++;
@@ -3559,8 +3566,17 @@
                         item += "<td>" + val.nama_asset_1 + "</td>";
                         item += "<td>" + val.lokasi_ba_description + "</td>";
                         item += "<td>" + val.tujuan + "</td>";
+
+                        if(data.item_detail.length != 1)
+                        {
+                            item += "<td><a href='<?php {{ echo url("/master-asset/show-data"); }} ?>/"+kode_fams+"' target='_blank'><i class='fa fa-eye'></i></a> &nbsp;&nbsp;&nbsp; <i class='fa fa-trash' style='color:red' OnClick='delMutasi(\""+data.no_reg+"\","+val.kode_asset_ams+")'></i> </td>";
+                        }
+                        else
+                        {
+                            item += "<td><a href='<?php {{ echo url("/master-asset/show-data"); }} ?>/"+kode_fams+"' target='_blank'><i class='fa fa-eye'></i></a></td>";
+                        }
                                         
-                        item += "<td><a href='<?php {{ echo url("/master-asset/show-data"); }} ?>/"+kode_fams+"' target='_blank'><i class='fa fa-eye'></i></a> &nbsp;&nbsp;&nbsp; <i class='fa fa-trash' style='color:red' OnClick='delMutasi(\""+data.no_reg+"\","+val.kode_asset_ams+")'></i> </td>";
+                        
 
                         item += "</tr>";
                         no++;

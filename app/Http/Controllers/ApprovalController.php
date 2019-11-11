@@ -2989,25 +2989,7 @@ SELECT KODE_ASSET_AMS FROM TR_MUTASI_ASSET_DETAIL a WHERE NO_REG = '$noreg' LIMI
     function update_status_mutasi(Request $request, $status, $noreg)
     {
         $req = $request->all();
-        //echo "1<pre>"; print_r($req); die();
-        /*
-        Array
-        (
-            [no-reg] => 19.11/AMS/MTSA/00007
-            [type-transaksi] => AMP
-            [po-type] => 
-            [kode-vendor] => 
-            [business-area] => 
-            [requestor] => PGA (Payroll & General Affair)
-            [tanggal-reg] => 05-11-2019
-            [nama-vendor] => 
-            [specification] => 
-            [parNote] => 123
-            [request_ka] => []
-            [request_gi] => []
-        )
-        */
-
+        
         $no_registrasi = str_replace("-", "/", $noreg);
         $user_id = Session::get('user_id');
         $note = $request->parNote;
@@ -3016,7 +2998,6 @@ SELECT KODE_ASSET_AMS FROM TR_MUTASI_ASSET_DETAIL a WHERE NO_REG = '$noreg' LIMI
         $asset_controller = $this->get_ac_mutasi($no_registrasi); //get asset controller 
     
         $validasi_last_approve = $this->get_validasi_last_approve($no_registrasi);
-        //echo "2<pre>"; print_r($validasi_last_approve); die();
 
         if( $validasi_last_approve == 0 )
         {
