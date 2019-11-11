@@ -291,7 +291,7 @@ class MutasiController extends Controller
 
     function validasi_store($KODE_ASSET_AMS)
     {
-        $data = DB::SELECT(" SELECT COUNT(*) AS TOTAL FROM TR_MUTASI_ASSET_DETAIL WHERE KODE_ASSET_AMS = '".$KODE_ASSET_AMS."' ");
+        $data = DB::SELECT(" SELECT COUNT(*) AS TOTAL FROM TR_MUTASI_ASSET_DETAIL WHERE KODE_ASSET_AMS = '{$KODE_ASSET_AMS}' AND (DELETED IS NULL OR DELETED = '') ");
         return $data[0]->TOTAL;  
     }
 

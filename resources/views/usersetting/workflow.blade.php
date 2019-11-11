@@ -573,8 +573,12 @@
             }
         });
 
-        $('.tbm-menu').on('click', function() {
-            $("#menu_code").val("");
+        $('.tbm-menu').on('click', function() 
+        {
+            //alert("Clear data"); 
+            //$("#menu_code").select2("val", "");
+            //$("#menu_code").val("");
+            $("#menu_code").val("").trigger("change");
         });
 
     });
@@ -584,7 +588,6 @@
         document.getElementById("data-form").reset();
         
         $("#edit_workflow_code").val(id);
-        
         var result = $.parseJSON(JSON.stringify(dataJson("{{ url('workflow/edit/?workflow_code=') }}" + id)));
         
         $("#edit_workflow_code").val(result.workflow_code);
@@ -593,7 +596,9 @@
         $("#add-data-modal .modal-title").html("<i class='fa fa-edit'></i> Update data " + result.workflow_name);
         $("#add-data-modal").modal("show");
 
-        $("#menu_code").val("");
+        $("#menu_code").val("").trigger("change");
+        //alert(result.menu_code);
+        //$("#menu_code").select2("val", ""+result.menu_code+"");
         $("#menu_code").val(result.menu_code).trigger("change");
     }
 
@@ -884,8 +889,10 @@
         $("#edit_workflow_code_detail_job").val(result.workflow_job_code);
         $("#workflow_detail_code").val(result.workflow_detail_code);
         $("#workflow_detail_code").trigger("change");
-        $("#id_role").val(result.id_role);
-        $("#id_role").trigger("change");
+        
+        $("#id_role").val("").trigger("change");
+        $("#id_role").val(result.id_role).trigger("change");
+        
         $("#seq_job").val(result.seq);
         $("#operation").val(result.operation);
         $("#lintas").val(result.lintas);
