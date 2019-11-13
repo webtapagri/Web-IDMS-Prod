@@ -97,6 +97,7 @@ Route::get('get-select_jenis_kendaraan', ['as' => 'get.select_jenis_kendaraan', 
 Route::resource('/mutasi', 'MutasiController');
 Route::get('/mutasi/create/{type}', 'MutasiController@create')->name('type');
 Route::post('/mutasi/post', 'MutasiController@store');
+Route::post('/mutasi/post_sewa', 'MutasiController@store_sewa');
 Route::get('/mutasi/edit/', 'MutasiController@show');
 Route::post('/mutasi/inactive', 'MutasiController@inactive');
 Route::post('/mutasi/active', 'MutasiController@active');
@@ -109,9 +110,11 @@ Route::get('/mutasi/list-upload/{kode_asset_ams}/{jenis_pengajuan}', 'MutasiCont
 Route::post('/mutasi/upload_berkas_amp', 'MutasiController@upload_berkas_amp');
 Route::post('/mutasi/add_temp', 'MutasiController@add_temp');
 Route::post('/mutasi/delete_data_temp','MutasiController@delete_data_temp');
+Route::post('/mutasi/delete_data_temp_sewa','MutasiController@delete_data_temp_sewa');
 Route::get('/mutasi/view-berkas-detail/{kode_asset_ams}/{file_category}', 'MutasiController@berkas_detail')->name('kode_asset_ams');
 Route::post('/mutasi/delete_berkas_temp','MutasiController@delete_berkas_temp');
 Route::get('/mutasi/view-berkas-notes/{kode_asset_ams}', 'MutasiController@berkas_notes')->name('kode_asset_ams');
+Route::get('/mutasi/berkas/sewa/{kode_asset_ams}', 'MutasiController@berkas_notes_sewa')->name('kode_asset_ams');
 Route::post('/mutasi/delete_all_berkas_temp','MutasiController@delete_all_berkas_temp');
 
 /* USER SETTINGS */
