@@ -68,6 +68,17 @@ class FamsEmail extends Mailable
                         'website' => 'http://ams.tap-agri.com/',
                     ]);
         }
+        else if( $this->data->jenis_pemberitahuan == 'MUTASI' )
+        {
+            return $this->from('no-reply@tap-agri.com')
+                   ->subject("Permohonan Mutasi Persetujuan Aset ( {$this->data->noreg[0]} )")
+                   ->view('email.email_mutasi')
+                   ->with(
+                    [
+                        'nama' => 'PEMBERITAHUAN MUTASI DOCUMENT',
+                        'website' => 'http://ams.tap-agri.com/',
+                    ]);
+        }
         else
         {
             return $this->from('no-reply@tap-agri.com')

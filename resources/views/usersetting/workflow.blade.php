@@ -331,7 +331,7 @@
             data: role,
             width: '100%',
             placeholder: ' ',
-            allowClear: true
+            allowClear: true,
         });
 
         var role_detail = jQuery.parseJSON(JSON.stringify(dataJson('{!! route("get.select_workflow_code") !!}')));
@@ -578,7 +578,7 @@
             //alert("Clear data"); 
             //$("#menu_code").select2("val", "");
             //$("#menu_code").val("");
-            $("#menu_code").val("").trigger("change");
+            //$("#menu_code").val("").trigger("change");
         });
 
     });
@@ -596,10 +596,14 @@
         $("#add-data-modal .modal-title").html("<i class='fa fa-edit'></i> Update data " + result.workflow_name);
         $("#add-data-modal").modal("show");
 
-        $("#menu_code").val("").trigger("change");
-        //alert(result.menu_code);
-        //$("#menu_code").select2("val", ""+result.menu_code+"");
-        $("#menu_code").val(result.menu_code).trigger("change");
+        var role = $.parseJSON(JSON.stringify(dataJson('{!! route("get.select_menu") !!}')));
+        $('input[name="menu_code"], #menu_code').select2({
+            data: role,
+            width: '100%',
+            placeholder: ' ',
+            allowClear: true,
+        });
+        $('#menu_code').val(result.menu_code).trigger('change');
     }
 
     function inactive(id) 
@@ -769,8 +773,17 @@
         var result = jQuery.parseJSON(JSON.stringify(dataJson("{{ url('workflow/edit-detail/?workflow_detail_code=') }}" + id)));
         $("#edit_workflow_code_detail").val(result.workflow_detail_code);
         $("#workflow_group_name").val(result.workflow_group_name);
+        
+        var role_detail = jQuery.parseJSON(JSON.stringify(dataJson('{!! route("get.select_workflow_code") !!}')));
+        $('input[name="workflow_code"], #workflow_code').select2({
+            data: role_detail,
+            width: '100%',
+            placeholder: ' ',
+            allowClear: true
+        });
         $("#workflow_code").val(result.workflow_code);
         $("#workflow_code").trigger("change");
+        
         $("#seq").val(result.seq);
         $("#description").val(result.description);
 
@@ -887,9 +900,24 @@
         var result = jQuery.parseJSON(JSON.stringify(dataJson("{{ url('workflow/edit-detail-job/?workflow_job_code=') }}" + id)));
         
         $("#edit_workflow_code_detail_job").val(result.workflow_job_code);
+
+        var role_detail_job_code = jQuery.parseJSON(JSON.stringify(dataJson('{!! route("get.select_workflow_detail_code") !!}')));
+        $('input[name="workflow_detail_code"], #workflow_detail_code').select2({
+            data: role_detail_job_code,
+            width: '100%',
+            placeholder: ' ',
+            allowClear: true
+        });
         $("#workflow_detail_code").val(result.workflow_detail_code);
         $("#workflow_detail_code").trigger("change");
         
+        var role_detail_job_role = jQuery.parseJSON(JSON.stringify(dataJson('{!! route("get.select_workflow_detail_role") !!}')));
+        $('input[name="id_role"], #id_role, #next_approve').select2({
+            data: role_detail_job_role,
+            width: '100%',
+            placeholder: ' ',
+            allowClear: true
+        });
         $("#id_role").val("").trigger("change");
         $("#id_role").val(result.id_role).trigger("change");
         

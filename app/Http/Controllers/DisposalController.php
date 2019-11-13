@@ -37,11 +37,24 @@ class DisposalController extends Controller
 	
     function get_data_cart($jenis_pengajuan)
 	{
+		//echo "1<pre>"; print_r(session()->all()); die();
+
 		$user_id = Session::get('user_id');
+		$area_code = Session::get('area_code');
+		$role = Session::get('role');
 
 		//$created_by = $u['username'];
 		
-		$sql = " SELECT * FROM TR_DISPOSAL_TEMP WHERE JENIS_PENGAJUAN = $jenis_pengajuan AND CREATED_BY = $user_id AND CHECKLIST = 0 "; //echo $sql; die();
+		if($role == 'PGA'){$where = '1=1'; }else { $where = '1=0'; }
+
+		$where .= " AND a.JENIS_PENGAJUAN = $jenis_pengajuan AND a.CHECKLIST = 0 ";
+
+		if($area_code != 'All')
+		{
+			$where .= " AND a.LOKASI_BA_CODE in (".$area_code.") ";
+		}
+
+		$sql = " SELECT a.* FROM TR_DISPOSAL_TEMP a WHERE $where "; //echo $sql; die();
 		
 		$dt = DB::SELECT($sql);
 		//echo "<pre>"; print_r($dt); die();
@@ -963,6 +976,14 @@ class DisposalController extends Controller
 			$user_id = Session::get('user_id');
 			$file_category = $desc_code;
 			$file_category_label = strtoupper(str_replace("_", " ", $desc_code));
+
+			// #3 VALIDASI TYPEFILE JPG/PNG/PDF
+            if( $_FILES[''.$desc_code.'']['type'] != 'image/jpeg' && $_FILES[''.$desc_code.'']['type'] != 'image/png' && $_FILES[''.$desc_code.'']['type'] != 'application/pdf' )
+            {
+                Session::flash('alert', 'Gagal upload '.$file_name.' ('.$file_category_label.'), file type hanya PNG/JPG/PDF'); 
+                return Redirect::to('/disposal-'.$tipe.'');
+                die();
+            }
 
 			// #1 VALIDASI SIZE DOC MAX 1 MB
 			$max_docsize = 1000000;

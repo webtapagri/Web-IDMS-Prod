@@ -114,6 +114,7 @@ class MutasiController extends Controller
         $req = $request->all();
         $user_id = Session::get('user_id');
 
+        #1 VALIDASI SALAH SATU BERKAS ASET HARUS DIUPLOAD, JIKA PGA ALL AREA, BERKAS DI UPLOAD ULANG 
         $validasi_berkas = $this->validasi_berkas();
         if($validasi_berkas == 0)
         {
@@ -124,9 +125,31 @@ class MutasiController extends Controller
 
         try 
         {
+            //echo "1<pre>"; print_r($req['kode_aset']); die();
+            if(!empty( $req['kode_aset'] ))
+            {
+                /*
+                Array
+                (
+                    [0] => 5240100049_52_5211_HT_5221
+                )
+                */
+                $data = explode("_", $req['kode_aset'][0]);
+                $LOKASI_AWAL = $data[4];
+            }
+            else
+            {
+                $LOKASI_AWAL = "";
+            }
+
+            #2 VALIDASI LOKASI AWAL
+            if($LOKASI_AWAL == "")
+            {
+                return array('status'=>false,'message'=> 'Proses Gagal, Lokasi harus diisi');
+            }
+
             // INSERT HEADER
             $NO_REG = $this->get_reg_no();
-            DB::INSERT(" INSERT INTO TR_MUTASI_ASSET (NO_REG,TYPE_TRANSAKSI,CREATED_BY) VALUES ('".$NO_REG."',1,'".$user_id."') ");
 
             // INSERT DETAIL
             foreach($req['kode_aset'] as $k => $v) 
@@ -139,11 +162,22 @@ class MutasiController extends Controller
                 $ASSET_CONTROLLER = $data[3];
                 $LOKASI_CODE = $data[4];
 
+                #3 VALIDASI DOUBLE INPUT
                 $validasi_store = $this->validasi_store($KODE_ASSET_AMS);
-
                 if($validasi_store > 0)
                 {
+                    //DB::rollback();
+                    DB::commit();
                     return array('status'=>false,'message'=> 'Proses Gagal, Data sudah pernah diinput (KODE ASSET AMS : '.$KODE_ASSET_AMS.')');
+                }
+
+                #4 VALIDASI SATU LOKASI YANG SAMA
+                $validasi_lokasi_sama = $this->validasi_lokasi_sama($LOKASI_CODE, $LOKASI_AWAL);
+                if( $validasi_lokasi_sama['result'] != 1 )
+                {
+                    DB::rollback();
+                    //DB::commit();
+                    return array('status'=>false,'message'=> 'Proses Gagal, Lokasi tidak sama (KODE ASSET AMS : '.$KODE_ASSET_AMS.')');
                 }
 
                 DB::INSERT(" INSERT INTO TR_MUTASI_ASSET_DETAIL (NO_REG,KODE_ASSET_AMS,TUJUAN,ASSET_CONTROLLER,CREATED_BY,JENIS_PENGAJUAN) VALUES ('".$NO_REG."','".$KODE_ASSET_AMS."','".$TUJUAN_CODE."','".$ASSET_CONTROLLER."','".$user_id."','1') ");
@@ -160,6 +194,8 @@ class MutasiController extends Controller
                 DB::DELETE(" DELETE FROM TR_MUTASI_TEMP WHERE KODE_ASSET_AMS = '".$KODE_ASSET_AMS."' ");
                 DB::DELETE(" DELETE FROM TR_MUTASI_TEMP_FILE WHERE KODE_ASSET_AMS = '".$KODE_ASSET_AMS."' ");
             }
+
+            DB::INSERT(" INSERT INTO TR_MUTASI_ASSET (NO_REG,TYPE_TRANSAKSI,CREATED_BY) VALUES ('".$NO_REG."',1,'".$user_id."') ");
 
             DB::STATEMENT('call create_approval("M1", "'.$LOKASI_CODE.'","'.$TUJUAN_CODE.'","'.$NO_REG.'","'.$user_id.'","'.$ASSET_CONTROLLER.'","0")');
 
@@ -388,30 +424,31 @@ class MutasiController extends Controller
                 $this->upload_multiple_berkas($req, $desc_code);
             }
             //die();
+
+            Session::flash('message', 'Success upload data! (KODE AMS : '.$request->kode_asset_ams.') ');
+            return Redirect::to('/mutasi/create/1');
         }
         //END MULTIPLE UPLOAD
-
-        Session::flash('message', 'Success upload data! (KODE AMS : '.$request->kode_asset_ams.') ');
-        return Redirect::to('/mutasi/create/1');
+        
     }
 
     function upload_multiple_berkas($req, $desc_code)
     {   
-        //echo "1<pre>"; print_r($req); die();
-        /*
-            [_token] => YVlkZMdIbQaEvlVBxlQlmQQEM7TgXQG4ncWac5OS
-            [tipe] => amp
-            [kode_asset_ams] => 2140100250
-            [notes_asset] => 221
-            [Berita_Serah_Terima] =>
-        */
-        
+        //echo "1<pre>"; print_r($_FILES); die();
         if( @$_FILES[''.$desc_code.'']['name'] != '')
         {
             $file_name = str_replace(" ", "_", $_FILES[''.$desc_code.'']['name']);
             $user_id = Session::get('user_id');
             $file_category = $desc_code;
             $file_category_label = strtoupper(str_replace("_", " ", $desc_code));
+
+            // #3 VALIDASI TYPEFILE JPG/PNG/PDF
+            if( $_FILES[''.$desc_code.'']['type'] != 'image/jpeg' && $_FILES[''.$desc_code.'']['type'] != 'image/png' && $_FILES[''.$desc_code.'']['type'] != 'application/pdf' )
+            {
+                Session::flash('alert', 'Gagal upload '.$file_name.' ('.$file_category_label.'), file type hanya PNG/JPG/PDF'); 
+                return Redirect::to('/mutasi/create/1');
+                die();
+            }
 
             // #1 VALIDASI SIZE DOC MAX 1 MB
             $max_docsize = 1000000;
@@ -581,7 +618,24 @@ class MutasiController extends Controller
     public function get_data_temp($jenis)
     {
         $user_id = Session::get('user_id');
-        $data = DB::SELECT(" SELECT * FROM TR_MUTASI_TEMP WHERE JENIS_PENGAJUAN = '{$jenis}' AND CREATED_BY = '{$user_id}' ");
+        $area_code = Session::get('area_code');
+        $role = Session::get('role');
+        $where2 = "";
+        
+        if($role == 'PGA'){$where = '1=1'; }else { $where = '1=0'; }
+
+        $where .= " AND a.JENIS_PENGAJUAN = '{$jenis}' ";
+
+        if($area_code != 'All')
+        {
+            $where2 .= " WHERE LOKASI in (".$area_code.") ";
+        }        
+
+        $sql = " SELECT * FROM ( SELECT a.*,SUBSTRING_INDEX(SUBSTRING_INDEX(a.LOKASI_BA_DESCRIPTION, '-', 1), ' ', -1) AS LOKASI FROM TR_MUTASI_TEMP a WHERE $where ) TR_MUTASI_TEMP2 $where2 ";
+
+        /*$sql1 = " SELECT a.*,SUBSTRING_INDEX(SUBSTRING_INDEX(a.LOKASI_BA_DESCRIPTION, '-', 1), ' ', -1) AS LOKASI_BA_CODE FROM TR_MUTASI_TEMP a WHERE $where ";*/
+
+        $data = DB::SELECT($sql);
         return $data;
     }
 
@@ -848,6 +902,22 @@ WHERE b.KODE_ASSET_AMS = '".$kode_asset_ams."' AND b.FILE_CATEGORY = '".$file_ca
         } catch (\Exception $e) {
             DB::rollback();
             return response()->json(['status' => false, "message" => $e->getMessage()]);
+        }
+    }
+
+    function validasi_lokasi_sama($nilai,$lokasi_awal)
+    {
+        //echo $lokasi_awal; die();
+
+        if( $lokasi_awal == $nilai )
+        {
+            $result = array('result'=> 1, 'message'=> "success");
+            return $result;
+        }
+        else
+        {
+            $result = array('result'=> 0, 'message'=> 'failed');
+                return $result;
         }
     }
 

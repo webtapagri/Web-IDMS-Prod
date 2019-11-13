@@ -65,7 +65,6 @@ Array
                                 <label>NAMA ASSET </label>
                                 <input type="text" class="form-control input-sm" name="detail_nama_asset" id="detail_nama_asset" placeholder="Nama Asset" value="" readonly="readonly">
                                 <br/>
-                                <!--input type="file" id="berkas_asset" name="berkas_asset" placeholder="Upload Berkas"-->
                             </div>
                             <div class="col-md-2">
                                 <label>ASSET CONTROLLER </label>
@@ -222,6 +221,8 @@ Array
                 
                 <div class="modal-body">
 
+                    <div class="callout callout-warning"><p>Note, Tipe File yang di Upload hanya JPG/PNG dan PDF</p></div>
+
                     <div class="form-group">
                         <label class="control-label col-xs-4" >KODE ASSET AMS</label>
                         <div class="col-xs-8">
@@ -238,6 +239,8 @@ Array
                         </div>
                     </div>
 
+                    
+
                 </div>
                     
                 <div class="modal-footer">
@@ -251,7 +254,17 @@ Array
 </div>
 
 @stop
-@section('js')
+@section('js') 
+
+@if(Session::has('alert'))
+<script type="text/javascript">
+    notify({
+        type: 'warning',
+        message: "{{ Session::get('alert') }}"
+    });
+</script>
+@endif 
+
 <script>
     var imgFiles = [];
     var addFile = 2;

@@ -3094,4 +3094,48 @@ SELECT KODE_ASSET_AMS FROM TR_MUTASI_ASSET_DETAIL a WHERE NO_REG = '$noreg' LIMI
             return response()->json(['status' => false, "message" => $e->getMessage()]);
         }
     }
+
+    function berkas_mutasi($noreg)
+    {
+        $noreg = base64_decode($noreg); 
+
+        $sql = " SELECT b.DOC_SIZE, b.FILE_NAME, b.FILE_CATEGORY, b.FILE_UPLOAD, b.JENIS_FILE FROM TR_MUTASI_ASSET_FILE b WHERE b.NO_REG = '".$noreg."' "; 
+        $data = DB::SELECT($sql);
+        
+        $l = "";
+        if(!empty($data))
+        {
+            $l .= '<center>';
+            $l .= '<h1>'.$noreg.'</h1><br/>';
+
+            foreach($data as $k => $v)
+            {
+                $file_category = str_replace("_", " ", $v->FILE_CATEGORY);
+
+                if( $v->JENIS_FILE == 'image/jpeg' || $v->JENIS_FILE == 'image/png' )
+                {
+                    $l .= '<div class="caption"><h3>'.strtoupper($file_category).'<br/><img src="data:image/jpeg;base64,'.$v->FILE_UPLOAD.'"/><br/>'. $v->FILE_NAME. '</h3></div>';
+                }
+                else if($v->JENIS_FILE == 'application/pdf')
+                {
+                    $l .= ''.strtoupper($file_category).'<br/><object data="data:application/pdf;base64,'.$v->FILE_UPLOAD.'" type="'.$v->JENIS_FILE.'" style="height:100%;width:100%"></object><br/>'. $v->FILE_NAME. '';
+                }
+                else
+                {
+                    $data_excel = explode(",",$v->FILE_UPLOAD);
+                    header('Content-type: application/vnd.ms-excel');
+                    header('Content-Disposition: attachment; filename="'.$v->FILE_NAME.'"');
+                    print $data_excel[1];
+                    die();
+                }
+            }
+        }
+        else
+        {
+            $l .= "FILE NOT FOUND";
+        }
+
+        $l .= '</center>';
+        echo $l; 
+    }
 }
