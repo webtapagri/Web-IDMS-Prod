@@ -655,13 +655,13 @@
             </div>
             <div class="modal-footer">
                 <?php if($user_role == 'AC'){ ?> 
-                   <span id="create-button-sync-sap"></span>
+                   <span id="create-button-sync-sap-mutasi"></span>
                 <?php }  ?>
                 <?php if($user_role != 'Super Administrator'){ if($data['outstanding'] != 0 ){ ?> 
-                    <span id="button-approve">
+                    <span id="button-approve-mutasi">
                         <button type="button" class="btn btn-flat label-danger" OnClick="changeStatusMutasi('A')" style="margin-right: 5px;">APPROVE</button>
                     </span>
-                    <button type="button" class="btn btn-flat label-danger button-reject" OnClick="changeStatusMutasi('R')" style="margin-right: 5px;">REJECT</button>
+                    <button type="button" class="btn btn-flat label-danger button-reject-mutasi" OnClick="changeStatusMutasi('R')" style="margin-right: 5px;">REJECT</button>
                 <?php }} ?>
                 
             </div>
@@ -3529,10 +3529,32 @@
                 $("#request-form #kode-vendor").val(data.kode_vendor);
                 $("#request-form #nama-vendor").val(data.nama_vendor);
 
+                //VALIDASI SYNC VIEW SAP
+                //alert(data.sync_sap); 
+                if(data.sync_sap != '')
+                {
+                    $("#create-button-sync-sap-mutasi").show();
+                    $("#create-button-sync-sap-mutasi").html('<button type="button" class="btn btn-flat label-danger" OnClick="sinkronisasi_mutasi()" style="margin-right: 5px;">SYNC SAP (MUTASI)</button>');
+                    
+                    <?php if( $user_role == 'AC' ){ ?>
+                        $("#button-approve-mutasi").hide();
+                        $(".button-reject-mutasi").attr("disabled", false); 
+                    <?php } ?>
+                }
+                else
+                {
+                    $("#create-button-sync-sap-mutasi").hide();
+                    if(data.cek_reject==0){$("#button-approve-mutasi").show();}
+                    //$(".button-reject").attr("disabled", true); 
+                    $(".button-reject-mutasi").hide(); 
+                }
+
+                /*
                 $("#create-button-sync-sap").hide();
                 if(data.cek_reject==0){$("#button-approve").show();}
                 $(".button-reject").show(); 
-                    
+                */  
+
                 var item = '<table class="table table-responsive table-striped" id="request-item-table" style="font-size:13px">';
                 item += '<th>NO.</th>';
                 item += '<th>KODE ASSET AMS</th>';
@@ -3734,6 +3756,58 @@
                     jQuery('.loading-event').fadeOut();
                 }
             });
+        }
+    }
+
+    function sinkronisasi_mutasi()
+    {
+        $("#box-detail-item").hide();
+
+        if(confirm('Confirm Synchronize SAP ?'))
+        {
+            var getnoreg = $("#getnoreg").val();
+            var no_registrasi= getnoreg.replace(/\//g, '-');
+
+            var param = '';
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                url: "{{ url('approval/synchronize_sap_mutasi') }}",
+                method: "POST",
+                data: param+"&noreg="+getnoreg,
+                beforeSend: function() 
+                {
+                    $('.loading-event').fadeIn();
+                },
+                success: function(result) 
+                {
+                    if (result.status) 
+                    {
+                        notify({
+                            type: 'success',
+                            message: result.message
+                        });
+
+                        $("#create-button-sync-sap-mutasi").hide();
+                        $("#button-approve-mutasi").show();
+                        $(".button-reject-mutasi").attr("disabled", true); 
+                    } 
+                    else 
+                    {
+                        notify({
+                            type: 'warning',
+                            message: result.message
+                        });
+                    }
+                    
+                },
+                complete: function() {
+                    $('.loading-event').fadeOut();
+                }
+            }); 
         }
     }
 

@@ -1752,7 +1752,6 @@ WHERE a.NO_REG = '{$noreg}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KODE_ASSET
         $datax = '';
         $sql = " SELECT a.KODE_MATERIAL, a.NAMA_MATERIAL FROM v_kode_asset_sap a WHERE a.NO_REG = '{$noreg}' ";
         $data = DB::SELECT($sql);
-        //echo "2<pre>"; print_r($sql); die();
 
         if(!empty($data))
         {
@@ -1768,16 +1767,8 @@ WHERE a.NO_REG = '{$noreg}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KODE_ASSET
 
 
             $datax .= $material;
-            /*foreach( $data as $k => $v )
-            {
-                $request[] = array
-                (
-                    'kode_material' => trim($v->KODE_MATERIAL),
-                );
-            }
-            */
         }
-        //echo "25".$datax; die();
+        
         return $datax;
     }
 
@@ -1836,21 +1827,6 @@ WHERE a.NO_REG = '{$noreg}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KODE_ASSET
             }
 
             return response()->json(['status' => true, "message" => "Synchronize success"]);
-
-            /* SKIP DULU KRN DOUBLE CREATE KODE SAP NANTI DISAP NYA IT@101019.1348
-            // CEK KEMBALI JIKA KODE_ASSET_SAP & ASSET_CONTROLLER MASIH KOSONG MAKA SYNCHRONIZE DIULANG IT@101019
-            $cek_kas_ac = $this->cek_kas_ac($no_reg);
-
-            if($cek_kas_ac['status'] == true)
-            {
-                return response()->json(['status' => true, "message" => "Synchronize success"]);
-            }
-            else
-            {
-                return response()->json(['status' => false, "message" => "Synchronize failed, try again <br/>".$cek_kas_ac['message'] ]);
-            }
-            // END IT@101019
-            */
         }
         else
         {
@@ -2065,7 +2041,6 @@ WHERE a.NO_REG = '{$noreg}' AND (a.KODE_ASSET_CONTROLLER is null OR a.KODE_ASSET
                 }
             }              
         }
-        
     }
 
     public function get_asset_controller($user_id, $area_code)
@@ -2930,8 +2905,8 @@ SELECT KODE_ASSET_AMS FROM TR_MUTASI_ASSET_DETAIL a WHERE NO_REG = '$noreg' LIMI
                     'requestor' => trim($v->REQUESTOR),
                     'tanggal_reg' => trim($v->TANGGAL_REG),
                     'item_detail' => $this->get_item_detail_mutasi($noreg),
-                    'sync_sap' => '',//$this->get_sinkronisasi_sap($noreg),
-                    'sync_amp' => '',//$this->get_sinkronisasi_amp($noreg),
+                    'sync_sap' => $this->get_sinkronisasi_sap_mutasi($noreg),
+                    'sync_amp' => $this->get_sinkronisasi_amp($noreg),
                     'sync_lain' => '',//$this->get_sinkronisasi_lain($noreg),
                     'cek_reject' => $this->get_cek_reject($noreg),
                     'vendor' => '', //trim($v->KODE_VENDOR).' - '.trim($v->NAMA_VENDOR),
@@ -3137,5 +3112,238 @@ SELECT KODE_ASSET_AMS FROM TR_MUTASI_ASSET_DETAIL a WHERE NO_REG = '$noreg' LIMI
 
         $l .= '</center>';
         echo $l; 
+    }
+
+    function get_sinkronisasi_sap_mutasi($noreg)
+    {
+        $noreg = str_replace("-", "/", $noreg);
+        $request = array();
+        $datax = '';
+        $sql = " SELECT a.KODE_ASSET_AMS_ASAL FROM v_kode_asset_sap_mutasi a WHERE a.NO_REG = '{$noreg}' ";
+        $data = DB::SELECT($sql);
+
+        if(!empty($data))
+        {
+            $material = '';//;
+
+            if( $data[0]->KODE_ASSET_AMS_ASAL != '' )
+            {
+                $material = $data[0]->KODE_ASSET_AMS_ASAL;
+            }
+
+            $datax .= $material;
+        }
+        
+        return $datax;
+    }
+
+    function synchronize_sap_mutasi(Request $request)
+    {
+        $no_reg = @$request->noreg;
+
+        $sql = " SELECT a.*, date_format(a.CREATED_AT,'%d.%m.%Y') AS CREATED_AT, date_format(a.UPDATED_AT,'%d.%m.%Y') AS UPDATED_AT, b.*, a.NO_REG AS NO_REG_MUTASI FROM TR_MUTASI_ASSET_DETAIL a LEFT JOIN TM_MSTR_ASSET b ON a.KODE_ASSET_AMS = b.KODE_ASSET_AMS WHERE a.NO_REG = '{$no_reg}' AND (a.KODE_SAP_TUJUAN = '' OR a.KODE_SAP_TUJUAN is null) AND (a.DELETED is null OR a.DELETED = '') "; //echo $sql; die();
+
+        $data = DB::SELECT($sql); 
+
+        $params = array();
+
+        if($data)
+        {
+            foreach( $data as $k => $v )
+            {   
+                $proses = $this->synchronize_sap_process_mutasi($v);             
+                
+                if($proses['status']=='error')
+                {
+                    return response()->json(['status' => false, "message" => $proses['message']]);
+                    die();
+                }
+            }
+
+            return response()->json(['status' => true, "message" => "Synchronize Mutasi success"]);
+        }
+        else
+        {
+            $sql = " UPDATE TR_MUTASI_ASSET_DETAIL SET KODE_SAP_TUJUAN = '' WHERE NO_REG = '{$no_reg}' "; 
+                DB::UPDATE($sql);
+            return response()->json(['status' => false, "message" => "Synchronize Mutasi failed, data not found"]);
+        }
+    }
+
+    public function synchronize_sap_process_mutasi($dt) 
+    {
+        //echo "1<pre>"; print_r($dt); die();
+
+        $ANLA_BUKRS = substr($dt->TUJUAN,0,2);
+        $ANLA_LIFNR = $this->get_kode_vendor($dt->NO_REG);
+
+        $service = API::exec(array(
+            'request' => 'GET',
+            'host' => 'ldap',
+            'method' => "create_asset?ANLA_ANLKL={$dt->JENIS_ASSET}&ANLA_BUKRS={$ANLA_BUKRS}&RA02S_NASSETS=1&ANLA_TXT50={$dt->NAMA_ASSET_1}&ANLA_TXA50={$dt->NAMA_ASSET_2}&ANLH_ANLHTXT={$dt->NAMA_ASSET_3}&ANLA_SERNR={$dt->NO_RANGKA_OR_NO_SERI}&ANLA_INVNR={$dt->NO_MESIN_OR_IMEI}&ANLA_MENGE={$dt->QUANTITY_ASSET_SAP}&ANLA_MEINS={$dt->UOM_ASSET_SAP}&ANLA_AKTIV={$dt->CAPITALIZED_ON}&ANLA_DEAKT={$dt->DEACTIVATION_ON}&ANLZ_GSBER={$dt->TUJUAN}&ANLZ_KOSTL={$dt->COST_CENTER}&ANLZ_WERKS=$dt->TUJUAN&ANLA_LIFNR={$ANLA_LIFNR}&ANLB_NDJAR_01={$dt->BOOK_DEPREC_01}&ANLB_NDJAR_02={$dt->FISCAL_DEPREC_15}", 
+        ));
+        
+        $data = $service;
+
+        //echo "1<pre>"; print_r($data); die();
+        
+        if( !empty($data->item->TYPE) )
+        {
+            #2
+            if( $data->item->TYPE == 'S' )
+            {
+                $user_id = Session::get('user_id');
+                //$asset_controller = $this->get_asset_controller($user_id,$dt->LOKASI_BA_CODE);
+
+                DB::beginTransaction();
+                try 
+                {   
+                    //1. ADD KODE_SAP_TUJUAN  TR_REG_ASSET 
+                    $sql_1 = " UPDATE TR_MUTASI_ASSET_DETAIL SET KODE_SAP_TUJUAN = '".$data->item->MESSAGE_V1."', UPDATED_BY = '{$user_id}', UPDATED_AT = current_timestamp() WHERE NO_REG = '{$dt->NO_REG_MUTASI}' AND ASSET_PO_ID = '{$dt->ASSET_PO_ID}' AND NO_REG_ITEM = '{$dt->NO_REG_ITEM}' ";
+                    DB::UPDATE($sql_1);
+
+                    //2. INSERT LOG
+                    $sql_2 = " INSERT INTO TR_LOG_SYNC_SAP(no_reg,asset_po_id,no_reg_item,msgtyp,msgid,msgnr,message,msgv1,msgv2,msgv3,msgv4)VALUES('{$dt->NO_REG_MUTASI}','','{$dt->NO_REG_ITEM}','".$data->item->TYPE."','".$data->item->ID."','".$data->item->NUMBER."','".$data->item->MESSAGE."','".$data->item->MESSAGE_V1."','".$data->item->MESSAGE_V2."','".$data->item->MESSAGE_V3."','".$data->item->MESSAGE_V4."') ";
+                    DB::INSERT($sql_2);
+
+                    //3. CREATE CODE ASSET AMS MUTASI
+                    $sql_3 = " CALL create_kode_asset_ams_mutasi('".$dt->NO_REG_MUTASI."', '".$ANLA_BUKRS."', '".$dt->JENIS_ASSET."', '".$data->item->MESSAGE_V1."') ";//echo $sql_3; die();
+                    DB::STATEMENT($sql_3);
+
+                    DB::commit();
+
+                    return true;
+                }
+                catch (\Exception $e) 
+                {
+                    DB::rollback();
+                    return false;
+                    //die();
+                }
+            }
+            else 
+            {
+                DB::beginTransaction();
+
+                try 
+                {    
+                    $sql = " INSERT INTO TR_LOG_SYNC_SAP(no_reg,asset_po_id,no_reg_item,msgtyp,msgid,msgnr,message,msgv1,msgv2,msgv3,msgv4)VALUES('{$dt->NO_REG_MUTASI}','','{$dt->NO_REG_ITEM}','".$data->item->TYPE."','".$data->item->ID."','".$data->item->NUMBER."','".$data->item->MESSAGE."','".$data->item->MESSAGE_V1."','".$data->item->MESSAGE_V2."','".$data->item->MESSAGE_V3."','".$data->item->MESSAGE_V4."') ";
+                    
+                    DB::INSERT($sql); 
+                    DB::commit();
+                    
+                    $result = array('status'=>'error','message'=> ''.$data->item->MESSAGE.' (No Reg Item: '.$dt->NO_REG_ITEM.')');
+                    return $result;                 
+                }
+                catch (\Exception $e) 
+                {
+                    DB::rollback();
+                    $result = array('status'=>'error','message'=>$e->getMessage());
+                    return $result;
+                }
+            }         
+        }
+        
+        if( !empty($data->item[0]->TYPE) ) 
+        {
+            //RETURN ARRAY LEBIH DARI 1 ROW
+            $result = array();
+            $message = '';
+
+            //echo "20<pre>"; count($data); die();
+
+            foreach($data->item as $k => $v)
+            {
+                //echo "20<pre>"; print_r($v);
+                
+                if( $v->TYPE == 'S' && $v->ID == 'AA' && $v->NUMBER == 228 )
+                {
+                    $message .= $v->MESSAGE.',';
+                    $result = array(
+                        'TYPE' => 'S',
+                        'ID' => $v->ID,
+                        'NUMBER' => $v->NUMBER,
+                        'MESSAGE' => $message,
+                        'LOG_NO' => $v->LOG_NO,
+                        'LOG_MSG_NO' => $v->LOG_MSG_NO,
+                        'MESSAGE_V1' => $v->MESSAGE_V1,
+                        'MESSAGE_V2' => $v->MESSAGE_V2,
+                        'MESSAGE_V3' => $v->MESSAGE_V3,
+                        'MESSAGE_V4' => $v->MESSAGE_V4
+                    );
+                }
+                else
+                {
+                    $message .= $v->MESSAGE.',';
+                    $result = array(
+                        'TYPE' => 'E',
+                        'ID' => $v->ID,
+                        'NUMBER' => $v->NUMBER,
+                        'MESSAGE' => $message,
+                        'LOG_NO' => $v->LOG_NO,
+                        'LOG_MSG_NO' => $v->LOG_MSG_NO,
+                        'MESSAGE_V1' => $v->MESSAGE_V1,
+                        'MESSAGE_V2' => $v->MESSAGE_V2,
+                        'MESSAGE_V3' => $v->MESSAGE_V3,
+                        'MESSAGE_V4' => $v->MESSAGE_V4
+                    );
+                }
+                
+            }
+            //die();
+            
+
+            if( $result['TYPE'] == 'S' )
+            {
+                $user_id = Session::get('user_id');
+
+                DB::beginTransaction();
+                try 
+                {   
+                    //1. ADD KODE_ASSET_SAP & ASSET_CONTROLLER TR_REG_ASSET 
+                    $sql_1 = " UPDATE TR_MUTASI_ASSET_DETAIL SET KODE_SAP_TUJUAN = '".$result['MESSAGE_V1']."', UPDATED_BY = '{$user_id}', UPDATED_AT = current_timestamp() WHERE NO_REG = '{$dt->NO_REG_MUTASI}' AND KODE_ASSET_AMS = '{$dt->KODE_ASSET_AMS}' AND NO_REG_ITEM = '{$dt->NO_REG_ITEM}' ";
+                    DB::UPDATE($sql_1);
+
+                    //2. INSERT LOG
+                    $sql_2 = " INSERT INTO TR_LOG_SYNC_SAP(no_reg,asset_po_id,no_reg_item,msgtyp,msgid,msgnr,message,msgv1,msgv2,msgv3,msgv4)VALUES('{$dt->NO_REG_MUTASI}','','{$dt->NO_REG_ITEM}','".$result['TYPE']."','".$result['ID']."','".$result['NUMBER']."','".$result['MESSAGE']."','".$result['MESSAGE_V1']."','".$result['MESSAGE_V2']."','".$result['MESSAGE_V3']."','".$result['MESSAGE_V4']."') ";
+                    DB::INSERT($sql_2);
+
+                    //3. CREATE CODE ASSET AMS MUTASI
+                    $sql_3 = " CALL create_kode_asset_ams_mutasi('".$dt->NO_REG_MUTASI."', '".$ANLA_BUKRS."', '".$dt->JENIS_ASSET."', '".$data->item->MESSAGE_V1."') ";//echo $sql_3; die();
+                    
+                    DB::STATEMENT($sql_3);
+                    DB::commit();
+
+                    return true;
+                }
+                catch (\Exception $e) 
+                {
+                    DB::rollback();
+                    return false;
+                    //die();
+                }
+            }
+            else 
+            {
+                DB::beginTransaction();
+
+                try 
+                {    
+                    $sql = " INSERT INTO TR_LOG_SYNC_SAP(no_reg,asset_po_id,no_reg_item,msgtyp,msgid,msgnr,message,msgv1,msgv2,msgv3,msgv4)VALUES('{$dt->NO_REG_MUTASI}','','{$dt->NO_REG_ITEM}','".$result['TYPE']."','".$result['ID']."','".$result['NUMBER']."','".$result['MESSAGE']."','".$result['MESSAGE_V1']."','".$result['MESSAGE_V2']."','".$result['MESSAGE_V3']."','".$result['MESSAGE_V4']."') ";
+                    
+                    DB::INSERT($sql); 
+                    DB::commit();
+                    
+                    $result = array('status'=>'error','message'=> ''.$result['MESSAGE'].' (No Reg Item: '.$dt->NO_REG_ITEM.')');
+                    return $result;                 
+                }
+                catch (\Exception $e) 
+                {
+                    DB::rollback();
+                    $result = array('status'=>'error','message'=>$e->getMessage());
+                    return $result;
+                }
+            }              
+        }
     }
 }

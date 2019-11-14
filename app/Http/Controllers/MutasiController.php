@@ -412,15 +412,6 @@ class MutasiController extends Controller
         $req = $request->all();
         $jenis = $request->tipe;
 
-        //echo "2<pre>"; print_r($req); die();
-        /*
-            [_token] => tsnenxB1ehmhUdX1PuLfCJ7PjAn4Cl5VrodbPIou
-            [tipe] => sewa
-            [kode_asset_ams] => 2110100017
-            [notes_asset] => 123
-            [Berita_Serah_Terima] => Illuminate\Http\UploadedFile Object
-        */
-
         if($jenis == 'amp')
         {
             $redirect_mutasi = 1;
@@ -440,8 +431,6 @@ class MutasiController extends Controller
             {
                 $dc = explode("-",$v->DESCRIPTION);
                 $desc_code = str_replace(" ", "_", $dc[0]);
-                //$desc_code = str_replace(" ", "_", $v->DESCRIPTION);
-                //echo "1<pre>"; print_r($v);
                 $this->upload_multiple_berkas($req, $desc_code);
             }
             //die();
@@ -454,16 +443,6 @@ class MutasiController extends Controller
 
     function upload_multiple_berkas($req, $desc_code)
     {   
-        //echo "1<pre>"; print_r($_FILES); die();
-        //echo "1<pre>"; print_r($req); die();
-        /*
-            [_token] => tsnenxB1ehmhUdX1PuLfCJ7PjAn4Cl5VrodbPIou
-            [tipe] => sewa
-            [kode_asset_ams] => 2110100017
-            [notes_asset] => 123
-            [Berita_Serah_Terima] => Illuminate\Http\UploadedFile Object
-        */
-        //echo $req['tipe']; die();
         $jenis_pengajuan = @$req['tipe'];
         if($jenis_pengajuan == 'amp')
         {
@@ -579,10 +558,20 @@ class MutasiController extends Controller
         $role_id = Session::get('role_id');
         $role_name = Session::get('role'); //get role id user
         $asset_controller = $request->asset_controller; //get asset controller
+        $milik_company = $request->milik_company;
         $milik_area = $request->milik_area; 
         $tujuan_area = $request->tujuan_area;
         $jenis = $request->jenis;
-    
+
+        #5 VALIDASI KODE MILIK COMPANY HARUS 12 (AMP)
+        if($jenis == 'sewa')
+        {
+            if( $milik_company != 12 )
+            {
+                return response()->json(['status' => false, "message" => "Bukan Aset AMP"]);
+            }
+        }
+
         #1 VALIDASI ASSET CONTROLLER HARUS SAMA
         $validasi_asset_controller = $this->validasi_asset_controller($user_id,$asset_controller,$jenis);
         if( $validasi_asset_controller == 0 )

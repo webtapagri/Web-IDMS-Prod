@@ -68,6 +68,7 @@ Route::post('/approval/save_item_detail/{id}','ApprovalController@save_item_deta
 Route::post('/approval/update_status/{status}/{no_reg}','ApprovalController@update_status');
 Route::get('/approval/log_history/{no_reg}', 'ApprovalController@log_history')->name('no_reg');
 Route::post('/approval/synchronize_sap', 'ApprovalController@synchronize_sap');
+Route::post('/approval/synchronize_sap_mutasi', 'ApprovalController@synchronize_sap_mutasi');
 Route::post('/approval/synchronize_amp', 'ApprovalController@synchronize_amp');
 Route::post('/approval/update_ka_con_temp', 'ApprovalController@update_ka_con_temp');
 Route::post('/approval/update_kode_vendor_aset_lain','ApprovalController@update_kode_vendor_aset_lain');
