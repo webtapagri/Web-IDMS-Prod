@@ -2852,14 +2852,14 @@ WHERE a.no_reg = '".$noreg."' AND b.MANDATORY_KODE_ASSET_CONTROLLER = 'X' ORDER 
     {
         $noreg = base64_decode($noreg); 
 
-        $sql = " SELECT b.DOC_SIZE, b.FILE_NAME, b.FILE_CATEGORY, b.FILE_UPLOAD, b.JENIS_FILE FROM TR_DISPOSAL_ASSET_FILE b WHERE b.NO_REG = '".$noreg."' "; 
+        $sql = " SELECT b.KODE_ASSET_AMS, b.DOC_SIZE, b.FILE_NAME, b.FILE_CATEGORY, b.FILE_UPLOAD, b.JENIS_FILE FROM TR_DISPOSAL_ASSET_FILE b WHERE b.NO_REG = '".$noreg."' "; 
         $data = DB::SELECT($sql);
         
         $l = "";
         if(!empty($data))
         {
             $l .= '<center>';
-            $l .= '<h1>'.$noreg.'</h1><br/>';
+            $l .= '<h1>'.$noreg.'</h1>';
 
             foreach($data as $k => $v)
             {
@@ -2867,11 +2867,11 @@ WHERE a.no_reg = '".$noreg."' AND b.MANDATORY_KODE_ASSET_CONTROLLER = 'X' ORDER 
 
                 if( $v->JENIS_FILE == 'image/jpeg' || $v->JENIS_FILE == 'image/png' )
                 {
-                    $l .= '<div class="caption"><h3>'.strtoupper($file_category).'<br/><img src="data:image/jpeg;base64,'.$v->FILE_UPLOAD.'"/><br/>'. $v->FILE_NAME. '</h3></div>';
+                    $l .= '<div class="caption"><h1><u>'.$v->KODE_ASSET_AMS.'</u></h1><h3>'.strtoupper($file_category).'<br/><img src="data:image/jpeg;base64,'.$v->FILE_UPLOAD.'"/><br/>'. $v->FILE_NAME. '</h3></div>';
                 }
                 else if($v->JENIS_FILE == 'application/pdf')
                 {
-                    $l .= ''.strtoupper($file_category).'<br/><object data="data:application/pdf;base64,'.$v->FILE_UPLOAD.'" type="'.$v->JENIS_FILE.'" style="height:100%;width:100%"></object><br/>'. $v->FILE_NAME. '';
+                    $l .= '<h1><u>'.$v->KODE_ASSET_AMS.'</u></h1>'.strtoupper($file_category).'<br/><object data="data:application/pdf;base64,'.$v->FILE_UPLOAD.'" type="'.$v->JENIS_FILE.'" style="height:100%;width:100%"></object><br/>'. $v->FILE_NAME. '';
                 }
                 else
                 {
@@ -3099,14 +3099,14 @@ SELECT KODE_ASSET_AMS FROM TR_MUTASI_ASSET_DETAIL a WHERE NO_REG = '$noreg' LIMI
     {
         $noreg = base64_decode($noreg); 
 
-        $sql = " SELECT b.DOC_SIZE, b.FILE_NAME, b.FILE_CATEGORY, b.FILE_UPLOAD, b.JENIS_FILE FROM TR_MUTASI_ASSET_FILE b WHERE b.NO_REG = '".$noreg."' "; 
+        $sql = " SELECT b.KODE_ASSET_AMS, b.DOC_SIZE, b.FILE_NAME, b.FILE_CATEGORY, b.FILE_UPLOAD, b.JENIS_FILE FROM TR_MUTASI_ASSET_FILE b WHERE b.NO_REG = '".$noreg."' "; 
         $data = DB::SELECT($sql);
         
         $l = "";
         if(!empty($data))
         {
             $l .= '<center>';
-            $l .= '<h1>'.$noreg.'</h1><br/>';
+            $l .= '<h1>'.$noreg.'</h1>';
 
             foreach($data as $k => $v)
             {
@@ -3114,11 +3114,11 @@ SELECT KODE_ASSET_AMS FROM TR_MUTASI_ASSET_DETAIL a WHERE NO_REG = '$noreg' LIMI
 
                 if( $v->JENIS_FILE == 'image/jpeg' || $v->JENIS_FILE == 'image/png' )
                 {
-                    $l .= '<div class="caption"><h3>'.strtoupper($file_category).'<br/><img src="data:image/jpeg;base64,'.$v->FILE_UPLOAD.'"/><br/>'. $v->FILE_NAME. '</h3></div>';
+                    $l .= '<div class="caption"><h1><u>'.$v->KODE_ASSET_AMS.'</u></h1><h3>'.strtoupper($file_category).'<br/><img src="data:image/jpeg;base64,'.$v->FILE_UPLOAD.'"/><br/>'. $v->FILE_NAME. '</h3><hr style="border:1px"/></div>';
                 }
                 else if($v->JENIS_FILE == 'application/pdf')
                 {
-                    $l .= ''.strtoupper($file_category).'<br/><object data="data:application/pdf;base64,'.$v->FILE_UPLOAD.'" type="'.$v->JENIS_FILE.'" style="height:100%;width:100%"></object><br/>'. $v->FILE_NAME. '';
+                    $l .= '<h1><u>'.$v->KODE_ASSET_AMS.'</u></h1>'.strtoupper($file_category).'<br/><object data="data:application/pdf;base64,'.$v->FILE_UPLOAD.'" type="'.$v->JENIS_FILE.'" style="height:100%;width:100%"></object><br/>'. $v->FILE_NAME. '<hr style="border:1px"/>';
                 }
                 else
                 {

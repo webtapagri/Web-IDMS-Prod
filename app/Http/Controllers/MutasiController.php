@@ -679,25 +679,34 @@ class MutasiController extends Controller
 
     function validasi_kode_asset_ams($user_id,$kode_asset_ams,$jenis)
     {
-        $data_temp = $this->get_data_temp($jenis);
+        $data = DB::SELECT(" SELECT COUNT(*) AS TOTAL FROM v_asset_submitted WHERE KODE_ASSET_AMS = '{$kode_asset_ams}' ");
 
-        if( count($data_temp) == 0 )
+        if( $data[0]->TOTAL == 0)
         {
-            $dt = 0;
+            $data_temp = $this->get_data_temp($jenis);
+
+            if( count($data_temp) == 0 )
+            {
+                $dt = 0;
+            }
+            else
+            {
+                $sql = " SELECT COUNT(*) AS JML FROM TR_MUTASI_TEMP WHERE KODE_ASSET_AMS = '$kode_asset_ams' AND CREATED_BY = '{$user_id}' AND JENIS_PENGAJUAN = '{$jenis}' ";
+                $data = DB::SELECT($sql);
+                
+                if($data)
+                { 
+                    $dt = $data[0]->JML; 
+                }
+                else
+                { 
+                    $dt = 0; 
+                }
+            }
         }
         else
         {
-            $sql = " SELECT COUNT(*) AS JML FROM TR_MUTASI_TEMP WHERE KODE_ASSET_AMS = '$kode_asset_ams' AND CREATED_BY = '{$user_id}' AND JENIS_PENGAJUAN = '{$jenis}' ";
-            $data = DB::SELECT($sql);
-            
-            if($data)
-            { 
-                $dt = $data[0]->JML; 
-            }
-            else
-            { 
-                $dt = 0; 
-            }
+            $dt = $data[0]->TOTAL;
         }
 
         return $dt;
