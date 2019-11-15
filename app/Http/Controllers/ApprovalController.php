@@ -3147,7 +3147,7 @@ SELECT KODE_ASSET_AMS FROM TR_MUTASI_ASSET_DETAIL a WHERE NO_REG = '$noreg' LIMI
 
         $params = array();
 
-        if($data)
+        if(!empty($data))
         {
             foreach( $data as $k => $v )
             {   
@@ -3199,7 +3199,7 @@ SELECT KODE_ASSET_AMS FROM TR_MUTASI_ASSET_DETAIL a WHERE NO_REG = '$noreg' LIMI
                 try 
                 {   
                     //1. ADD KODE_SAP_TUJUAN  TR_REG_ASSET 
-                    $sql_1 = " UPDATE TR_MUTASI_ASSET_DETAIL SET KODE_SAP_TUJUAN = '".$data->item->MESSAGE_V1."', UPDATED_BY = '{$user_id}', UPDATED_AT = current_timestamp() WHERE NO_REG = '{$dt->NO_REG_MUTASI}' AND ASSET_PO_ID = '{$dt->ASSET_PO_ID}' AND NO_REG_ITEM = '{$dt->NO_REG_ITEM}' ";
+                    $sql_1 = " UPDATE TR_MUTASI_ASSET_DETAIL SET KODE_SAP_TUJUAN = '".$data->item->MESSAGE_V1."', UPDATED_BY = '{$user_id}', UPDATED_AT = current_timestamp() WHERE NO_REG = '{$dt->NO_REG_MUTASI}' AND KODE_ASSET_AMS = '{$dt->KODE_ASSET_AMS}' ";
                     DB::UPDATE($sql_1);
 
                     //2. INSERT LOG
@@ -3207,7 +3207,15 @@ SELECT KODE_ASSET_AMS FROM TR_MUTASI_ASSET_DETAIL a WHERE NO_REG = '$noreg' LIMI
                     DB::INSERT($sql_2);
 
                     //3. CREATE CODE ASSET AMS MUTASI
-                    $sql_3 = " CALL create_kode_asset_ams_mutasi('".$dt->NO_REG_MUTASI."', '".$ANLA_BUKRS."', '".$dt->JENIS_ASSET."', '".$data->item->MESSAGE_V1."') ";//echo $sql_3; die();
+                    if( $dt->JENIS_PENGAJUAN == 1 )
+                    {
+                        $sql_3 = " CALL create_kode_asset_ams_mutasi('".$dt->NO_REG_MUTASI."', '".$ANLA_BUKRS."', '".$dt->JENIS_ASSET."', '".$data->item->MESSAGE_V1."') ";//echo $sql_3; die();
+                    }
+                    else
+                    {
+                        $sql_3 = " CALL create_kode_asset_ams_mutasi('".$dt->NO_REG_MUTASI."', '".$ANLA_BUKRS."', '".$dt->JENIS_ASSET."', '-".$data->item->MESSAGE_V1."') ";//echo $sql_3; die();
+                    }
+                    
                     DB::STATEMENT($sql_3);
 
                     DB::commit();
@@ -3301,7 +3309,7 @@ SELECT KODE_ASSET_AMS FROM TR_MUTASI_ASSET_DETAIL a WHERE NO_REG = '$noreg' LIMI
                 try 
                 {   
                     //1. ADD KODE_ASSET_SAP & ASSET_CONTROLLER TR_REG_ASSET 
-                    $sql_1 = " UPDATE TR_MUTASI_ASSET_DETAIL SET KODE_SAP_TUJUAN = '".$result['MESSAGE_V1']."', UPDATED_BY = '{$user_id}', UPDATED_AT = current_timestamp() WHERE NO_REG = '{$dt->NO_REG_MUTASI}' AND KODE_ASSET_AMS = '{$dt->KODE_ASSET_AMS}' AND NO_REG_ITEM = '{$dt->NO_REG_ITEM}' ";
+                    $sql_1 = " UPDATE TR_MUTASI_ASSET_DETAIL SET KODE_SAP_TUJUAN = '".$result['MESSAGE_V1']."', UPDATED_BY = '{$user_id}', UPDATED_AT = current_timestamp() WHERE NO_REG = '{$dt->NO_REG_MUTASI}' AND KODE_ASSET_AMS = '{$dt->KODE_ASSET_AMS}' ";
                     DB::UPDATE($sql_1);
 
                     //2. INSERT LOG
@@ -3309,7 +3317,14 @@ SELECT KODE_ASSET_AMS FROM TR_MUTASI_ASSET_DETAIL a WHERE NO_REG = '$noreg' LIMI
                     DB::INSERT($sql_2);
 
                     //3. CREATE CODE ASSET AMS MUTASI
-                    $sql_3 = " CALL create_kode_asset_ams_mutasi('".$dt->NO_REG_MUTASI."', '".$ANLA_BUKRS."', '".$dt->JENIS_ASSET."', '".$data->item->MESSAGE_V1."') ";//echo $sql_3; die();
+                    if( $dt->JENIS_PENGAJUAN == 1 )
+                    {
+                        $sql_3 = " CALL create_kode_asset_ams_mutasi('".$dt->NO_REG_MUTASI."', '".$ANLA_BUKRS."', '".$dt->JENIS_ASSET."', '".$data->item->MESSAGE_V1."') ";
+                    }
+                    else
+                    {
+                        $sql_3 = " CALL create_kode_asset_ams_mutasi('".$dt->NO_REG_MUTASI."', '".$ANLA_BUKRS."', '".$dt->JENIS_ASSET."', '-".$data->item->MESSAGE_V1."') ";
+                    }
                     
                     DB::STATEMENT($sql_3);
                     DB::commit();
