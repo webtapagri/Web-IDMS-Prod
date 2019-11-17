@@ -1,5 +1,5 @@
 @extends('adminlte::page')
-@section('title', 'FMDB - Profile')
+@section('title', 'Profile - FAMS WEB')
 @section('content')
 
 <section class="content">
@@ -9,7 +9,7 @@
             <div class="box box-success">
                 <div class="box-body box-profile">
                     <img class="profile-user-img img-responsive img-circle" src="{{ ($data['profile'][0]->img ? $data['profile'][0]->img:asset('img/user-default.png')) }}" alt="User profile picture">
-                    <h3 class="profile-username text-center">{{ $data["profile"][0]->name }} 1</h3>
+                    <h3 class="profile-username text-center">{{ $data["profile"][0]->name }}</h3>
 
                     <p class="text-muted text-center">{{ $data["profile"][0]->role_name }}</p>
 

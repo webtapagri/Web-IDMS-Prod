@@ -1,6 +1,6 @@
 <?php 
   //echo "<pre>".PHP_OS; die();
-  //echo "6<pre>"; print_r($data['content']); die();
+  //echo "7<pre>"; print_r($data['content']); die();
   $qrcode = url('master-asset/show-data/'.base64_encode($data['id']).'');
   $code_ams = base64_encode($data['id']);
 
@@ -92,6 +92,23 @@
     transform: translate(-50%, 0);
   }
 }
+
+.disposal {
+  padding:5px;
+  font-weight:bold;
+  animation: blink-animation 1s steps(5, start) infinite;
+  -webkit-animation: blink-animation 1s steps(5, start) infinite;
+}
+@keyframes blink-animation {
+  to {
+    visibility: hidden;
+  }
+}
+@-webkit-keyframes blink-animation {
+  to {
+    visibility: hidden;
+  }
+}
 </style>
 
 <div class="row">
@@ -101,6 +118,11 @@
 		<small>Preview</small>
 	</h1>
 	<ol class="breadcrumb">
+    <?php
+          if( $data['content']->DISPOSAL_FLAG != '' ){ 
+        ?>
+          <li><span class="disposal callout callout-danger">SUDAH DIDISPOSAL : {{ $data['content']->DISPOSAL_FLAG }}</span></li>
+        <?php } ?>
 		<li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
 		<li><a href="#">Master Data</a></li>
 		<li class="active">Master Asset</li>
@@ -118,6 +140,7 @@
       <span class="xpull-right badge bg-green show_qrcode" OnClick="show_qrcode('{{$data['id']}}','{{@$data['content']->BA_PEMILIK_ASSET}}','{{@$data['content']->LOKASI_BA_CODE}}','{{@$data['content']->KODE_ASSET_CONTROLLER}}','{{@$data['content']->KODE_ASSET_AMS}}','<?php echo @$data['content']->BA_PEMILIK_ASSET_DESCRIPTION; ?>','<?php echo @$data['content']->LOKASI_BA_DESCRIPTION; ?>')"><i class="fa fa-fw fa-barcode"></i> SHOW QR CODE</span>
 
       <div class="box-tools pull-right">
+        
         <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
         <!--button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-remove"></i></button-->
       </div>
