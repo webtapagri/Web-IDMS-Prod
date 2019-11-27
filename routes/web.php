@@ -284,6 +284,9 @@ Route::get('/master-asset/show-data/{id}', 'MasterAssetController@show_edit');
 Route::get('/master-asset/show_qrcode/{ams}', 'MasterAssetController@show_qrcode')->name('ams');
 Route::get('/test_qrcode', 'MasterAssetController@test_qrcode');
 Route::get('/master-asset/print-qrcode/{noreg}', 'MasterAssetController@print_qrcode')->name('noreg');
+Route::post('/master-asset/download', 'MasterAssetController@download')->name('master_asset.download');
+Route::get('bulk-download', 'MasterAssetController@view_download_masterasset_qrcode')->name('view_download_masterasset_qrcode');
+Route::post('download_masterasset_qrcode', 'MasterAssetController@download_masterasset_qrcode')->name('download_masterasset_qrcode');
 
 /* REQUEST ASET LAINNYA */
 Route::resource('/request', 'RequestAsetLainController');
@@ -301,6 +304,7 @@ Route::post('/resume/user-submit','ResumeController@user_submit');
 /* ALL REPORT */
 Route::get('/report/list-asset', 'ReportController@list_asset');
 Route::post('/report/list-asset/submit', 'ReportController@list_asset_submit');
+Route::post('/report/list-asset/download', 'ReportController@list_asset_download');
 
 /* DISPOSAL */
 Route::resource('/disposal-penjualan', 'DisposalController');

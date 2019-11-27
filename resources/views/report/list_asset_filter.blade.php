@@ -11,7 +11,7 @@
             </div>
             <!-- /.box-header -->
             <!-- form start -->
-            <form class="form-horizontal" method="POST" action="{{ url('/report/list-asset/submit') }}" target="_blank">
+            <form class="form-horizontal" id="freport" method="POST" action="{{ url('/report/list-asset/submit') }}" target="_blank">
               {{ csrf_field() }}
               <div class="box-body">
                 
@@ -114,6 +114,7 @@
 
               <div class="box-footer">
                 <a href="{{url('/')}}"><button type="button" class="btn btn-default pull-right" style="margin-left:5px">Exit</button></a>
+                <a href="#"><button type="button" class="btn btn-default pull-right"  OnClick="download()" style="margin-left:5px"><i class="fa fa-file-excel-o"></i> Export</button></a>
                 <input type="submit" class="btn btn-info pull-right" xOnClick="submit_filter()" value="Search">
               </div>
               <!-- /.box-footer -->
@@ -129,6 +130,8 @@
 <script>
 $(document).ready(function()
 {
+
+
 
 var jenis_asset = $.parseJSON(JSON.stringify(dataJson('{!! route("get.select_jenis_asset_code") !!}')));
 //$('#jenis_asset-'+no+'').select2({
@@ -166,6 +169,16 @@ $("#user-role-old").select2({
 });*/
 
 });
+
+function download(){
+	console.log(123);
+	
+	$('#freport').attr('action',"{{ url('/report/list-asset/download') }}");
+	$('#freport').submit();
+	$('#freport').attr('action',"{{ url('/report/list-asset/submit') }}");
+	
+	return false;
+}
 
 function get_group()
 {

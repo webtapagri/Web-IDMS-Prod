@@ -10,7 +10,10 @@
                 <div class="table-container small">
                     <div class="table-actions-wrapper">
                         <span></span>
-                        <button class="btn btn-sm btn-flat btn-danger btn-refresh-data-table" title="refresh"><i class="glyphicon glyphicon-refresh"></i></button>
+                        
+						<button class="btn btn-sm btn-flat btn-danger" onClick="download()" title="Export to Excel"><i class="fa fa-file-excel-o"></i></button>
+                        
+						<button class="btn btn-sm btn-flat btn-danger btn-refresh-data-table" title="refresh"><i class="glyphicon glyphicon-refresh"></i></button>
                         @if($data['access']->create == 1)
                         <!--button class="btn btn-sm btn-flat btn-danger btn-add"><i class="glyphicon glyphicon-plus" title="Add new data"></i></button-->
                         @endif
@@ -329,6 +332,26 @@
         
     });
 
+	function download(){
+		console.log(123);
+		var f = '<form id="fwaw" method="post" action="{{ route('master_asset.download') }}">';
+		f += '@csrf';
+		f += '<input type="hidden" name="kode_asset_ams" value="'+$('input[name=kode_asset_ams]').val()+'" id="">';
+		f += '<input type="hidden" name="kode_material" value="'+$('input[name=kode_material]').val()+'" id="">';
+		f += '<input type="hidden" name="nama_material" value="'+$('input[name=nama_material]').val()+'" id="">';
+		f += '<input type="hidden" name="ba_pemilik_asset" value="'+$('input[name=ba_pemilik_asset]').val()+'" id="">';
+		f += '<input type="hidden" name="lokasi_ba_description" value="'+$('input[name=lokasi_ba_description]').val()+'" id="">';
+		f += '<input type="hidden" name="nama_asset" value="'+$('input[name=nama_asset]').val()+'" id="">';
+		f += '<input type="hidden" name="kode_asset_sap" value="'+$('input[name=kode_asset_sap]').val()+'" id="">';
+		f += '</form>';		
+		
+		$('body').append(f);
+		$('#fwaw').submit();
+		$('#fwaw').remove();
+		console.log(f);
+		return false;
+	}
+	
     function edit(id) 
     {
         //alert(id);

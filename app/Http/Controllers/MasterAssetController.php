@@ -14,6 +14,8 @@ use App\TR_WORKFLOW_JOB;
 use App\TM_GENERAL_DATA;
 use App\TM_MSTR_ASSET;
 use App\TR_REG_ASSET_DETAIL;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\MasterAssetExport;
 
 class MasterAssetController extends Controller
 {
@@ -122,6 +124,52 @@ class MasterAssetController extends Controller
         $records["recordsTotal"] = $iTotalRecords;
         $records["recordsFiltered"] = $iTotalRecords;
         return response()->json($records);
+    }
+
+    public function download(Request $request)
+    {
+        $selectedColumn = ['kode_asset_ams','kode_material','nama_material', 'ba_pemilik_asset', 'lokasi_ba_description', 'nama_asset', 'kode_asset_sap'];
+
+
+        $user_area_code = Session::get('area_code');
+
+        $sql = '
+            SELECT ' . implode(", ", $selectedColumn) . '
+                FROM TM_MSTR_ASSET
+                WHERE 1=1
+        ';
+
+        if(  $user_area_code != '' )
+        {
+            if( $user_area_code != 'All' )
+            {
+                $sql .= " AND ( ba_pemilik_asset in (".$user_area_code.") OR lokasi_ba_code in (".$user_area_code.") ) ";
+            }
+        }
+
+        if ($request->kode_asset_ams)
+        $sql .= " AND kode_asset_ams like'%" . $request->kode_asset_ams . "%'";
+
+        if ($request->kode_material)
+        $sql .= " AND kode_material like'%" . $request->kode_material . "%'";
+
+        if ($request->nama_material)
+        $sql .= " AND nama_material like'%" . $request->nama_material . "%'";
+
+        if ($request->ba_pemilik_asset)
+        $sql .= " AND ba_pemilik_asset like'%" . $request->ba_pemilik_asset . "%'";
+
+        if ($request->lokasi_ba_description)
+        $sql .= " AND lokasi_ba_description like'%" . $request->lokasi_ba_description . "%'";
+
+        if ($request->nama_asset)
+        $sql .= " AND nama_asset like'%" . $request->nama_asset . "%'";
+
+        if ($request->kode_asset_sap)
+        $sql .= " AND kode_asset_sap like'%" . $request->kode_asset_sap . "%'";
+
+
+        return Excel::download(new MasterAssetExport($sql), 'MASTER_ASSET.xlsx');
     }
 
     public function store(Request $request)
@@ -578,6 +626,136 @@ class MasterAssetController extends Controller
         $data["data"] = $this->get_data_qrcode($code_ams); 
         return view('masterdata.print_qrcode')->with(compact('data'));
     }
+
+    function view_download_masterasset_qrcode()
+    {
+        return view('masterdata.bulk-download');
+    }
+	
+	function download_masterasset_qrcode(Request $req){
+		\File::deleteDirectory( storage_path("app/public/tmp_download") );
+		
+		$ori_a = ($req->id);
+		$ori_b = ($req->di);
+		
+		for($i=$ori_a; $i<= $ori_b; $i++){
+			$trg = base64_encode($i);
+			
+			$data['content'] = $this->get_master_asset_by_id($i);
+			if( count($data['content']) > 0 ){
+				
+				if( $this->gen_png_img($data) ){
+				
+					$qrcode = url('master-asset/show-data/'.$trg.'');
+					// echo \QrCode::margin(0)->size(250)->generate(''.$qrcode.'').'<br/>'; 
+					$os = PHP_OS; 
+					if( $os != "WINNT" ){
+						  $file_qrcode = '/app/qrcode_tempe.png';
+					}else{
+						  $file_qrcode = '\app\qrcode_tempe.png';
+					}
+					$file_data = 'data:image/png;base64, '.base64_encode(\QrCode::format('png')->merge(''.$file_qrcode.'', 1)->margin(5)->size(450)->generate(''.$trg.'')); 
+					$file_name = 'tmp_download/'.$i.'.jpeg';
+					@list($type, $file_data) = explode(';', $file_data);
+					@list(, $file_data) = explode(',', $file_data); 
+					if($file_data!=""){ 
+						  \Storage::disk('public')->put($file_name,base64_decode($file_data)); 
+					}		
+				}
+			}
+			
+		}
+		
+		$this->gen_zip();
+		
+		$headers = array(
+			'Content-Type' => 'application/octet-stream',
+		);
+		$filetopath = storage_path("app/public/tmp_download/tmp_download.zip");
+		
+		if(file_exists($filetopath)){
+			return response()->download($filetopath,'MASTERDATA_QR_'.date('YmdHis').'.zip',$headers);
+			//\File::deleteDirectory( storage_path("app/public/tmp_download") );
+		}
+	}
+	
+	function gen_zip() {
+		$files = glob(storage_path("app/public/tmp_download/*.jpeg"));
+
+		$archiveFile = storage_path("app/public/tmp_download/tmp_download.zip");
+		$archive = new \ZipArchive();
+
+		if ($archive->open($archiveFile, \ZipArchive::CREATE | \ZipArchive::OVERWRITE)) {
+			foreach ($files as $file) {
+				if ($archive->addFile($file, basename($file))) {
+					continue;
+				} else {
+					throw new Exception("file `{$file}` could not be added to the zip file: " . $archive->getStatusString());
+				}
+			}
+
+			if ($archive->close()) {
+				return response()->download($archiveFile, basename($archiveFile))->deleteFileAfterSend(true);
+			} else {
+				throw new Exception("could not close zip file: " . $archive->getStatusString());
+			}
+		} else {
+		  throw new Exception("zip file could not be created: " . $archive->getStatusString());
+		}
+	}
+	
+	function gen_png_img($data){
+		$string = @$data['content']->KODE_ASSET_AMS; 
+		$string1 = 'NAMA ASSET : '.@$data['content']->NAMA_ASSET;
+		$string2 = 'MILIK : '.@$data['content']->BA_PEMILIK_ASSET.' ('.@$data['content']->BA_PEMILIK_ASSET_DESCRIPTION.')';
+		$string3 = 'LOKASI : '.@$data['content']->LOKASI_BA_CODE.' ('.@$data['content']->LOKASI_BA_DESCRIPTION.')';
+		$string4 = @$data['content']->KODE_ASSET_CONTROLLER;
+
+		$width  = 350;
+		$height = 450;
+		$font = 2;
+		$im = @imagecreate ($width, $height);
+		$text_color = imagecolorallocate($im, 0, 0, 0); //black text
+		// white background
+		// $background_color = imagecolorallocate ($im, 255, 255, 255);
+		// transparent background
+		$transparent = imagecolorallocatealpha($im, 0, 0, 0, 127);
+		imagefill($im, 0, 0, $transparent);
+		imagesavealpha($im, true);
+	  
+		$width1 = imagefontwidth($font) * strlen($string); 
+		imagestring ($im, $font, ($width/2)-($width1/2), 380, $string, $text_color);
+
+		$width2 = imagefontwidth($font) * strlen($string2); 
+		imagestring ($im, $font, ($width/3)-($width2/2), 395, $string1, $text_color);
+		imagestring ($im, $font, ($width/2)-($width2/2), 410, $string2, $text_color);
+
+		$width3 = imagefontwidth($font) * strlen($string3); 
+		imagestring ($im, $font, ($width/2)-($width3/2), 425, $string3, $text_color);
+
+		$width4 = imagefontwidth($font) * strlen($string4); 
+		imagestring ($im, $font, ($width/2)-($width4/2), 440, $string4, $text_color);
+	  
+		ob_start();
+		imagepng($im);
+		$imstr = base64_encode(ob_get_clean());
+		imagedestroy($im);
+
+		// Save Image in folder from string base64
+		$img = 'data:image/png;base64,'.$imstr;
+		$image_parts = explode(";base64,", $img);
+		$image_type_aux = explode("image/", $image_parts[0]);
+		$image_type = $image_type_aux[1];
+		$image_base64 = base64_decode($image_parts[1]);
+		$folderPath = app_path();
+		$file = $folderPath . '/qrcode_tempe.png';
+		// MOve to folder
+		if(file_put_contents($file, $image_base64)){
+			return true;
+		}else{
+			return false;
+		}
+	}
 
     function get_data_qrcode( $code_ams )
     {   

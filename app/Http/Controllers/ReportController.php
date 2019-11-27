@@ -14,6 +14,8 @@ use App\TR_WORKFLOW_JOB;
 use App\TM_GENERAL_DATA;
 use App\TM_MSTR_ASSET;
 use App\TR_REG_ASSET_DETAIL;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\ReportExport;
 
 class ReportController extends Controller
 {
@@ -183,6 +185,86 @@ class ReportController extends Controller
         $data['access'] = (object)$access;
         $data['report'] = $result;
         return view('report.list_asset')->with(compact('data'));
+    }
+
+    function list_asset_download(Request $request)
+    {
+        if (empty(Session::get('authenticated')))
+            return redirect('/login');
+
+        $where = "";
+        $result = array();
+        $req = $request->all();
+// dd($req);
+        if( !empty($req['kode-aset-fams']) )
+        {
+            $where .= " AND UPPER(a.KODE_ASSET_AMS) LIKE UPPER('%{$req['kode-aset-fams']}%') ";
+        }
+
+        if( !empty($req['kode-aset-sap']) )
+        {
+            $where .= " AND UPPER(a.KODE_ASSET_SAP) LIKE UPPER('%{$req['kode-aset-sap']}%') ";
+        }
+
+        if( !empty($req['kode-aset-controller']) )
+        {
+            $where .= " AND UPPER(a.KODE_ASSET_CONTROLLER) LIKE UPPER('%{$req['kode-aset-controller']}%') ";
+        }
+
+        if( !empty($req['nama-aset']) )
+        {
+            $where .= " AND UPPER(a.NAMA_ASSET) LIKE UPPER('%{$req['nama-aset']}%') ";
+        }
+
+        if( !empty($req['asset-class']) )
+        {
+            $where .= " AND UPPER(a.ASSET_CLASS) LIKE UPPER('%{$req['asset-class']}%') ";
+        }
+
+        if( !empty($req['jenis-asset']) )
+        {
+            $where .= " AND UPPER(a.JENIS_ASSET) LIKE UPPER('%{$req['jenis-asset']}%') ";
+        }
+
+        if( !empty($req['group-asset']) )
+        {
+            $where .= " AND UPPER(a.GROUP) LIKE UPPER('%{$req['group-asset']}%') ";
+        }
+
+        if( !empty($req['subgroup-asset']) )
+        {
+            $where .= " AND UPPER(a.SUB_GROUP) LIKE UPPER('%{$req['subgroup-asset']}%') ";
+        }
+
+        if( !empty($req['milik-aset']) )
+        {
+            $where .= " AND UPPER(a.BA_PEMILIK_ASSET) LIKE UPPER('%{$req['milik-aset']}%') ";
+        }
+
+        if( !empty($req['lokasi-aset']) )
+        {
+            $where .= " AND UPPER(a.LOKASI_BA_CODE) LIKE UPPER('%{$req['lokasi-aset']}%') ";
+        }
+
+        $sql = " SELECT a.*, b.DESCRIPTION AS NAMA_PT_PEMILIK,(SELECT NAMA_VENDOR FROM TR_REG_ASSET WHERE NO_REG = a.NO_REG) AS NAMA_VENDOR,(SELECT FILE_UPLOAD FROM TR_REG_ASSET_DETAIL_FILE  WHERE NO_REG = a.NO_REG AND NO_REG_ITEM_FILE = a.NO_REG_ITEM AND FILE_CATEGORY = 'asset' ) AS FOTO_ASET, (SELECT FILE_UPLOAD FROM TR_REG_ASSET_DETAIL_FILE  WHERE NO_REG = a.NO_REG AND NO_REG_ITEM_FILE = a.NO_REG_ITEM AND FILE_CATEGORY = 'no seri' ) AS FOTO_SERI, (SELECT FILE_UPLOAD FROM TR_REG_ASSET_DETAIL_FILE  WHERE NO_REG = a.NO_REG AND FILE_CATEGORY = 'imei' AND NO_REG_ITEM_FILE = a.NO_REG_ITEM ) AS FOTO_MESIN, 
+(SELECT JENIS_ASSET_DESCRIPTION FROM TM_JENIS_ASSET WHERE JENIS_ASSET_CODE = a.JENIS_ASSET) AS JENIS_ASSET_NAME,
+(SELECT GROUP_DESCRIPTION FROM TM_GROUP_ASSET WHERE JENIS_ASSET_CODE = a.JENIS_ASSET AND GROUP_CODE = a.GROUP) AS GROUP_NAME,
+(SELECT SUBGROUP_DESCRIPTION FROM TM_SUBGROUP_ASSET WHERE JENIS_ASSET_CODE = a.JENIS_ASSET AND GROUP_CODE = a.GROUP AND SUBGROUP_CODE = a.SUB_GROUP) AS SUB_GROUP_NAME, a.DISPOSAL_FLAG AS STATUS_DOCUMENT
+                    FROM TM_MSTR_ASSET a 
+                        LEFT JOIN TM_GENERAL_DATA b ON a.BA_PEMILIK_ASSET = b.DESCRIPTION_CODE AND b.GENERAL_CODE = 'plant' 
+                    WHERE (a.KODE_ASSET_AMS IS NOT NULL OR a.KODE_ASSET_AMS != '' ) $where ORDER BY a.NO_REG DESC LIMIT ".$req['no-of-list']." ";
+
+        /*$sql1 = " SELECT a.*,b.DESCRIPTION AS NAMA_PT_PEMILIK,(SELECT NAMA_VENDOR FROM TR_REG_ASSET WHERE NO_REG = a.NO_REG) AS NAMA_VENDOR,(SELECT FILE_UPLOAD FROM TR_REG_ASSET_DETAIL_FILE  WHERE NO_REG = a.NO_REG AND ASSET_PO_DETAIL_ID = a.ASSET_PO_ID AND FILE_CATEGORY = 'asset' ) AS FOTO_ASET, (SELECT FILE_UPLOAD FROM TR_REG_ASSET_DETAIL_FILE  WHERE NO_REG = a.NO_REG AND ASSET_PO_DETAIL_ID = a.ASSET_PO_ID AND FILE_CATEGORY = 'no seri' ) AS FOTO_SERI, (SELECT FILE_UPLOAD FROM TR_REG_ASSET_DETAIL_FILE  WHERE NO_REG = a.NO_REG AND FILE_CATEGORY = 'imei' AND ASSET_PO_DETAIL_ID = a.ASSET_PO_ID ) AS FOTO_MESIN, 
+(SELECT JENIS_ASSET_DESCRIPTION FROM TM_JENIS_ASSET WHERE JENIS_ASSET_CODE = a.JENIS_ASSET) AS JENIS_ASSET_NAME,
+(SELECT GROUP_DESCRIPTION FROM TM_GROUP_ASSET WHERE JENIS_ASSET_CODE = a.JENIS_ASSET AND GROUP_CODE = a.GROUP) AS GROUP_NAME,
+(SELECT SUBGROUP_DESCRIPTION FROM TM_SUBGROUP_ASSET WHERE JENIS_ASSET_CODE = a.JENIS_ASSET AND GROUP_CODE = a.GROUP AND SUBGROUP_CODE = a.SUB_GROUP) AS SUB_GROUP_NAME, c.DISPOSAL_FLAG AS STATUS_DOCUMENT 
+                    FROM TR_REG_ASSET_DETAIL a 
+                        LEFT JOIN TM_GENERAL_DATA b ON a.BA_PEMILIK_ASSET = b.DESCRIPTION_CODE AND b.GENERAL_CODE = 'plant'
+                        LEFT JOIN TM_MSTR_ASSET c ON a.KODE_ASSET_AMS = c.KODE_ASSET_AMS
+                    WHERE (a.KODE_ASSET_AMS IS NOT NULL OR a.KODE_ASSET_AMS != '' ) $where ORDER BY a.NO_REG DESC LIMIT ".$req['no-of-list']." ";*/
+        
+        
+		return Excel::download(new ReportExport($sql), 'REPORT.xlsx');
     }
 
     public function dataGrid(Request $request)
