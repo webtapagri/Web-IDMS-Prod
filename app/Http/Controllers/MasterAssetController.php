@@ -638,10 +638,18 @@ class MasterAssetController extends Controller
 		$ori_a = ($req->id);
 		$ori_b = ($req->di);
 		
-		for($i=$ori_a; $i<= $ori_b; $i++){
-			$trg = base64_encode($i);
+		$sql = " SELECT a.*, b.DESCRIPTION AS BA_PEMILIK_ASSET_DESCRIPTION, c.DESCRIPTION AS LOKASI_BA_DESCRIPTION 
+                    FROM TM_MSTR_ASSET a 
+                        LEFT JOIN TM_GENERAL_DATA b ON a.BA_PEMILIK_ASSET = b.DESCRIPTION_CODE AND b.GENERAL_CODE = 'plant' 
+                        LEFT JOIN TM_GENERAL_DATA c ON a.LOKASI_BA_CODE = c.DESCRIPTION_CODE AND c.GENERAL_CODE = 'plant' 
+                    WHERE a.KODE_ASSET_AMS BETWEEN $ori_a and $ori_b ";
+
+        $getLup = DB::SELECT($sql);
+		
+		foreach($getLup as $k=> $dt){
+			$trg = base64_encode($dt->KODE_ASSET_AMS);
 			
-			$data['content'] = $this->get_master_asset_by_id($i);
+			$data['content'] = $this->get_master_asset_by_id($dt->KODE_ASSET_AMS);
 			if( count($data['content']) > 0 ){
 				
 				if( $this->gen_png_img($data) ){
@@ -655,7 +663,7 @@ class MasterAssetController extends Controller
 						  $file_qrcode = '\app\qrcode_tempe.png';
 					}
 					$file_data = 'data:image/png;base64, '.base64_encode(\QrCode::format('png')->merge(''.$file_qrcode.'', 1)->margin(5)->size(450)->generate(''.$trg.'')); 
-					$file_name = 'tmp_download/'.$i.'.jpeg';
+					$file_name = 'tmp_download/'.$dt->KODE_ASSET_AMS.'.jpeg';
 					@list($type, $file_data) = explode(';', $file_data);
 					@list(, $file_data) = explode(',', $file_data); 
 					if($file_data!=""){ 
