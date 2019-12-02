@@ -714,7 +714,11 @@ class MasterAssetController extends Controller
 	
 	function gen_png_img($data){
 		$string = @$data['content']->KODE_ASSET_AMS; 
-		$string1 = 'NAMA ASSET : '.@$data['content']->NAMA_ASSET;
+		$nnasset = (@$data['content']->NAMA_ASSET);
+		if(strlen($nnasset)> 25){
+			$nnasset = substr($nnasset,0,10).'...';
+		}
+		$string1 = 'NAMA ASSET : '.$nnasset;
 		$string2 = 'MILIK : '.@$data['content']->BA_PEMILIK_ASSET.' ('.@$data['content']->BA_PEMILIK_ASSET_DESCRIPTION.')';
 		$string3 = 'LOKASI : '.@$data['content']->LOKASI_BA_CODE.' ('.@$data['content']->LOKASI_BA_DESCRIPTION.')';
 		$string4 = @$data['content']->KODE_ASSET_CONTROLLER;
@@ -734,8 +738,9 @@ class MasterAssetController extends Controller
 		$width1 = imagefontwidth($font) * strlen($string); 
 		imagestring ($im, $font, ($width/2)-($width1/2), 380, $string, $text_color);
 
+		$width0 = imagefontwidth($font) * strlen($string1); 
 		$width2 = imagefontwidth($font) * strlen($string2); 
-		imagestring ($im, $font, ($width/3)-($width2/2), 395, $string1, $text_color);
+		imagestring ($im, $font, ($width/2)-($width0/2), 395, $string1, $text_color);
 		imagestring ($im, $font, ($width/2)-($width2/2), 410, $string2, $text_color);
 
 		$width3 = imagefontwidth($font) * strlen($string3); 
