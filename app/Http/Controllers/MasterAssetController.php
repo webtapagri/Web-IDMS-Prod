@@ -692,9 +692,12 @@ class MasterAssetController extends Controller
 
 		$archiveFile = storage_path("app/public/tmp_download/tmp_download.zip");
 		$archive = new \ZipArchive();
-
+		
 		if ($archive->open($archiveFile, \ZipArchive::CREATE | \ZipArchive::OVERWRITE)) {
 			foreach ($files as $file) {
+				$img = \Intervention\Image\Facades\Image::make($file)->crop(310, 420 )->encode('png');
+				$hash = basename($file);
+				$img->save(storage_path('app/public/tmp_download/'.$hash));
 				if ($archive->addFile($file, basename($file))) {
 					continue;
 				} else {
@@ -715,10 +718,10 @@ class MasterAssetController extends Controller
 	function gen_png_img($data){
 		$string = @$data['content']->KODE_ASSET_AMS; 
 		$nnasset = (@$data['content']->NAMA_ASSET);
-		if(strlen($nnasset)> 25){
-			$nnasset = substr($nnasset,0,10).'...';
+		if(strlen($nnasset)> 30){
+			$nnasset = substr($nnasset,0,30);
 		}
-		$string1 = 'NAMA ASSET : '.$nnasset;
+		$string1 = $nnasset;
 		$string2 = 'MILIK : '.@$data['content']->BA_PEMILIK_ASSET.' ('.@$data['content']->BA_PEMILIK_ASSET_DESCRIPTION.')';
 		$string3 = 'LOKASI : '.@$data['content']->LOKASI_BA_CODE.' ('.@$data['content']->LOKASI_BA_DESCRIPTION.')';
 		$string4 = @$data['content']->KODE_ASSET_CONTROLLER;
@@ -736,18 +739,18 @@ class MasterAssetController extends Controller
 		imagesavealpha($im, true);
 	  
 		$width1 = imagefontwidth($font) * strlen($string); 
-		imagestring ($im, $font, ($width/2)-($width1/2), 380, $string, $text_color);
+		imagestring ($im, $font, ($width/2)-($width1/2), 40, $string, $text_color);
 
 		$width0 = imagefontwidth($font) * strlen($string1); 
 		$width2 = imagefontwidth($font) * strlen($string2); 
-		imagestring ($im, $font, ($width/2)-($width0/2), 395, $string1, $text_color);
-		imagestring ($im, $font, ($width/2)-($width2/2), 410, $string2, $text_color);
+		imagestring ($im, $font, ($width/2)-($width0/2), 55, $string1, $text_color);
+		imagestring ($im, $font, ($width/2)-($width2/2), 380, $string2, $text_color);
 
 		$width3 = imagefontwidth($font) * strlen($string3); 
-		imagestring ($im, $font, ($width/2)-($width3/2), 425, $string3, $text_color);
+		imagestring ($im, $font, ($width/2)-($width3/2), 395, $string3, $text_color);
 
 		$width4 = imagefontwidth($font) * strlen($string4); 
-		imagestring ($im, $font, ($width/2)-($width4/2), 440, $string4, $text_color);
+		imagestring ($im, $font, ($width/2)-($width4/2), 410, $string4, $text_color);
 	  
 		ob_start();
 		imagepng($im);
