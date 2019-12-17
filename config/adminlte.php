@@ -13,7 +13,7 @@ return [
     |
  */
 
-    'title' => 'FAMS',
+    'title' => 'TAP-ROAD',
     'title_prefix' => '',
     'title_postfix' => '',
 
@@ -28,7 +28,7 @@ return [
     |
      */
 
-    'logo' => '<b>FAMS</b> Web',
+    'logo' => env('BRAND','<b>YOUR</b> BRAND'),
     'logo_mini' => '<b>F</b>',
 
     /*

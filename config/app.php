@@ -14,6 +14,8 @@ return [
     */
 
     'name' => env('APP_NAME', 'Laravel'),
+    'company' => env('COMPANY', 'Laravel'),
+    'brand' => env('BRAND', 'Laravel'),
 
     
     /*
@@ -184,7 +186,8 @@ return [
         //made by mkddr #endregion
         App\Providers\AccessRightHelper::class,
         App\Providers\ApiHelper::class,
-		Intervention\Image\ImageServiceProvider::class,
+		//Intervention\Image\ImageServiceProvider::class,
+		Yajra\DataTables\DataTablesServiceProvider::class,
 
     ],
 
@@ -239,7 +242,7 @@ return [
         'API' => App\Providers\ApiHelper::class,
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
         'Pdf'  => NahidulHasan\Html2pdf\Facades\Pdf::class,
-		'Image' => Intervention\Image\Facades\Image::class,
-
+		//'Image' => Intervention\Image\Facades\Image::class,
+		'DataTables' => Yajra\DataTables\Facades\DataTables::class,
     ],
 ];

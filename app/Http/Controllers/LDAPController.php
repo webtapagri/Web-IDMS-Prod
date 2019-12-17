@@ -75,6 +75,7 @@ class LDAPController extends Controller
         
         if(!empty($data->status)) 
         {
+			
             Session::put('authenticated', time());
             Session::put('user', $username);
 
@@ -95,6 +96,7 @@ class LDAPController extends Controller
                 Session::put('role', $profile[0]->role_name);
                 Session::put('role_id', $profile[0]->role_id);
                 Session::put('area_code', $profile[0]->area_code);
+				Auth::loginUsingId($profile[0]->id);
             } 
             else 
             {

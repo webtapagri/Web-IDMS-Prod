@@ -1,0 +1,20 @@
+.sidebar-user-material .sidebar-user-material-body {
+    background: url(../../../../../limitless/global_assets/images/backgrounds/user_bg3.jpg) center center no-repeat;
+    background-size: cover;
+}
+
+.navbar-brand {
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+a.d-inline-block.logo-text {
+    color: #fff;
+    font-size: 14pt;
+}
+
+a.d-inline-block.logo-text-dark {
+    color: #000;
+    font-size: 14pt;
+	margin-top: 10px;
+}

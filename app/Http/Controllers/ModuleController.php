@@ -28,6 +28,7 @@ class ModuleController extends Controller
         $data['ctree_mod'] = 'Setting';
         $data['ctree'] = 'modules';
         $data["access"] = (object)$access;
+        $data['alt'] = true;
         return view('usersetting.modules')->with(compact('data'));
     }
 

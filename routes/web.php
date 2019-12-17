@@ -2,126 +2,43 @@
 
 use App\Http\Controllers\MaterialController;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
-
-/* Route::get('/', function () {
-    return view('welcome');
-}); */
-
 Auth::routes();
+
 Route::group(['middleware' => ['web']], function () {
 
 });
 
-/* DASHBOARD */
-Route::match(['get', 'post'], 'grid-outstanding', [
-    'as' => 'get.outstanding',
-    'uses' => 'OutstandingController@dataGrid'
-]);
+Route::group(['middleware' => [ 'auth' ]], function () {
+	Route::get('/', 'RoadController@index')->name('road');
 
-Route::get('/asset/edit/', 'AssetController@show');
-Route::resource('/help', 'HelpController');
+	Route::group(['prefix'=>'api/master'], function () {
+		Route::get('/road-status', 				['as'=>'master.api_road_status', 'uses'=>'RoadController@api_status']);
+		
+	});
 
-/* PAGES */
-Route::resource('/asset', 'AssetController');
-Route::get('/asset/create/{type}', 'AssetController@create')->name('type');
-Route::post('/asset/post', 'AssetController@store');
-Route::get('/asset/edit/', 'AssetController@show');
-Route::post('/asset/inactive', 'AssetController@inactive');
-Route::get('grid-asset', ['as' => 'get.asset_grid', 'uses' => 'AssetController@dataGrid']);
-Route::get('asset_pdf', ['as' => 'get.asset_pdf', 'uses' => 'AssetController@convertToPdf']);
-Route::get('asset_report', ['as' => 'get.asset_report', 'uses' => 'AssetController@report']);
+	Route::group(['prefix'=>'master'], function () {
+		Route::get('/road-status', 				['as'=>'master.road_status', 'uses'=>'RoadController@status']);
+		Route::get('/road-status-datatables', 	['as'=>'master.road_status_datatables', 'uses'=>'RoadController@status_datatables']);
+		Route::get('/road-status-add', 			['as'=>'master.road_status_add', 'uses'=>'RoadController@add']);
+		Route::post('/road-status-save', 		['as'=>'master.road_status_save', 'uses'=>'RoadController@save']);
+		Route::post('/road-status-update', 		['as'=>'master.road_status_update', 'uses'=>'RoadController@update']);
+		Route::get('/road-status-delete/{id}', 	['as'=>'master.road_status_delete', 'uses'=>'RoadController@delete']);
+		
+		Route::get('/road-category', 			['as'=>'master.road_category', 'uses'=>'RoadController@category']);
+		Route::post('/road-category-save', 		['as'=>'master.road_category_save', 'uses'=>'RoadController@category_save']);
+		Route::get('/road-category-datatables', 	['as'=>'master.road_category_datatables', 'uses'=>'RoadController@category_datatables']);
+		Route::post('/road-category-update', 		['as'=>'master.road_category_update', 'uses'=>'RoadController@category_update']);
+		
+	});
+});
 
-Route::resource('/request', 'RequestController');
-Route::get('/request/create/{type}', 'RequestController@create')->name('type');
-Route::post('/request/post', 'RequestController@store');
-Route::get('/request/edit/', 'RequestController@show');
-Route::post('/request/inactive', 'RequestController@inactive');
-Route::post('/request/active', 'RequestController@active');
-Route::get('grid-request', ['as' => 'get.request_grid', 'uses' => 'RequestController@dataGrid']);
-Route::get('get-no_po', ['as' => 'get.no_po', 'uses' => 'RequestController@getPO']);
-Route::get('requestpdf', ['as' => 'get.requestpdf', 'uses' => 'RequestController@pdfDoc']);
-Route::get('get-businessarea', ['as' => 'get.businessarea', 'uses' => 'RequestController@businessarea']);
-Route::get('get-qty-po', ['as' => 'get.qty_po', 'uses' => 'RequestController@qty_po']);
 
-Route::resource('/approval', 'ApprovalController');
-Route::get('/approval/create/{type}', 'ApprovalController@create')->name('type');
-Route::post('/approval/post', 'ApprovalController@store');
-Route::get('/approval/edit/', 'ApprovalController@show');
-Route::post('/approval/inactive', 'ApprovalController@inactive');
-Route::post('/approval/active', 'ApprovalController@active');
-//Route::get('view-data-approval/{no_reg}', ['as' => 'get.approval_view', 'uses' => 'ApprovalController@dataView']);
-Route::get('/approval/view/{no_reg}', 'ApprovalController@view')->name('no_reg');
-Route::get('/approval/view_detail/{no_reg}/{id}', 'ApprovalController@get_asset_detail');
-Route::post('/approval/delete_asset/{id}','ApprovalController@delete_asset');
-Route::post('/approval/save_asset_sap/{id}','ApprovalController@save_asset_sap');
-Route::post('/approval/save_item_detail/{id}','ApprovalController@save_item_detail');
-Route::post('/approval/update_status/{status}/{no_reg}','ApprovalController@update_status');
-Route::get('/approval/log_history/{no_reg}', 'ApprovalController@log_history')->name('no_reg');
-Route::post('/approval/synchronize_sap', 'ApprovalController@synchronize_sap');
-Route::post('/approval/synchronize_sap_mutasi', 'ApprovalController@synchronize_sap_mutasi');
-Route::post('/approval/synchronize_amp', 'ApprovalController@synchronize_amp');
-Route::post('/approval/update_ka_con_temp', 'ApprovalController@update_ka_con_temp');
-Route::post('/approval/update_kode_vendor_aset_lain','ApprovalController@update_kode_vendor_aset_lain');
-Route::post('/approval/update_kode_asset_controller','ApprovalController@update_kode_asset_controller');
-Route::post('/approval/save_gi_number_year','ApprovalController@save_gi_number_year');
-//Route::get('grid-approval', ['as' => 'get.approval_grid', 'uses' => 'ApprovalController@dataGrid']);
-//Route::get('grid-approval-history', ['as' => 'get.approval_grid_history', 'uses' => 'ApprovalController@dataGridHistory']);
-Route::match(['get', 'post'], 'grid-approval', [
-    'as' => 'get.approval_grid',
-    'uses' => 'ApprovalController@dataGrid'
-]);
-Route::match(['get', 'post'], 'grid-approval-history', [
-    'as' => 'get.approval_grid_history',
-    'uses' => 'ApprovalController@dataGridHistory'
-]);
-Route::get('/approval/berkas-amp/{no_reg}', 'ApprovalController@berkas_amp')->name('no_reg');
-Route::get('/printio/{noreg}/{asset_po_id}/{jenis_kendaraan}/{no_reg_item}', 'ApprovalController@print_io');
-Route::post('/approval/update_status_disposal/{status}/{no_reg}','ApprovalController@update_status_disposal');
-Route::get('/approval/view_disposal/{no_reg}', 'ApprovalController@view_disposal')->name('no_reg');
-Route::post('/approval/delete_asset_disposal', 'ApprovalController@delete_asset_disposal');
-Route::get('/approval/view_mutasi/{no_reg}', 'ApprovalController@view_mutasi')->name('no_reg');
-Route::post('/approval/update_status_mutasi/{status}/{no_reg}','ApprovalController@update_status_mutasi');
-Route::post('/approval/delete_asset_mutasi', 'ApprovalController@delete_asset_mutasi');
 
-Route::get('get-select_jenis_kendaraan', ['as' => 'get.select_jenis_kendaraan', 'uses' => 'Select2Controller@select_jenis_kendaraan']);
 
-Route::resource('/mutasi', 'MutasiController');
-Route::get('/mutasi/create/{type}', 'MutasiController@create')->name('type');
-Route::post('/mutasi/post', 'MutasiController@store');
-Route::post('/mutasi/post_sewa', 'MutasiController@store_sewa');
-Route::get('/mutasi/edit/', 'MutasiController@show');
-Route::post('/mutasi/inactive', 'MutasiController@inactive');
-Route::post('/mutasi/active', 'MutasiController@active');
-Route::get('grid-mutasi', ['as' => 'get.mutasi_grid', 'uses' => 'MutasiController@dataGrid']);
-Route::match(['get', 'post'], 'grid-asset-mutasi', [
-    'as' => 'get.grid_asset_mutasi',
-    'uses' => 'MutasiController@dataGridAssetMutasi'
-]);
-Route::get('/mutasi/list-upload/{kode_asset_ams}/{jenis_pengajuan}', 'MutasiController@list_file_category')->name('kode_asset_ams');
-Route::post('/mutasi/upload_berkas_amp', 'MutasiController@upload_berkas_amp');
-Route::post('/mutasi/add_temp', 'MutasiController@add_temp');
-Route::post('/mutasi/delete_data_temp','MutasiController@delete_data_temp');
-Route::post('/mutasi/delete_data_temp_sewa','MutasiController@delete_data_temp_sewa');
-Route::get('/mutasi/view-berkas-detail/{kode_asset_ams}/{file_category}', 'MutasiController@berkas_detail')->name('kode_asset_ams');
-Route::post('/mutasi/delete_berkas_temp','MutasiController@delete_berkas_temp');
-Route::get('/mutasi/view-berkas-notes/{kode_asset_ams}', 'MutasiController@berkas_notes')->name('kode_asset_ams');
-Route::get('/mutasi/berkas/sewa/{kode_asset_ams}', 'MutasiController@berkas_notes_sewa')->name('kode_asset_ams');
-Route::post('/mutasi/delete_all_berkas_temp','MutasiController@delete_all_berkas_temp');
+###################################################################################################### 
 
 /* USER SETTINGS */
-//Route::get('/', 'HomeController@index')->name('home');
-//Route::get('/home', 'HomeController@index')->name('home');
-Route::get('/', 'ApprovalController@index')->name('home');
+
 Route::get('/home', 'ApprovalController@index')->name('home');
 Route::get('/profile', 'ProfileController@index');
 Route::post('/ldaplogin', 'LDAPController@login');
