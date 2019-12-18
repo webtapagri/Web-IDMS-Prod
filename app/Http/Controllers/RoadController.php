@@ -50,19 +50,29 @@ class RoadController extends Controller
 	}
 
 	
-	public function status_datatables()
+	public function status_datatables(Request $request)
 	{
+		$access = access($request, 'master/road-category');
 		$model = RoadStatus::whereRaw('1=1');
+		$update_action ="";
+		$delete_action ="";
+
+		if($access['update']==1){
+			$update_action ='<button class="btn btn-link text-primary-600" onclick="edit({{ $id }}, \'{{ $status_name }}\'); return false;">
+								<i class="icon-pencil7"></i> Edit
+							</button>';
+		}
+		if($access['delete']==1){
+			$delete_action = '<a class="btn btn-link text-danger-600" href="" onclick="del(\''.URL::to('master/road-status-delete/{{ $id }}').'\'); return false;">
+								<i class="icon-trash"></i> Hapus
+							</a>';
+		}
+
 		return Datatables::eloquent($model)
-			->addColumn('action', '<div class="text-center">
-					<button class="btn btn-link text-primary-600" onclick="edit({{ $id }}, \'{{ $status_name }}\'); return false;">
-						<i class="icon-pencil7"></i> Edit
-					</button>
-					<a class="btn btn-link text-danger-600" href="" onclick="del(\''.URL::to('master/road-status-delete/{{ $id }}').'\'); return false;">
-						<i class="icon-trash"></i> Hapus
-					</a>
-				<div>
-				')
+			->addColumn('action', '<div class="text-center">'.
+					$update_action.
+					$delete_action.
+					'<div>')
 			->rawColumns(['action'])
 			->make(true);
 
