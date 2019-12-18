@@ -13,7 +13,7 @@ return [
     |
  */
 
-    'title' => 'TAP-ROAD',
+    'title' => 'IDMS',
     'title_prefix' => '',
     'title_postfix' => '',
 
@@ -28,7 +28,7 @@ return [
     |
      */
 
-    'logo' => env('BRAND','<b>YOUR</b> BRAND'),
+    'logo' => env('BRAND','<b>IDMS</b>'),
     'logo_mini' => '<b>F</b>',
 
     /*

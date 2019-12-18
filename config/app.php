@@ -188,6 +188,7 @@ return [
         App\Providers\ApiHelper::class,
 		//Intervention\Image\ImageServiceProvider::class,
 		Yajra\DataTables\DataTablesServiceProvider::class,
+		App\Providers\ResponseServiceProvider::class,
 
     ],
 

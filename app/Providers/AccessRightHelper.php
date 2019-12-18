@@ -34,12 +34,13 @@ class AccessRightHelper extends ServiceProvider
                 ])
                 ->orderBy("menu.sort", "ASC")
                 ->get();
-
-            $data[] = array(
-                "module" => $row->module_name,
-                "module_icon" => $row->module_icon,
-                "menu" => $menu
-            );    
+			if(count($menu) > 0){
+				$data[] = array(
+					"module" => $row->module_name,
+					"module_icon" => $row->module_icon,
+					"menu" => $menu
+				);   	
+			} 
        }
 
        return $data;
