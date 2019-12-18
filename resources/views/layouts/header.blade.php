@@ -56,9 +56,11 @@
 					</a>
 
 					<div class="dropdown-menu dropdown-menu-right">
-						<a href="#" class="dropdown-item"><i class="icon-user-plus"></i> My profile</a>
+						<a href="{{ route('profile') }}" class="dropdown-item"><i class="icon-user-plus"></i> My profile</a>
+						<!--  
 						<div class="dropdown-divider"></div>
 						<a href="#" class="dropdown-item"><i class="icon-cog5"></i> Account settings</a>
+						-->
 						@if(config('adminlte.logout_method') == 'GET' || !config('adminlte.logout_method') && version_compare(\Illuminate\Foundation\Application::VERSION, '5.3.0', '<')) 
 							<a href="{{ url(config('adminlte.logout_url', 'auth/logout')) }}" class="dropdown-item">
 								<i class="icon-switch2"></i> Logout

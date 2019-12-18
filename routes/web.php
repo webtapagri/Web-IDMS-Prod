@@ -28,7 +28,7 @@ Route::group(['middleware' => [ 'auth' ]], function () {
 		Route::post('/road-category-save', 		['as'=>'master.road_category_save', 'uses'=>'RoadController@category_save']);
 		Route::get('/road-category-datatables', 	['as'=>'master.road_category_datatables', 'uses'=>'RoadController@category_datatables']);
 		Route::post('/road-category-update', 		['as'=>'master.road_category_update', 'uses'=>'RoadController@category_update']);
-		
+		Route::get('/road-category-delete/{id}', 	['as'=>'master.road_category_delete', 'uses'=>'RoadController@category_delete']);
 	});
 });
 
@@ -40,7 +40,7 @@ Route::group(['middleware' => [ 'auth' ]], function () {
 /* USER SETTINGS */
 
 Route::get('/home', 'ApprovalController@index')->name('home');
-Route::get('/profile', 'ProfileController@index');
+Route::get('/profile', 'ProfileController@index')->name('profile');
 Route::post('/ldaplogin', 'LDAPController@login');
 Route::post('/ldaplogout', 'LDAPController@logout');
 

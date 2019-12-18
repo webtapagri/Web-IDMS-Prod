@@ -65,10 +65,10 @@
 		</thead>
 		<tfoot>
 			<tr>
-				<th>No.</th>
+				<th>Pencarian</th>
 				<th>Road Status</th>
 				<th>Kode Road Status</th>
-				<th class="text-center">Aksi</th>
+				<th class="text-center"></th>
 			</tr>
 		</tfoot>
 	</table>
@@ -224,7 +224,7 @@ function loadGrid(){
 					$(input).appendTo($(column.footer()).empty())
 					.on('change', function () {
 						column.search($(this).val(), false, false, true).draw();
-					}).attr('placeholder',' Cari');
+					}).attr('placeholder',' Cari').addClass('form-control');
 				}
 			});
 		}

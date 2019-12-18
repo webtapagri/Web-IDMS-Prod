@@ -17,13 +17,13 @@
     <!-- Ionicons -->
     <link rel="stylesheet" href="{{ asset('vendor/adminlte/vendor/Ionicons/css/ionicons.min.css') }}">
     <link rel="stylesheet" href="{{ asset('vendor/smooth-products/css/smoothproducts.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css">
+    <link rel="stylesheet" href="{{ asset('vendor/adminlte/css/toastr.css') }}">
     <link rel="stylesheet" href="{{ asset('vendor/jquery-ui/jquery-ui.min.css') }}">
 
     <link rel="stylesheet" href="{{ asset('vendor/jstree/themes/default/style.css') }}">
     @if(config('adminlte.plugins.select2'))
     <!-- Select2 -->
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.css">
+    <link rel="stylesheet" href="{{ asset('vendor/adminlte/css/select2.css') }}">
     @endif
 
 
@@ -42,7 +42,7 @@
 
     <link rel="stylesheet" href="{{ asset('vendor/adminlte/plugins/datatables/datatables.min.css') }}">
     <link rel="stylesheet" href="{{ asset('vendor/adminlte/plugins/datatables/plugins/bootstrap/datatables.bootstrap.css') }}">
-    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.3/css/responsive.bootstrap.min.css">
+    <link rel="stylesheet" href="{{ asset('vendor/adminlte/css/responsive.bootstrap.min.css') }}">
 
 
     @yield('adminlte_css')
@@ -52,7 +52,9 @@
     <![endif]-->
 
     <!-- Google Font -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+    <link rel="stylesheet" href="{{ asset('vendor/adminlte/css/css.css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic') }}">
+	
+	@include('vendor.adminlte.limitlessMode')
 </head>
 
 <body class="hold-transition @yield('body_class')">
@@ -64,7 +66,7 @@
     <script src="{{ asset('vendor/smooth-products/js/smoothproducts.js') }}"></script>
     <script src="{{ asset('vendor/adminlte/jquery-blockui/jquery.blockui.js') }}"></script>
     <script src="{{ asset('vendor/jstree/jstree.min.js') }}"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script src="{{ asset('vendor/adminlte/js/toastr.min.js') }}"></script>
     <script src="{{ asset('vendor/jquery-ui/jquery-ui.min.js') }}"></script>
     <script src="{{ asset('js/custom.js') }}"></script>
     <script src="{{ asset('js/jquery.serialize-object.js') }}"></script>
@@ -72,14 +74,14 @@
     @if(config('adminlte.plugins.select2'))
     <!-- Select2 -->
     <!-- <script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script> -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/js/select2.full.min.js"></script>
+    <script src="{{ asset('vendor/adminlte/js/select2.full.min.js') }}"></script>
     @endif
 
     @if(config('adminlte.plugins.datatables'))
     <!-- DataTables with bootstrap 3 renderer -->
-    <script src="//cdn.datatables.net/v/bs/dt-1.10.18/datatables.min.js"></script>
+    <script src="{{ asset('vendor/adminlte/js/datatables.min.js') }}"></script>
     @endif
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js"></script>
+    <script src="{{ asset('vendor/adminlte/js/moment.min.js') }}"></script>
 
     <script src="{{ asset('vendor/adminlte/plugins/datatables/app.js') }}"></script>
     <script src="{{ asset('vendor/adminlte/plugins/datatables/metronic.js') }}"></script>
@@ -91,7 +93,7 @@
 
     @if(config('adminlte.plugins.chartjs'))
     <!-- ChartJS -->
-    <script src="//cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.0/Chart.bundle.min.js"></script>
+    <script src="{{ asset('vendor/adminlte/js/Chart.bundle.min.js') }}"></script>
     @endif
 
     @yield('adminlte_js')

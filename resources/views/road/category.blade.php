@@ -19,9 +19,13 @@
 
 <div class="card">
 	<div class="card-header header-elements-inline">
+		@if($access['create']=='1')
 		<button 
 			data-toggle="modal" data-target="#modal_add"
-			type="button" class="btn bg-teal-400 btn-labeled btn-labeled-left"><b><i class="icon-plus3"></i></b> Tambah</button>
+			type="button" class="btn bg-teal-400 btn-labeled btn-labeled-left"><b><i class="icon-plus3"></i></b> 
+			Tambah
+		</button>
+		@endif
 		<div class="header-elements">
 			<div class="list-icons">
 				<a class="list-icons-item" id="reloadGrid" data-action="reload"></a>
@@ -54,7 +58,6 @@
 	<table class="table datatable-responsive">
 		<thead>
 			<tr>
-				<th>No.</th>
 				<th>Road Status</th>
 				<th>Road Category</th>
 				<th>Initial Road Category</th>
@@ -64,12 +67,11 @@
 		</thead>
 		<tfoot>
 			<tr>
-				<th>No.</th>
-				<th>Road Status</th>
+				<th>Pencarian</th>
 				<th>Road Category</th>
 				<th>Initial Road Category</th>
 				<th>Kode Road Category</th>
-				<th class="text-center">Aksi</th>
+				<th class="text-center"></th>
 			</tr>
 		</tfoot>
 	</table>
@@ -89,7 +91,7 @@
 					<div class="form-group row">
 						<label class="col-form-label col-sm-3">Road Status</label>
 						<div class="col-sm-9">
-							<select name="status_id" id="status_id" class="form-control">
+							<select name="status_id" id="rc_status_id" class="form-control">
 								<option value=""></option>
 							</select>
 						</div>
@@ -103,7 +105,7 @@
 					<div class="form-group row">
 						<label class="col-form-label col-sm-3">Road Category Code</label>
 						<div class="col-sm-9">
-							<input type="text" name="category_code" maxlength="255" placeholder="Road Category Code" class="form-control">
+							<input type="number" name="category_code" maxlength="255" placeholder="Road Category Code" class="form-control">
 						</div>
 					</div>
 					<div class="form-group row">
@@ -139,7 +141,7 @@
 					<div class="form-group row">
 						<label class="col-form-label col-sm-3">Road Status</label>
 						<div class="col-sm-9">
-							<select name="status_id" id="rc_status_id" class="form-control">
+							<select name="status_id" id="rc_status_id_edit" class="form-control">
 								<option value=""></option>
 							</select>
 						</div>
@@ -153,7 +155,7 @@
 					<div class="form-group row">
 						<label class="col-form-label col-sm-3">Road Category Code</label>
 						<div class="col-sm-9">
-							<input type="text" name="category_code" id="rc_category_code" maxlength="255" placeholder="Road Category Code" class="form-control">
+							<input type="number" name="category_code" id="rc_category_code" maxlength="255" placeholder="Road Category Code" class="form-control">
 						</div>
 					</div>
 					<div class="form-group row">
@@ -182,7 +184,7 @@ var table
 
 $(document).ready(()=>{
 	
-	// loadGrid();
+	loadGrid();
 	loadStatus()
 	
 	$('#reloadGrid').click(()=>{
@@ -194,9 +196,13 @@ $(document).ready(()=>{
 	
 });
 
-function edit(id, txt){
+function edit(id, cn, cc, ci,si){
+	console.log(si)
 	$('#rc_id').val(id)
-	$('#rc_status_id').val(txt)
+	$('#comboid_'+si).attr('selected','selected')
+	$('#rc_category_name').val(cn)
+	$('#rc_category_code').val(cc)
+	$('#rc_category_initial').val(ci)
 	$('#modal_edit').modal('show')
 	return false;
 }
@@ -242,10 +248,22 @@ function loadStatus(){
 		headers: {
 			"X-CSRF-TOKEN": "{{ csrf_token() }}"
 		}
-	}).done(function(data){
+	}).done(function(rsp){
 		
-		console.log(data)
-		
+		if(rsp.code=200){
+			var cont = rsp.contents;
+			var htm = '<option value="">-- Pilih Status --</option>'
+			var htm2 = '<option value="">-- Pilih Status --</option>'
+			$.each(cont, (k,v)=>{
+				htm += '<option value="'+v.id+'" >'+v.status_name+'</option>'
+				htm2 += '<option value="'+v.id+'" id="comboid_'+v.id+'">'+v.status_name+'</option>'
+			});
+			$('#rc_status_id').html(htm);
+			$('#rc_status_id_edit').html(htm2);
+		}else{
+			$('#rc_status_id').html('<option value="">Gagal mengambil data</option>');	
+			$('#rc_status_id_edit').html('<option value="">Gagal mengambil data</option>');	
+		}
 	}).fail(function(errors) {
 		
 		alert("Gagal Terhubung ke Server");
@@ -254,6 +272,7 @@ function loadStatus(){
 }
 
 function loadGrid(){
+	console.log('load grid')
 	$.extend( $.fn.dataTable.defaults, {
 				autoWidth: false,
 				responsive: true,
@@ -286,13 +305,13 @@ function loadGrid(){
         ],
 		initComplete: function () {
 			this.api().columns().every(function (k) {
-				if(k > 0 && k < 3){
+				if(k > 0 && k < 4){
 					var column = this;
 					var input = document.createElement("input");
 					$(input).appendTo($(column.footer()).empty())
 					.on('change', function () {
 						column.search($(this).val(), false, false, true).draw();
-					}).attr('placeholder',' Cari');
+					}).attr('placeholder',' Cari').addClass('form-control');
 				}
 			});
 		}
