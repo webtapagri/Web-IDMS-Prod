@@ -107,6 +107,7 @@ class RoadController extends Controller
 		try {
 			$RS = RoadStatus::find($request->id);
 			$RS->status_name = $request->status_name;
+			$RS->updated_by = \Session::get('user_id');
 			$RS->save();
 		}catch (\Throwable $e) {
             $msg = 'Terjadi kesalahan pada backend ->'.$e->getMessage();
