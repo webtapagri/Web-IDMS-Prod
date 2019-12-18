@@ -32,7 +32,6 @@
 	<!-- /core JS files -->
 
 	<!-- Theme JS files -->
-	@yield('theme_js')
 	
 	@if(!@$data['alt'])
 	<script src="{{ asset('limitless/assets/js/app.js') }}"></script>
@@ -89,6 +88,10 @@
 
 	</div>
 	<!-- /page content -->
+	@yield('theme_js')
+	
 	@yield('my_script')
+	
+	@include('layouts.global_script')
 </body>
 </html>
