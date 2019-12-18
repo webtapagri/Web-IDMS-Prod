@@ -176,6 +176,7 @@ return array(
     'App\\Menu' => $baseDir . '/app/Menu.php',
     'App\\Models\\RoadCategory' => $baseDir . '/app/Models/RoadCategory.php',
     'App\\Models\\RoadStatus' => $baseDir . '/app/Models/RoadStatus.php',
+    'App\\Models\\RoleAccess' => $baseDir . '/app/Models/RoleAccess.php',
     'App\\Models\\VRoadCategory' => $baseDir . '/app/Models/VRoadCategory.php',
     'App\\Module' => $baseDir . '/app/Module.php',
     'App\\MyMenuFilter' => $baseDir . '/app/MyMenuFilter.php',

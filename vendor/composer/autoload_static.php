@@ -779,6 +779,7 @@ class ComposerStaticInit4e2bc4c160c3a0d73d170af88a022287
         'App\\Menu' => __DIR__ . '/../..' . '/app/Menu.php',
         'App\\Models\\RoadCategory' => __DIR__ . '/../..' . '/app/Models/RoadCategory.php',
         'App\\Models\\RoadStatus' => __DIR__ . '/../..' . '/app/Models/RoadStatus.php',
+        'App\\Models\\RoleAccess' => __DIR__ . '/../..' . '/app/Models/RoleAccess.php',
         'App\\Models\\VRoadCategory' => __DIR__ . '/../..' . '/app/Models/VRoadCategory.php',
         'App\\Module' => __DIR__ . '/../..' . '/app/Module.php',
         'App\\MyMenuFilter' => __DIR__ . '/../..' . '/app/MyMenuFilter.php',
