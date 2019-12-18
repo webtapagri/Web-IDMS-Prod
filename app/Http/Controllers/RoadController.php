@@ -7,6 +7,10 @@ use App\Http\Controllers\Controller;
 use App\Models\RoadStatus;
 use App\Models\RoadCategory;
 use App\Models\VRoadCategory;
+use Session;
+use AccessRight;
+use App\RoleAccess;
+use API;
 use App\Http\Requests\RoadStatusRequest;
 use Yajra\DataTables\Facades\DataTables;
 use URL;
@@ -22,8 +26,10 @@ class RoadController extends Controller
 	{
             // $data = $request->session()->all();
 			// dd($data);
+		$access = AccessRight::roleaccess();
 		$title = 'Road Status list';
 		$data['ctree'] = '/master/road-status';
+		$data["access"] = (object)$access['access'];
 		return view('road.status', compact('data','title'));
 	}
 	
@@ -41,11 +47,11 @@ class RoadController extends Controller
 		
 		return response()->success('Success', $get);
 	}
+
 	
 	public function status_datatables()
 	{
 		$model = RoadStatus::whereRaw('1=1');
-		
 		return Datatables::eloquent($model)
 			->addColumn('action', '<div class="text-center">
 					<button class="btn btn-link text-primary-600" onclick="edit({{ $id }}, \'{{ $status_name }}\'); return false;">
@@ -58,6 +64,7 @@ class RoadController extends Controller
 				')
 			->rawColumns(['action'])
 			->make(true);
+
 	}
 	
 	public function add()

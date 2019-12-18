@@ -18,17 +18,19 @@
 @section('content')
 
 <div class="card">
+<?php print_r(Session::get('job_code')); ?>
 	<div class="card-header header-elements-inline">
+		@if($data['access']->create == 1)
 		<button 
 			data-toggle="modal" data-target="#modal_add"
 			type="button" class="btn bg-teal-400 btn-labeled btn-labeled-left"><b><i class="icon-plus3"></i></b> Tambah</button>
+		@endif
 		<div class="header-elements">
 			<div class="list-icons">
 				<a class="list-icons-item" id="reloadGrid" data-action="reload"></a>
 			</div>
 		</div>
 	</div>
-
 	<div class="card-body">
 		@if (\Session::has('success'))
 			<div class="alert alert-success no-border">
@@ -51,6 +53,7 @@
 			</div>
 		@endif
 	</div>
+
 	<table class="table datatable-responsive">
 		<thead>
 			<tr>
@@ -123,7 +126,7 @@
 
 				<div class="modal-footer">
 					<button type="button" class="btn btn-link" data-dismiss="modal">Tutup</button>
-					<button type="submit" class="btn bg-primary">SImpan</button>
+					<button type="submit" class="btn bg-primary">Simpan</button>
 				</div>
 			</form>
 		</div>
@@ -208,7 +211,7 @@ function loadGrid(){
         ajax: '{{ route("master.road_status_datatables") }}',
 		"order": [[0,"asc"],[2, "asc" ]],
         columns: [
-            { data: 'updated_by', 	name: 'updated_by' },
+            { data: 'id', 	name: 'id' },
             { data: 'status_name', 	name: 'status_name' },
             { data: 'status_code', 	name: 'status_code' },
             { data: 'action', 		name: 'action' },
