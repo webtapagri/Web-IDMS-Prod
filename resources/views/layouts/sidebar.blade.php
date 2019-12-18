@@ -66,7 +66,7 @@
 								<span>Dashboard</span>
 							</a>
 						</li>
-						@foreach(AccessRight::menu() as $row)
+						@foreach(session('menus') as $row)
 							<?php
 								$cls = '';
 								foreach($row["menu"] as $menu){
@@ -82,7 +82,7 @@
 								@foreach($row["menu"] as $menu)
 								<li class="nav-item ">
 									<a href="{{ url($menu->url) }}" class="nav-link {{ ( @$data['ctree'] == $menu->url ? 'active':'' ) }}">
-										{{ $menu->name }}
+										<i class="icon-arrow-right5"></i>	{{ $menu->name }}
 									</a>
 								</li>
 								@endforeach

@@ -96,6 +96,10 @@ class LDAPController extends Controller
                 Session::put('role', $profile[0]->role_name);
                 Session::put('role_id', $profile[0]->role_id);
                 Session::put('area_code', $profile[0]->area_code);
+				
+				//put menu into session
+				Session::put('menus', AccessRight::menu());
+				
 				Auth::loginUsingId($profile[0]->id);
             } 
             else 
