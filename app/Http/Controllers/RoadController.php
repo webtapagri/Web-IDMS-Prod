@@ -52,7 +52,7 @@ class RoadController extends Controller
 	
 	public function status_datatables(Request $request)
 	{
-		$access = access($request, 'master/road-category');
+		$access = access($request, 'master/road-status');
 		$model = RoadStatus::whereRaw('1=1');
 		$update_action ="";
 		$delete_action ="";
