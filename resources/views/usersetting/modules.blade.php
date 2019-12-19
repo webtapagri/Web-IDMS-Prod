@@ -64,12 +64,16 @@
                             <label class="control-label" for="name">Description</label>
                             <textarea class="form-control" name='description' id="description"></textarea>
                         </div>
-                        <div class="col-xs-6">
+                        <div class="col-xs-12">
                             <label class="control-label" for="name">Icon</label>
                             <div class="input-group">
                                 <span class="input-group-addon"><i class="" id="font-awesome-result"></i></span>
-                                <input type="text" class="form-control" placeholder="use fontawesome" name="icon" id="icon">
+                                <input type="text" class="form-control" placeholder="use icomoon" name="icon" id="icon">
                             </div>
+                        </div>
+                        <div class="col-xs-12">
+                            <label class="control-label" for="name"></label>
+                            <a href="{{ route('icons') }}" target="_blank" class="btn btn-link">Example</a>
                         </div>
                     </div>
                 </div>

@@ -132,10 +132,8 @@ class RoadController extends Controller
 	public function category(Request $request)
 	{
 		$access = access($request);
-		// dd($access);
-		$title = 'Road Category list';
 		$data['ctree'] = '/master/road-category';
-		return view('road.category', compact('access','data','title'));
+		return view('road.category', compact('access','data'));
 	}
 	
 	public function category_datatables(Request $request)
