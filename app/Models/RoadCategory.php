@@ -9,8 +9,8 @@ class RoadCategory extends Model
 {
     use SoftDeletes;
     
-	protected $table = 'tm_road_category';
 	
+	protected $table = 'TM_ROAD_CATEGORY';
     protected $dates =['deleted_at'];
 	
 	protected $fillable = [
