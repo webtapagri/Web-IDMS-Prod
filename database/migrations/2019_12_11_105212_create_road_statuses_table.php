@@ -13,7 +13,7 @@ class CreateRoadStatusesTable extends Migration
      */
     public function up()
     {
-        Schema::create('tm_road_status', function (Blueprint $table) {
+        Schema::create('TM_ROAD_STATUS', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('updated_by');
 			$table->string('status_name',255);
@@ -31,6 +31,6 @@ class CreateRoadStatusesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tm_road_status');
+        Schema::dropIfExists('TM_ROAD_STATUS');
     }
 }
