@@ -103,9 +103,6 @@ class AccessRightHelper extends ServiceProvider
     static public function roleaccess() {
         $current = str_replace(url('/') . '/', '', url()->current());
         $operation = Session::get($current);
-
-         
-
         $access = DB::table('TBM_ROLE_ACCESS as access')
         ->join('TBM_ROLE as role', "role.id", "=", "access.role_id")
         ->join("TBM_MENU as menu", "menu.id", "=", "access.menu_id")

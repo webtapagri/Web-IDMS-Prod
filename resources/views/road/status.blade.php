@@ -52,6 +52,13 @@
 				<span class="text-semibold">Error!</span> {{ $errors->first('status_name') }}
 			</div>
 		@endif
+		
+		@if ($errors->has('status_code'))
+			<div class="alert alert-warning no-border">
+				<button type="button" class="close" data-dismiss="alert"><span>&times;</span><span class="sr-only">Close</span></button>
+				<span class="text-semibold">Error!</span> {{ $errors->first('status_code') }}
+			</div>
+		@endif
 	</div>
 
 	<table class="table datatable-responsive">
@@ -91,12 +98,18 @@
 							<input type="text" name="status_name" maxlength="255" placeholder="Road status" class="form-control">
 						</div>
 					</div>
+					<div class="form-group row">
+						<label class="col-form-label col-sm-3">Road Status Code</label>
+						<div class="col-sm-9">
+							<input type="number" name="status_code" maxlength="255" placeholder="Road status code" class="form-control">
+						</div>
+					</div>
 
 				</div>
 
 				<div class="modal-footer">
 					<button type="button" class="btn btn-link" data-dismiss="modal">Tutup</button>
-					<button type="submit" class="btn bg-primary">SImpan</button>
+					<button type="submit" class="btn bg-primary">Simpan</button>
 				</div>
 			</form>
 		</div>
@@ -119,6 +132,12 @@
 						<div class="col-sm-9">
 							<input type="hidden" name="id" id="rs_id">
 							<input type="text" name="status_name" id="rs_status_name" maxlength="255" placeholder="Road status" class="form-control">
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-form-label col-sm-3">Road Status Code</label>
+						<div class="col-sm-9">
+							<input type="number" name="status_code" id="rs_status_code" maxlength="5" placeholder="Road status code" class="form-control">
 						</div>
 					</div>
 
@@ -152,9 +171,10 @@ $(document).ready(()=>{
 	
 });
 
-function edit(id, txt){
+function edit(id, txt, code){
 	$('#rs_id').val(id)
 	$('#rs_status_name').val(txt)
+	$('#rs_status_code').val(code)
 	$('#modal_edit').modal('show')
 	return false;
 }

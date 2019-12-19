@@ -58,7 +58,7 @@ class RoadController extends Controller
 		$delete_action ="";
 
 		if($access['update']==1){
-			$update_action ='<button class="btn btn-link text-primary-600" onclick="edit({{ $id }}, \'{{ $status_name }}\'); return false;">
+			$update_action ='<button class="btn btn-link text-primary-600" onclick="edit({{ $id }}, \'{{ $status_name }}\', \'{{ $status_code }}\'); return false;">
 								<i class="icon-pencil7"></i> Edit
 							</button>';
 		}
@@ -87,7 +87,11 @@ class RoadController extends Controller
 	public function save(RoadStatusRequest $request)
 	{
 		try {
-			RoadStatus::create($request->only('status_name'));
+			// RoadStatus::create($request->only('status_name'));
+			$RS = RoadStatus::create($request->input());
+			$RS->status_name = strtoupper($request->status_name);
+			$RS->status_code = $request->status_code;
+			$RS->save();
 		}catch (\Throwable $e) {
             $msg = 'Terjadi kesalahan pada backend ->'.$e->getMessage();
 			\Session::flash('error', $msg);
@@ -106,7 +110,8 @@ class RoadController extends Controller
 	{
 		try {
 			$RS = RoadStatus::find($request->id);
-			$RS->status_name = $request->status_name;
+			$RS->status_name = strtoupper($request->status_name);
+			$RS->status_code = $request->status_code;
 			$RS->updated_by = \Session::get('user_id');
 			$RS->save();
 		}catch (\Throwable $e) {
