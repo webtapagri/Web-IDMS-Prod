@@ -229,7 +229,7 @@ function del(url){
 				window.location.href = url;
 			}, 1000);
 		}else{
-			alert(2)
+			
 		}
 	});
 }
