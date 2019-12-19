@@ -9,7 +9,7 @@ class RoadStatus extends Model
 {
 	use SoftDeletes;
     
-	protected $table = 'tm_road_status';
+	protected $table = 'TM_ROAD_STATUS';
 	
     protected $dates =['deleted_at'];
 	
