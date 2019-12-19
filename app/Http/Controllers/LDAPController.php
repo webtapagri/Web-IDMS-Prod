@@ -106,15 +106,11 @@ class LDAPController extends Controller
             {
                 #2
                 $errors = new MessageBag([
-                    'password' => ['User Anda belum terdaftar di FAMS Web.']
+                    'password' => ['User Anda belum terdaftar di IDMS Web.']
                 ]);
                 
                 return Redirect::back()->withErrors($errors)->withInput(Input::except('password'));
 
-                #1
-                //echo "User Not Found!"; die();
-                //Session::put('name', $username);
-                //Session::put('role', 'GUEST');
             }
            
             AccessRight::grantAccess();
