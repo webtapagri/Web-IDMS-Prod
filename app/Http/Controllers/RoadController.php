@@ -7,6 +7,10 @@ use App\Http\Controllers\Controller;
 use App\Models\RoadStatus;
 use App\Models\RoadCategory;
 use App\Models\VRoadCategory;
+use Session;
+use AccessRight;
+use App\RoleAccess;
+use API;
 use App\Http\Requests\RoadStatusRequest;
 use App\Http\Requests\RoadCategoryRequest;
 use Yajra\DataTables\Facades\DataTables;
@@ -23,8 +27,10 @@ class RoadController extends Controller
 	{
             // $data = $request->session()->all();
 			// dd($data);
+		$access = AccessRight::roleaccess();
 		$title = 'Road Status list';
 		$data['ctree'] = '/master/road-status';
+		$data["access"] = (object)$access['access'];
 		return view('road.status', compact('data','title'));
 	}
 	
@@ -42,23 +48,34 @@ class RoadController extends Controller
 		
 		return response()->success('Success', $get);
 	}
+
 	
-	public function status_datatables()
+	public function status_datatables(Request $request)
 	{
+		$access = access($request, 'master/road-status');
 		$model = RoadStatus::whereRaw('1=1');
-		
+		$update_action ="";
+		$delete_action ="";
+
+		if($access['update']==1){
+			$update_action ='<button class="btn btn-link text-primary-600" onclick="edit({{ $id }}, \'{{ $status_name }}\'); return false;">
+								<i class="icon-pencil7"></i> Edit
+							</button>';
+		}
+		if($access['delete']==1){
+			$delete_action = '<a class="btn btn-link text-danger-600" href="" onclick="del(\''.URL::to('master/road-status-delete/{{ $id }}').'\'); return false;">
+								<i class="icon-trash"></i> Hapus
+							</a>';
+		}
+
 		return Datatables::eloquent($model)
-			->addColumn('action', '<div class="text-center">
-					<button class="btn btn-link text-primary-600" onclick="edit({{ $id }}, \'{{ $status_name }}\'); return false;">
-						<i class="icon-pencil7"></i> Edit
-					</button>
-					<a class="btn btn-link text-danger-600" href="" onclick="del(\''.URL::to('master/road-status-delete/{{ $id }}').'\'); return false;">
-						<i class="icon-trash"></i> Hapus
-					</a>
-				<div>
-				')
+			->addColumn('action', '<div class="text-center">'.
+					$update_action.
+					$delete_action.
+					'<div>')
 			->rawColumns(['action'])
 			->make(true);
+
 	}
 	
 	public function add()
@@ -90,6 +107,7 @@ class RoadController extends Controller
 		try {
 			$RS = RoadStatus::find($request->id);
 			$RS->status_name = $request->status_name;
+			$RS->updated_by = \Session::get('user_id');
 			$RS->save();
 		}catch (\Throwable $e) {
             $msg = 'Terjadi kesalahan pada backend ->'.$e->getMessage();

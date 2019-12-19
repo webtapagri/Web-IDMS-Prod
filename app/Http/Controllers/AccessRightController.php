@@ -11,6 +11,7 @@ use Session;
 use AccessRight;
 use App\RoleAccess;
 use API;
+use URL;
 
 
 class AccessRightController extends Controller

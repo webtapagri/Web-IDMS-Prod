@@ -98,4 +98,37 @@ class AccessRightHelper extends ServiceProvider
         
         return (object) $profile;
     }
+
+    
+    static public function roleaccess() {
+        $current = str_replace(url('/') . '/', '', url()->current());
+        $operation = Session::get($current);
+
+         
+
+        $access = DB::table('TBM_ROLE_ACCESS as access')
+        ->join('TBM_ROLE as role', "role.id", "=", "access.role_id")
+        ->join("TBM_MENU as menu", "menu.id", "=", "access.menu_id")
+        ->select('menu.name as name', 'menu.url as url', 'menu.sort as sort','access.create as create','access.read as read','access.update as update','access.delete as delete')
+        ->where([
+             ["role.id","=",Session::get('role_id')],
+             ["menu.url","=",'/'.$current],
+             
+        ])
+        ->orderBy("menu.sort", "ASC")
+        ->get();
+ 
+        $data = array();
+        foreach($access as $row) {
+ 
+             $data['access'] = array(
+                 "create" => $row->create,
+                 "read" => $row->read,
+                 "update" => $row->update,
+                 "delete" => $row->delete
+             );    
+        }
+ 
+        return $data;
+     }
 }
