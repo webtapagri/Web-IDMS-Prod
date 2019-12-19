@@ -9,7 +9,9 @@ Route::group(['middleware' => ['web']], function () {
 });
 
 Route::group(['middleware' => [ 'auth' ]], function () {
+	
 	Route::get('/', 'RoadController@index')->name('road');
+	Route::get('/icons', 'HomeController@icons')->name('icons');
 
 	Route::group(['prefix'=>'api/master'], function () {
 		Route::get('/road-status', 				['as'=>'master.api_road_status', 'uses'=>'RoadController@api_status']);

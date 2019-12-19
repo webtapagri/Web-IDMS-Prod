@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Home')
+@section('title', 'Road Category List')
 
 @section('theme_js')
 <script src="{{ asset('limitless/global_assets/js/plugins/tables/datatables/datatables.min.js') }}"></script>
@@ -60,8 +60,8 @@
 			<tr>
 				<th>Road Status</th>
 				<th>Road Category</th>
-				<th>Initial Road Category</th>
 				<th>Kode Road Category</th>
+				<th>Initial Road Category</th>
 				<th class="text-center">Aksi</th>
 			</tr>
 		</thead>

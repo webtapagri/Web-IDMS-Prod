@@ -32,4 +32,9 @@ class HomeController extends Controller
             return view('home')->with(compact('data'));
         }    
     }
+	
+	public function icons()
+	{
+		return view('setting.icon');
+	}
 }

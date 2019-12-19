@@ -34,7 +34,7 @@
 
     @if(config('adminlte.plugins.datatables'))
     <!-- DataTables with bootstrap 3 style -->
-    <link rel="stylesheet" href="//cdn.datatables.net/v/bs/dt-1.10.18/datatables.min.css">
+    <link rel="stylesheet" href="{{ asset('vendor/adminlte/css/datatables.min.css') }}">
     @endif
 
     <link rel="stylesheet" href="{{ asset('vendor/adminlte/plugins/datepicker/datepicker3.css') }}">
@@ -53,7 +53,7 @@
 
     <!-- Google Font -->
     <link rel="stylesheet" href="{{ asset('vendor/adminlte/css/css.css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic') }}">
-	
+	<link href="{{ asset('limitless/global_assets/css/icons/icomoon/styles.css') }}" rel="stylesheet" type="text/css">
 	@include('vendor.adminlte.limitlessMode')
 </head>
 

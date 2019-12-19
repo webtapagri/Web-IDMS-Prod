@@ -13,7 +13,7 @@ class CreateRoadCategoriesTable extends Migration
      */
     public function up()
     {
-        Schema::create('tm_road_category', function (Blueprint $table) {
+        Schema::create('TM_ROAD_CATEGORY', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('status_id');
             $table->unsignedInteger('updated_by');
@@ -33,6 +33,6 @@ class CreateRoadCategoriesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tm_road_category');
+        Schema::dropIfExists('TM_ROAD_CATEGORY');
     }
 }
