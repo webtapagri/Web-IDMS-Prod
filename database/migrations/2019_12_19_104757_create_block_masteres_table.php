@@ -13,7 +13,7 @@ class CreateBlockMasteresTable extends Migration
      */
     public function up()
     {
-        Schema::create('BLOCK_MASTER', function (Blueprint $table) {
+        Schema::create('TM_BLOCK_MASTER', function (Blueprint $table) {
             $table->increments('ID');
             $table->unsignedInteger('UPDATED_BY');
             $table->unsignedInteger('DELETED_BY');
@@ -26,7 +26,7 @@ class CreateBlockMasteresTable extends Migration
 			$table->string('AFDELING_NAME',255);
 			$table->string('BLOCK_NAME',255);
 			$table->string('PLANT',255);
-			$table->foreign('COMPANY_CODE')->references('ID')->on('tm_road_status')->onDelete('cascade');
+			// $table->foreign('COMPANY_CODE')->references('ID')->on('tm_road_status')->onDelete('cascade');
 			$table->timestamps();
 			$table->softDeletes();
         });
@@ -39,6 +39,6 @@ class CreateBlockMasteresTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('BLOCK_MASTER');
+        Schema::dropIfExists('TM_BLOCK_MASTER');
     }
 }
