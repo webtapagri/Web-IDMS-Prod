@@ -163,8 +163,12 @@ class RoadController extends Controller
 	
 	public function category_datatables(Request $request)
 	{
+		$req = $request->all();
+		$start = $req['start'];
 		$access = access($request, 'master/road-category');
-		$model = VRoadCategory::whereRaw('1=1');
+		
+		\DB::statement(\DB::raw('SET @rownum = "id"'));
+		$model = VRoadCategory::selectRaw(' @rank  := ifnull(@rank, 0)  + 1 + '.$start.' AS no, V_ROAD_CATEGORY.*')->whereRaw('1=1');
 		
 		$update_action = '';
 		$delete_action = '';

@@ -2,6 +2,10 @@
 
 @section('title', 'Road Category List')
 
+@section('theme_css')
+
+@endsection
+
 @section('theme_js')
 <script src="{{ asset('limitless/global_assets/js/plugins/tables/datatables/datatables.min.js') }}"></script>
 <script src="{{ asset('limitless/global_assets/js/plugins/tables/datatables/extensions/responsive.min.js') }}"></script>
@@ -295,6 +299,7 @@ function loadGrid(){
 
 	table = $('.datatable-responsive').DataTable( {
         processing: true,
+		'processing': true,
         serverSide: true,
         ajax: '{{ route("master.road_category_datatables") }}',
 		"order": [[0,"asc"],[2, "asc" ]],
@@ -307,6 +312,7 @@ function loadGrid(){
             { data: 'action', 		name: 'action' },
         ],
 		initComplete: function () {
+			console.log(123)
 			this.api().columns().every(function (k) {
 				if(k > 0 && k < 4){
 					var column = this;
@@ -320,11 +326,12 @@ function loadGrid(){
 		}
     } );
 	
-	// table.on( 'order.dt search.dt', function () {
+	table.on( 'order.dt search.dt page.dt', function () {
         // table.column(0, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {
             // cell.innerHTML = i+1;
         // } );
-    // } ).draw();
+		console.log('i am in')
+    } ).draw();
 }
 </script>
 @endsection

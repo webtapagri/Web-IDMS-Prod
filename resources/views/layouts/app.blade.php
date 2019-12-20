@@ -16,7 +16,8 @@
 	<link href="{{ asset('limitless/assets/css/components.min.css') }}" rel="stylesheet" type="text/css">
 	<link href="{{ asset('limitless/assets/css/colors.min.css') }}" rel="stylesheet" type="text/css">
 	<link href="{{ asset('limitless/assets/css/custom.css') }}" rel="stylesheet" type="text/css">
-	
+	<link href="{{ asset('limitless/global_assets/css/icons/fontawesome/styles.min.css') }}" rel="stylesheet" type="text/css">
+
 	@yield('theme_css')
 	
 	<!-- /global stylesheets -->
