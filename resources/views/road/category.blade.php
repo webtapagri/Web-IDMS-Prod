@@ -302,7 +302,7 @@ function loadGrid(){
 		'processing': true,
         serverSide: true,
         ajax: '{{ route("master.road_category_datatables") }}',
-		"order": [[0,"asc"],[2, "asc" ]],
+		"order": [[1,"asc"],[2, "asc" ]],
         columns: [
              { data: 'no', 	name: 'no' },
             { data: 'status_name', 	name: 'status_name' },
@@ -326,12 +326,12 @@ function loadGrid(){
 		}
     } );
 	
-	table.on( 'order.dt search.dt page.dt', function () {
+	// table.on( 'order.dt search.dt page.dt', function () {
         // table.column(0, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {
             // cell.innerHTML = i+1;
         // } );
-		console.log('i am in')
-    } ).draw();
+		// console.log('i am in')
+    // } ).draw();
 }
 </script>
 @endsection
