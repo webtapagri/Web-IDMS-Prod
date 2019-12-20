@@ -58,6 +58,7 @@
 	<table class="table datatable-responsive">
 		<thead>
 			<tr>
+				<th>No</th>
 				<th>Road Status</th>
 				<th>Road Category</th>
 				<th>Kode Road Category</th>
@@ -67,6 +68,7 @@
 		</thead>
 		<tfoot>
 			<tr>
+				<th>Pencarian</th>
 				<th>Pencarian</th>
 				<th>Road Category</th>
 				<th>Initial Road Category</th>
@@ -298,6 +300,7 @@ function loadGrid(){
 		"order": [[0,"asc"],[2, "asc" ]],
         columns: [
             { data: 'status_name', 	name: 'status_name' },
+            { data: 'status_name', 	name: 'status_name' },
             { data: 'category_name', 	name: 'category_name' },
             { data: 'category_code', 	name: 'category_code' },
             { data: 'category_initial', 	name: 'category_initial' },
@@ -305,7 +308,7 @@ function loadGrid(){
         ],
 		initComplete: function () {
 			this.api().columns().every(function (k) {
-				if(k > 0 && k < 4){
+				if(k > 0 && k < 5){
 					var column = this;
 					var input = document.createElement("input");
 					$(input).appendTo($(column.footer()).empty())
@@ -316,6 +319,12 @@ function loadGrid(){
 			});
 		}
     } );
+	
+	table.on( 'order.dt search.dt', function () {
+        table.column(0, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {
+            cell.innerHTML = i+1;
+        } );
+    } ).draw();
 }
 </script>
 @endsection
