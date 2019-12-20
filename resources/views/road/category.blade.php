@@ -308,7 +308,7 @@ function loadGrid(){
         ],
 		initComplete: function () {
 			this.api().columns().every(function (k) {
-				if(k > 0 && k < 5){
+				if(k > 0 && k < 4){
 					var column = this;
 					var input = document.createElement("input");
 					$(input).appendTo($(column.footer()).empty())
