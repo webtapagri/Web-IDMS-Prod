@@ -320,8 +320,8 @@ function loadGrid(){
 		}
     } );
 	
-	table.on( 'order.dt search.dt page.dt', function () {
-        table.column(0, {search:'applied', order:'applied', page:'applied'}).nodes().each( function (cell, i) {
+	table.on( 'order.dt search.dt', function () {
+        table.column(0, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {
             cell.innerHTML = i+1;
         } );
     } ).draw();
