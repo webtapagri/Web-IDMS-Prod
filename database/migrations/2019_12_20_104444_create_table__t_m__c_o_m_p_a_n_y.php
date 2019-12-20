@@ -17,6 +17,8 @@ class CreateTableTMCOMPANY extends Migration
             $table->increments('id');
 			$table->string('company_code',100);
 			$table->string('company_name',255);
+			$table->dateTime('valid_from')->nullable();
+			$table->dateTime('valid_to')->nullable();
             $table->timestamps();
 			$table->softDeletes();
         });
