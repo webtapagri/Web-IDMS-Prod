@@ -1,5 +1,5 @@
 @extends('adminlte::page')
-@section('title', 'FAMS - Asset Class')
+@section('title', 'IDMS - Asset Class')
 @section('content')
 <div class="row">
     <div class="col-xs-12">

@@ -1,5 +1,5 @@
 @extends('adminlte::page')
-@section('title', 'FAMS - ROLE MAP')
+@section('title', 'IDMS - ROLE MAP')
 @section('content')
 <div class="row">
     <div class="col-xs-12">

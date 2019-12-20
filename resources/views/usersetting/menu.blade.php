@@ -1,5 +1,5 @@
 @extends('adminlte::page')
-@section('title', 'FAMS - Menu')
+@section('title', 'IDMS - Menu')
 @section('content')
 
 <div class="row">
