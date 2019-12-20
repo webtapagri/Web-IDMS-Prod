@@ -11,4 +11,13 @@
 .content-wrapper {
     background-color: #eeeded;
 }
+.skin-red .main-header .navbar .sidebar-toggle:hover {
+    background-color: #f4f4f4;
+}
+.skin-red .main-header .navbar .sidebar-toggle:hover {
+    color: #000;
+}
+.skin-red .main-header .navbar .sidebar-toggle {
+    color: #000;
+}
 </style>
