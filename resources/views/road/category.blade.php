@@ -62,7 +62,7 @@
 	<table class="table datatable-responsive">
 		<thead>
 			<tr>
-				<!-- <th>No</th> -->
+				<th>No</th> 
 				<th>Road Status</th>
 				<th>Road Category</th>
 				<th>Kode Road Category</th>
@@ -72,7 +72,7 @@
 		</thead>
 		<tfoot>
 			<tr>
-				<!-- <th>Pencarian</th> -->
+				<th>Pencarian</th> 
 				<th>Pencarian</th>
 				<th>Road Category</th>
 				<th>Initial Road Category</th>
@@ -304,7 +304,7 @@ function loadGrid(){
         ajax: '{{ route("master.road_category_datatables") }}',
 		"order": [[0,"asc"],[2, "asc" ]],
         columns: [
-            // { data: 'status_name', 	name: 'status_name' },
+             { data: 'no', 	name: 'no' },
             { data: 'status_name', 	name: 'status_name' },
             { data: 'category_name', 	name: 'category_name' },
             { data: 'category_code', 	name: 'category_code' },
@@ -314,7 +314,7 @@ function loadGrid(){
 		initComplete: function () {
 			console.log(123)
 			this.api().columns().every(function (k) {
-				if(k > 0 && k < 4){
+				if(k > 0 && k < 5){
 					var column = this;
 					var input = document.createElement("input");
 					$(input).appendTo($(column.footer()).empty())
