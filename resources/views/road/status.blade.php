@@ -229,7 +229,7 @@ function loadGrid(){
         processing: true,
         serverSide: true,
         ajax: '{{ route("master.road_status_datatables") }}',
-		"order": [[0,"asc"],[2, "asc" ]],
+		"order": [[1,"asc"],[2, "asc" ]],
         columns: [
             { data: 'no', 	name: 'no' },
             { data: 'status_name', 	name: 'status_name' },
