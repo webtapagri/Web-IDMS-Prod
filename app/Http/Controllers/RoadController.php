@@ -52,8 +52,10 @@ class RoadController extends Controller
 	
 	public function status_datatables(Request $request)
 	{
+		$req = $request->all();
+		$start = $req['start'];
 		$access = access($request, 'master/road-status');
-		$model = RoadStatus::whereRaw('1=1');
+		$model = RoadStatus::selectRaw(' @rank  := ifnull(@rank, 0)  + 1 + '.$start.' AS no, TM_ROAD_STATUS.*')->whereRaw('1=1');
 		$update_action ="";
 		$delete_action ="";
 
