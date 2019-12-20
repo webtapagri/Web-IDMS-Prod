@@ -30,7 +30,8 @@ class AccessRightHelper extends ServiceProvider
                 ->where([
                     ["role.id", "=", Session::get('role_id')],
                     ["menu.module_id", "=", $row->module_id],
-                    ["access.read","=", 1]
+                    ["access.read","=", 1],
+                    ["menu.deleted","=", 0]
                 ])
                 ->orderBy("menu.sort", "ASC")
                 ->get();
