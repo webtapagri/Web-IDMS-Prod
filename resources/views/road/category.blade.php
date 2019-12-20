@@ -273,6 +273,8 @@ function loadStatus(){
 	});
 }
 
+var num = 0;
+
 function loadGrid(){
 	console.log('load grid')
 	$.extend( $.fn.dataTable.defaults, {
@@ -320,9 +322,17 @@ function loadGrid(){
 		}
     } );
 	
-	table.on( 'order.dt search.dt page', function () {
+	table.on( 'order.dt search.dt ', function () {
         table.column(0, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {
             cell.innerHTML = i+1;
+			num = i+1
+        } );
+    } ).draw();
+	
+	table.on( 'page.dt ', function () {
+        table.column(0, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {
+            cell.innerHTML = num+1;
+			num = num+1
         } );
     } ).draw();
 }
