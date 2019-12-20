@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateAfdelingesTable extends Migration
+class CreateAfdelingTable extends Migration
 {
     /**
      * Run the migrations.
@@ -15,12 +15,12 @@ class CreateAfdelingesTable extends Migration
     {
         Schema::create('TM_AFDELING', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('UPDATED_BY');
-            $table->unsignedInteger('DELETED_BY');
-			$table->string('AFDELING_CODE',255);
-			$table->string('AFDELING_NAME',255);
-			$table->string('ESTATE_CODE',255);
-			$table->foreign('ESTATE_CODE')->references('ESTATE_CODE')->on('TM_ESTATE')->onDelete('cascade');
+			$table->string('afdeling_code',100);
+			$table->string('afdeling_name',255);
+            $table->unsignedInteger('estate_id');
+            $table->unsignedInteger('updated_by');
+            $table->unsignedInteger('deleted_by');
+			$table->foreign('estate_id')->references('id')->on('TM_ESTATE')->onDelete('cascade');
             $table->timestamps();
             $table->softDeletes();
         });
