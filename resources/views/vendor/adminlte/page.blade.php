@@ -149,7 +149,7 @@
             <ul class="sidebar-menu" data-widget="tree">
                 <!-- @each('adminlte::partials.menu-item', $adminlte->menu(), 'item') -->
                 <li class="{{ (url('/') == url()->current() ? 'active':'') }}"><a style="border-top:1px solid #182225" href="{{ url('/') }}"><i class="fa fa-bar-chart"></i> <span>Dashboard</span></a></li>
-                <li class="treeview menu-open {{ AccessRight::menu() ? '':'hide'}}">
+                <li class="treeview menu-open {{ session('menus') ? '':'hide'}}">
                     <a href="#">
                         <i class="fa fa-th"></i> <span>Main Menu</span>
                         <span class="pull-right-container">
@@ -157,7 +157,7 @@
                         </span>
                     </a>
                     <ul class="treeview-menu" style="display:block">
-                        @foreach(AccessRight::menu() as $row)
+                        @foreach(session('menus') as $row)
 
                         <li class="treeview {{ (@$data['ctree_mod'] == $row['module'] ? 'active':'') }}">
                             <a href="#">
