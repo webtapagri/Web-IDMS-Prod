@@ -217,6 +217,10 @@ function loadGrid(){
 						orderable: false,
 						targets: [ 0 ]
 					},
+					{
+						searchable: false,
+						targets: [ 0 ]
+					},
 				],
 				dom: '<"datatable-header"fl><"datatable-scroll-wrap"t><"datatable-footer"ip>',
 				language: {
@@ -234,7 +238,7 @@ function loadGrid(){
         ajax: '{{ route("master.road_status_datatables") }}',
 		"order": [[1,"asc"],[2, "asc" ]],
         columns: [
-            { data: 'id', 	name: 'id' },
+            { data: 'no', 	name: 'no' },
             { data: 'status_name', 	name: 'status_name' },
             { data: 'status_code', 	name: 'status_code' },
             { data: 'action', 		name: 'action' },
