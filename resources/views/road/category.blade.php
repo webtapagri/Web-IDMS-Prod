@@ -239,6 +239,7 @@ function del(url){
 		}
 	});
 }
+
 function loadStatus(){
 	$.ajax({
 		type: 'GET',
@@ -282,11 +283,17 @@ function loadGrid(){
 	$.extend( $.fn.dataTable.defaults, {
 				autoWidth: false,
 				responsive: true,
-				columnDefs: [{ 
-					orderable: false,
-					width: 100,
-					// targets: [ 5 ]
-				}],
+				columnDefs: [
+					{ 
+						orderable: false,
+						width: 250,
+						targets: [ 5 ]
+					},
+					{ 
+						orderable: false,
+						targets: [ 0 ]
+					},
+				],
 				dom: '<"datatable-header"fl><"datatable-scroll-wrap"t><"datatable-footer"ip>',
 				language: {
 					search: '<span>Filter:</span> _INPUT_',
@@ -304,7 +311,7 @@ function loadGrid(){
         ajax: '{{ route("master.road_category_datatables") }}',
 		"order": [[1,"asc"],[2, "asc" ]],
         columns: [
-             { data: 'no', 	name: 'no' },
+            { data: 'no', 	name: 'no' },
             { data: 'status_name', 	name: 'status_name' },
             { data: 'category_name', 	name: 'category_name' },
             { data: 'category_code', 	name: 'category_code' },
