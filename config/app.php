@@ -186,6 +186,7 @@ return [
         //made by mkddr #endregion
         App\Providers\AccessRightHelper::class,
         App\Providers\ApiHelper::class,
+        App\Providers\Master::class,
 		//Intervention\Image\ImageServiceProvider::class,
 		Yajra\DataTables\DataTablesServiceProvider::class,
 		App\Providers\ResponseServiceProvider::class,
@@ -241,6 +242,7 @@ return [
         'SoapWrapper' => Artisaninweb\SoapWrapper\Facade\SoapWrapper::class,  
         'AccessRight' => App\Providers\AccessRightHelper::class,  
         'API' => App\Providers\ApiHelper::class,
+        'Master' => App\Providers\Master::class,
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
         'Pdf'  => NahidulHasan\Html2pdf\Facades\Pdf::class,
 		//'Image' => Intervention\Image\Facades\Image::class,
