@@ -103,20 +103,7 @@ class RoadController extends Controller
 	public function save(RoadStatusRequest $request)
 	{
 		try {
-			// RoadStatus::create($request->only('status_name'));
-			$scode = RoadStatus::where('status_code', '=', $request->input('status_code'))->where('deleted_at','=', null)->count();
-			$sname = RoadStatus::where('status_name', '=', $request->input('status_name'))->where('deleted_at','=', null)->count();
-			if($scode > 0){
-				throw new \Exception('Kode Status Sudah Ada!');
-			}elseif($sname > 0){
-				throw new \Exception('Nama Status Sudah Ada!');
-			}
-			else{
-				$RS = RoadStatus::create($request->input());
-				$RS->status_name = strtoupper($request->status_name);
-				$RS->status_code = $request->status_code;
-				$RS->save();
-			}
+			RoadStatus::create($request->only('id','status_name','status_code'));
 		}catch (\Throwable $e) {
             \Session::flash('error', throwable_msg($e));
             return redirect()->back()->withInput($request->input());
@@ -132,20 +119,11 @@ class RoadController extends Controller
 	public function update(RoadStatusRequest $request)
 	{
 		try {
-			$scode = RoadStatus::where('status_code', '=', $request->input('status_code'))->where('deleted_at','=', null)->count();
-			$sname = RoadStatus::where('status_name', '=', $request->input('status_name'))->where('deleted_at','=', null)->count();
-			if($scode > 0){
-				throw new \Exception('Kode Status Sudah Ada!');
-			}elseif($sname > 0){
-				throw new \Exception('Nama Status Sudah Ada!');
-			}
-			else{
 				$RS = RoadStatus::find($request->id);
 				$RS->status_name = strtoupper($request->status_name);
 				$RS->status_code = $request->status_code;
 				$RS->updated_by = \Session::get('user_id');
 				$RS->save();
-			}
 		}catch (\Throwable $e) {
             \Session::flash('error', throwable_msg($e));
             return redirect()->back()->withInput($request->input());
