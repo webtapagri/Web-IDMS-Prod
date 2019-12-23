@@ -118,7 +118,7 @@ class RoadController extends Controller
 				$RS->save();
 			}
 		}catch (\Throwable $e) {
-			$msg = 'Terjadi kesalahan pada backend ->'.$e->getMessage();
+			$msg = 'Terjadi kesalahan. '.$e->getMessage();
 			\Session::flash('error', $msg);
             return redirect()->back()->withInput($request->input());
         }catch (\Exception $e) {
