@@ -46,17 +46,14 @@
 			</div>
 		@endif
 		
-		@if ($errors->has('status_name'))
-			<div class="alert alert-warning no-border">
-				<button type="button" class="close" data-dismiss="alert"><span>&times;</span><span class="sr-only">Close</span></button>
-				<span class="text-semibold">Error!</span> {{ $errors->first('status_name') }}
-			</div>
-		@endif
-		
-		@if ($errors->has('status_code'))
-			<div class="alert alert-warning no-border">
-				<button type="button" class="close" data-dismiss="alert"><span>&times;</span><span class="sr-only">Close</span></button>
-				<span class="text-semibold">Error!</span> {{ $errors->first('status_code') }}
+		@if ($errors->any())
+			<div class="alert alert-danger no-border">
+				Terdapat error:
+				<ul>
+					@foreach ($errors->all() as $error)
+						<li>{{ $error }}</li>
+					@endforeach
+				</ul>
 			</div>
 		@endif
 	</div>
