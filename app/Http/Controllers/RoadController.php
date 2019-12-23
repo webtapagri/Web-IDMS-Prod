@@ -85,17 +85,40 @@ class RoadController extends Controller
 		$title = 'Tambah Road Status';
 		return view('road.status_add', compact('title'));
 	}
+
+	function validateName($status_code) 
+    {
+        $data = DB::table('TM_ROAD_STATUS')
+            ->select('id', 'name as text')
+            ->where('status_code', $status_code)
+            ->get();
+
+        if (count($data > 0)) {
+            return false;
+        } else {
+            return true;
+        }
+    }
 	
 	public function save(RoadStatusRequest $request)
 	{
 		try {
 			// RoadStatus::create($request->only('status_name'));
-			$RS = RoadStatus::create($request->input());
-			$RS->status_name = strtoupper($request->status_name);
-			$RS->status_code = $request->status_code;
-			$RS->save();
+			$scode = RoadStatus::where('status_code', '=', $request->input('status_code'))->where('deleted_at','=', null)->count();
+			$sname = RoadStatus::where('status_name', '=', $request->input('status_name'))->where('deleted_at','=', null)->count();
+			if($scode > 0){
+				throw new \Exception('Kode Status Sudah Ada!');
+			}elseif($sname > 0){
+				throw new \Exception('Nama Status Sudah Ada!');
+			}
+			else{
+				$RS = RoadStatus::create($request->input());
+				$RS->status_name = strtoupper($request->status_name);
+				$RS->status_code = $request->status_code;
+				$RS->save();
+			}
 		}catch (\Throwable $e) {
-            $msg = 'Terjadi kesalahan pada backend ->'.$e->getMessage();
+			$msg = 'Terjadi kesalahan pada backend ->'.$e->getMessage();
 			\Session::flash('error', $msg);
             return redirect()->back()->withInput($request->input());
         }catch (\Exception $e) {
@@ -111,11 +134,20 @@ class RoadController extends Controller
 	public function update(RoadStatusRequest $request)
 	{
 		try {
-			$RS = RoadStatus::find($request->id);
-			$RS->status_name = strtoupper($request->status_name);
-			$RS->status_code = $request->status_code;
-			$RS->updated_by = \Session::get('user_id');
-			$RS->save();
+			$scode = RoadStatus::where('status_code', '=', $request->input('status_code'))->where('deleted_at','=', null)->count();
+			$sname = RoadStatus::where('status_name', '=', $request->input('status_name'))->where('deleted_at','=', null)->count();
+			if($scode > 0){
+				throw new \Exception('Kode Status Sudah Ada!');
+			}elseif($sname > 0){
+				throw new \Exception('Nama Status Sudah Ada!');
+			}
+			else{
+				$RS = RoadStatus::find($request->id);
+				$RS->status_name = strtoupper($request->status_name);
+				$RS->status_code = $request->status_code;
+				$RS->updated_by = \Session::get('user_id');
+				$RS->save();
+			}
 		}catch (\Throwable $e) {
             $msg = 'Terjadi kesalahan pada backend ->'.$e->getMessage();
 			\Session::flash('error', $msg);
