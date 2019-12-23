@@ -19,7 +19,7 @@ class RoadStatus extends Model
 		'updated_by',
 	];
 
-	public function setCategoryNameAttribute($value)
+	public function setStatusNameAttribute($value)
     {
         $this->attributes['status_name'] = strtoupper($value);
     }
