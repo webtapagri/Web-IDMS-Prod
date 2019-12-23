@@ -223,7 +223,7 @@ class RoadController extends Controller
 			->make(true);
 	}
 	
-	public function category_save(Request $request)
+	public function category_save(RoadCategoryRequest $request)
 	{
 		try {
 			RoadCategory::create($request->only('status_id','category_name','category_code','category_initial'));

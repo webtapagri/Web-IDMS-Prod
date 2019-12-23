@@ -51,11 +51,14 @@
 				<span class="text-semibold">Error!</span> {{ \Session::get('error') }}
 			</div>
 		@endif
-		
-		@if ($errors->has('status_name'))
-			<div class="alert alert-warning no-border">
-				<button type="button" class="close" data-dismiss="alert"><span>&times;</span><span class="sr-only">Close</span></button>
-				<span class="text-semibold">Error!</span> {{ $errors->first('status_name') }}
+		@if ($errors->any())
+			<div class="alert alert-danger no-border">
+				Terdapat error:
+				<ul>
+					@foreach ($errors->all() as $error)
+						<li>{{ $error }}</li>
+					@endforeach
+				</ul>
 			</div>
 		@endif
 	</div>
@@ -309,7 +312,7 @@ function loadGrid(){
 		'processing': true,
         serverSide: true,
         ajax: '{{ route("master.road_category_datatables") }}',
-		"order": [[1,"asc"],[2, "asc" ]],
+		// "order": [[1,"asc"],[2, "asc" ]],
         columns: [
             { data: 'no', 	name: 'no' },
             { data: 'status_name', 	name: 'status_name' },

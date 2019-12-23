@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class RoadCategoryRequest extends FormRequest
 {
@@ -24,8 +25,38 @@ class RoadCategoryRequest extends FormRequest
     public function rules()
     {
         return [
-            'category_name' => 'required',
-            'category_initial' => 'required',
+            'category_name' => [
+				'required', 
+				Rule::unique('TM_ROAD_CATEGORY')->where(function ($query) {
+					return $query->where('status_id',$this->get('status_id'));
+				})
+			],
+            'category_code' => [
+				'required', 
+				Rule::unique('TM_ROAD_CATEGORY')->where(function ($query) {
+					return $query->where('status_id',$this->get('status_id'));
+				}),
+				'numeric'
+			],
+            'category_initial' => 'required|unique:TM_ROAD_CATEGORY',
+            'status_id' => 'required',
         ];
     }
+	
+	public function messages()
+	{
+		// return [
+			// 'category_name.required' => 'Category Name harus diisi',
+			// 'category_initial.required'  => 'Category Initial harus diisi',
+			// 'category_code.required'  => 'Category Code harus diisi',
+			// 'category_code.numeric'  => 'Category Code harus berupa angka',
+			// 'status_id.required'  => 'Status harus diisi',
+		// ];
+		
+		return [
+			'required'  => 'Harap bagian :attribute di isi.',
+			'unique'    => ':attribute sudah digunakan',
+		];
+	}
+	
 }
