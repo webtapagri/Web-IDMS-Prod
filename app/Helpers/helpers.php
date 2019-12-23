@@ -19,7 +19,7 @@ if (! function_exists('clean')) {
 if (!function_exists('throwable_msg')) {
 	function throwable_msg($e)
 	{
-		return 'Terjadi kesalahan pada backend -> '.substr($e->getMessage(),0,500);
+		return 'Terjadi kesalahan. -> '.substr($e->getMessage(),0,500);
 	}
 }
 

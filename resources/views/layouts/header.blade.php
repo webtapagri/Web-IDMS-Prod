@@ -26,7 +26,7 @@
 			</div>	
 
 			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-mobile">
-				<i class="icon-tree5"></i>
+				<i class="icon-circle-down2"></i>
 			</button>
 
 			<button class="navbar-toggler sidebar-mobile-main-toggle" type="button">
