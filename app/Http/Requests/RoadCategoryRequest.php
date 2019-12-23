@@ -40,7 +40,12 @@ class RoadCategoryRequest extends FormRequest
 				}),
 				'numeric'
 			],
-            'category_initial' => 'required|unique:TM_ROAD_CATEGORY',
+			'category_initial' => [
+				'required', 
+				Rule::unique('TM_ROAD_CATEGORY')->where(function ($query) {
+					return $query->whereRaw('deleted_at is null');
+				})
+			],
             'status_id' => 'required',
         ];
     }
