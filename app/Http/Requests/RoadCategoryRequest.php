@@ -28,13 +28,15 @@ class RoadCategoryRequest extends FormRequest
             'category_name' => [
 				'required', 
 				Rule::unique('TM_ROAD_CATEGORY')->where(function ($query) {
-					return $query->where('status_id',$this->get('status_id'));
+					return $query->where('status_id',$this->get('status_id'))
+								 ->whereRaw('deleted_at is null');
 				})
 			],
             'category_code' => [
 				'required', 
 				Rule::unique('TM_ROAD_CATEGORY')->where(function ($query) {
-					return $query->where('status_id',$this->get('status_id'));
+					return $query->where('status_id',$this->get('status_id'))
+								 ->whereRaw('deleted_at is null');
 				}),
 				'numeric'
 			],
