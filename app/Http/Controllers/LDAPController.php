@@ -52,7 +52,9 @@ class LDAPController extends Controller
                 "username"=> $username,
                 "password"=> $password,
             );
-
+			
+			try{
+			
             $service = API::exec(array(
                 'request' => 'POST',
                 'host' => 'ldap',
@@ -61,6 +63,16 @@ class LDAPController extends Controller
             ));
 
             $data = $service;
+			
+			}catch (\Throwable $e) {
+				$msg = 'Terjadi kesalahan pada backend ->'.$e->getMessage();
+				\Session::flash('error', $msg);
+				return redirect()->back()->withInput($request->input());
+			}catch (\Exception $e) {
+				$msg = 'Terjadi kesalahan sistem silahkan tunggu beberapa saat dan ulangi kembali. Error messages ->'.$e->getMessage();
+				\Session::flash('error', $msg);
+				return redirect()->back()->withInput($request->input());
+			}
         }
 
         //echo "1<pre>"; print_r($data); die();
