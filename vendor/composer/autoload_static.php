@@ -215,6 +215,7 @@ class ComposerStaticInit4e2bc4c160c3a0d73d170af88a022287
         ),
         'F' => 
         array (
+            'Firebase\\JWT\\' => 13,
             'Fideloper\\Proxy\\' => 16,
             'Faker\\' => 6,
         ),
@@ -488,6 +489,10 @@ class ComposerStaticInit4e2bc4c160c3a0d73d170af88a022287
         'GuzzleHttp\\' => 
         array (
             0 => __DIR__ . '/..' . '/guzzlehttp/guzzle/src',
+        ),
+        'Firebase\\JWT\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/firebase/php-jwt/src',
         ),
         'Fideloper\\Proxy\\' => 
         array (
@@ -775,6 +780,7 @@ class ComposerStaticInit4e2bc4c160c3a0d73d170af88a022287
         'App\\Http\\Middleware\\VerifyCsrfToken' => __DIR__ . '/../..' . '/app/Http/Middleware/VerifyCsrfToken.php',
         'App\\Http\\Requests\\RoadCategoryRequest' => __DIR__ . '/../..' . '/app/Http/Requests/RoadCategoryRequest.php',
         'App\\Http\\Requests\\RoadStatusRequest' => __DIR__ . '/../..' . '/app/Http/Requests/RoadStatusRequest.php',
+        'App\\LDAP' => __DIR__ . '/../..' . '/app/LDAP.php',
         'App\\Mail\\FamsEmail' => __DIR__ . '/../..' . '/app/Mail/FamsEmail.php',
         'App\\Menu' => __DIR__ . '/../..' . '/app/Menu.php',
         'App\\Models\\RoadCategory' => __DIR__ . '/../..' . '/app/Models/RoadCategory.php',
@@ -1714,6 +1720,10 @@ class ComposerStaticInit4e2bc4c160c3a0d73d170af88a022287
         'Faker\\ValidGenerator' => __DIR__ . '/..' . '/fzaninotto/faker/src/Faker/ValidGenerator.php',
         'Fideloper\\Proxy\\TrustProxies' => __DIR__ . '/..' . '/fideloper/proxy/src/TrustProxies.php',
         'Fideloper\\Proxy\\TrustedProxyServiceProvider' => __DIR__ . '/..' . '/fideloper/proxy/src/TrustedProxyServiceProvider.php',
+        'Firebase\\JWT\\BeforeValidException' => __DIR__ . '/..' . '/firebase/php-jwt/src/BeforeValidException.php',
+        'Firebase\\JWT\\ExpiredException' => __DIR__ . '/..' . '/firebase/php-jwt/src/ExpiredException.php',
+        'Firebase\\JWT\\JWT' => __DIR__ . '/..' . '/firebase/php-jwt/src/JWT.php',
+        'Firebase\\JWT\\SignatureInvalidException' => __DIR__ . '/..' . '/firebase/php-jwt/src/SignatureInvalidException.php',
         'GuzzleHttp\\Client' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/Client.php',
         'GuzzleHttp\\ClientInterface' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/ClientInterface.php',
         'GuzzleHttp\\Cookie\\CookieJar' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/Cookie/CookieJar.php',
