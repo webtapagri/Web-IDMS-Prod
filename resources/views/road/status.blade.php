@@ -237,7 +237,7 @@ function loadGrid(){
         ajax: '{{ route("master.road_status_datatables") }}',
 		"order": [[1,"asc"],[2, "asc" ]],
         columns: [
-            { data: 'no', 	name: 'no' },
+            { data: 'id', 	name: 'id' },
             { data: 'status_name', 	name: 'status_name' },
             { data: 'status_code', 	name: 'status_code' },
             { data: 'action', 		name: 'action' },
