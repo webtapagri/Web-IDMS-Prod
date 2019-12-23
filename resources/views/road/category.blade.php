@@ -297,6 +297,10 @@ function loadGrid(){
 						orderable: false,
 						targets: [ 0 ]
 					},
+					{ 
+						"searchable": false, 
+						"targets": 0 
+					},
 				],
 				dom: '<"datatable-header"fl><"datatable-scroll-wrap"t><"datatable-footer"ip>',
 				language: {
