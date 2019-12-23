@@ -194,7 +194,7 @@ class RoadController extends Controller
 		$req = $request->all();
 		$start = $req['start'];
 		$access = access($request, 'master/road-category');
-		$model = VRoadCategory::selectRaw(' @rank  := ifnull(@rank, 0)  + 1 + '.$start.' AS no, V_ROAD_CATEGORY.*')->whereRaw('1=1');
+		$model = VRoadCategory::selectRaw(' @rank  := ifnull(@rank, '.$start.')  + 1  AS no, V_ROAD_CATEGORY.*')->whereRaw('1=1');
 		
 		$update_action = '';
 		$delete_action = '';
