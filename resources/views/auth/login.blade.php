@@ -23,6 +23,9 @@
 		background: url({{ asset('limitless/global_assets/images/backgrounds/user_bg1.png') }}) no-repeat;
 		background-size: cover;
 	}
+	span.help-block {
+		color: red !important;
+	}
 	</style>
 	
 	<!-- /global stylesheets -->
@@ -83,7 +86,7 @@
 									</div>
 									@if ($errors->has('email'))
 										<span class="help-block">
-											<strong>{{ $errors->first('email') }}</strong>
+											{{ $errors->first('email') }}
 										</span>
 									@endif
 								</div>
@@ -95,7 +98,7 @@
 									</div>
 									@if ($errors->has('password'))
 										<span class="help-block">
-											<strong>{{ $errors->first('password') }}</strong>
+											{{ $errors->first('password') }}
 										</span>
 									@endif
 								</div>
