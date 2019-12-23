@@ -210,11 +210,17 @@ function loadGrid(){
 	$.extend( $.fn.dataTable.defaults, {
 				autoWidth: false,
 				responsive: true,
-				columnDefs: [{ 
-					orderable: false,
-					width: 100,
-					// targets: [ 5 ]
-				}],
+				columnDefs: [
+					{ 
+						orderable: false,
+						width: 250,
+						targets: [ 3 ]
+					},
+					{ 
+						orderable: false,
+						targets: [ 0 ]
+					},
+				],
 				dom: '<"datatable-header"fl><"datatable-scroll-wrap"t><"datatable-footer"ip>',
 				language: {
 					search: '<span>Filter:</span> _INPUT_',
