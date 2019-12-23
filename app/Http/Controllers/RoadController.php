@@ -118,12 +118,10 @@ class RoadController extends Controller
 				$RS->save();
 			}
 		}catch (\Throwable $e) {
-			$msg = 'Terjadi kesalahan. '.$e->getMessage();
-			\Session::flash('error', $msg);
+            \Session::flash('error', throwable_msg($e));
             return redirect()->back()->withInput($request->input());
         }catch (\Exception $e) {
-            $msg = 'Terjadi kesalahan sistem silahkan tunggu beberapa saat dan ulangi kembali. Error messages ->'.$e->getMessage();
-			\Session::flash('error', $msg);
+            \Session::flash('error', exception_msg($e));
             return redirect()->back()->withInput($request->input());
 		}
 		
@@ -149,12 +147,10 @@ class RoadController extends Controller
 				$RS->save();
 			}
 		}catch (\Throwable $e) {
-            $msg = 'Terjadi kesalahan pada backend ->'.$e->getMessage();
-			\Session::flash('error', $msg);
+            \Session::flash('error', throwable_msg($e));
             return redirect()->back()->withInput($request->input());
         }catch (\Exception $e) {
-            $msg = 'Terjadi kesalahan sistem silahkan tunggu beberapa saat dan ulangi kembali. Error messages ->'.$e->getMessage();
-			\Session::flash('error', $msg);
+            \Session::flash('error', exception_msg($e));
             return redirect()->back()->withInput($request->input());
 		}
 		
@@ -171,13 +167,11 @@ class RoadController extends Controller
 			$data->save();
 			
 		}catch (\Throwable $e) {
-            $msg = 'Terjadi kesalahan pada backend ->'.$e->getMessage();
-			\Session::flash('error', $msg);
-            return redirect()->back();
+            \Session::flash('error', throwable_msg($e));
+            return redirect()->back()->withInput($request->input());
         }catch (\Exception $e) {
-            $msg = 'Terjadi kesalahan sistem silahkan tunggu beberapa saat dan ulangi kembali. Error messages ->'.$e->getMessage();
-			\Session::flash('error', $msg);
-            return redirect()->back();
+            \Session::flash('error', exception_msg($e));
+            return redirect()->back()->withInput($request->input());
 		}
 		
 		\Session::flash('success', 'Berhasil menghapus data');
@@ -234,12 +228,10 @@ class RoadController extends Controller
 		try {
 			RoadCategory::create($request->only('status_id','category_name','category_code','category_initial'));
 		}catch (\Throwable $e) {
-            $msg = 'Terjadi kesalahan pada backend ->'.$e->getMessage();
-			\Session::flash('error', $msg);
+            \Session::flash('error', throwable_msg($e));
             return redirect()->back()->withInput($request->input());
         }catch (\Exception $e) {
-            $msg = 'Terjadi kesalahan sistem silahkan tunggu beberapa saat dan ulangi kembali. Error messages ->'.$e->getMessage();
-			\Session::flash('error', $msg);
+            \Session::flash('error', exception_msg($e));
             return redirect()->back()->withInput($request->input());
 		}
 		
@@ -257,12 +249,10 @@ class RoadController extends Controller
 			$RS->category_initial = $request->category_initial;
 			$RS->save();
 		}catch (\Throwable $e) {
-            $msg = 'Terjadi kesalahan pada backend ->'.$e->getMessage();
-			\Session::flash('error', $msg);
+            \Session::flash('error', throwable_msg($e));
             return redirect()->back()->withInput($request->input());
         }catch (\Exception $e) {
-            $msg = 'Terjadi kesalahan sistem silahkan tunggu beberapa saat dan ulangi kembali. Error messages ->'.$e->getMessage();
-			\Session::flash('error', $msg);
+            \Session::flash('error', exception_msg($e));
             return redirect()->back()->withInput($request->input());
 		}
 		
@@ -277,16 +267,11 @@ class RoadController extends Controller
 			$data->deleted_at = Carbon::now();
 			$data->updated_by = \Session::get('user_id');
 			$data->save();
-			
-			
-			
 		}catch (\Throwable $e) {
-            $msg = 'Terjadi kesalahan pada backend ->'.$e->getMessage();
-			\Session::flash('error', $msg);
+            \Session::flash('error', throwable_msg($e));
             return redirect()->back();
         }catch (\Exception $e) {
-            $msg = 'Terjadi kesalahan sistem silahkan tunggu beberapa saat dan ulangi kembali. Error messages ->'.$e->getMessage();
-			\Session::flash('error', $msg);
+            \Session::flash('error', exception_msg($e));
             return redirect()->back();
 		}
 		
