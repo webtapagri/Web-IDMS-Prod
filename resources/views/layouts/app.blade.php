@@ -5,7 +5,7 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-	<title>@yield('title') - {{ env('APP_NAME') }} {{ config('app.name') }}</title>
+	<title>@yield('title') - {{ env('APP_NAME') }}</title>
 
 	<!-- Global stylesheets -->
 	<link href="{{ asset('limitless/global_assets/css/css.css?family=Roboto:400,300,100,500,700,900') }}" rel="stylesheet" type="text/css">
@@ -16,7 +16,8 @@
 	<link href="{{ asset('limitless/assets/css/components.min.css') }}" rel="stylesheet" type="text/css">
 	<link href="{{ asset('limitless/assets/css/colors.min.css') }}" rel="stylesheet" type="text/css">
 	<link href="{{ asset('limitless/assets/css/custom.css') }}" rel="stylesheet" type="text/css">
-	
+	<link href="{{ asset('limitless/global_assets/css/icons/fontawesome/styles.min.css') }}" rel="stylesheet" type="text/css">
+
 	@yield('theme_css')
 	
 	<!-- /global stylesheets -->
