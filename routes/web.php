@@ -15,6 +15,7 @@ Route::group(['middleware' => [ 'auth' ]], function () {
 
 	Route::group(['prefix'=>'api/master'], function () {
 		Route::get('/road-status', 				['as'=>'master.api_road_status', 'uses'=>'RoadController@api_status']);
+		Route::get('/sync-afd', 				['as'=>'master.api_sync_afd', 'uses'=>'MasterController@sync_afd']);
 		
 	});
 
@@ -32,6 +33,8 @@ Route::group(['middleware' => [ 'auth' ]], function () {
 		Route::post('/road-category-update', 		['as'=>'master.road_category_update', 'uses'=>'RoadController@category_update']);
 		Route::get('/road-category-delete/{id}', 	['as'=>'master.road_category_delete', 'uses'=>'RoadController@category_delete']);
 	});
+	
+	
 });
 
 
