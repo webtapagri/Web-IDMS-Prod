@@ -8,6 +8,8 @@ use \Firebase\JWT\JWT;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ServerException;
+use App\Models\Token;
+use Carbon\Carbon;
 
 class Master extends ServiceProvider
 {
@@ -191,20 +193,33 @@ class Master extends ServiceProvider
 	
     static function token()
 	{
-		$key = "T4pagri123#";
-		$payload = array(
-			"USERNAME" => "muhammad.sanjaya",
-			"NIK" => "00003045",
-			"JOB_CODE" => "ASISTEN LAPANGAN",
-			"USER_AUTH_CODE" => "0217",
-			"REFFERENCE_ROLE" => "AFD_CODE",
-			"USER_ROLE" => "ASISTEN_LAPANGAN",
-			"LOCATION_CODE" => "4123V",
-		);
+		$cekToken = Token::whereRaw(' valid_until >= CURDATE() ')->first();
 		
-		$jwt = JWT::encode($payload, $key);
+		if($cekToken){
+			return $cekToken->token;
 		
-		return $jwt;
+		}else{
+			$key = "T4pagri123#";
+			$payload = array(
+				"USERNAME" => "muhammad.sanjaya",
+				"NIK" => "00003045",
+				"JOB_CODE" => "ASISTEN LAPANGAN",
+				"USER_AUTH_CODE" => "0217",
+				"REFFERENCE_ROLE" => "AFD_CODE",
+				"USER_ROLE" => "ASISTEN_LAPANGAN",
+				"LOCATION_CODE" => "4123V",
+			);
+			
+			$jwt = JWT::encode($payload, $key);
+			
+			Token::create([
+				'token'=>$jwt,
+				'valid_until'=>Carbon::now()->addDay(7),
+			]);
+			
+			return $jwt;	
+		}
+		
 		// print_r($jwt);die;	
 		// $decoded = JWT::decode( $access_token, $key, array( 'HS256' ) );
 		// $decoded = json_decode( json_encode( $decoded ), true );

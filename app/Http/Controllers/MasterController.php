@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Master;
 use App\Models\Company;
+use App\Models\Estate;
 
 class MasterController extends Controller
 {
@@ -33,17 +34,30 @@ class MasterController extends Controller
 					->get();
 					
 		// return $RestAPI;
-		
-		foreach($RestAPI['data'] as $data){
-			
-			$afd = Afdeling::firstOrNew(array('region_code' => $data['REGION_CODE'],'company_code' => $data['COMP_CODE'],'afdeling_code' => $data['AFD_CODE']));
-			$afd->afdeling_name = $data['AFD_NAME'];
-			$afd->werks = $data['WERKS'];
-			$afd->werks_afd_code = $data['WERKS_AFD_CODE'];
-			$afd->save();
-			
+		if(count($RestAPI['data']) > 0 ){
+			foreach($RestAPI['data'] as $data){
+				$est = Estate::where('estate_code',$data['EST_CODE'])->first();
+					if($est){
+						try {
+								$afd = Afdeling::firstOrNew(array('estate_id' => $est['id'],'afdeling_code' => $data['AFD_CODE']));
+								$afd->region_code = $data['REGION_CODE'];
+								$afd->company_code = $data['COMP_CODE'];
+								$afd->afdeling_name = $data['AFD_NAME'];
+								$afd->werks = $data['WERKS'];
+								$afd->werks_afd_code = $data['WERKS_AFD_CODE'];
+								$afd->save();
+						}catch (\Throwable $e) {
+							//
+						}catch (\Exception $e) {
+							//
+						}
+					}else{
+						// masuk log  COMP_CODE  not found
+					}
+				
+			}
 		}
-					
+						
 		return 1;
 		
 	}
@@ -60,17 +74,32 @@ class MasterController extends Controller
 					->get();
 					
 		// return $RestAPI;
-		
-		foreach($RestAPI['data'] as $data){
-			
-			$afd = Block::firstOrNew(array('region_code' => $data['REGION_CODE'],'company_code' => $data['COMP_CODE'],'afdeling_code' => $data['AFD_CODE'],'block_code' => $data['BLOCK_CODE']));
-			$afd->block_name = $data['BLOCK_NAME'];
-			$afd->werks = $data['WERKS'];
-			$afd->werks_afd_block_code = $data['WERKS_AFD_BLOCK_CODE'];
-			$afd->latitude_block = $data['LATITUDE_BLOCK'];
-			$afd->longitude_block = $data['LONGITUDE_BLOCK'];
-			$afd->save();
-			
+		if(count($RestAPI['data']) > 0 ){
+			foreach($RestAPI['data'] as $data){
+
+				$afd = Afdeling::where('afdeling_code',$data['AFD_CODE'])->first();
+					if($afd){
+						try {
+								$block = Block::firstOrNew(array('afdeling_id' => $afd['id'],'block_code' => $data['BLOCK_CODE']));
+								$block->block_name = $data['BLOCK_NAME'];
+								$block->region_code = $data['REGION_CODE'];
+								$block->company_code = $data['COMP_CODE'];
+								$block->estate_code = $data['EST_CODE'];
+								$block->werks = $data['WERKS'];
+								$block->werks_afd_block_code = $data['WERKS_AFD_BLOCK_CODE'];
+								$block->latitude_block = $data['LATITUDE_BLOCK'];
+								$block->longitude_block = $data['LONGITUDE_BLOCK'];
+								$block->save();
+						}catch (\Throwable $e) {
+							//
+						}catch (\Exception $e) {
+							//
+						}
+					}else{
+						// masuk log  COMP_CODE  not found
+					}
+				
+			}
 		}
 					
 		return 1;
@@ -88,61 +117,65 @@ class MasterController extends Controller
 						'Authorization' => 'Bearer '.$token
 					])
 					->get();
-		
-		foreach($RestAPI['data'] as $data){
-		
-			$comp = Company::firstOrNew(array('region_code' => $data['REGION_CODE'],'company_code' => $data['COMP_CODE']));
-			$comp->company_name = $data['COMP_NAME'];
-			$comp->address = $data['ADDRESS'];
-			$comp->national = $data['NATIONAL'];
-			$comp->save();
-			
+		if(count($RestAPI['data']) > 0 ){
+			foreach($RestAPI['data'] as $data){
+				try {
+					$comp = Company::firstOrNew(array('region_code' => $data['REGION_CODE'],'company_code' => $data['COMP_CODE']));
+					$comp->company_name = $data['COMP_NAME'];
+					$comp->address = $data['ADDRESS'];
+					$comp->national = $data['NATIONAL'];
+					$comp->save();
+				}catch (\Throwable $e) {
+					//
+				}catch (\Exception $e) {
+					//
+				}
+			}
+				
 		}
 					
 		return 1;
 	}
 	
-
-	
-	public function afdeling(Request $request)
+	public function sync_est()
 	{
-            // $data = $request->session()->all();
-			// dd($data);
-		$access = AccessRight::roleaccess();
-		$title = 'Afdeling list';
-		$data['ctree'] = '/master/afdeling';
-		$data["access"] = (object)$access['access'];
-		return view('master.afdeling', compact('data','title'));
-	}
-
-	public function afdeling_datatables(Request $request)
-	{
-		$req = $request->all();
-		$start = $req['start'];
-		$access = access($request, 'master/road-status');
-		$model = RoadStatus::selectRaw(' @rank  := ifnull(@rank, '.$start.')  + 1 AS no, TM_ROAD_STATUS.*')->whereRaw('1=1');
-		$update_action ="";
-		$delete_action ="";
-
-		if($access['update']==1){
-			$update_action ='<button class="btn btn-link text-primary-600" onclick="edit({{ $id }}, \'{{ $status_name }}\', \'{{ $status_code }}\'); return false;">
-								<i class="icon-pencil7"></i> Edit
-							</button>';
-		}
-		if($access['delete']==1){
-			$delete_action = '<a class="btn btn-link text-danger-600" href="" onclick="del(\''.URL::to('master/road-status-delete/{{ $id }}').'\'); return false;">
-								<i class="icon-trash"></i> Hapus
-							</a>';
-		}
-
-		return Datatables::eloquent($model)
-			->addColumn('action', '<div class="text-center">'.
-					$update_action.
-					$delete_action.
-					'<div>')
-			->rawColumns(['action'])
-			->make(true);
-
+		$Master = new Master;
+		$token = $Master->token();
+		$RestAPI = $Master
+					->setEndpoint('est/all')
+					->setHeaders([
+						'Authorization' => 'Bearer '.$token
+					])
+					->get();
+		if(count($RestAPI['data']) > 0){
+			foreach($RestAPI['data'] as $data){
+				
+				$comp = Company::where('company_code',$data['COMP_CODE'])->first();
+				
+				if($comp){
+					try {
+						$est = Estate::firstOrNew(array('company_id' => $comp['id'],'estate_code' => $data['EST_CODE']));
+						$est->estate_name 	= $data['EST_NAME'];
+						$est->werks 		= $data['WERKS'];
+						$est->city 			= $data['CITY'];
+						$est->save();
+					}catch (\Throwable $e) {
+						//
+					}catch (\Exception $e) {
+						//
+					}
+				}else{
+					// masuk log  COMP_CODE  not found
+				}
+				
+			}
+				
+		}else{
+			//
+		}		
+		
+		return 1;
+		
 	}
 	
 	
