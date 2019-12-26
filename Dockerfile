@@ -116,7 +116,7 @@ COPY ./docker-utility/php.ini /etc/
 #    Untuk menjalankan beberapa perintah seperti change mode, dan pindahkan file-file 
 #    project.
 # -------------------------------------------------------------------------------------
-COPY .env.example .env
+COPY env.example .env
 COPY . /var/www/html
 RUN chmod -R 777 /var/www/html/storage /var/www/html/bootstrap /var/www/html/resources /var/www/html/vendor /var/www/html/public
 
