@@ -116,7 +116,7 @@ COPY ./docker-utility/php.ini /etc/
 #    Untuk menjalankan beberapa perintah seperti change mode, dan pindahkan file-file 
 #    project.
 # -------------------------------------------------------------------------------------
-COPY env.example .env
+#COPY ./docker-utility/env.example .env
 COPY . /var/www/html
 RUN chmod -R 777 /var/www/html/storage /var/www/html/bootstrap /var/www/html/resources /var/www/html/vendor /var/www/html/public
 
@@ -124,7 +124,7 @@ RUN chmod -R 777 /var/www/html/storage /var/www/html/bootstrap /var/www/html/res
 #    Untuk menjalankan perintah-perintah di Laravel. Script yang ingin dijalankan, di
 #    sesuaikan dengan kebutuhan Project. (https://laravel.com/docs/6.x/artisan)
 # -------------------------------------------------------------------------------------
-RUN ( cd /var/www/html; composer install )
+RUN ( cd /var/www/html; composer update )
 RUN ( cd /var/www/html; php artisan key:generate )
 RUN ( cd /var/www/html; php artisan optimize )
 
