@@ -125,6 +125,7 @@ RUN chmod -R 777 /var/www/html/storage /var/www/html/bootstrap /var/www/html/res
 #    sesuaikan dengan kebutuhan Project. (https://laravel.com/docs/6.x/artisan)
 # -------------------------------------------------------------------------------------
 RUN ( cd /var/www/html; composer install )
+RUN ( cd /var/www/html; php artisan key:generate )
 RUN ( cd /var/www/html; php artisan optimize )
 
 # 9. Starting Apache Server
