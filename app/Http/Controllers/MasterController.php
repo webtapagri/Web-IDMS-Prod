@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Master;
+use App\Models\Company;
 
 class MasterController extends Controller
 {
@@ -33,25 +34,76 @@ class MasterController extends Controller
 					
 		// return $RestAPI;
 		
-		try {
-				$RS = RoadStatus::find($request->id);
-				$RS->status_name = strtoupper($request->status_name);
-				$RS->status_code = $request->status_code;
-				$RS->updated_by = \Session::get('user_id');
-				$RS->save();
-		}catch (\Throwable $e) {
-			\Session::flash('error', throwable_msg($e));
-			return redirect()->back()->withInput($request->input());
-		}catch (\Exception $e) {
-			\Session::flash('error', exception_msg($e));
-			return redirect()->back()->withInput($request->input());
+		foreach($RestAPI['data'] as $data){
+			
+			$afd = Afdeling::firstOrNew(array('region_code' => $data['REGION_CODE'],'company_code' => $data['COMP_CODE'],'afdeling_code' => $data['AFD_CODE']));
+			$afd->afdeling_name = $data['AFD_NAME'];
+			$afd->werks = $data['WERKS'];
+			$afd->werks_afd_code = $data['WERKS_AFD_CODE'];
+			$afd->save();
+			
 		}
-		
-		\Session::flash('success', 'Berhasil mengupdate data');
-		return redirect()->route('master.road_status');
+					
+		return 1;
 		
 	}
 
+	public function sync_block()
+	{
+		$Master = new Master;
+		$token = $Master->token();
+		$RestAPI = $Master
+					->setEndpoint('block/all')
+					->setHeaders([
+						'Authorization' => 'Bearer '.$token
+					])
+					->get();
+					
+		// return $RestAPI;
+		
+		foreach($RestAPI['data'] as $data){
+			
+			$afd = Block::firstOrNew(array('region_code' => $data['REGION_CODE'],'company_code' => $data['COMP_CODE'],'afdeling_code' => $data['AFD_CODE'],'block_code' => $data['BLOCK_CODE']));
+			$afd->block_name = $data['BLOCK_NAME'];
+			$afd->werks = $data['WERKS'];
+			$afd->werks_afd_block_code = $data['WERKS_AFD_BLOCK_CODE'];
+			$afd->latitude_block = $data['LATITUDE_BLOCK'];
+			$afd->longitude_block = $data['LONGITUDE_BLOCK'];
+			$afd->save();
+			
+		}
+					
+		return 1;
+		
+	}
+
+
+	public function sync_comp()
+	{
+		$Master = new Master;
+		$token = $Master->token();
+		$RestAPI = $Master
+					->setEndpoint('comp/all')
+					->setHeaders([
+						'Authorization' => 'Bearer '.$token
+					])
+					->get();
+		
+		foreach($RestAPI['data'] as $data){
+		
+			$comp = Company::firstOrNew(array('region_code' => $data['REGION_CODE'],'company_code' => $data['COMP_CODE']));
+			$comp->company_name = $data['COMP_NAME'];
+			$comp->address = $data['ADDRESS'];
+			$comp->national = $data['NATIONAL'];
+			$comp->save();
+			
+		}
+					
+		return 1;
+	}
+	
+
+	
 	public function afdeling(Request $request)
 	{
             // $data = $request->session()->all();
@@ -92,6 +144,7 @@ class MasterController extends Controller
 			->make(true);
 
 	}
+	
 	
 	
 }
