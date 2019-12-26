@@ -14,6 +14,7 @@ class Block extends Model
     protected $dates =['deleted_at'];
 	
 	protected $fillable = [
+		'afdeling_id',
 		'block_dode',
 		'block_name',
 		'region_code',
