@@ -117,16 +117,16 @@ COPY ./docker-utility/php.ini /etc/
 #    project.
 # -------------------------------------------------------------------------------------
 #COPY ./docker-utility/env.example .env
-COPY . /var/www/html
-RUN chmod -R 777 /var/www/html/storage /var/www/html/bootstrap /var/www/html/resources /var/www/html/vendor /var/www/html/public
+COPY . /var/www/html/Web-IDMS
+RUN chmod -R 777 /var/www/html/Web-IDMS/storage /var/www/html/Web-IDMS/bootstrap /var/www/html/Web-IDMS/resources /var/www/html/Web-IDMS/vendor /var/www/html/Web-IDMS/public
 
 # 8. Laravel Configuration
 #    Untuk menjalankan perintah-perintah di Laravel. Script yang ingin dijalankan, di
 #    sesuaikan dengan kebutuhan Project. (https://laravel.com/docs/6.x/artisan)
 # -------------------------------------------------------------------------------------
-RUN ( cd /var/www/html; composer update )
-RUN ( cd /var/www/html; php artisan key:generate )
-RUN ( cd /var/www/html; php artisan optimize )
+RUN ( cd /var/www/html/Web-IDMS; composer update )
+RUN ( cd /var/www/html/Web-IDMS; php artisan key:generate )
+RUN ( cd /var/www/html/Web-IDMS; php artisan optimize )
 
 # 9. Starting Apache Server
 # -------------------------------------------------------------------------------------
@@ -136,3 +136,4 @@ RUN chmod -v +x /run-httpd.sh
 CMD [ "/run-httpd.sh" ]
 RUN rm -rf /run/httpd/* /tmp/httpd*
 RUN /usr/sbin/apachectl -DFOREGROUNDRUN 
+
