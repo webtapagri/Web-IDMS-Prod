@@ -17,7 +17,11 @@ Route::group(['middleware' => [ 'auth' ]], function () {
 		Route::get('/road-status', 				['as'=>'master.api_road_status', 'uses'=>'RoadController@api_status']);
 		Route::get('/sync-afd', 				['as'=>'master.api_sync_afd', 'uses'=>'MasterController@sync_afd']);
 		Route::get('/sync-comp', 				['as'=>'master.api_sync_comp', 'uses'=>'MasterController@sync_comp']);
+<<<<<<< HEAD
+		Route::get('/sync-block', 				['as'=>'master.api_sync_block', 'uses'=>'MasterController@sync_block']);
+=======
 		Route::get('/sync-est', 				['as'=>'master.api_sync_est', 'uses'=>'MasterController@sync_est']);
+>>>>>>> 81d550c7d75720411d7a87583cade7c1db7cdc10
 		
 	});
 
@@ -37,7 +41,12 @@ Route::group(['middleware' => [ 'auth' ]], function () {
 		Route::get('/road-category-datatables', 	['as'=>'master.road_category_datatables', 'uses'=>'RoadController@category_datatables']);
 		Route::post('/road-category-update', 		['as'=>'master.road_category_update', 'uses'=>'RoadController@category_update']);
 		Route::get('/road-category-delete/{id}', 	['as'=>'master.road_category_delete', 'uses'=>'RoadController@category_delete']);
-	});
+
+        Route::get('/afdeling', 			['as'=>'master.afdeling', 'uses'=>'MasterController@afdeling']);
+		Route::get('/afdeling-datatables', 	['as'=>'master.afdeling_datatables', 'uses'=>'MasterController@afdeling_datatables']);
+		
+
+    });
 	
 	
 });

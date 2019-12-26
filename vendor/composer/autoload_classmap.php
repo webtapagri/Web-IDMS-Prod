@@ -175,6 +175,8 @@ return array(
     'App\\Http\\Requests\\RoadStatusRequest' => $baseDir . '/app/Http/Requests/RoadStatusRequest.php',
     'App\\Mail\\FamsEmail' => $baseDir . '/app/Mail/FamsEmail.php',
     'App\\Menu' => $baseDir . '/app/Menu.php',
+    'App\\Models\\Afdeling' => $baseDir . '/app/Models/Afdeling.php',
+    'App\\Models\\Block' => $baseDir . '/app/Models/Block.php',
     'App\\Models\\Company' => $baseDir . '/app/Models/Company.php',
     'App\\Models\\Estate' => $baseDir . '/app/Models/Estate.php',
     'App\\Models\\RoadCategory' => $baseDir . '/app/Models/RoadCategory.php',

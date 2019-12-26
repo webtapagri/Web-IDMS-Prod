@@ -783,6 +783,8 @@ class ComposerStaticInit4e2bc4c160c3a0d73d170af88a022287
         'App\\Http\\Requests\\RoadStatusRequest' => __DIR__ . '/../..' . '/app/Http/Requests/RoadStatusRequest.php',
         'App\\Mail\\FamsEmail' => __DIR__ . '/../..' . '/app/Mail/FamsEmail.php',
         'App\\Menu' => __DIR__ . '/../..' . '/app/Menu.php',
+        'App\\Models\\Afdeling' => __DIR__ . '/../..' . '/app/Models/Afdeling.php',
+        'App\\Models\\Block' => __DIR__ . '/../..' . '/app/Models/Block.php',
         'App\\Models\\Company' => __DIR__ . '/../..' . '/app/Models/Company.php',
         'App\\Models\\Estate' => __DIR__ . '/../..' . '/app/Models/Estate.php',
         'App\\Models\\RoadCategory' => __DIR__ . '/../..' . '/app/Models/RoadCategory.php',
