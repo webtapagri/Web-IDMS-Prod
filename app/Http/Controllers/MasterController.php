@@ -230,7 +230,7 @@ class MasterController extends Controller
 	{
 		$access = AccessRight::roleaccess();
 		$title = 'Master Data Afdeling';
-		$data['ctree'] = '/master/afdelng';
+		$data['ctree'] = '/master/afdeling';
 		$data["access"] = (object)$access['access'];
 		return view('master.afdeling', compact('data','title'));
 	}
