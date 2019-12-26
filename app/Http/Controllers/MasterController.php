@@ -7,6 +7,8 @@ use App\Http\Controllers\Controller;
 use Master;
 use App\Models\Company;
 use App\Models\Estate;
+use App\Models\Afdeling;
+use App\Models\Block;
 use AccessRight;
 use Yajra\DataTables\Facades\DataTables;
 
