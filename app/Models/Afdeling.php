@@ -20,5 +20,6 @@ class Afdeling extends Model
 		'company_code',
 		'weks',
 		'werks_afd_code',
+		'estate_id',
 	];
 }
