@@ -7,6 +7,8 @@ use App\Http\Controllers\Controller;
 use Master;
 use App\Models\Company;
 use App\Models\Estate;
+use AccessRight;
+use Yajra\DataTables\Facades\DataTables;
 
 class MasterController extends Controller
 {
@@ -47,7 +49,8 @@ class MasterController extends Controller
 						'Authorization' => 'Bearer '.$token
 					])
 					->get();
-		if(count($RestAPI['data']) > 0 ){
+		$jml = count($RestAPI['data']);
+		if($jml > 0 ){
 			foreach($RestAPI['data'] as $data){
 				try {
 					$comp = Company::firstOrNew(array('region_code' => $data['REGION_CODE'],'company_code' => $data['COMP_CODE']));
@@ -64,7 +67,7 @@ class MasterController extends Controller
 				
 		}
 					
-		return 1;
+		return response()->success('Success', $jml);
 	}
 	
 	public function sync_est()
@@ -77,7 +80,8 @@ class MasterController extends Controller
 						'Authorization' => 'Bearer '.$token
 					])
 					->get();
-		if(count($RestAPI['data']) > 0){
+		$jml = count($RestAPI['data']);
+		if($jml > 0){
 			foreach($RestAPI['data'] as $data){
 				
 				$comp = Company::where('company_code',$data['COMP_CODE'])->first();
@@ -104,10 +108,30 @@ class MasterController extends Controller
 			//
 		}		
 		
-		return 1;
+		return response()->success('Success', $jml);
 		
 	}
 	
+	public function company()
+	{
+		$access = AccessRight::roleaccess();
+		$title = 'Master Data Company';
+		$data['ctree'] = '/master/company';
+		$data["access"] = (object)$access['access'];
+		return view('master.company', compact('data','title'));
+	}
 	
+	public function company_datatables(Request $request)
+	{
+		$req = $request->all();
+		$start = $req['start'];
+		$access = access($request, 'master/road-category');
+		$model = Company::selectRaw(' @rank  := ifnull(@rank, '.$start.')  + 1  AS no, TM_COMPANY.*')->whereRaw('1=1');
+		
+		
+		return Datatables::eloquent($model)
+			->rawColumns(['action'])
+			->make(true);
+	}
 	
 }

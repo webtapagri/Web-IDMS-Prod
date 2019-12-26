@@ -22,6 +22,9 @@ Route::group(['middleware' => [ 'auth' ]], function () {
 	});
 
 	Route::group(['prefix'=>'master'], function () {
+		Route::get('/company', 				['as'=>'master.company', 'uses'=>'MasterController@company']);
+		Route::get('/company-datatables', 				['as'=>'master.company_datatables', 'uses'=>'MasterController@company_datatables']);
+		
 		Route::get('/road-status', 				['as'=>'master.road_status', 'uses'=>'RoadController@status']);
 		Route::get('/road-status-datatables', 	['as'=>'master.road_status_datatables', 'uses'=>'RoadController@status_datatables']);
 		Route::get('/road-status-add', 			['as'=>'master.road_status_add', 'uses'=>'RoadController@add']);

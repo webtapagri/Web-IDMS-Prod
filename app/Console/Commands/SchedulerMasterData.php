@@ -18,7 +18,7 @@ class SchedulerMasterData extends Command
      *
      * @var string
      */
-    protected $description = "Sync data company";
+    protected $description = "Sync data MASTER";
 
     /**
      * Create a new command instance.
