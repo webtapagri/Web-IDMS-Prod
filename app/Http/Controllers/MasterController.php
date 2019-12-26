@@ -195,8 +195,30 @@ class MasterController extends Controller
 	{
 		$req = $request->all();
 		$start = $req['start'];
-		$access = access($request, 'master/road-category');
+		$access = access($request, 'master/company');
 		$model = Company::selectRaw(' @rank  := ifnull(@rank, '.$start.')  + 1  AS no, TM_COMPANY.*')->whereRaw('1=1');
+		
+		
+		return Datatables::eloquent($model)
+			->rawColumns(['action'])
+			->make(true);
+	}
+	
+	public function estate()
+	{
+		$access = AccessRight::roleaccess();
+		$title = 'Master Data Estate';
+		$data['ctree'] = '/master/estate';
+		$data["access"] = (object)$access['access'];
+		return view('master.estate', compact('data','title'));
+	}
+	
+	public function estate_datatables(Request $request)
+	{
+		$req = $request->all();
+		$start = $req['start'];
+		$access = access($request, 'master/estate');
+		$model = Estate::selectRaw(' @rank  := ifnull(@rank, '.$start.')  + 1  AS no, TM_ESTATE.*')->whereRaw('1=1');
 		
 		
 		return Datatables::eloquent($model)
