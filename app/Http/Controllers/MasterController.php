@@ -226,4 +226,48 @@ class MasterController extends Controller
 			->make(true);
 	}
 	
+	public function afdeling()
+	{
+		$access = AccessRight::roleaccess();
+		$title = 'Master Data Afdeling';
+		$data['ctree'] = '/master/afdelng';
+		$data["access"] = (object)$access['access'];
+		return view('master.afdeling', compact('data','title'));
+	}
+	
+	public function afdeling_datatables(Request $request)
+	{
+		$req = $request->all();
+		$start = $req['start'];
+		$access = access($request, 'master/afdeling');
+		$model = Afdeling::selectRaw(' @rank  := ifnull(@rank, '.$start.')  + 1  AS no, TM_AFDELING.*')->whereRaw('1=1');
+		
+		
+		return Datatables::eloquent($model)
+			->rawColumns(['action'])
+			->make(true);
+	}
+
+	
+	public function block()
+	{
+		$access = AccessRight::roleaccess();
+		$title = 'Master Data Block';
+		$data['ctree'] = '/master/block';
+		$data["access"] = (object)$access['access'];
+		return view('master.block', compact('data','title'));
+	}
+	
+	public function block_datatables(Request $request)
+	{
+		$req = $request->all();
+		$start = $req['start'];
+		$access = access($request, 'master/block');
+		$model = Block::selectRaw(' @rank  := ifnull(@rank, '.$start.')  + 1  AS no, TM_BLOCK.*')->whereRaw('1=1');
+		
+		
+		return Datatables::eloquent($model)
+			->rawColumns(['action'])
+			->make(true);
+	}
 }

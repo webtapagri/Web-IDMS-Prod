@@ -23,9 +23,11 @@ Route::group(['middleware' => [ 'auth' ]], function () {
 
 	Route::group(['prefix'=>'master'], function () {
 		Route::get('/company', 				['as'=>'master.company', 'uses'=>'MasterController@company']);
-		Route::get('/company-datatables', 				['as'=>'master.company_datatables', 'uses'=>'MasterController@company_datatables']);
+		Route::get('/company-datatables', 	['as'=>'master.company_datatables', 'uses'=>'MasterController@company_datatables']);
 		Route::get('/estate', 				['as'=>'master.estate', 'uses'=>'MasterController@estate']);
-		Route::get('/estate-datatables', 				['as'=>'master.estate_datatables', 'uses'=>'MasterController@estate_datatables']);
+		Route::get('/estate-datatables', 	['as'=>'master.estate_datatables', 'uses'=>'MasterController@estate_datatables']);
+		Route::get('/afdeling', 			['as'=>'master.afdeling', 'uses'=>'MasterController@afdeling']);
+		Route::get('/afdeling-datatables', 	['as'=>'master.afdeling_datatables', 'uses'=>'MasterController@afdeling_datatables']);
 		
 		Route::get('/road-status', 				['as'=>'master.road_status', 'uses'=>'RoadController@status']);
 		Route::get('/road-status-datatables', 	['as'=>'master.road_status_datatables', 'uses'=>'RoadController@status_datatables']);
@@ -40,9 +42,7 @@ Route::group(['middleware' => [ 'auth' ]], function () {
 		Route::post('/road-category-update', 		['as'=>'master.road_category_update', 'uses'=>'RoadController@category_update']);
 		Route::get('/road-category-delete/{id}', 	['as'=>'master.road_category_delete', 'uses'=>'RoadController@category_delete']);
 
-        Route::get('/afdeling', 			['as'=>'master.afdeling', 'uses'=>'MasterController@afdeling']);
-		Route::get('/afdeling-datatables', 	['as'=>'master.afdeling_datatables', 'uses'=>'MasterController@afdeling_datatables']);
-		
+        
 
     });
 	

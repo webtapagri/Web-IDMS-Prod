@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Afdeling list')
+@section('title', 'Block list')
 
 @section('theme_js')
 <script src="{{ asset('limitless/global_assets/js/plugins/tables/datatables/datatables.min.js') }}"></script>
@@ -56,12 +56,12 @@
 		<thead>
 			<tr>
 				<th>No.</th>
-				<th>Afdeling Code</th>
-				<th>Afdeling Name</th>
+				<th>Block Code</th>
+				<th>Block Name</th>
 				<th>Region Code</th>
 				<th>Company Code</th>
 				<th>Werks</th>
-				<th>Werks Afdeling Code</th>
+				<th>Werks Afdeling Block Code</th>
 			</tr>
 		</thead>
 		<tfoot>
@@ -170,12 +170,12 @@ function loadGrid(){
 		"order": [[1,"asc"],[2, "asc" ]],
         columns: [
             { data: 'no', 	name: 'no' },
-            { data: 'afdeling_code', 	name: 'afdeling_code' },
-            { data: 'afdeling_name', 	name: 'afdeling_name' },
+            { data: 'block_code', 	name: 'block_code' },
+            { data: 'block_name', 	name: 'block_name' },
             { data: 'region_code', 	name: 'region_code' },
             { data: 'company_code', 		name: 'company_code' },
             { data: 'werks', 		name: 'werks' },
-            { data: 'werks_afd_code', 		name: 'werks_afd_code' },
+            { data: 'werks_afd_block_code', 		name: 'werks_afd_block_code' },
         ],
 		initComplete: function () {
 			this.api().columns().every(function (k) {
