@@ -17,12 +17,8 @@ Route::group(['middleware' => [ 'auth' ]], function () {
 		Route::get('/road-status', 				['as'=>'master.api_road_status', 'uses'=>'RoadController@api_status']);
 		Route::get('/sync-afd', 				['as'=>'master.api_sync_afd', 'uses'=>'MasterController@sync_afd']);
 		Route::get('/sync-comp', 				['as'=>'master.api_sync_comp', 'uses'=>'MasterController@sync_comp']);
-<<<<<<< HEAD
 		Route::get('/sync-block', 				['as'=>'master.api_sync_block', 'uses'=>'MasterController@sync_block']);
-=======
-		Route::get('/sync-est', 				['as'=>'master.api_sync_est', 'uses'=>'MasterController@sync_est']);
->>>>>>> 81d550c7d75720411d7a87583cade7c1db7cdc10
-		
+		Route::get('/sync-est', 				['as'=>'master.api_sync_est', 'uses'=>'MasterController@sync_est']);		
 	});
 
 	Route::group(['prefix'=>'master'], function () {
