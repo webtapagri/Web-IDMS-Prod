@@ -67,8 +67,8 @@
 		<tfoot>
 			<tr>
 				<th>Pencarian</th>
-				<th>Afdeling Code</th>
-				<th>Afdeling Name</th>
+				<th>Block Code</th>
+				<th>Block Name</th>
 				<th>Region Code</th>
 				<th>Company Code</th>
 				<th>Werks</th>
