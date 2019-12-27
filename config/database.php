@@ -42,17 +42,17 @@ return [
 
         'mysql' => [
             'read' => [
-                'host' => '127.0.0.1',
+                'host' => 'idmsdev.tap-agri.com',
             ],
             'write' => [
-                'host' => '127.0.0.1'
+                'host' => 'idmsdev.tap-agri.com'
             ],
             'strict' => false,
             'driver'    => 'mysql',
-            'database'  => env('DB_DATABASE','tap_road'),
-            'username'  => env('DB_USERNAME','root'),
+            'database'  => env('DB_DATABASE','IDMS'),
+            'username'  => env('DB_USERNAME','app_idms'),
             'port'      => env('DB_PORT', '3306'),
-            'password'  => env('DB_PASSWORD', ''),
+            'password'  => env('DB_PASSWORD', 'Tapagri123~!'),
             'charset'   => 'utf8',
             'collation' => 'utf8_unicode_ci',
             'prefix'    => '',
