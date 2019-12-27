@@ -14,6 +14,7 @@ class Afdeling extends Model
     protected $dates =['deleted_at'];
 	
 	protected $fillable = [
+		'estate_id',
 		'afdeling_code',
 		'afdeling_name',
 		'region_code',

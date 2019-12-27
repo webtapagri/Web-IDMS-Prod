@@ -28,6 +28,8 @@ Route::group(['middleware' => [ 'auth' ]], function () {
 		Route::get('/estate-datatables', 	['as'=>'master.estate_datatables', 'uses'=>'MasterController@estate_datatables']);
 		Route::get('/afdeling', 			['as'=>'master.afdeling', 'uses'=>'MasterController@afdeling']);
 		Route::get('/afdeling-datatables', 	['as'=>'master.afdeling_datatables', 'uses'=>'MasterController@afdeling_datatables']);
+		Route::get('/block', 			['as'=>'master.afdeling', 'uses'=>'MasterController@afdeling']);
+		Route::get('/block-datatables', 	['as'=>'master.block_datatables', 'uses'=>'MasterController@block_datatables']);
 		
 		Route::get('/road-status', 				['as'=>'master.road_status', 'uses'=>'RoadController@status']);
 		Route::get('/road-status-datatables', 	['as'=>'master.road_status_datatables', 'uses'=>'RoadController@status_datatables']);
